@@ -1,24 +1,96 @@
+# Gradle (Backend)
+.gradle/
+# Gradle 빌드 디렉토리
+build/
+# Gradle 빌드 결과물 디렉토리
+!gradle/wrapper/gradle-wrapper.jar
+# Gradle Wrapper JAR 파일 (필요)
+
+# Java
+*.class
+# 컴파일된 Java 클래스 파일
+*.jar
+# JAR 파일 (실행 가능한 Java 아카이브)
+*.war
+# WAR 파일 (웹 애플리케이션 아카이브)
+*.ear
+# EAR 파일 (엔터프라이즈 애플리케이션 아카이브)
+hs_err_pid*
+# JVM crash 로그 파일
+
+# IDE & Editor
+.idea/
+# IntelliJ IDEA 프로젝트 설정 디렉토리
+*.iws
+# IntelliJ IDEA workspace 파일
+*.iml
+      # IntelliJ IDEA 모듈 파일
+*.ipr
+# IntelliJ IDEA 프로젝트 파일
+.classpath
+# Eclipse 클래스 경로 파일
+.factorypath
+# Eclipse 팩토리 경로 파일
+.project
+# Eclipse 프로젝트 파일
+.settings
+# Eclipse 설정 디렉토리
+.springBeans
+# Spring Tool Suite 관련 파일
+.sts4-cache
+# Spring Tool Suite 캐시 디렉토리
+.vscode/
+# Visual Studio Code 설정 디렉토리
+/nbproject/private/
+# NetBeans private 설정 디렉토리
+/nbbuild/
+# NetBeans 빌드 디렉토리
+/dist/
+# NetBeans 배포 디렉토리
+/nbdist/
+# NetBeans 배포 디렉토리
+/.nb-gradle/
+# NetBeans Gradle 관련 디렉토리
+
 # Logs
-logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+ # 로그 파일
 
-node_modules
-dist
-dist-ssr
-*.local
+# Node (Frontend)
+node_modules/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+/frontend/node_modules/
+# frontend 디렉토리 안의 node_modules 디렉토리 무시
+
+# React 빌드 결과물 디렉토리
+.pnp
+# Yarn Plug'n'Play 관련 파일
+.pnp.js
+# Yarn Plug'n'Play 관련 파일
+/coverage
+# 테스트 커버리지 결과 디렉토리
+
+# Misc
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# macOS 파일 시스템 관련 파일
+.env*
+# 환경 변수 파일 (.env, .env.local 등)
+/out/
+# NetBeans 출력 디렉토리
+!**/src/main/**/bin/
+# 백엔드 main 소스 빌드 결과물 제외
+!**/src/test/**/bin/
+# 백엔드 test 소스 빌드 결과물 제외
+!**/src/main/**/build/
+# 백엔드 main 소스 빌드 결과물 제외
+!**/src/test/**/build/
+# 백엔드 test 소스 빌드 결과물 제외
+!**/src/main/**/out/
+# 백엔드 main 소스 빌드 결과물 제외
+!**/src/test/**/out/
+# 백엔드 test 소스 빌드 결과물 제외
+
+# Spring Boot 설정 파일 (application.yml, application.properties 등)
+application*.yml
+application*.properties
+application*.yaml
