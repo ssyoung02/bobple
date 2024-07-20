@@ -62,8 +62,6 @@ node_modules/
 /frontend/node_modules/
 # frontend 디렉토리 안의 node_modules 디렉토리 무시
 
-# Node.js 패키지 디렉토리
-/build/
 # React 빌드 결과물 디렉토리
 .pnp
 # Yarn Plug'n'Play 관련 파일
