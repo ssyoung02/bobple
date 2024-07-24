@@ -6,27 +6,27 @@ function MainPage() {
     const navigate = useNavigate();
 
     const moveRecipe = () => {
-        navigate('/Recipe');
+        navigate('/recipe');
     }
 
     const moveRecommend = () => {
-        navigate('/RecommendFood');
+        navigate('/recommend');
     }
 
     const moveAround = () => {
-        navigate('/Recipe');
+        navigate('/around');
     }
 
     const moveGroup = () => {
-        navigate('/RecommendFood');
+        navigate('/group');
     }
 
-    const moveMyinfo = () => {
-        navigate('/Recipe');
+    const moveMyPage = () => {
+        navigate('/mypage');
     }
 
     const movePoint = () => {
-        navigate('/RecommendFood');
+        navigate('/point');
     }
 
     return (
@@ -35,7 +35,7 @@ function MainPage() {
             <button className="recommend-button footer-btn" onClick={moveRecommend}>맛집추천</button>
             <button className="around-button footer-btn" onClick={moveAround}>주변맛집</button>
             <button className="group-button footer-btn" onClick={moveGroup}>함께먹기</button>
-            <button className="myinfo-button footer-btn" onClick={moveMyinfo}>내정보</button>
+            <button className="myinfo-button footer-btn" onClick={moveMyPage}>내정보</button>
             <button className="point-button footer-btn" onClick={movePoint}>포인트샵</button>
         </div>
     )
