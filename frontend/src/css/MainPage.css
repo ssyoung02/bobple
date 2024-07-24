@@ -1,1 +1,4 @@
-/*css도 마찬가지로 한 컴포넌트에 대한 css파일 만들 것.*/
+.footer-btn {
+    padding: 10px;
+    font-weight: bold;
+}
