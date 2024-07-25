@@ -6,8 +6,8 @@ import Swallow from "../pages/mainGame/Swallow"
 function MainGameRouter(){
     return(
         <Routes>
-            <Route path="/mainGame/cardGame" element={<CardGame/>}/>
-            <Route path="/mainGame/swallow" element={<Swallow/>}/>
+            <Route path="/cardGame" element={<CardGame/>}/>
+            <Route path="/swallow" element={<Swallow/>}/>
         </Routes>
     );
 }

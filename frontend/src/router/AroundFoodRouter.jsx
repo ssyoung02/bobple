@@ -5,7 +5,7 @@ import AroundMain from"../pages/aroundFood/AroundMain"
 function AroundFoodRouter(){
     return(
         <Routes>
-            <Route path="around" element={<AroundMain/>}/>
+            <Route path="/" element={<AroundMain/>}/>
         </Routes>
     );
 }

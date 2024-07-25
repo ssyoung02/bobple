@@ -7,9 +7,9 @@ import FoodWorldCup from "../pages/recommendFood/foodWorldCup/FoodWorldCup";
 function RecommendFoodRouter(){
     return(
         <Routes>
-            <Route path="/recommend" element={<RecommendMain/>}/>
-            <Route path="/recommend/recommendFoodCategory" element={<RecommendFoodCategory/>}/>
-            <Route path="/recommend/foodWorldCup/foodWorldCup" element={<FoodWorldCup/>}/>
+            <Route path="/" element={<RecommendMain/>}/>
+            <Route path="/recommendFoodCategory" element={<RecommendFoodCategory/>}/>
+            <Route path="/foodWorldCup/foodWorldCup" element={<FoodWorldCup/>}/>
         </Routes>
     );
 }

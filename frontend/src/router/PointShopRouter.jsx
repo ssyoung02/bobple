@@ -10,12 +10,12 @@ import PointGameMain from "../pages/pointShop/pointGames/PointGameMain";
 function PointShopRouter(){
     return(
         <Routes>
-            <Route path="/point" element={<PointMain/>}/>
-            <Route path="/point/pointGifticonDetail" element={<PointGifticonDetail/>}/>
-            <Route path="/point/myPointPurchase" element={<MyPointPurchase/>}/>
-            <Route path="/point/gifticonBarcode" element={<GifticonBarcode/>}/>
+            <Route path="/" element={<PointMain/>}/>
+            <Route path="/pointGifticonDetail" element={<PointGifticonDetail/>}/>
+            <Route path="/myPointPurchase" element={<MyPointPurchase/>}/>
+            <Route path="/gifticonBarcode" element={<GifticonBarcode/>}/>
 
-            <Route path="/point/pointGames/pointGameMain" element={<PointGameMain/>}/>
+            <Route path="/pointGames/pointGameMain" element={<PointGameMain/>}/>
 
         </Routes>
     );

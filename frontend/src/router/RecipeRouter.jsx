@@ -8,10 +8,10 @@ import RecipeAi from "../pages/recipe/RecipeAi";
 function RecipeRouter(){
     return(
         <Routes>
-            <Route path="/recipe" element={<RecipeMain/>}/>
-            <Route path="/recipe/recipeDetail" element={<RecipeDetail/>}/>
-            <Route path="/recipe/recipeModify" element={<RecipeModify/>}/>
-            <Route path="/recipe/recipeAi" element={<RecipeAi/>}/>
+            <Route path="/" element={<RecipeMain/>}/>
+            <Route path="/recipeDetail" element={<RecipeDetail/>}/>
+            <Route path="/recipeModify" element={<RecipeModify/>}/>
+            <Route path="/recipeAi" element={<RecipeAi/>}/>
         </Routes>
     );
 }

@@ -11,13 +11,13 @@ import UserInfo from "../pages/admin/UserInfo";
 function AdminRouter(){
     return(
         <Routes>
-            <Route path="/admin/recipeBoard" element={<RecipeBoard/>}/>
-            <Route path="/admin/notice" element={<Notice/>}/>
-            <Route path="/admin/noticeContext" element={<NoticeContext/>}/>
-            <Route path="/admin/noticeModify" element={<NoticeModify/>}/>
-            <Route path="/admin/qnADetail" element={<QnADetail/>}/>
-            <Route path="/admin/qnAList" element={<QnAList/>}/>
-            <Route path="/admin" element={<UserInfo/>}/>
+            <Route path="/" element={<UserInfo/>}/>
+            <Route path="/recipeBoard" element={<RecipeBoard/>}/>
+            <Route path="/notice" element={<Notice/>}/>
+            <Route path="/noticeContext" element={<NoticeContext/>}/>
+            <Route path="/noticeModify" element={<NoticeModify/>}/>
+            <Route path="/qnADetail" element={<QnADetail/>}/>
+            <Route path="/qnAList" element={<QnAList/>}/>
         </Routes>
     );
 }

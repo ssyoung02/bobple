@@ -6,9 +6,9 @@ import Chatting from "../pages/eatingGroup/chatting/Chatting";
 function EatingGroupRouter(){
     return(
         <Routes>
-            <Route path="/group" element={GroupMain}/>
+            <Route path="/" element={GroupMain}/>
 
-            <Route path="/group/chatting/chatting" element={Chatting}/>
+            <Route path="/chatting/chatting" element={Chatting}/>
         </Routes>
     );
 }

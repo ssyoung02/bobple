@@ -17,20 +17,20 @@ import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
 function MyPageRouter(){
     return(
         <Routes>
-            <Route path="/myPage" element={<MyPageMain/>}/>
-            <Route path="/myPage/calculator" element={<Calculator/>}/>
-            <Route path="/myPage/likeRecipe" element={<LikeRecipe/>}/>
-            <Route path="/myPage/myRecipe" element={<MyRecipe/>}/>
-            <Route path="/myPage/myPointUseage" element={<MyPointUsage/>}/>
-            <Route path="/myPage/userModify" element={<UserModify/>}/>
+            <Route path="/" element={<MyPageMain/>}/>
+            <Route path="/calculator" element={<Calculator/>}/>
+            <Route path="/likeRecipe" element={<LikeRecipe/>}/>
+            <Route path="/myRecipe" element={<MyRecipe/>}/>
+            <Route path="/myPointUseage" element={<MyPointUsage/>}/>
+            <Route path="/userModify" element={<UserModify/>}/>
 
-            <Route path="/myPage/login/login" element={<Login/>}/>
+            <Route path="/login/login" element={<Login/>}/>
 
-            <Route path="/myPage/serviceCenter/userFAQ" element={<UserFAQ/>}/>
-            <Route path="/myPage/serviceCenter/userNotice" element={<UserNotice/>}/>
-            <Route path="/myPage/serviceCenter/userQnA" element={<UserQnA/>}/>
-            <Route path="/myPage/serviceCenter/userQnAList" element={<UserQnAList/>}/>
-            <Route path="/myPage/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
+            <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
+            <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
+            <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
+            <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
+            <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
         </Routes>
     );
 }

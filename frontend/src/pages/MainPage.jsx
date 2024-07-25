@@ -7,7 +7,7 @@ function MainPage() {
     const navigate = useNavigate();
 
     const moveRecipe = () => {
-        navigate('/recipe/recipeMain');
+        navigate('/recipe');
     }
 
     const moveRecommend = () => {
