@@ -1,12 +1,21 @@
 package kr.bit.bobple.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +62,37 @@ public class HyperCLOVAClient {
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
 
         // text/event-stream 응답 처리 (SSE)
-        String response = restTemplate.postForObject("https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003", request, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                "https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003",
+                request,
+                String.class
+        );
 
-        // TODO: SSE 응답 파싱하여 최종 텍스트 추출 및 반환
-        return response;
+        // SSE 응답 파싱하여 최종 텍스트 추출
+        StringBuilder textBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new ByteArrayInputStream(responseEntity.getBody().getBytes(StandardCharsets.UTF_8))) // InputStream 변환
+        )) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("data: ")) { // 데이터 라인만 처리
+                    String data = line.substring(6); // "data: " 제거
+                    if (data.equals("[DONE]")) { // 스트림 종료 시점
+                        break;
+                    }
+                    Map<String, Object> json = new ObjectMapper().readValue(data, new TypeReference<>() {});
+                    Map<String, Object> choices = (Map<String, Object>) json.get("choices"); // Map<String, String> -> Map<String, Object>로 변경
+                    Map<String, String> delta = (Map<String, String>) choices.get("delta"); // delta를 Map<String, String>으로 변환
+                    if (delta != null && delta.containsKey("content")) {
+                        textBuilder.append(delta.get("content"));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // 예외 처리
+            throw new RuntimeException("HyperCLOVA API 응답 파싱 오류", e);
+        }
+
+        return textBuilder.toString(); // 최종 텍스트 반환
     }
 }
