@@ -9,22 +9,22 @@ import MyPageRouter from "./MyPageRouter"
 import PointShopRouter from "./PointShopRouter"
 import RecipeRouter from "./RecipeRouter"
 import RecommendFoodRouter from "./RecommendFoodRouter"
+import NotFound from "../pages/NotFound";
 
 function MainRouter(){
     return(
-        <Router>
-            <Routes>
-                <Route path="/"  element={<MainPage/>}/>
-                <Route path="/admin/*" element={<AdminRouter/>}/>
-                <Route path="/around/*" element={<AroundFoodRouter/>}/>
-                <Route path="/group/*" element={<EatingGroupRouter/>}/>
-                <Route path="/mainGame/*" element={<MainGameRouter/>}/>
-                <Route path="/myPage/*" element={<MyPageRouter/>}/>
-                <Route path="/point/*" element={<PointShopRouter/>}/>
-                <Route path="/recipe/*" element={<RecipeRouter/>}/>
-                <Route path="/recommend/*" element={<RecommendFoodRouter/>}/>
-            </Routes>
-        </Router>
+        <Routes>
+            <Route path="/"  element={<MainPage/>}/>
+            <Route path="/admin/*" element={<AdminRouter/>}/>
+            <Route path="/around/*" element={<AroundFoodRouter/>}/>
+            <Route path="/group/*" element={<EatingGroupRouter/>}/>
+            <Route path="/mainGame/*" element={<MainGameRouter/>}/>
+            <Route path="/myPage/*" element={<MyPageRouter/>}/>
+            <Route path="/point/*" element={<PointShopRouter/>}/>
+            <Route path="/recipe/*" element={<RecipeRouter/>}/>
+            <Route path="/recommend/*" element={<RecommendFoodRouter/>}/>
+            <Route path="*"  element={<NotFound/>}/>
+        </Routes>
     );
 }
 
