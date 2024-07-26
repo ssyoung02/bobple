@@ -1,40 +1,50 @@
-/*나중에 다 지워야함.*/
-
-.App {
-  text-align: center;
+body,button,code,Link,div,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,input,legend,li,ol,p,pre,select,td,textarea,th,ul{
+  font-family: NotoSansKR-Light, serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body{
+  background-color: #f2f2f2;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+main{
+  padding: 0 1.25rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+@font-face {
+  font-family: "NotoSansKR-Bold";
+  font-weight: 700;
+  src: url("./assets/font/NotoSansKR-Bold.ttf") format("truetype");
 }
-
-.App-link {
-  color: #61dafb;
+@font-face {
+  font-family: "NotoSansKR-Light";
+  font-weight: 300;
+  src: url("./assets/font/NotoSansKR-Light.ttf") format("truetype");
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@font-face {
+  font-family: "NotoSansKR-Medium";
+  font-weight: 500;
+  src: url("./assets/font/NotoSansKR-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "NotoSansKR-Thin";
+  font-weight: 100;
+  src: url("./assets/font/NotoSansKR-Thin.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Acme-Reqular";
+  font-weight: 400;
+  src: url("./assets/font/Acme-Regular.ttf") format("truetype");
+}
+#root{
+  width: 100vw;
+  max-width: 480px;
+  height: 100dvh;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+}
+button{
+  background: transparent;
+  border: none;
+  padding: 0;
 }
