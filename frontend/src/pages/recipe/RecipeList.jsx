@@ -1,7 +1,7 @@
 // src/components/Recipe/RecipeList.jsx
 import React, { useContext, useEffect } from 'react';
-import RecipeContext from '../Recipe/RecipeContext';
-import RecipeCard from './RecipeCard';
+import RecipeContext from '../../../../../../../Users/thddm/Desktop/Recipe/RecipeContext';
+import RecipeCard from '../../../../../../../Users/thddm/Desktop/Recipe/RecipeCard';
 import { Grid } from 'semantic-ui-react';
 
 function RecipeList() {
