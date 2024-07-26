@@ -1,5 +1,5 @@
 import React, {forwardRef} from 'react';
-import Prize from '../randomGacha/Prize';
+import Prize from './Prize';
 import '../../../../assets/style/UILayer.scss';
 
 const UILayer = forwardRef((props, ref) => {

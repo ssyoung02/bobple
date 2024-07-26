@@ -16,8 +16,8 @@ function PointShopRouter(){
             <Route path="/myPointPurchase" element={<MyPointPurchase/>}/>
             <Route path="/gifticonBarcode" element={<GifticonBarcode/>}/>
 
-            <Route path="/pointGames/pointGameMain" element={<PointGameMain/>}/>
-            <Route path="/pointGames/GachaGame" element={<GachaGame/>}/>
+            <Route path="/pointGame" element={<PointGameMain/>}/>
+            <Route path="/pointGame/GachaGame" element={<GachaGame/>}/>
 
         </Routes>
     );

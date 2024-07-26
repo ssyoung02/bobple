@@ -5,13 +5,13 @@ function PointGameMain() {
     const navigate = useNavigate();
 
     const moveGacha = () => {
-        navigate('/GachaGame');
+        navigate('/point/pointGame/GachaGame');
     }
 
     return(
-        <>
+        <div>
             <button className="gacha-button" onClick={moveGacha}>가챠 게임</button>
-        </>
+        </div>
     );
 }
 
