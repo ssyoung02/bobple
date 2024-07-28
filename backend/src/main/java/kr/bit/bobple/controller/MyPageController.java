@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RestController
-@RequestMapping("/MyPage")
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class MyPageController {
 
     @Autowired
