@@ -193,7 +193,7 @@ export const start = async ($handle, $machine, $title, $pointer, prize) => {
     await (() => new Promise(resolve => {
         const tl = gsap.timeline();
         gsap.to(prizeBall.dom, {
-            x: '-4vh',
+            x: '-3.5vh',
             ease: 'none',
             duration: 0.5,
             rotate: prizeBall.rotate + 10,
@@ -224,27 +224,27 @@ export const start = async ($handle, $machine, $title, $pointer, prize) => {
         });
 
         tl.to(prizeBall.dom, {
-            y: '17vh',
+            y: '15.5vh',
             ease: 'power1.in',
             duration: 0.5
         }).to(prizeBall.dom, {
-            y: '27vh',
+            y: '24.5vh',
             ease: 'power1.in',
             duration: 0.5
         }).to(prizeBall.dom, {
-            y: '24vh',
+            y: '22.5vh',
             ease: 'power1.out',
             duration: 0.2
         }).to(prizeBall.dom, {
-            y: '25vh',
+            y: '23.5vh',
             ease: 'power1.in',
             duration: 0.2
         }).to(prizeBall.dom, {
-            y: '24.5vh',
+            y: '23vh',
             ease: 'power1.out',
             duration: 0.1
         }).to(prizeBall.dom, {
-            y: '25vh',
+            y: '23.5vh',
             ease: 'power1.in',
             duration: 0.1,
             onComplete: () => {
@@ -577,25 +577,25 @@ export const createBalls = ($balls) => {
 
         return ball;
     }
-    createBall(0.5, 0.6);
-    createBall(0, 0.68);
-    createBall(0.22, 0.65);
-    createBall(0.7, 0.63);
-    createBall(0.96, 0.66);
+    createBall(0.5, 0.4);
+    createBall(0, 0.48);
+    createBall(0.22, 0.45);
+    createBall(0.7, 0.43);
+    createBall(0.96, 0.46);
 
-    createBall(0.75, 0.79);
-    createBall(0.5, 0.8);
-    prizeBall = createBall(0.9, 0.81);
+    createBall(0.75, 0.69);
+    createBall(0.5, 0.7);
+    prizeBall = createBall(0.9, 0.71);
     console.log('prizeBall:', prizeBall); // 확인용 로그 추가
-    createBall(0, 0.82);
+    createBall(0, 0.72);
 
-    createBall(1, 0.9);
-    createBall(0.25, 0.85);
+    createBall(1, 0.8);
+    createBall(0.25, 0.75);
 
-    createBall(0.9, 1);
+    createBall(0.95, 1);
     createBall(0.4, 1);
     createBall(0.65, 1);
-    createBall(0.09, 1);
+    createBall(0.05, 1);
 }
 
 
