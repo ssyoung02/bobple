@@ -1,5 +1,5 @@
 import React from 'react';
-//import axios from 'axios';
+import kakaoImage from '../../../assets/images/kakao_login_medium_narrow.png';
 
 function Login() {
     const CLIENT_ID = process.env.REACT_APP_REST_API_KEY;
@@ -11,7 +11,7 @@ function Login() {
         <div>
             <h1>로그인 페이지</h1>
             <a href={KAKAO_AUTH_URL} className="kakaobtn">
-                <img src={process.env.PUBLIC_URL + '/assets/Kakao.png'} alt="Kakao Login" />
+                <img src={kakaoImage} alt="Kakao Login"/>
             </a>
         </div>
     );
