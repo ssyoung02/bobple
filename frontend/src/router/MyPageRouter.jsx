@@ -13,6 +13,7 @@ import UserNotice from "../pages/myPage/serviceCenter/UserNotice";
 import UserQnA from "../pages/myPage/serviceCenter/UserQnA";
 import UserQnAList from "../pages/myPage/serviceCenter/UserQnAList";
 import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
+import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandeler";
 
 function MyPageRouter(){
     return(
@@ -25,6 +26,8 @@ function MyPageRouter(){
             <Route path="/userModify" element={<UserModify/>}/>
 
             <Route path="/login/login" element={<Login/>}/>
+            <Route path="/login/oauth2/callback/kakao" element={<KakaoLoginHandler/>} />
+
 
             <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
             <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>

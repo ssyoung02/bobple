@@ -28,7 +28,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // 개발 편의 도구 (개발 환경에서만 필요)
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    //developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // 테스트 프레임워크
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
