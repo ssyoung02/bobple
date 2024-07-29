@@ -33,6 +33,8 @@ dependencies {
     // 테스트 프레임워크
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 5 사용
+
+    implementation 'org.jsoup:jsoup:1.15.3'
 }
 
 // 테스트 설정 (JUnit 5 사용)
