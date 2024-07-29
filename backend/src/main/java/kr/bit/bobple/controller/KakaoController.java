@@ -80,14 +80,12 @@ public class KakaoController {
         String profileImage = (String) profile.get("profile_image_url");
 
         User user = userRepository.findByEmail(email).orElseGet(() -> new User());
-        user.setUsername(username);
+        user.setUsername(email);
         user.setEmail(email);
         user.setName(name);
-        user.setNickName(username);
         user.setProfileImage(profileImage);
         user.setEnabled(true);
         user.setProvider("kakao");
-        user.setCompanyId(0L);  // Assuming default companyId, adjust as needed
         user.setReportCount(0);
         user.setPoint(0);
         user.setCreatedAt(LocalDateTime.now());

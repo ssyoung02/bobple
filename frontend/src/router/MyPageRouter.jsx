@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Routes} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import MyPageMain from "../pages/myPage/MyPageMain";
 import Calculator from "../pages/myPage/Calculator";
 import LikeRecipe from "../pages/myPage/LikeRecipe";
@@ -14,6 +14,7 @@ import UserQnA from "../pages/myPage/serviceCenter/UserQnA";
 import UserQnAList from "../pages/myPage/serviceCenter/UserQnAList";
 import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
 import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandeler";
+import GoogleLoginHandler from "../pages/myPage/login/GoogleLoginHandler";
 
 function MyPageRouter(){
     return(
@@ -27,7 +28,7 @@ function MyPageRouter(){
 
             <Route path="/login/login" element={<Login/>}/>
             <Route path="/login/oauth2/callback/kakao" element={<KakaoLoginHandler/>} />
-
+            <Route path="/login/oauth2/callback/google" element={<GoogleLoginHandler/>} />
 
             <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
             <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
