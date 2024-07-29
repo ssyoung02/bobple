@@ -5,16 +5,15 @@ p{
     width: 100vw;
     max-width: 480px;
     margin: 0 auto;
-    position: fixed;
+    position: sticky;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 6vh;
+    height: 3.75rem;
     background: #061A30;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-top: 1em;
 }
 .navBarLink{
     text-align: center;

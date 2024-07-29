@@ -25,3 +25,7 @@
     padding: 0 10px;
     color: #233B6F;
 }
+main{
+    min-height: calc(100dvh - 8.5rem);
+    background: #ffffff;
+}
