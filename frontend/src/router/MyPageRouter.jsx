@@ -16,7 +16,6 @@ import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
 import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandler";
 import GoogleLoginHandler from "../pages/myPage/login/GoogleLoginHandler";
 import NaverLoginHandler from "../pages/myPage/login/NaverLoginHandler";
-import PopularSearch from "../pages/myPage/PopularSearch";
 
 function MyPageRouter(){
         return(
@@ -39,7 +38,6 @@ function MyPageRouter(){
             <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
             <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
 
-            <Route path="/PopularSearch" element={<PopularSearch/>}/>
         </Routes>
     );
 }
