@@ -14,6 +14,7 @@ p{
     display: flex;
     justify-content: space-around;
     align-items: center;
+    margin-top: 1em;
 }
 .navBarLink{
     text-align: center;

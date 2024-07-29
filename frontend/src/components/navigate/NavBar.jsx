@@ -7,7 +7,7 @@ import '../../assets/style/components/NavBar.css'
 
 function NavBar(){
     return(
-        <div className="navBar">
+        <nav className="navBar">
             <Link to={"/recipe"} className={"navBarLink"}>
                 <FontAwesomeIcon icon={faBook} />
                 <p className={"navBarTitle"}>레시피</p>
@@ -28,7 +28,7 @@ function NavBar(){
                 <FontAwesomeIcon icon={faCircleUser} />
                 <p className={"navBarTitle"}>내 정보</p>
             </Link>
-        </div>
+        </nav>
     );
 }
 
