@@ -32,7 +32,7 @@ const Calculator = () => {
         formData.append('uploadFile', file);
 
         try {
-            const response = await axios.post('http://localhost:8080/api/Calculator', formData, {
+            const response = await axios.post('http://localhost:8080/MyPage/Calculator', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -179,6 +179,9 @@ const Calculator = () => {
             />
             <button onClick={handleCalculate}>계산하기</button>
             <div id="result">{calculatedAmount}</div>
+
+            <br />
+            <a href="index2">index2 페이지로 이동</a>
         </div>
     );
 };
