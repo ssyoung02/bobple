@@ -5,8 +5,8 @@ import axios from "axios";
 const KakaoLoginHandler = () => {
     const navigate = useNavigate();
     const code = new URL(window.location.href).searchParams.get("code");
-    console.log('카카오에서 받은 인가코드 확인: ' + code);
-    console.log(process.env.REACT_APP_BACKEND_URL);
+    //console.log('카카오에서 받은 인가코드 확인: ' + code);
+    //console.log(process.env.REACT_APP_BACKEND_URL);
 
     useEffect(() => {
         const kakaoLogin = async () => {
@@ -40,15 +40,8 @@ const KakaoLoginHandler = () => {
         }
     }, [code, navigate]);
 
-    return (
-        <div className="LoginHandler">
-            <div className="notice">
-                <p>로그인 중입니다.</p>
-                <p>잠시만 기다려주세요.</p>
-                <div className="spinner"></div>
-            </div>
-        </div>
-    );
+    return null;
+
 };
 
 export default KakaoLoginHandler;

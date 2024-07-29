@@ -4,7 +4,6 @@ import kakaoImage from '../../../assets/images/kakao_login_medium_narrow.png';
 function Login() {
     const CLIENT_ID = process.env.REACT_APP_REST_API_KEY;
     const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URL;
-    // const REDIRECT_URI = "http://localhost:3000/myPage/login/oauth2/callback/kakao";
     const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`; // 템플릿 리터럴 사용
 
     return (

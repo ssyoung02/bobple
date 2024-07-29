@@ -14,6 +14,7 @@ import UserQnA from "../pages/myPage/serviceCenter/UserQnA";
 import UserQnAList from "../pages/myPage/serviceCenter/UserQnAList";
 import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
 import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandeler";
+import PopularSearch from "../pages/myPage/PopularSearch";
 
 function MyPageRouter(){
     return(
@@ -34,6 +35,8 @@ function MyPageRouter(){
             <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
             <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
             <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
+
+            <Route path="/PopularSearch" element={<PopularSearch/>}/>
         </Routes>
     );
 }
