@@ -13,30 +13,32 @@ import UserNotice from "../pages/myPage/serviceCenter/UserNotice";
 import UserQnA from "../pages/myPage/serviceCenter/UserQnA";
 import UserQnAList from "../pages/myPage/serviceCenter/UserQnAList";
 import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
-import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandeler";
+import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandler";
 import GoogleLoginHandler from "../pages/myPage/login/GoogleLoginHandler";
+import NaverLoginHandler from "../pages/myPage/login/NaverLoginHandler";
 
 function MyPageRouter(){
-    return(
-        <Routes>
-            <Route path="/" element={<MyPageMain/>}/>
-            <Route path="/calculator" element={<Calculator/>}/>
-            <Route path="/likeRecipe" element={<LikeRecipe/>}/>
-            <Route path="/myRecipe" element={<MyRecipe/>}/>
-            <Route path="/myPointUseage" element={<MyPointUsage/>}/>
-            <Route path="/userModify" element={<UserModify/>}/>
+        return(
+            <Routes>
+                    <Route path="/" element={<MyPageMain/>}/>
+                    <Route path="/calculator" element={<Calculator/>}/>
+                    <Route path="/likeRecipe" element={<LikeRecipe/>}/>
+                    <Route path="/myRecipe" element={<MyRecipe/>}/>
+                    <Route path="/myPointUseage" element={<MyPointUsage/>}/>
+                    <Route path="/userModify" element={<UserModify/>}/>
 
-            <Route path="/login/login" element={<Login/>}/>
-            <Route path="/login/oauth2/callback/kakao" element={<KakaoLoginHandler/>} />
-            <Route path="/login/oauth2/callback/google" element={<GoogleLoginHandler/>} />
+                    <Route path="/login/login" element={<Login/>}/>
+                    <Route path="/login/oauth2/callback/kakao" element={<KakaoLoginHandler/>} />
+                    <Route path="/login/oauth2/callback/google" element={<GoogleLoginHandler/>} />
+                    <Route path="/login/oauth2/callback/naver" element={<NaverLoginHandler/>} />
 
-            <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
-            <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
-            <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
-            <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
-            <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
-        </Routes>
-    );
+                    <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
+                    <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
+                    <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
+                    <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
+                    <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
+            </Routes>
+        );
 }
 
 export default MyPageRouter;

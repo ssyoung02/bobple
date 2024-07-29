@@ -36,6 +36,10 @@ dependencies {
 
     // JSON 라이브러리
     implementation 'org.json:json:20210307'
+
+    // s3
+    implementation 'com.amazonaws:aws-java-sdk-core:1.12.476'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.476'
 }
 
 // 테스트 설정 (JUnit 5 사용)
