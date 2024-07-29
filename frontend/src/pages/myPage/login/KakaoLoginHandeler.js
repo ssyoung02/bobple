@@ -5,8 +5,6 @@ import axios from "axios";
 const KakaoLoginHandler = () => {
     const navigate = useNavigate();
     const code = new URL(window.location.href).searchParams.get("code");
-    //console.log('카카오에서 받은 인가코드 확인: ' + code);
-    //console.log(process.env.REACT_APP_BACKEND_URL);
 
     useEffect(() => {
         const kakaoLogin = async () => {
