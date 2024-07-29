@@ -1,3 +1,6 @@
+main {
+    background-color: white;
+}
 .carousel-container {
     position: fixed;
     top: 10px;
@@ -12,16 +15,16 @@
 }
 
 .point-tab:hover {
-    border-bottom: 3px solid #ea4197;
+    font-weight: bolder !important;
+}
+
+.point-tab button.active {
+    font-weight: bold;
+    border-bottom: 3px solid #ff69b4; /* 분홍색 줄 */
 }
 
 .category-btn-container {
     overflow-x: auto;
-}
-
-.category-container {
-    overflow-y: auto;
-
 }
 
 .category-btn-container::-webkit-scrollbar,
@@ -84,4 +87,23 @@
 .product-item p {
     font-size: 0.9em;
     color: #333;
+}
+
+.game-header {
+    margin: 15px;
+}
+
+.game-button {
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 200px;
+    height: 250px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.game-button:hover {
+    border: none;
 }
