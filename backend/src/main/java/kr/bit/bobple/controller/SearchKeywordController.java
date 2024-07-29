@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Search")
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class SearchKeywordController {
 
     @Autowired
     private SearchKeywordService searchKeywordService;
 
-    @PostMapping("/SearchAll")
+    @PostMapping("/PopularSearch")
     public void searchAll(@RequestBody String keyword) {
         searchKeywordService.saveOrUpdateKeyword(keyword);
     }

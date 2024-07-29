@@ -16,6 +16,7 @@ import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
 import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandler";
 import GoogleLoginHandler from "../pages/myPage/login/GoogleLoginHandler";
 import NaverLoginHandler from "../pages/myPage/login/NaverLoginHandler";
+import PopularSearch from "../pages/myPage/PopularSearch";
 
 function MyPageRouter(){
         return(
@@ -32,13 +33,15 @@ function MyPageRouter(){
                     <Route path="/login/oauth2/callback/google" element={<GoogleLoginHandler/>} />
                     <Route path="/login/oauth2/callback/naver" element={<NaverLoginHandler/>} />
 
-                    <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
-                    <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
-                    <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
-                    <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
-                    <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
-            </Routes>
-        );
+            <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
+            <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
+            <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
+            <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
+            <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
+
+            <Route path="/PopularSearch" element={<PopularSearch/>}/>
+        </Routes>
+    );
 }
 
 export default MyPageRouter;
