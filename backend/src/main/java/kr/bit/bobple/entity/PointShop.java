@@ -1,23 +1,31 @@
 package kr.bit.bobple.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "point_shop")
 public class PointShop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "gift_idx")
     private Long giftIdx;
 
+    @Column(name = "gift_category", nullable = true, length = 20)
     private String giftCategory;
+
+    @Column(name = "gift_brand", nullable = true, length = 20)
     private String giftBrand;
+
+    @Column(name = "gift_description", nullable = true, length = 20)
     private String giftDescription;
+
+    @Column(name = "gift_point", nullable = true)
     private int giftPoint;
+
+    @Column(name = "gift_image_url", nullable = true, length = 255)
     private String giftImageUrl;
 
     // 기본 생성자
