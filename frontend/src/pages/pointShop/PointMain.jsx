@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import '../../assets/style/PointMain.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Carousel } from 'react-bootstrap';
-import Header from '../../components/navigate/Header'
 
 const products = [
-    { id: 1, name: '아메리카노+케이크', category: '카페', points: 150, image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjA2MjFfMjA5%2FMDAxNjU1Nzc1Mzc0NjA3.ySolsq1T1eFT-1tNePelYy-q4U1G8Qec3qzk8ey-UDwg.rTQJzHzso3BzbO1fjZg_L0Y2H83LKlVgZcBXETg1sWEg.PNG.eduwillswg%2Fimage.png&type=a340' },
-    { id: 2, name: '3가지맛 파인트', category: '아이스크림', points: 120, image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxOTAxMzFfMjg4%2FMDAxNTQ4OTQwMTEyNTEy.HrG6sMYYbeu_M1XProVOejC7R1odXxc4wi3w_G_9isgg.uPuecMcwNuzpcxod4_BM727_hx6Wn5cK3Bzgoy7l5oUg.JPEG.dbsgkapffhd%2Fnv_1548940110594.jpg&type=a340' },
-    { id: 3, name: '감자핫도그 2개', category: '핫도그', points: 650, image: 'https://search.pstatic.net/sunny/?src=http%3A%2F%2Ffile3.instiz.net%2Fdata%2Fcached_img%2Fupload%2F2020%2F03%2F09%2F9%2Ff230112c6eec68fdc33865cc2664e4e6.jpg&type=a340' },
-    { id: 4, name: '1천원권', category: '편의점', points: 10, image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxNzA1MjRfMTE0%2FMDAxNDk1NTU5NzA2MzQ5.n9_ziG5nKV9lJIGb4PoIC4sb6uFn1VIQ_To9Cx0dQFEg.rx577GVQZMslWIwfcfgRu3tEHlVA3Yy-4YLp6fRGVqUg.JPEG.ca2puh25%2FexternalFile.jpg&type=a340' },
+    { id: 1, brand: '스타벅스',name: '아메리카노+케이크', category: '카페', points: 150, image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjA2MjFfMjA5%2FMDAxNjU1Nzc1Mzc0NjA3.ySolsq1T1eFT-1tNePelYy-q4U1G8Qec3qzk8ey-UDwg.rTQJzHzso3BzbO1fjZg_L0Y2H83LKlVgZcBXETg1sWEg.PNG.eduwillswg%2Fimage.png&type=a340' },
+    { id: 2, brand: '베스킨라빈스',name: '3가지맛 파인트', category: '아이스크림', points: 120, image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxOTAxMzFfMjg4%2FMDAxNTQ4OTQwMTEyNTEy.HrG6sMYYbeu_M1XProVOejC7R1odXxc4wi3w_G_9isgg.uPuecMcwNuzpcxod4_BM727_hx6Wn5cK3Bzgoy7l5oUg.JPEG.dbsgkapffhd%2Fnv_1548940110594.jpg&type=a340' },
+    { id: 3, brand: '명랑핫도그',name: '감자핫도그 2개', category: '핫도그', points: 650, image: 'https://search.pstatic.net/sunny/?src=http%3A%2F%2Ffile3.instiz.net%2Fdata%2Fcached_img%2Fupload%2F2020%2F03%2F09%2F9%2Ff230112c6eec68fdc33865cc2664e4e6.jpg&type=a340' },
+    { id: 4, brand: 'CU',name: '1천원권', category: '편의점', points: 10, image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxNzA1MjRfMTE0%2FMDAxNDk1NTU5NzA2MzQ5.n9_ziG5nKV9lJIGb4PoIC4sb6uFn1VIQ_To9Cx0dQFEg.rx577GVQZMslWIwfcfgRu3tEHlVA3Yy-4YLp6fRGVqUg.JPEG.ca2puh25%2FexternalFile.jpg&type=a340' },
 ];
 
 function PointMain() {
@@ -27,6 +26,10 @@ function PointMain() {
     const moveGacha = () => {
         navigate('/point/pointGame/GachaGame');
     };
+
+    const movegiftDetail = (product) => {
+        navigate('/point/pointGifticonDetail', { state : {product}});
+    }
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
@@ -89,11 +92,12 @@ function PointMain() {
                     <div className="category-container">
                         <div className="product-list">
                             {filteredProducts.map(product => (
-                                <div key={product.id} className="product-item">
+                                <button key={product.id} className="product-item" onClick={() => movegiftDetail(product)}>
                                     <img src={product.image} alt={product.name}/>
-                                    <h3>{product.name}</h3>
+                                    <h3>{product.brand}</h3>
+                                    <h4>{product.name}</h4>
                                     <p>{product.points}P</p>
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </div>
