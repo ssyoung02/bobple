@@ -82,8 +82,8 @@
 
     .balls {
       position: absolute;
-      top: 32%;
-      left: -35px;
+      top: 33%;
+      left: 5px;
       width: 170%;
       height: 37.5%;
     }
@@ -92,8 +92,8 @@
       --outline: #4c3fc2;
       --color1: #2facff;
       --color2: #ff8ff6;
-      width: 65px;
-      height: 65px;
+      width: 80px;
+      height: 80px;
       border-radius: 100%;
       background-color: var(--color1);
       border: solid 0.8vh var(--outline);
