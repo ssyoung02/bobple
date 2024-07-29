@@ -18,7 +18,7 @@
     .machine {
       position: relative;
       z-index: 1;
-      max-height: 95vh;
+      max-height: 85vh;
     }
 
     .backboard {
@@ -74,7 +74,7 @@
     .handle {
       z-index: 10;
       position: absolute;
-      height: 4.2vh;
+      height: 3.7vh;
       left: 14%;
       top: 70%;
       cursor: pointer; /* 버튼 클릭 가능하게 변경 */
@@ -82,19 +82,18 @@
 
     .balls {
       position: absolute;
-      top: 31%;
-      left: -30px;
-      width: 165%;
-      height: 38.5%;
+      top: 33%;
+      left: 5px;
+      width: 170%;
+      height: 37.5%;
     }
 
     .ball {
-      --size: 8vh;
       --outline: #4c3fc2;
       --color1: #2facff;
       --color2: #ff8ff6;
-      width: var(--size);
-      height: var(--size);
+      width: 80px;
+      height: 80px;
       border-radius: 100%;
       background-color: var(--color1);
       border: solid 0.8vh var(--outline);
