@@ -1,6 +1,3 @@
-main {
-    background-color: white;
-}
 .carousel-container {
     position: fixed;
     top: 10px;
@@ -14,12 +11,12 @@ main {
     margin: 10px;
 }
 
-.point-tab:hover {
-    font-weight: bolder !important;
+.point-tab:hover button {
+    font-family: NotoSansKR-Bold, serif;
 }
 
 .point-tab button.active {
-    font-weight: bold;
+    font-family: NotoSansKR-Bold, serif;
     border-bottom: 3px solid #ff69b4; /* 분홍색 줄 */
 }
 

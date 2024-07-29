@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../assets/style/components/Header.css'
 import { FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faBook, faCircleUser, faMap, faUserGroup, faUtensils} from "@fortawesome/free-solid-svg-icons";
 import {Link} from "react-router-dom";

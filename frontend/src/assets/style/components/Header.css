@@ -1,4 +1,7 @@
-
+main {
+    min-height: calc(100dvh - 8.5rem);
+    background-color: white;
+}
 
 .header{
     height: 4.75rem;
