@@ -98,3 +98,5 @@ node_modules/
 application*.yml
 application*.properties
 application*.yaml
+
+backend/src/main/resources/application.properties
