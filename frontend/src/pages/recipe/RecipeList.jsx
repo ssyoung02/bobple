@@ -1,15 +1,15 @@
 // src/components/Recipe/RecipeList.jsx
 import React, { useContext, useEffect } from 'react';
-import RecipeContext from '../../../../../../../Users/thddm/Desktop/Recipe/RecipeContext';
-import RecipeCard from '../../../../../../../Users/thddm/Desktop/Recipe/RecipeCard';
-import { Grid } from 'semantic-ui-react';
+import RecipeContext from '../../pages/recipe/RecipeContext'; // RecipeContext 경로 수정
+import RecipeCard from './RecipeCard'; // RecipeCard 경로 수정
+import { Grid, Message } from 'semantic-ui-react'; // Message 컴포넌트 추가
 
 function RecipeList() {
-    const { recipes, loading, error, searchRecipes, getRecipeById } = useContext(RecipeContext);
+    const { recipes, loading, error, searchRecipes, getRecipeById, totalElements, totalPages, page, changePage } = useContext(RecipeContext); // totalPages 추가
 
     useEffect(() => {
-        searchRecipes('', ''); // 초기 레시피 목록 로드 (검색어, 카테고리 빈 값으로 전달)
-    }, [searchRecipes]); // searchRecipes 함수가 변경될 때마다 useEffect 실행
+        searchRecipes('', '', page, 10); // 초기 레시피 목록 로드 (검색어, 카테고리 빈 값으로 전달)
+    }, [searchRecipes, page]); // 페이지 번호가 변경될 때마다 다시 로드
 
     // 레시피 클릭 시 상세 페이지로 이동
     const handleRecipeClick = (recipeId) => {
@@ -23,16 +23,27 @@ function RecipeList() {
                 <div>Loading...</div> // 로딩 중일 때 메시지 표시
             ) : error ? (
                 <div>Error: {error.message}</div> // 에러 발생 시 메시지 표시
-            ) : recipes.length === 0 ? (
-                <div>레시피가 없습니다.</div> // 레시피가 없을 때 메시지 표시
+            ) : totalElements === 0 ? ( // 전체 레시피 개수가 0인 경우
+                <Message warning>
+                    <Message.Header>레시피가 존재하지 않아요</Message.Header>
+                    <p>새로운 레시피를 작성해보세요!</p>
+                </Message>
             ) : (
-                <Grid columns={3} divided>
-                    {recipes.map(recipe => (
-                        <Grid.Column key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}>
-                            <RecipeCard recipe={recipe} />
-                        </Grid.Column>
-                    ))}
-                </Grid>
+                <>
+                    <Grid columns={3} divided>
+                        {recipes.map(recipe => (
+                            <Grid.Column key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}>
+                                <RecipeCard recipe={recipe} />
+                            </Grid.Column>
+                        ))}
+                    </Grid>
+                    {/* 페이지네이션 추가 */}
+                    <div>
+                        <button onClick={() => changePage(page - 1)} disabled={page === 0}>이전</button>
+                        <span>{page + 1} / {totalPages}</span>
+                        <button onClick={() => changePage(page + 1)} disabled={page === totalPages - 1}>다음</button>
+                    </div>
+                </>
             )}
         </div>
     );
