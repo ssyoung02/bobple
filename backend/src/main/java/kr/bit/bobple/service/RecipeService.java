@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +47,10 @@ public class RecipeService {
     public RecipeDto createRecipe(RecipeDto recipeDto) {
         User user = authenticationFacade.getCurrentUser(); // 현재 로그인된 사용자 정보 가져오기
         Recipe recipe = recipeDto.toEntity(user);
+        // 좋아요 수, 조회수, 댓글 수 초기화
+        recipe.setLikesCount(0);
+        recipe.setViewsCount(0);
+        recipe.setCommentsCount(0);
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }
 
@@ -71,13 +74,13 @@ public class RecipeService {
         recipeRepository.deleteById(recipeId);
     }
 
+
     @Transactional(readOnly = true)
-    public List<RecipeDto> searchRecipes(String keyword, String category) {
-        return recipeRepository.findByTitleContainingOrContentContainingAndCategory(keyword, keyword, category)
-                .stream()
-                .map(RecipeDto::fromEntity)
-                .collect(Collectors.toList());
+    public Page<Recipe> searchRecipes(String keyword, String category, Pageable pageable) {
+        // Pageable 객체를 직접 생성하는 부분 제거
+        return recipeRepository.findByTitleContainingOrContentContainingAndCategory(keyword, keyword, category, pageable);
     }
+
 
     public List<RecipeDto> recommendRecipesByAI(String ingredients) {
         String prompt = "다음 재료들을 활용한 레시피를 추천해줘: " + ingredients;

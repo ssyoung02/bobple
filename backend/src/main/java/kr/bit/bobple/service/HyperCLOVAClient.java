@@ -2,12 +2,14 @@ package kr.bit.bobple.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.bit.bobple.exception.RecipeRecommendationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -60,7 +62,7 @@ public class HyperCLOVAClient {
         requestBody.put("seed", 0);
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
-
+        try {
         // text/event-stream 응답 처리 (SSE)
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 "https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003",
@@ -94,5 +96,9 @@ public class HyperCLOVAClient {
         }
 
         return textBuilder.toString(); // 최종 텍스트 반환
+        } catch (RestClientException e) {
+            // API 요청 실패 시 예외 처리
+            throw new RecipeRecommendationException("HyperCLOVA API 요청 실패", e);
+        }
     }
 }

@@ -4,12 +4,15 @@ package kr.bit.bobple.controller;
 import kr.bit.bobple.dto.LikeRecipeDto;
 import kr.bit.bobple.dto.RecipeCommentDto;
 import kr.bit.bobple.dto.RecipeDto;
+import kr.bit.bobple.entity.Recipe;
 import kr.bit.bobple.service.LikeRecipeService;
 import kr.bit.bobple.service.RecipeCommentService;
 import kr.bit.bobple.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import kr.bit.bobple.entity.User;
@@ -60,8 +63,12 @@ public class RecipeController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<RecipeDto>> searchRecipes(@RequestParam String keyword, @RequestParam String category) {
-        return ResponseEntity.ok(recipeService.searchRecipes(keyword, category));
+    public ResponseEntity<Page<Recipe>> searchRecipes(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable // 페이징 및 정렬 정보 받아오기
+    ) {
+        return ResponseEntity.ok(recipeService.searchRecipes(keyword, category, pageable));
     }
 
     @PostMapping("/recommend")
