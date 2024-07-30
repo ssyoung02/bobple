@@ -1,0 +1,27 @@
+p{
+    margin: 0;
+}
+.navBar{
+    width: 100vw;
+    max-width: 480px;
+    margin: 0 auto;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3.75rem;
+    background: #061A30;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.navBarLink{
+    text-align: center;
+    width: 4em;
+}
+.navBarLink > *{
+    color: white;
+}
+.navBarTitle{
+    font-size: 10px;
+}

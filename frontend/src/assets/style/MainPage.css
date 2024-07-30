@@ -1,4 +1,73 @@
-.footer-btn {
-    padding: 10px;
-    font-weight: bold;
+.goToGame{
+    margin: 1em 0;
+}
+.gameLayer{
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    width: 100%;
+    margin: 10px 0;
+}
+.mainGameContent{
+    width: 100%;
+    height: 7em;
+    border: 1px solid #F7CCD4;
+    border-radius: 15px;
+    padding: 1em;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.mainGameTitle{
+    font-size: 1.3em;
+}
+.shortMenu{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1em;
+    margin: 2em 0;
+}
+.shortMenuItem{
+    position: relative;
+    width: 100%;
+}
+.shortMenuIcon:after{
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+    margin-bottom: 5px;
+}
+.shortMenuIcon{
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #F7CCD4;
+}
+.RandomMenuButtonItem{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+}
+.MenuImage{
+    width: 10em;
+    height: 10em;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e288bb;
+    grid-column: 1 / 2;
+}
+.MenuExplanation{
+    position: relative;
+    grid-column: span 2;
+    height: 100%;
+    text-align: left;
+}
+.GoToMenu{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.MainRandomMenuButton{
+    margin-bottom: 1em;
 }

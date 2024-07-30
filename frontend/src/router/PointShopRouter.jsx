@@ -4,8 +4,7 @@ import PointMain from "../pages/pointShop/PointMain";
 import PointGifticonDetail from "../pages/pointShop/PointGifticonDetail";
 import MyPointPurchase from "../pages/pointShop/MyPointPurchase";
 import GifticonBarcode from "../pages/pointShop/GifticonBarcode";
-
-import PointGameMain from "../pages/pointShop/pointGames/PointGameMain";
+import GachaGame from "../pages/pointShop/pointGames/randomGacha/GachaGame";
 
 function PointShopRouter(){
     return(
@@ -14,8 +13,7 @@ function PointShopRouter(){
             <Route path="/pointGifticonDetail" element={<PointGifticonDetail/>}/>
             <Route path="/myPointPurchase" element={<MyPointPurchase/>}/>
             <Route path="/gifticonBarcode" element={<GifticonBarcode/>}/>
-
-            <Route path="/pointGames/pointGameMain" element={<PointGameMain/>}/>
+            <Route path="/pointGame/GachaGame" element={<GachaGame/>}/>
 
         </Routes>
     );

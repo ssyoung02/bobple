@@ -10,12 +10,14 @@ function RecipeMain() {
     }
 
     return (
-        <div>
-            안녕하세요!
-            <button onClick={moveRecipeDetail}>레시피 상세</button>
-        </div>
+
+            <div>
+                안녕하세요!
+                <button onClick={moveRecipeDetail}>레시피 상세</button>
+            </div>
     );
 }
 
 
 export default RecipeMain;
+
