@@ -1,42 +1,36 @@
-//src/components/Recipe/RecipeComment.jsx
+//Recipe/RecipeComment.jsx
 import React, { useState, useContext } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import { Comment, Form, Button, Icon } from 'semantic-ui-react';
+import '../recipe/css/RecipeComment.css'; // CSS 파일 import
 
-function RecipeComment({ comment }) { // recipeIdx props 제거, comment props 추가
-    const { createComment, deleteComment, updateComment } = useContext(RecipeContext);
-    const [newComment, setNewComment] = useState('');
-    const [editingComment, setEditingComment] = useState(null);
-    const [editedContent, setEditedContent] = useState('');
-
-    const handleCommentSubmit = async () => {
-        try {
-            await createComment(comment.recipeIdx, newComment); // recipeIdx를 comment 객체에서 가져옴
-            setNewComment('');
-        } catch (error) {
-            console.error('댓글 작성 실패:', error);
-        }
-    };
+function RecipeComment({ comment }) {
+    const { updateComment, deleteComment } = useContext(RecipeContext);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedContent, setEditedContent] = useState(comment.recipeContent);
 
     const handleEditClick = () => {
-        setEditingComment(comment.recipeCommentIdx);
-        setEditedContent(comment.recipeContent);
+        setIsEditing(true);
     };
 
-    const handleEditSubmit = async (commentIdx) => {
+    const handleEditCancel = () => {
+        setIsEditing(false);
+        setEditedContent(comment.recipeContent); // 원래 내용으로 복원
+    };
+
+    const handleEditSubmit = async () => {
         try {
-            await updateComment(commentIdx, editedContent);
-            setEditingComment(null);
+            await updateComment(comment.recipeCommentIdx, editedContent);
+            setIsEditing(false);
         } catch (error) {
             console.error('댓글 수정 실패:', error);
         }
     };
 
-    const handleDeleteClick = async (commentIdx) => {
+    const handleDeleteClick = async () => {
         const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
         if (confirmDelete) {
             try {
-                await deleteComment(commentIdx);
+                await deleteComment(comment.recipeCommentIdx);
             } catch (error) {
                 console.error('댓글 삭제 실패:', error);
             }
@@ -44,49 +38,38 @@ function RecipeComment({ comment }) { // recipeIdx props 제거, comment props �
     };
 
     return (
-        <div>
-            <Comment key={comment.recipeCommentIdx}> {/* comments.map 제거 */}
-                <Comment.Avatar src='/images/avatar/small/matt.jpg' /> {/* 사용자 프로필 이미지 */}
-                <Comment.Content>
-                    <Comment.Author as='a'>{comment.nickname}</Comment.Author>
-                    <Comment.Metadata>
-                        <div>{comment.createdAt}</div> {/* 작성 시간 표시 */}
-                    </Comment.Metadata>
-                    <Comment.Text>
-                        {editingComment === comment.recipeCommentIdx ? (
-                            <Form.Input
-                                value={editedContent}
-                                onChange={e => setEditedContent(e.target.value)}
-                            />
-                        ) : (
-                            comment.recipeContent
-                        )}
-                    </Comment.Text>
-                    <Comment.Actions>
-                        {editingComment === comment.recipeCommentIdx ? (
-                            <Comment.Action onClick={() => handleEditSubmit(comment.recipeCommentIdx)}>
-                                수정 완료
-                            </Comment.Action>
-                        ) : (
-                            <Comment.Action onClick={handleEditClick}>
-                                수정
-                            </Comment.Action>
-                        )}
-                        <Comment.Action onClick={() => handleDeleteClick(comment.recipeCommentIdx)}>
-                            삭제
-                        </Comment.Action>
-                    </Comment.Actions>
-                </Comment.Content>
-            </Comment>
+        <div className="comment">
+            <div className="comment-header">
+                <div className="avatar">
+                    <img src="/images/avatar/small/matt.jpg" alt="사용자 프로필 이미지" /> {/* 예시 이미지 */}
+                </div>
+                <div className="comment-info">
+                    <span className="nickname">{comment.nickname}</span>
+                    <span className="created-at">{comment.createdAt}</span>
+                </div>
+                <div className="comment-actions">
+                    {!isEditing && (
+                        <>
+                            <button onClick={handleEditClick}>수정</button>
+                            <button onClick={handleDeleteClick}>삭제</button>
+                        </>
+                    )}
+                </div>
+            </div>
 
-            {/* 댓글 입력 폼 */}
-            <Form reply>
-                <Form.TextArea value={newComment} onChange={e => setNewComment(e.target.value)} />
-                <Button content='댓글 추가' labelPosition='left' icon='edit' primary onClick={handleCommentSubmit} />
-            </Form>
+            <div className="comment-content">
+                {isEditing ? (
+                    <div>
+                        <textarea value={editedContent} onChange={e => setEditedContent(e.target.value)} />
+                        <button onClick={handleEditSubmit}>수정 완료</button>
+                        <button onClick={handleEditCancel}>취소</button>
+                    </div>
+                ) : (
+                    <p>{comment.recipeContent}</p>
+                )}
+            </div>
         </div>
     );
-
-
 }
-export { RecipeComment }; // named export로 변경
+
+export default RecipeComment;

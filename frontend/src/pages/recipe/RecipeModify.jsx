@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import RecipeForm from './RecipeForm';
+import '../recipe/css/RecipeModify.css'; // CSS 파일 import
 
 function RecipeModify() {
     const { recipeIdx } = useParams();
@@ -26,13 +27,14 @@ function RecipeModify() {
         }
     };
 
-    if (!selectedRecipe) return <div>Loading...</div>;
-
     return (
-        <RecipeForm
-            initialRecipe={selectedRecipe}
-            onSubmit={handleSubmit} // onSubmit 함수 전달
-        />
+        <div className="recipe-modify-container">
+            {!selectedRecipe ? (
+                <div className="loading-message">Loading...</div>
+            ) : (
+                <RecipeForm initialRecipe={selectedRecipe} onSubmit={handleSubmit} />
+            )}
+        </div>
     );
 }
 

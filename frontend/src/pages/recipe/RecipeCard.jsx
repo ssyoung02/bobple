@@ -1,7 +1,8 @@
+// src/components/Recipe/RecipeCard.jsx
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Image, Icon } from 'semantic-ui-react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
+import '../recipe/css/RecipeCard.css'; // CSS 파일 import
 
 function RecipeCard({ recipe }) {
     const { likeRecipe } = useContext(RecipeContext);
@@ -11,27 +12,22 @@ function RecipeCard({ recipe }) {
     };
 
     return (
-        <Card as={Link} to={`/recipe/${recipe.recipeIdx}`} fluid>
-            <Image
-                src={recipe.picture || '/images/default_recipe_image.jpg'}
-                onError={(e) => { e.target.onerror = null; e.target.src = '/images/error_image.jpg' }}
-                wrapped
-                ui={false}
-            />
-            <Card.Content>
-                <Card.Header>{recipe.title}</Card.Header>
-                <Card.Meta>
-                    <span className='date'>작성자: {recipe.nickname}</span>
-                </Card.Meta>
-                <Card.Description>
-                    {recipe.content.length > 100 ? recipe.content.slice(0, 100) + "..." : recipe.content}
-                </Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-                <Icon name='heart' color={recipe.liked ? 'red' : 'grey'} onClick={handleLikeClick} />
-                {recipe.likesCount} 좋아요
-            </Card.Content>
-        </Card>
+        <div className="recipe-card">
+            <Link to={`/recipe/${recipe.recipeIdx}`}>
+                <div className="recipe-card-image">
+                    <img src={recipe.picture || '/images/default_recipe_image.jpg'} alt={recipe.title} onError={(e) => { e.target.onerror = null; e.target.src = '/images/error_image.jpg' }} />
+                    <div className={`like-button ${recipe.liked ? 'liked' : ''}`} onClick={handleLikeClick}>
+                        <i className="heart icon"></i>
+                        <span>{recipe.likesCount}</span>
+                    </div>
+                </div>
+                <div className="recipe-card-content">
+                    <h3>{recipe.title}</h3>
+                    <p className="author">작성자: {recipe.nickname}</p>
+                    <p className="description">{recipe.content.length > 100 ? recipe.content.slice(0, 100) + "..." : recipe.content}</p>
+                </div>
+            </Link>
+        </div>
     );
 }
 

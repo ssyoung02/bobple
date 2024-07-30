@@ -1,16 +1,18 @@
 // src/components/Recipe/SearchFilter.jsx
 import React, { useState, useContext } from 'react';
-import RecipeContext from '../recipe/RecipeContext';
-import { Input, Dropdown, Button, Segment, Grid } from 'semantic-ui-react';
+import RecipeContext from '../../pages/recipe/RecipeContext';
+import '../recipe/css/SearchFilter.css'; // CSS 파일 import
 
 function SearchFilter() {
-    const { searchRecipes, page, size } = useContext(RecipeContext); // page, size 추가
+    const { searchRecipes, page, size } = useContext(RecipeContext);
     const [keyword, setKeyword] = useState('');
     const [category, setCategory] = useState('');
-    const [sortBy, setSortBy] = useState('latest'); // 정렬 기준: 최신순 (default)
+    const [sortBy, setSortBy] = useState('latest');
+
     const handleSearch = () => {
         searchRecipes(keyword, category, page, size, sortBy);
     };
+
     const categoryOptions = [ // 카테고리 옵션 (예시)
         { key: '', text: '전체', value: '' },
         { key: 'korean', text: '한식', value: 'korean' },
@@ -26,37 +28,32 @@ function SearchFilter() {
     ];
 
     return (
-        <Segment>
-            <Grid columns={3} stackable textAlign='center'>
-                <Grid.Column>
-                    <Input
-                        icon='search'
-                        placeholder='Search...'
-                        value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <Dropdown
-                        placeholder='카테고리'
-                        selection
-                        options={categoryOptions}
-                        value={category}
-                        onChange={(e, { value }) => setCategory(value)}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <Dropdown
-                        placeholder='정렬 기준'
-                        selection
-                        options={sortOptions}
-                        value={sortBy}
-                        onChange={(e, { value }) => setSortBy(value)}
-                    />
-                </Grid.Column>
-            </Grid>
-            <Button primary onClick={handleSearch}>검색</Button>
-        </Segment>
+        <div className="search-filter-container">
+            <div className="search-input-wrapper">
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder="검색어를 입력하세요"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                />
+                <button className="search-button" onClick={handleSearch}>검색</button>
+            </div>
+
+            <div className="filter-options">
+                <select className="category-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+                    {categoryOptions.map(option => (
+                        <option key={option.key} value={option.value}>{option.text}</option>
+                    ))}
+                </select>
+
+                <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    {sortOptions.map(option => (
+                        <option key={option.key} value={option.value}>{option.text}</option>
+                    ))}
+                </select>
+            </div>
+        </div>
     );
 }
 
