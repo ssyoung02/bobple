@@ -1,10 +1,10 @@
 import React from 'react';
 
-function CardGame() {
+function Roulette() {
     return(
         <>
         </>
     );
 }
 
-export default CardGame;
+export default Roulette;
