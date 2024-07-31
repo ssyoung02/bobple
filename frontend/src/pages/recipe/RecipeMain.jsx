@@ -3,11 +3,15 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import RecipeCard from './RecipeCard';
-import '../recipe/css/RecipeMain.css'; // CSS 파일 import
+import '../recipe/css/RecipeMain.css';
+import axios from "axios";
 
 function RecipeMain() {
-    const { recipes, loading, error, searchRecipes, getRecipeById, totalPages, page, changePage } = useContext(RecipeContext);
+    const { recipes, loading, searchRecipes, getRecipeById, totalPages, page, changePage } = useContext(RecipeContext);
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [categoryRecipes, setCategoryRecipes] = useState([]); // 카테고리별 레시피
+    const [latestRecipes, setLatestRecipes] = useState([]); // 최신 레시피
+    const [error, setError] = useState('');
 
     useEffect(() => {
         // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
@@ -32,7 +36,7 @@ function RecipeMain() {
             const response = await axios.get('/api/recipes/search', {
                 params: { category, page: 0, size: 4, sort: 'createdAt,desc' }
             });
-            setRecipes(response.data.content);
+            setCategoryRecipes(response.data.content);
         } catch (error) {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
         }
@@ -43,7 +47,7 @@ function RecipeMain() {
             const response = await axios.get('/api/recipes/search', {
                 params: { page: 0, size: 2, sort: 'createdAt,desc' }
             });
-            setRecipes(response.data.content);
+            setLatestRecipes(response.data.content);
         } catch (error) {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
         }
@@ -100,7 +104,7 @@ function RecipeMain() {
                 <div className="recipe-grid">
                     {recipes.length > 0 ? (
                         recipes.map(recipe => (
-                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)} className="recipe-card-wrapper">
+                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}>
                                 <RecipeCard recipe={recipe} />
                             </div>
                         ))

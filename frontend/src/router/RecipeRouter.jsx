@@ -6,12 +6,13 @@ import RecipeDetail from '../pages/recipe/RecipeDetail';
 import RecipeForm from '../pages/recipe/RecipeForm';
 import RecipeModify from '../pages/recipe/RecipeModify';
 import AIRecommendation from '../pages/recipe/AIRecommendation';
+import RecipeMain from "../pages/recipe/RecipeMain";
 
 function RecipeRouter() {
     return (
         <RecipeProvider>
             <Routes>
-                <Route path="/" element={<RecipeList />} />
+                <Route path="/" element={<RecipeMain />} />
                 <Route path="/:recipeIdx" element={<RecipeDetail />} /> {/* 동적 라우팅 */}
                 <Route path="/create" element={<RecipeForm />} />
                 <Route path="/modify/:recipeIdx" element={<RecipeModify />} /> {/* 동적 라우팅 */}
