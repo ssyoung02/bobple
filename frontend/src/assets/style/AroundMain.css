@@ -140,26 +140,6 @@
 .info .link {
     color: #5085BB;
 }
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    margin-top: 10px;
-}
-
-.pagination button {
-    padding: 5px 10px;
-    margin: 0 5px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    cursor: pointer;
-}
-
-.pagination button:disabled {
-    opacity: 0.5;
-    cursor: default;
-}
 
 .current-location-marker {
     width: 20px;

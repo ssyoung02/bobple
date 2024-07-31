@@ -18,8 +18,6 @@ function AroundMain() {
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedRestaurantImage, setSelectedRestaurantImage] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
-    const [pagination, setPagination] = useState(null); // pagination 객체 상태 추가
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -61,7 +59,7 @@ function AroundMain() {
         }
     }, []);
 
-    const searchRestaurants = (latitude, longitude, keyword = "", page = 1) => {
+    const searchRestaurants = (latitude, longitude, keyword = "") => {
         // 음식점 검색 (카테고리 FD6: 음식점)
         const ps = new kakao.maps.services.Places();
 
@@ -70,30 +68,24 @@ function AroundMain() {
 
         if (keyword) {
             // 키워드 검색
-            ps.keywordSearch(keyword, (data, status, pagination) => {
+            ps.keywordSearch(keyword, (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
                     setRestaurants(data);
-                    setPagination(pagination);
-                    // 검색 결과 중 첫 번째 음식점을 선택 (기존의 위치 기반 검색과 동일한 동작)
-                    if (data.length > 0) {
-                        onMarkerClick(data[0]);
-                    }
+
                 } else {
-                    // 에러 처리 (예: alert 또는 상태 메시지 업데이트)
                     console.error("음식점 검색 실패:", status);
                 }
-            }, { bounds: bounds, page: page }); // 페이지 번호 추가
+            }, { bounds: bounds}); // 페이지 번호 추가
         } else {
             // 카테고리 검색 (키워드가 없는 경우)
-            ps.categorySearch('FD6', (data, status, pagination) => {
+            ps.categorySearch('FD6', (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
                     setRestaurants(data);
-                    setPagination(pagination);
                 } else {
                     // 에러 처리 (예: alert 또는 상태 메시지 업데이트)
                     console.error("음식점 검색 실패:", status);
                 }
-            }, { bounds: bounds, page: page }); // 페이지 번호 추가
+            }, { bounds: bounds});
         }
     };
 
@@ -132,13 +124,15 @@ function AroundMain() {
         geocoder.addressSearch(trimmedKeyword, (result, status) => {
             if (status === kakao.maps.services.Status.OK && result.length > 0) {
                 // 검색어에 주소가 포함된 경우
-                const { x, y } = result[0];
+                const { x, y, address_name } = result[0];
                 const newCenter = { lat: y, lng: x };
                 if (mapRef.current) {
                     setState((prev) => ({ ...prev, center: newCenter }));
                     mapRef.current.setCenter(new kakao.maps.LatLng(newCenter.lat, newCenter.lng));
                 }
-                searchRestaurants(newCenter.lat, newCenter.lng, trimmedKeyword); // 위치 기반 검색
+                // 검색어에서 지역 정보 추출 (예: "강남구")
+                const region = address_name.split(' ')[1];
+                searchRestaurants(newCenter.lat, newCenter.lng, region + ' ' + trimmedKeyword); // 지역 정보 포함하여 검색
             } else {
                 // 검색어에 주소가 포함되지 않은 경우 현재 위치 기준으로 검색
                 if (currentLocation) {
@@ -149,15 +143,14 @@ function AroundMain() {
             }
         });
 
-        ps.keywordSearch(trimmedKeyword, (data, status, pagination) => {
+        ps.keywordSearch(trimmedKeyword, (data, status) => {
             if (status === kakao.maps.services.Status.OK) {
                 setRestaurants(data);
-                setPagination(data.length > 0 ? pagination : null); // 검색 결과가 있을 때만 pagination 설정
-                setCurrentPage(1);
-                console.log(pagination);
-                // 검색 결과 중 첫 번째 음식점을 선택 (기존의 위치 기반 검색과 동일한 동작)
+                // 검색 결과 중 첫 번째 음식점으로 지도 이동
                 if (data.length > 0) {
-                    onMarkerClick(data[0]);
+                    setSelectedMarker(data[0]); // 선택된 마커 업데이트
+                    setIsOpen(true); // CustomOverlayMap 열기
+                    mapRef.current.panTo(new kakao.maps.LatLng(data[0].y, data[0].x)); // 지도 중심 이동
                 }
             } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                 alert('검색 결과가 존재하지 않습니다.');
@@ -167,16 +160,6 @@ function AroundMain() {
         });
     };
 
-
-    // 페이지 이동 함수
-    const handlePageChange = (page) => {
-        if (!pagination || page < 1 || page > pagination.last) {
-            return; // 유효하지 않은 페이지 번호일 경우 함수 종료
-        }
-
-        setCurrentPage(page);
-        searchRestaurants(state.center.lat, state.center.lng, keyword, page); // 페이지 번호를 검색 함수에 전달
-    };
 
     function onMarkerClick(restaurant) {
         setSelectedMarker(restaurant); // 선택된 마커 업데이트
@@ -351,19 +334,6 @@ function AroundMain() {
                         {restaurant.place_name}
                     </div>
                 ))}
-                {/* 페이지네이션 버튼 */}
-                <div className="pagination">
-                    {pagination && (
-                        <>
-                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>이전
-                            </button>
-                            <span>{currentPage} / {pagination.last}</span>
-                            <button onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={currentPage === pagination.last}>다음
-                            </button>
-                        </>
-                    )}
-                </div>
             </div>
         </div>
     );

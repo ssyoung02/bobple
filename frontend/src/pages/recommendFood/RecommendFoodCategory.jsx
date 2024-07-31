@@ -31,7 +31,7 @@ function RecommendFoodCategory() {
             const searchOptions = {
                 location: new kakao.maps.LatLng(latitude, longitude),
                 radius: 1000, // 검색 반경 (미터 단위, 예: 1km) - 필요에 따라 조절 가능
-                page: page
+                page: page,
             };
 
             console.log("검색 카테고리:", category); // 검색 카테고리 출력
