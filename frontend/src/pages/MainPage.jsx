@@ -1,10 +1,6 @@
 import React from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import '../assets/style/MainPage.css'
-import Modal from "../components/modal/Modal";
-import Header from "../components/navigate/Header";
-import NavBar from "../components/navigate/NavBar";
-import Layout from "../components/layout/Layout";
 import SliderComponent from "../components/SliderComponent";
 
 function MainPage() {
@@ -28,7 +24,7 @@ function MainPage() {
     }
 
     return (
-        <>
+        <div>
             <h2>오늘의 주인공</h2>
             <div className={"goToGame"}>
                 <div className={"gameLayer"}>
@@ -81,13 +77,13 @@ function MainPage() {
 
                     </div>
                     <div className={"MenuExplanation"}>
-                        <h2>메뉴가 고민되면</h2>
+                        <h4>메뉴가 고민되면</h4>
                         <p>지금 메뉴를 정하지 못했다면 주변 맛집을 확인해보세요!</p>
                         <p className={"GoToMenu"}>주변맛집 바로가기 ></p>
                     </div>
                 </button>
             </div>
-        </>
+        </div>
     )
 }
 
