@@ -14,6 +14,7 @@ const products = [
 function PointMain() {
     const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState('기프티콘');
+    const [itemSelectedTab, setItemSelectedTab] = useState('사용가능');
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [carouselIndex, setCarouselIndex] = useState(0);
 

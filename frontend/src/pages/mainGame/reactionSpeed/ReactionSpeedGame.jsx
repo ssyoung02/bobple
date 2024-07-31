@@ -353,7 +353,7 @@ function ReactionSpeedGame() {
                         {!showUserRank ? "Show Ranking" : "Close"}
                         {!showUserRank && <KeyboardDoubleArrowUpIcon />}
                     </div>
-                    <div className={`game_user_ranking ${showUserRank ? "show" : ""}`}>
+                    <div className={`game_user_ranking ${showUserRank ? "show-rank" : ""}`}>
                         <List className="ranking_mainboard">
                             {rank.map((userData, index) => (
                                 <ListItem

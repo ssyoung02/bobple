@@ -19,7 +19,7 @@ public class PointShop {
     @Column(name = "gift_brand", nullable = true, length = 20)
     private String giftBrand;
 
-    @Column(name = "gift_description", nullable = true, length = 20)
+    @Column(name = "gift_description", nullable = true, length = 255)
     private String giftDescription;
 
     @Column(name = "gift_point", nullable = true)
