@@ -1,6 +1,6 @@
 // src/components/Recipe/RecipeMain.jsx
 import React, { useState, useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import RecipeCard from './RecipeCard';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -61,12 +61,14 @@ function RecipeMain() {
         getLatestRecipes();
     }, []);
 
+    const navigate = useNavigate();
+
     const moveAIRecommendation = () => {
         navigate('/recipe/ai-recommendation');
     }
 
     return (
-        <div className="RecipeMain">
+        <div className="recipe-main">
             <div className="SearchInput">
                 <input
                     type="text"
