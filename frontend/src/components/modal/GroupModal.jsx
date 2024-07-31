@@ -3,18 +3,22 @@ import PropTypes from "prop-types";
 import {useNavigate} from "react-router-dom";
 
 // props로 받은 제목, 내용을 출력하는 모달
-const GroupModal = ({ modalState }) => {
+const GroupModal = ({ modalState, hideModal }) => {
     const navigate = useNavigate();
 
     const moveChat = () => {
-        navigate('/chatting');
+        navigate('../chatting');
     };
+
+    const closeModal = () => {
+        hideModal();
+    }
 
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content">
                 <div className="group-modal-header">
-                    <button className="group-modal-close-btn">×</button>
+                    <button className="group-modal-close-btn" onClick={closeModal}>×</button>
                     <h3 className="group-modal-title">모임 만들기</h3>
                     <button className="group-modal-create-btn" onClick={moveChat}>생성</button>
                 </div>
