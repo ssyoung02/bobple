@@ -18,7 +18,7 @@ function MainRouter(){
             <Route path="/"  element={<MainPage/>}/>
             <Route path="/admin/*" element={<AdminRouter/>}/>
             <Route path="/around/*" element={<AroundFoodRouter/>}/>
-            <Route path="/ /*" element={<EatingGroupRouter/>}/>
+            <Route path="/group/*" element={<EatingGroupRouter/>}/>
             <Route path="/mainGame/*" element={<MainGameRouter/>}/>
             <Route path="/myPage/*" element={<MyPageRouter/>}/>
             <Route path="/point/*" element={<PointShopRouter/>}/>

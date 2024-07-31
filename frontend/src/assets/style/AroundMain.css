@@ -23,6 +23,12 @@
     margin-right: 10px;
 }
 
+.main-map {
+    width: 425px;
+    height: 600px;
+    translate: 10px;
+}
+
 .current-location-button {
     position: absolute; /* 지도 위에 배치 */
     bottom: 20px; /* 아래 여백 */

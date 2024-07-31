@@ -171,7 +171,7 @@ function AroundMain() {
             {/* 지도 */}
             <Map
                 center={state.center}
-                style={{ width: "400px", height: "600px" }}
+                className="main-map"
                 level={3}
                 ref={mapRef}
             >

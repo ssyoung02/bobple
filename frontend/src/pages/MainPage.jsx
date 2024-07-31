@@ -1,7 +1,7 @@
 import React from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import '../assets/style/MainPage.css'
-import Modal from "../components/modal/Modal";
+import Modal from "../components/modal/ModalContext";
 import Header from "../components/navigate/Header";
 import NavBar from "../components/navigate/NavBar";
 import Layout from "../components/layout/Layout";
