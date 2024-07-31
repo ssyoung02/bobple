@@ -10,7 +10,7 @@ function SearchFilter() {
     const [sortBy, setSortBy] = useState('latest');
 
     const handleSearch = () => {
-        searchRecipes(keyword, category, page, size, sortBy);
+        searchRecipes(keyword, category, page, size);  //  sortBy 제거
     };
 
     const categoryOptions = [ // 카테고리 옵션 (예시)

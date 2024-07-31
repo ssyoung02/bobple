@@ -62,14 +62,18 @@ public class RecipeController {
         return ResponseEntity.noContent().build();
     }
 
+    // RecipeController.java
+
     @GetMapping("/search")
-    public ResponseEntity<Page<Recipe>> searchRecipes(
+    public ResponseEntity<Page<RecipeDto>> searchRecipes(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable // 페이징 및 정렬 정보 받아오기
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ResponseEntity.ok(recipeService.searchRecipes(keyword, category, pageable));
     }
+
+
 
     @PostMapping("/recommend")
     public ResponseEntity<List<RecipeDto>> recommendRecipes(@RequestBody String ingredients) {
@@ -81,14 +85,5 @@ public class RecipeController {
         return ResponseEntity.ok(likeRecipeService.toggleLike(user.getUserIdx(), recipeId));
     }
 
-    @GetMapping("/{recipeId}/comments")
-    public ResponseEntity<List<RecipeCommentDto>> getCommentsByRecipeId(@PathVariable Long recipeId) {
-        return ResponseEntity.ok(recipeCommentService.getCommentsByRecipeId(recipeId));
-    }
-
-    @PostMapping("/{recipeId}/comments")
-    public ResponseEntity<RecipeCommentDto> createComment(@PathVariable Long recipeId, @RequestBody RecipeCommentDto commentDto, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(recipeCommentService.createComment(recipeId, commentDto.getRecipeContent())); // 수정된 부분
-    }
 
 }

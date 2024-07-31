@@ -26,7 +26,7 @@ public class RecipeDto {
     private String tags; // 여러 개의 태그는 쉼표로 구분하여 저장
     private LocalDateTime createdAt; // 레시피 생성 시간
     private LocalDateTime updatedAt; // 레시피 수정 시간
-    private List<RecipeCommentDto> comments; // 댓글 목록 (RecipeCommentDto 리스트)
+//    private List<RecipeCommentDto> comments; // 댓글 목록 (RecipeCommentDto 리스트) // 댓글 목록 필드 제거
     private boolean liked; // 현재 사용자가 좋아요를 눌렀는지 여부 (추가)
 
     // Recipe 엔티티를 RecipeDto로 변환하는 메서드
@@ -46,14 +46,14 @@ public class RecipeDto {
         recipeDto.setCreatedAt(recipe.getCreatedAt());
         recipeDto.setUpdatedAt(recipe.getUpdatedAt());
 
-        // 댓글 목록 변환 (RecipeCommentDto 리스트로 변환)
-        if (recipe.getRecipeComments() != null) {
-            recipeDto.setComments(recipe.getRecipeComments().stream()
-                    .map(RecipeCommentDto::fromEntity)
-                    .collect(Collectors.toList()));
-        } else {
-            recipeDto.setComments(new ArrayList<>()); // 댓글이 없는 경우 빈 리스트 설정
-        }
+//        // 댓글 목록 변환 (RecipeCommentDto 리스트로 변환)
+//        if (recipe.getRecipeComments() != null) {
+//            recipeDto.setComments(recipe.getRecipeComments().stream()
+//                    .map(RecipeCommentDto::fromEntity)
+//                    .collect(Collectors.toList()));
+//        } else {
+//            recipeDto.setComments(new ArrayList<>()); // 댓글이 없는 경우 빈 리스트 설정
+//        }
 
         return recipeDto;
     }

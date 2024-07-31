@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import '../recipe/css/RecipeCard.css'; // CSS 파일 import
-
+import errorImage from '../../assets/images/error_image.jpg';
 function RecipeCard({ recipe }) {
     const { likeRecipe } = useContext(RecipeContext);
 
@@ -15,7 +15,7 @@ function RecipeCard({ recipe }) {
         <div className="recipe-card">
             <Link to={`/recipe/${recipe.recipeIdx}`}>
                 <div className="recipe-card-image">
-                    <img src={recipe.picture || '/images/default_recipe_image.jpg'} alt={recipe.title} onError={(e) => { e.target.onerror = null; e.target.src = '/images/error_image.jpg' }} />
+                    <img src={recipe.picture || '/images/default_recipe_image.jpg'} alt={recipe.title} onError={(e) => { e.target.onerror = null; e.target.src = errorImage  }} />
                     <div className={`like-button ${recipe.liked ? 'liked' : ''}`} onClick={handleLikeClick}>
                         <i className="heart icon"></i>
                         <span>{recipe.likesCount}</span>

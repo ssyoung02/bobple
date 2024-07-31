@@ -4,15 +4,36 @@ import RecipeContext from '../../pages/recipe/RecipeContext';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import RecipeComment from './RecipeComment';
 import '../recipe/css/RecipeDetail.css';
+import axios from "axios";
 
 function RecipeDetail() {
     const { recipeIdx } = useParams();
-    const { getRecipeById, selectedRecipe, loading, error, likeRecipe, deleteRecipe } = useContext(RecipeContext);
+    const {
+        getRecipeById,
+        selectedRecipe,
+        loading,
+        error,
+        likeRecipe,
+        deleteRecipe,
+        setSelectedRecipe,  // 추가
+        setError // 추가
+    } = useContext(RecipeContext);
     const navigate = useNavigate();
 
     useEffect(() => {
         getRecipeById(recipeIdx);
-    }, [recipeIdx, getRecipeById]); // recipeIdx가 변경될 때마다 getRecipeById 함수 호출
+        axios.get(`/api/recipes/${recipeIdx}/comments`) // 댓글 목록을 별도로 가져오는 API 호출
+            .then(response => {
+                // 가져온 댓글 목록을 selectedRecipe에 추가
+                setSelectedRecipe(prevRecipe => ({
+                    ...prevRecipe,
+                    comments: response.data
+                }));
+            })
+            .catch(error => {
+                setError(error.message || '댓글 목록을 불러오는 중 오류가 발생했습니다.');
+            });
+    }, [recipeIdx]); // recipeIdx가 변경될 때마다 getRecipeById 함수 호출// recipeIdx가 변경될 때마다 getRecipeById 함수 호출
 
     const handleLikeClick = () => {
         likeRecipe(recipeIdx);

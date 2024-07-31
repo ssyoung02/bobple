@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -40,8 +41,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
-                                .requestMatchers("/api/recipes/recommend").permitAll() // AI 레시피 추천 엔드포인트 허용
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/", "/api/recipes/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll() // Recipe 전체 GET 요청 허용으로 변경
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // static resources 허용
+                                .requestMatchers("/api/recipes/search").permitAll() // 검색 경로는 인증 없이 허용
+                                .requestMatchers("/api/recipes/recommend").permitAll() // AI 추천 엔드포인트 허용
+                                .requestMatchers("/api/recipes", "/api/recipes/**","/api/recipes/{recipeId}/comments").permitAll() // 레시피 관련 API는 인증 필요
+                                .requestMatchers("/api/recipes/search?keyword=&category=&page=0&size=10&sort=createdAt,desc").permitAll()
+                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/").permitAll()
+                                .requestMatchers("/api/recipes/**").authenticated() // POST, PUT, DELETE 요청은 인증 필요
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

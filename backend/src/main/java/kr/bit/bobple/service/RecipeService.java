@@ -8,11 +8,14 @@ import kr.bit.bobple.repository.LikeRecipeRepository;
 import kr.bit.bobple.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.List;
@@ -26,15 +29,21 @@ public class RecipeService {
     private final LikeRecipeRepository likeRecipeRepository;
     private final AuthenticationFacade authenticationFacade;
 
+
     @Transactional(readOnly = true)
     public Page<RecipeDto> getAllRecipes(Pageable pageable) {
-        return recipeRepository.findAll(pageable).map(RecipeDto::fromEntity);
+        // 엔티티 그래프를 사용하여 댓글 정보를 함께 가져옴
+        Page<Recipe> recipePage = recipeRepository.findAll(pageable);
+        return recipePage.map(this::convertToDto);
     }
 
     @Transactional(readOnly = true)
     public RecipeDto getRecipeById(Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
+        Optional<Recipe> recipeOptional = Optional.ofNullable(recipeRepository.findRecipeWithCommentsById(recipeId)); // Optional<Recipe> 타입으로 변경
+        if (recipeOptional.isEmpty()) { // 레시피가 존재하지 않을 경우 예외 처리
+            throw new IllegalArgumentException("존재하지 않는 레시피입니다.");
+        }
+        Recipe recipe = recipeOptional.get();
         recipe.setViewsCount(recipe.getViewsCount() + 1); // 조회수 증가
         recipeRepository.save(recipe);
 
@@ -51,6 +60,7 @@ public class RecipeService {
         recipe.setLikesCount(0);
         recipe.setViewsCount(0);
         recipe.setCommentsCount(0);
+
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }
 
@@ -66,6 +76,7 @@ public class RecipeService {
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }
 
+
     @Transactional
     public void deleteRecipe(Long recipeId) {
         if (!isRecipeAuthor(recipeId, authenticationFacade.getCurrentUser())) {
@@ -75,13 +86,40 @@ public class RecipeService {
     }
 
 
+
     @Transactional(readOnly = true)
-    public Page<Recipe> searchRecipes(String keyword, String category, Pageable pageable) {
-        // Pageable 객체를 직접 생성하는 부분 제거
-        return recipeRepository.findByTitleContainingOrContentContainingAndCategory(keyword, keyword, category, pageable);
+    public Page<RecipeDto> searchRecipes(String keyword, String category, Pageable pageable) {
+
+        // pageable 객체에서 정렬 정보 추출
+        Sort sort = pageable.getSort();
+
+        // 정렬 기준 필드 추출 및 정렬 방향 설정
+        String sortProperty = sort.stream()
+                .map(Sort.Order::getProperty)
+                .findFirst()
+                .orElse("createdAt"); // 기본 정렬 필드는 createdAt
+        Sort.Direction sortDirection = sort.stream()
+                .map(Sort.Order::getDirection)
+                .findFirst()
+                .orElse(Sort.Direction.DESC); // 기본 정렬 방향은 DESC
+
+        // 새로운 Pageable 객체 생성
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(sortDirection, sortProperty)
+        );
+
+        // 레시피 목록 조회 및 DTO 변환
+        Page<Recipe> recipePage = recipeRepository.findByTitleContainingOrContentContainingAndCategory(keyword, keyword, category, sortedPageable);
+        return recipePage.map(recipe -> {
+            RecipeDto recipeDto = RecipeDto.fromEntity(recipe);
+            recipeDto.setLiked(likeRecipeRepository.existsByUser_UserIdxAndRecipe_Id(authenticationFacade.getCurrentUser() != null ? authenticationFacade.getCurrentUser().getUserIdx() : null, recipe.getId()));
+            return recipeDto;
+        });
     }
 
-
+    @Transactional(readOnly = true) // 트랜잭션 설정 추가
     public List<RecipeDto> recommendRecipesByAI(String ingredients) {
         String prompt = "다음 재료들을 활용한 레시피를 추천해줘: " + ingredients;
         String response = hyperCLOVAClient.generateText(prompt);
@@ -104,5 +142,15 @@ public class RecipeService {
 
     public boolean isRecipeAuthor(Long recipeId, User user) {
         return recipeRepository.existsByIdAndUser(recipeId, user);
+    }
+
+    // recipe -> RecipeDto 변환 메서드
+    private RecipeDto convertToDto(Recipe recipe) {
+        RecipeDto recipeDto = RecipeDto.fromEntity(recipe);
+        recipeDto.setLiked(likeRecipeRepository.existsByUser_UserIdxAndRecipe_Id(
+                authenticationFacade.getCurrentUser().getUserIdx(),
+                recipe.getId()
+        ));
+        return recipeDto;
     }
 }
