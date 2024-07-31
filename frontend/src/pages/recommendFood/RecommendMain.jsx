@@ -1,12 +1,22 @@
-import React from 'react';
+/*global kakao*/
+import React, { useState } from 'react';
 import '../../assets/style/RecommendMain.css';
+import { useNavigate } from 'react-router-dom';
 
 function RecommendMain() {
+    const [selectedCategory, setSelectedCategory] = useState('전체');
+    const navigate = useNavigate();
+
     const dummyRecommendations = [
         {id: 1, name: '브레댄코 강남점', address: '서울특별시 강남구 역삼동 825-19', distance: '500', reviews: '125'},
         {id: 2, name: '담미온', address: '서울특별시 강남구 역삼동 823', distance: '800', reviews: '256'},
         {id: 3, name: '이삭토스트', address: '서울특별시 강남구 역삼동 817-11', distance: '1.2km', reviews: '88'},
     ];
+
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category);
+        navigate(`/recommend/recommendFoodCategory?category=${category}`);
+    };
 
     return (
         <div className="recommend-container">
@@ -15,7 +25,6 @@ function RecommendMain() {
             {/* 검색창 */}
             <div className="search-container">
                 <input type="text" placeholder="검색 키워드를 입력해주세요" className="search-input"/>
-
             </div>
 
             {/* 실시간 인기 메뉴 */}
@@ -47,10 +56,16 @@ function RecommendMain() {
                 </div>
             </div>
 
+
+            {/* 카테고리 */}
             <div className="recommend-title">카테고리별 맛집 추천</div>
             <div>
-                {['전체', '한식', '중식', '일식', '양식', '기타'].map((category) => (
-                    <button key={category} className="recommend-category-button">
+                {['전체', '한식', '중식', '일식', '양식', '패스트푸드', '분식','치킨','피자','아시아음식', '뷔페', '도시락'].map((category) => (
+                    <button
+                        key={category}
+                        className={`recommend-category-button ${selectedCategory === category ? 'active' : ''}`}
+                        onClick={() => handleCategoryClick(category)} // Link 대신 onClick 사용
+                    >
                         {category}
                     </button>
                 ))}
