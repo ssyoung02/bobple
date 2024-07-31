@@ -146,12 +146,7 @@ function AroundMain() {
         ps.keywordSearch(trimmedKeyword, (data, status) => {
             if (status === kakao.maps.services.Status.OK) {
                 setRestaurants(data);
-                // 검색 결과 중 첫 번째 음식점으로 지도 이동
-                if (data.length > 0) {
-                    setSelectedMarker(data[0]); // 선택된 마커 업데이트
-                    setIsOpen(true); // CustomOverlayMap 열기
-                    mapRef.current.panTo(new kakao.maps.LatLng(data[0].y, data[0].x)); // 지도 중심 이동
-                }
+
             } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                 alert('검색 결과가 존재하지 않습니다.');
             } else if (status === kakao.maps.services.Status.ERROR) {
@@ -159,6 +154,7 @@ function AroundMain() {
             }
         });
     };
+
 
 
     function onMarkerClick(restaurant) {
