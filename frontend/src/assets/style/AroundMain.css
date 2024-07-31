@@ -160,3 +160,15 @@
     opacity: 0.5;
     cursor: default;
 }
+
+.current-location-marker {
+    width: 20px;
+    height: 20px;
+    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.3)); /* 그림자 효과 유지 */
+}
+
+.current-location-marker svg {
+    width: 20px; /* SVG 크기 설정 */
+    height: 20px;
+    border-radius: 50%;
+}

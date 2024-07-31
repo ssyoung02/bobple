@@ -11,6 +11,7 @@ function AroundMain() {
         isLoading: true,
     });
 
+    const [currentLocation, setCurrentLocation] = useState(null); // 현재 위치 상태 추가
     const [restaurants, setRestaurants] = useState([]); // 음식점 정보 저장
     const mapRef = useRef(null);
     const [keyword, setKeyword] = useState("");
@@ -37,7 +38,12 @@ function AroundMain() {
                         map.setCenter(new kakao.maps.LatLng(latitude, longitude));
                         searchRestaurants(latitude, longitude);
                     }
+                    setCurrentLocation({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    });
                 },
+
                 (err) => {
                     setState((prev) => ({
                         ...prev,
@@ -118,7 +124,30 @@ function AroundMain() {
             return;
         }
         setIsOpen(false);
+
         const ps = new kakao.maps.services.Places();
+        const geocoder = new kakao.maps.services.Geocoder();
+
+        // 주소 검색을 먼저 시도 (비동기 처리)
+        geocoder.addressSearch(trimmedKeyword, (result, status) => {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                // 검색어에 주소가 포함된 경우
+                const { x, y } = result[0];
+                const newCenter = { lat: y, lng: x };
+                if (mapRef.current) {
+                    setState((prev) => ({ ...prev, center: newCenter }));
+                    mapRef.current.setCenter(new kakao.maps.LatLng(newCenter.lat, newCenter.lng));
+                }
+                searchRestaurants(newCenter.lat, newCenter.lng, trimmedKeyword); // 위치 기반 검색
+            } else {
+                // 검색어에 주소가 포함되지 않은 경우 현재 위치 기준으로 검색
+                if (currentLocation) {
+                    searchRestaurants(currentLocation.lat, currentLocation.lng, trimmedKeyword);
+                } else {
+                    alert('현재 위치를 가져올 수 없습니다.');
+                }
+            }
+        });
 
         ps.keywordSearch(trimmedKeyword, (data, status, pagination) => {
             if (status === kakao.maps.services.Status.OK) {
@@ -197,7 +226,6 @@ function AroundMain() {
             setSelectedRestaurantImage(null); // 선택된 마커가 없으면 null 설정
         }
     }, [selectedMarker]);
-
 
     return (
         <div className="map-container">
@@ -295,6 +323,21 @@ function AroundMain() {
                 <button className="current-location-button" onClick={handleCurrentLocationClick}>
                     현재 위치
                 </button>
+
+                {/* 현재 위치 표시 (CustomOverlayMap 사용) */}
+                {currentLocation && (
+                    <CustomOverlayMap
+                        position={currentLocation}
+                        yAnchor={1}
+                        zIndex={10}
+                    >
+                        <div className="current-location-marker">
+                            <svg className="current-location-svg">
+                                <circle cx="10" cy="10" r="9.5" fill="#FF0000" stroke="#FFF" strokeWidth="6"/>
+                            </svg>
+                        </div>
+                    </CustomOverlayMap>
+                )}
             </Map>
 
             {/* 음식점 목록 (간략 정보만 표시) */}

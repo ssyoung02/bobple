@@ -57,6 +57,8 @@ function RecommendFoodCategory() {
         setCurrentPage(page);
     };
 
+    const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
+
     return (
         <div className="recommend-category-container">
             {/* 검색창 */}
@@ -73,12 +75,12 @@ function RecommendFoodCategory() {
             <ul className="restaurant-list top-list">
                 {restaurants.slice(0, 3).map((restaurant) => (
                     <li key={restaurant.id} className="restaurant-item top-item">
+                        <img src={dummyImage} alt={restaurant.place_name} className="restaurant-image"/>
                         <div className="restaurant-info">
                             <h3 className="restaurant-name">{restaurant.place_name}</h3>
-                            <p className="restaurant-address">{restaurant.address_name}</p>
                             <div className="restaurant-details">
                                 <span className="restaurant-distance">{Math.round(restaurant.distance)}m</span>
-                                <span className="restaurant-reviews">리뷰 {restaurant.review_count}</span>
+                                <span className="restaurant-bookmarks">북마크 {restaurant.bookmarks_count}</span>
                             </div>
                         </div>
                     </li>
@@ -90,11 +92,14 @@ function RecommendFoodCategory() {
             <ul className="restaurant-list">
                 {restaurants.map((restaurant) => (
                     <li key={restaurant.id} className="restaurant-item">
-                        <div className="restaurant-info">
-                            <h3 className="restaurant-name">{restaurant.place_name}</h3>
-                            <p className="restaurant-address">{restaurant.address_name}</p>
+                        <img src={dummyImage} alt={restaurant.place_name} className="restaurant-image nearby-image"/>
+                        <div className="restaurant-info-container"> {/* flex 컨테이너 추가 */}
+                            <div className="restaurant-info">
+                                <h3 className="restaurant-name">{restaurant.place_name}</h3>
+                                <p className="restaurant-address">{restaurant.address_name}</p>
+                            </div>
                             <div className="restaurant-details">
-                                {/* <span className="restaurant-rating">★ {restaurant.y}</span> */} {/* 임시 값 */}
+                                <span className="restaurant-distance">{Math.round(restaurant.distance)}m</span>
                                 <span className="restaurant-category">{restaurant.category_name}</span>
                             </div>
                         </div>
@@ -106,9 +111,12 @@ function RecommendFoodCategory() {
             <div className="pagination">
                 {pagination && (
                     <>
-                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>이전</button>
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>이전
+                        </button>
                         <span>{currentPage} / {pagination.last}</span>
-                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === pagination.last}>다음</button>
+                        <button onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === pagination.last}>다음
+                        </button>
                     </>
                 )}
             </div>
