@@ -14,7 +14,7 @@ function MainPage() {
         navigate('/myPage/calculator');
     }
     const moveRecipeAI = () => {
-        navigate('/recipe/recipeAi');
+        navigate('/recipe/ai-recommendation'); // 경로 복원
     }
     const moveGroup = () => {
         navigate('/group');

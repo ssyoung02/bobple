@@ -40,7 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/").permitAll()
+                                .requestMatchers("/api/recipes/recommend").permitAll() // AI 레시피 추천 엔드포인트 허용
+                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/", "/api/recipes/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

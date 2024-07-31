@@ -13,6 +13,8 @@ dependencies {
     // JPA (Java Persistence API) 및 데이터베이스 연동
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc' // JDBC 드라이버
+    //json 파싱용
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     // MySQL 데이터베이스 드라이버
     runtimeOnly 'com.mysql:mysql-connector-j'
