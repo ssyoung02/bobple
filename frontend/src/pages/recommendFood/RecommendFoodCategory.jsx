@@ -1,7 +1,7 @@
 /*global kakao*/
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import '../../assets/style/RecommendFoodCategory.css';
+import '../../assets/style/recommendFood/RecommendFoodCategory.css';
 
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();

@@ -1,152 +1,133 @@
 /*global kakao*/
 import React, {useEffect, useState} from 'react';
-import '../../assets/style/RecommendMain.css';
+import '../../assets/style/recommendFood/RecommendMain.css';
 import '../../assets/style/allSearch/AllSearch.css';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { useNavigate } from 'react-router-dom';
+import {MainFoodBanner, SearchIcon, Trophy} from "../../components/imgcomponents/ImgComponents";
+import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
+import { fetchTopKeywords, handleKeyDown, handleSearchClick } from '../../components/Search/SearchAll';
+
+const dummyRecommendations = [
+    {id: 1, place_name: '브레댄코 강남점', category_name: '음식점 > 카페 > 커피전문점', address: '서울특별시 강남구 역삼동 825-19', distance: '500', reviews: '125'},
+    {id: 2, place_name: '담미온', category_name: '음식점 > 한식 > 국수' , address: '서울특별시 강남구 역삼동 823', distance: '800', reviews: '256'},
+    {id: 3, place_name: '이삭토스트', category_name: '음식점 > 간식 > 토스트', address: '서울특별시 강남구 역삼동 817-11', distance: '1.2km', reviews: '88'},
+    {id: 4, place_name: '풍년참숯갈비', category_name: '음식점 > 한식 > 육류,고기 > 갈비', address: '서울 서초구 서초대로74길 29', distance: '600', reviews: '30'},
+];
 
 function RecommendMain() {
-    const [selectedCategory, setSelectedCategory] = useState('전체');
     const navigate = useNavigate();
+
     const [keyword, setKeyword] = useState('');
     const [topKeywords, setTopKeywords] = useState([]);
 
-    const dummyRecommendations = [
-        {id: 1, name: '브레댄코 강남점', address: '서울특별시 강남구 역삼동 825-19', distance: '500', reviews: '125'},
-        {id: 2, name: '담미온', address: '서울특별시 강남구 역삼동 823', distance: '800', reviews: '256'},
-        {id: 3, name: '이삭토스트', address: '서울특별시 강남구 역삼동 817-11', distance: '1.2km', reviews: '88'},
-    ];
+    useEffect(() => {
+        fetchTopKeywords(setTopKeywords);
+    }, []);
+
+    const moveFoodWorldCup = () => {
+        navigate('/recommend/foodWorldCup/foodWorldCup');
+    }
+
+    const categories = ['전체', '고기', '한식', '간식', '카페', '파스타'];
+    const [selectedCategory, setSelectedCategory] = useState('전체');
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
-        navigate(`/recommend/recommendFoodCategory?category=${category}`);
     };
+    const filteredProducts = selectedCategory === '전체'
+        ? dummyRecommendations
+        : dummyRecommendations.filter(dummyRecommendations => dummyRecommendations.category_name === selectedCategory);
 
-    const handleSearch = async () => {
-        try {
-            await axios.post('http://localhost:8080/api/PopularSearch', keyword, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-                withCredentials: true,
-            });
-            alert('검색어가 저장되었습니다.');
-            fetchTopKeywords(); // 새로운 검색어 저장 후 인기 검색어를 다시 가져옵니다.
-        } catch (error) {
-            console.error('오류가 발생했습니다!', error);
-        }
-    };
-
-    const fetchTopKeywords = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/TopKeywords', {
-                withCredentials: true,
-            });
-            setTopKeywords(response.data);
-        } catch (error) {
-            console.error('인기 검색어를 가져오는 중 오류가 발생했습니다!', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchTopKeywords();
-    }, []);
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    };
 
     return (
-        <div className={"RecommendMain"}>
-            <div className="SearchInput">
-                <input
-                    className="AllSaerchBox"
-                    type="text"
-                    placeholder="검색 키워드를 입력해주세요"
-                />
-                <button className="AllSearchButton">
-                    <FontAwesomeIcon icon={faMagnifyingGlass}/>
+        <div className={"recommend-main"}>
+            <div className={"recommend-search"}>
+                <h3>메뉴가 고민되시나요?</h3>
+                {/*검색영역*/}
+                <div className="SearchInput">
+                    <input
+                        className="AllSaerchBox"
+                        type="text"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        onKeyDown={handleKeyDown(keyword, setTopKeywords)}
+                        placeholder="검색 키워드를 입력해주세요"
+                    />
+                    <button className="AllSearchButton" onClick={handleSearchClick(keyword, setTopKeywords)}>
+                        <SearchIcon/>
+                    </button>
+                    <TopSearch/>
+                </div>
+            </div>
+
+            {/* 메뉴 추천 */}
+            <div className="menu-recommendation">
+                <h4>이건 어떠신가요?</h4>
+                <div className={"menu-recommendation-back"}></div>
+                <button className="recommend-button">
+                    <div className={"menu-recommendation-img"}>
+                        <MainFoodBanner/>
+                    </div>
+                    <p className={"menu-recommendation-title"}>마라탕</p>
                 </button>
             </div>
 
-            <div className={"real-time-popularity"}>
-                <p>실시간 인기</p>
-                <ul style={{listStyleType: 'none', padding: 0}}>
-                    {topKeywords.map((keyword, index) => (
-                        <li key={index}>{index + 1}. {keyword.keyword}</li>
-                    ))}
-                </ul>
+            {/* 월드컵 */}
+            <div className="menu-worldcup">
+                <h5>메뉴 정하기 힘들 때</h5>
+                <button className="worldcup" onClick={moveFoodWorldCup}>
+                    <h4>음식 월드컵</h4>
+                    <Trophy/>
+                </button>
             </div>
 
-            <div className="recommend-container">
+            {/* 추천 카테고리 */}
+            <div className="recommended-categories">
+                <h5>추천 카테고리</h5>
+                <RecommendedCategories/>
+            </div>
 
-                {/* 메뉴 추천 */}
-                <div className="menu-recommendation">
-                    <p>이건 어떠신가요?</p>
-                    <button className="recommend-button">마라탕</button>
-                </div>
 
-                {/* 월드컵 */}
-                <div className="menu-worldcup">
-                    <p>메뉴 정하기 힘들 때</p>
-                    <button className="worldcup">월드컵</button>
-                </div>
+            {/* 카테고리 */}
+            <div className={"food-categories"}>
+                <h4>카테고리별 맛집 추천</h4>
+                <FoodCategories/>
+            </div>
 
-                {/* 추천 카테고리 */}
-                <div className="recommended-categories">
-                    추천 카테고리
-                    <div className="category-icons">
-                        {/* 아이콘 제거 */}
+            {/* 회식장소 Pick */}
+            <div className="group-dinner-pick">
+                <h4>회식장소 Pick</h4>
+                <div className="restaurant-category-btn-container">
+                    <div className="restaurant-category-buttons">
+                        {categories.map(category => (
+                            <button
+                                key={category}
+                                onClick={() => handleCategoryClick(category)}
+                                className={selectedCategory === category ? 'active' : ''}
+                            >
+                                {category}
+                            </button>
+                        ))}
                     </div>
-                    <div className="category-description">
-                        <button>칼칼</button>
-                        <button>부장님은 느끼한 게 싫다고 하셨어</button>
-                    </div>
                 </div>
-
-
-                {/* 카테고리 */}
-                <div className="recommend-title">카테고리별 맛집 추천</div>
-                <div>
-                    {['전체', '한식', '중식', '일식', '양식', '패스트푸드', '분식','치킨','피자','아시아음식', '뷔페', '도시락'].map((category) => (
-                        <button
-                            key={category}
-                            className={`recommend-category-button ${selectedCategory === category ? 'active' : ''}`}
-                            onClick={() => handleCategoryClick(category)} // Link 대신 onClick 사용
-                        >
-                            {category}
-                        </button>
-                    ))}
-                </div>
-
-                {/* 회식장소 Pick */}
-                <div className="group-dinner-pick">
-                    회식장소 Pick
-                    <div className="text-buttons">
-                        <button>고기</button>
-                        <button>노래타운</button>
-                        <button>회</button>
-                        <button>호프</button>
-                        <button>이자카야</button>
-                    </div>
-                    <ul className="restaurant-info-list">
-                        {dummyRecommendations.map((restaurant) => (
-                            <li key={restaurant.id} className="restaurant-info-item">
+                <div className="restaurant-category-container">
+                    <div className="restaurant-list">
+                        {filteredProducts.map(restaurant => (
+                            <button key={restaurant.id} className="restaurant-item">
+                                {/*<img src={restaurant.image} alt={restaurant.name}/>*/}
                                 <div className="restaurant-name">{restaurant.name}</div>
                                 <div className="restaurant-distance">{restaurant.distance}m</div>
                                 <div className="restaurant-reviews">{restaurant.reviews} 리뷰</div>
-
-                            </li>
+                            </button>
                         ))}
-                    </ul>
+                    </div>
                 </div>
+
             </div>
         </div>
     );
 }
 
-export default RecommendMain;
+export default RecommendMain
