@@ -111,3 +111,6 @@ button{
   /* 에러 메시지 스타일 */
   color: red;
 }
+ul, li {
+  list-style: none;
+}

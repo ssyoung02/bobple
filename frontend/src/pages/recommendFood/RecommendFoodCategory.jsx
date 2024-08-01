@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import '../../assets/style/recommendFood/RecommendFoodCategory.css';
+import {Bookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {TopSearch} from "../../components/SliderComponent";
 
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -100,11 +102,11 @@ function RecommendFoodCategory() {
     return (
         <div className="recommend-category-container">
             {/* 검색창 */}
-            <div className="search-container">
+            <div className="SearchInput">
                 <input
                     type="text"
                     placeholder="검색 키워드를 입력해주세요"
-                    className="search-input"
+                    className="AllSaerchBox"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)} // 입력 값 변경 시 keyword 상태 업데이트
                     onKeyDown={(e) => {
@@ -113,59 +115,61 @@ function RecommendFoodCategory() {
                         }
                     }}
                 />
-                <button onClick={handleSearch}>검색</button>
+                <button className="AllSearchButton" onClick={handleSearch} aria-label={"검색"}>
+                    <SearchIcon/>
+                </button>
             </div>
+            <div>
+                <h3 className="category-title">
+                    {(displayedCategory || displayedKeyword) && `${displayedCategory || displayedKeyword} `}
+                    <span>BEST</span>
+                </h3>
 
-            <h2 className="category-title">
-                {(displayedCategory || displayedKeyword) && `${displayedCategory || displayedKeyword} BEST`}
-            </h2>
-
-            <ul className="restaurant-list top-list">
-                {restaurants.slice(0, 3).map((restaurant) => (
-                    <li key={restaurant.id} className="restaurant-item top-item">
-                        <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                            <img src={dummyImage} alt={restaurant.place_name} className="restaurant-image"/>
-                        </a>
-                        <div className="restaurant-info">
+                <ul className="restaurant-list top-list">
+                    {restaurants.slice(0, 3).map((restaurant) => (
+                        <li key={restaurant.id} className="top-item">
                             <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                                <h3 className="restaurant-name">{restaurant.place_name}</h3>
+                                <img src={dummyImage} alt={restaurant.place_name} className="restaurant-image"/>
                             </a>
-                                <div className="restaurant-details">
-                                    <span className="restaurant-distance">{Math.round(restaurant.distance)}m</span>
-                                    <span className="restaurant-bookmarks">북마크 {restaurant.bookmarks_count}</span>
-                                </div>
-                        </div>
-                    </li>
-                    ))}
-            </ul>
+                            <div className="top-restaurant-info">
+                                <a className={"restaurant-info-link"} href={restaurant.place_url} target="_blank"
+                                   rel="noreferrer">
+                                    <h6 className="restaurant-name">{restaurant.place_name}</h6>
+                                </a>
+                                <span
+                                    className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
+                                <button
+                                    className="restaurant-bookmarks"><Bookmark/>{restaurant.bookmarks_count}</button>
 
-            <h2 className="nearby-title">주변 음식점</h2>
-
-            <ul className="restaurant-list">
-                {sortedRestaurants.map((restaurant) => (
-                    <li key={restaurant.id} className="restaurant-item">
-                        <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                            <img src={dummyImage} alt={restaurant.place_name}
-                                 className="restaurant-image nearby-image"/>
-                        </a>
-                            <div className="restaurant-info-container"> {/* flex 컨테이너 추가 */}
-                                <div className="restaurant-info">
-                                    <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                                        <h3 className="restaurant-name">{restaurant.place_name}</h3>
-                                    </a>
-                                        <p className="restaurant-address">{restaurant.address_name}</p>
-                                </div>
-                                <div className="restaurant-details">
-                                    <span className="restaurant-distance">{Math.round(restaurant.distance)}m</span>
-                                    <span className="restaurant-category">{restaurant.category_name}</span>
-                                </div>
                             </div>
-                    </li>
+                        </li>
                     ))}
-            </ul>
+                </ul>
+            </div>
+            <div>
+                <h5 className="nearby-title">주변 음식점</h5>
+                <ul className="restaurant-list">
+                    {sortedRestaurants.map((restaurant) => (
+                        <li key={restaurant.id} className="restaurant-item">
+                            <a href={restaurant.place_url} target="_blank" rel="noreferrer">
+                                <img src={dummyImage} alt={restaurant.place_name}
+                                     className="restaurant-list-image"/>
+                            </a>
+                            <div className="restaurant-info">
+                                <a href={restaurant.place_url} target="_blank" rel="noreferrer">
+                                    <h6 className="restaurant-name">{restaurant.place_name}</h6>
+                                    <p className="restaurant-address">{restaurant.address_name}</p>
+                                    <span className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
+                                    <span className="restaurant-category"><CaretRight/>{restaurant.category_name}</span>
+                                </a>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
 
+            </div>
         </div>
-);
+    );
 }
 
 export default RecommendFoodCategory;
