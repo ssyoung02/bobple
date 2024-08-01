@@ -1,7 +1,7 @@
 import React from 'react';
 import MainRouter from './router/MainRouter';
 import './App.css';
-import {BrowserRouter} from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
         <BrowserRouter>
             <Layout>
                 <div className="App">
-                    <MainRouter/>
+                    <MainRouter />
                 </div>
             </Layout>
         </BrowserRouter>
