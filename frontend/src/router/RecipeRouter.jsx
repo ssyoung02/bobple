@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { RecipeProvider } from '../pages/recipe/RecipeContext'; // RecipeContext import 경로 수정
-import RecipeList from '../pages/recipe/RecipeList';
 import RecipeDetail from '../pages/recipe/RecipeDetail';
 import RecipeForm from '../pages/recipe/RecipeForm';
 import RecipeModify from '../pages/recipe/RecipeModify';
