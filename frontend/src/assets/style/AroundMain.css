@@ -11,7 +11,7 @@
     align-items: center; /* 수직 정렬 */
     padding: 10px;
     background-color: #fff;
-    border-bottom: 1px solid #ddd;
+    margin-bottom: 0; /* 불필요한 줄 제거 */
 }
 
 .search-input {
@@ -21,6 +21,12 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-right: 10px;
+}
+
+.main-map {
+    width: 425px;
+    height: 600px;
+    translate: 10px;
 }
 
 .current-location-button {
@@ -81,7 +87,7 @@
     font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
     line-height: 1.5;
     background-color: white;
-    z-index: 2; /* z-index 값을 1보다 크게 설정 */
+    z-index: 2 !important; /* z-index 값을 1보다 크게 설정 */
 }
 .wrap * {
     padding: 0;
@@ -139,4 +145,16 @@
 }
 .info .link {
     color: #5085BB;
+}
+
+.current-location-marker {
+    width: 20px;
+    height: 20px;
+    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.3)); /* 그림자 효과 유지 */
+}
+
+.current-location-marker svg {
+    width: 20px; /* SVG 크기 설정 */
+    height: 20px;
+    border-radius: 50%;
 }
