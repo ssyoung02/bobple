@@ -6,25 +6,53 @@ import SliderComponent from "../components/SliderComponent";
 function MainPage() {
     const navigate = useNavigate();
 
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userData = {
+            username: localStorage.getItem("username"),
+            email: localStorage.getItem("email"),
+            name: localStorage.getItem("name"),
+            profileImage: localStorage.getItem("profileImage"),
+            provider: localStorage.getItem("provider"),
+            companyId: localStorage.getItem("companyId"),
+            reportCount: localStorage.getItem("reportCount"),
+            point: localStorage.getItem("point"),
+            token: localStorage.getItem("token")
+        };
+
+        if (userData.token) {
+            setUser(userData);
+        }
+    }, []);
+
     const moveGame = () => {
         navigate('/mainGame');
-    }
+    };
 
     const moveCalculator = () => {
         navigate('/myPage/calculator');
-    }
+    };
+
     const moveRecipeAI = () => {
         navigate('/recipe/ai-recommendation'); // 경로 복원
     }
     const moveGroup = () => {
         navigate('/group');
-    }
+    };
+
     const moveRecommend = () => {
         navigate('/recommend/');
-    }
+    };
 
     return (
-        <div>
+        <>
+            {user && (
+                <div>
+                    <p>환영합니다, {user.name}님!</p>
+                    <p>이메일: {user.email}</p>
+                </div>
+            )}
             <h2>오늘의 주인공</h2>
             <div className={"goToGame"}>
                 <div className={"gameLayer"}>
@@ -84,7 +112,7 @@ function MainPage() {
                 </button>
             </div>
         </div>
-    )
+    );
 }
 
 export default MainPage;
