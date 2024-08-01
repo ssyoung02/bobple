@@ -1,0 +1,160 @@
+/* AroundMain.css */
+.map-container {
+    width: 100%; /* 지도 컨테이너 너비 */
+    height: 100% !important; /* 지도 컨테이너 높이 */
+    position: relative; /* 현재 위치 버튼을 위해 필요 */
+}
+
+.search-container {
+    /* 검색창 스타일 */
+    display: flex; /* flexbox 사용 */
+    align-items: center; /* 수직 정렬 */
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 0; /* 불필요한 줄 제거 */
+}
+
+.search-input {
+    /* 검색 입력 필드 스타일 */
+    flex: 1; /* 너비 확장 */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.main-map {
+    width: 425px;
+    height: 600px;
+    translate: 10px;
+}
+
+.current-location-button {
+    position: absolute; /* 지도 위에 배치 */
+    bottom: 20px; /* 아래 여백 */
+    right: 20px; /* 오른쪽 여백 */
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.list-container {
+    /* 음식점 목록 스타일 */
+    overflow-y: auto; /* 스크롤 가능 */
+    max-height: 300px; /* 최대 높이 제한 */
+    padding: 10px;
+    background-color: #fff;
+}
+
+.list-item {
+    /* 음식점 아이템 스타일 */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.marker-label {
+    /* 현재 위치 마커 레이블 스타일 */
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 4px;
+}
+
+.info-window {
+    /* MapInfoWindow 컴포넌트 스타일 */
+    /* 기본 스타일은 카카오 지도 API에서 제공 */
+}
+
+.info-window-content {
+    /* 인포윈도우 내용 스타일 */
+}
+
+/* 커스텀 오버레이 스타일 */
+.wrap {
+    position: relative; /* absolute에서 relative로 변경 */
+    left: 0;
+    /* bottom: 40px; */ /* bottom 속성 제거 */
+    width: 288px;
+    height: 132px;
+    margin-left: -144px;
+    text-align: left;
+    overflow: hidden;
+    font-size: 12px;
+    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+    line-height: 1.5;
+    background-color: white;
+    z-index: 2 !important; /* z-index 값을 1보다 크게 설정 */
+}
+.wrap * {
+    padding: 0;
+    margin: 0;
+}
+
+.info .title {
+    padding: 5px 0 0 10px;
+    height: 30px;
+    background: #eee;
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+}
+.info .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #888;
+    width: 17px;
+    height: 17px;
+    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+}
+.info .close:hover {
+    cursor: pointer;
+}
+.info .body {
+    position: relative;
+    overflow: hidden;
+}
+.info .desc {
+    position: relative;
+    margin: 13px 0 0 90px;
+    height: 75px;
+}
+.desc .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.desc .jibun {
+    font-size: 11px;
+    color: #888;
+    margin-top: -2px;
+}
+.info .img {
+    position: absolute;
+    top: 6px;
+    left: 5px;
+    width: 73px;
+    height: 71px;
+    border: 1px solid #ddd;
+    color: #888;
+    overflow: hidden;
+}
+.info .link {
+    color: #5085BB;
+}
+
+.current-location-marker {
+    width: 20px;
+    height: 20px;
+    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.3)); /* 그림자 효과 유지 */
+}
+
+.current-location-marker svg {
+    width: 20px; /* SVG 크기 설정 */
+    height: 20px;
+    border-radius: 50%;
+}

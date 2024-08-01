@@ -83,5 +83,5 @@ tasks.register('buildFrontend', Exec) {
 tasks.register('copyFrontendBuild', Copy) {
     from "$frontendDir/build"
     into "$projectDir/backend/src/main/resources/static"
-    dependsOn buildFrontend
+    dependsOn ":frontend:build" // frontend 프로젝트 빌드 task 의존성 추가
 }

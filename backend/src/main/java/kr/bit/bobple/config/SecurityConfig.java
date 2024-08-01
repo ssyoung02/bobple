@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
@@ -27,6 +28,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
@@ -36,21 +43,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(withDefaults())
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/", "/pointShop/**").permitAll()
+                                .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
+                                .requestMatchers("/api/recipes/recommend").permitAll() // AI 레시피 추천 엔드포인트 허용
+                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/", "/pointShop/**", "form/**", "/api/recipes/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults())
-                .oauth2Login(oauth2Login ->
-                        oauth2Login
-                                .loginPage("/login")
-                                .defaultSuccessUrl("/", true)
-                                .failureUrl("/login?error=true")
-                )
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                         .accessDeniedHandler((request, response, accessDeniedException) -> response.sendError(HttpServletResponse.SC_FORBIDDEN))

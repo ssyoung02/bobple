@@ -8,7 +8,6 @@
     gap: 50px;
     font-size: 20px;
     justify-content: center;
-    margin: 10px;
 }
 
 .point-tab:hover button {
@@ -107,4 +106,55 @@
 
 .game-button:hover {
     border: none;
+}
+
+.item-header {
+    padding: 10px;
+}
+
+.item-tabs-nav {
+    display: flex;
+    gap: 30px;
+    font-size: 20px;
+    justify-content: flex-start;
+    margin: 10px;
+}
+
+.product-list-blur {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.product-item-blur {
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 200px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    filter: opacity(50%);
+}
+
+.product-item-blur img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: filter 0.3s;
+}
+
+.product-item-blur h3 {
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+.product-item-blur p {
+    font-size: 0.9em;
+    color: #333;
+}
+
+.stamp-image {
+    position: absolute;
+    width: 10%;
 }
