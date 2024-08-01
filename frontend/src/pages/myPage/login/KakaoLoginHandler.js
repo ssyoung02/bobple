@@ -9,9 +9,10 @@ const KakaoLoginHandler = () => {
     useEffect(() => {
         const kakaoLogin = async () => {
             try {
+                console.log('Kakao Backend URL:', process.env.REACT_APP_KAKAO_BACKEND_URL);  // Debugging line
                 const res = await axios({
                     method: "GET",
-                    url: `${process.env.REACT_APP_BACKEND_URL}?code=${code}`,
+                    url: `${process.env.REACT_APP_KAKAO_BACKEND_URL}?code=${code}`,
                     headers: {
                         "Content-Type": "application/json;charset=utf-8",
                     },
@@ -39,7 +40,6 @@ const KakaoLoginHandler = () => {
     }, [code, navigate]);
 
     return null;
-
 };
 
 export default KakaoLoginHandler;
