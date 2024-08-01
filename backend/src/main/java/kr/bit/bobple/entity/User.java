@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -58,4 +60,26 @@ public class User {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_purchases",
+            joinColumns = @JoinColumn(name = "user_idx"),
+            inverseJoinColumns = @JoinColumn(name = "gift_idx")
+    )
+    private List<PointShop> purchasedItems = new ArrayList<>();
+
+    // 생성자 추가
+    public User(String username, int point) {
+        this.username = username;
+        this.point = point;
+        this.email = "";
+        this.name = "";
+        this.nickName = "";
+        this.enabled = true;
+        this.companyId = 0L;
+        this.reportCount = 0;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 }

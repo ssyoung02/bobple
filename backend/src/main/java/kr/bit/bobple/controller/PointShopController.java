@@ -1,6 +1,8 @@
 package kr.bit.bobple.controller;
 
 import kr.bit.bobple.entity.PointShop;
+import kr.bit.bobple.entity.PurchasedGift;
+import kr.bit.bobple.entity.User;
 import kr.bit.bobple.service.PointShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,5 +29,14 @@ public class PointShopController {
     public PointShop getPointShopByProductIdx(@PathVariable Long productIdx) {
         return pointShopService.getPointShopByProductIdx(productIdx);
     }
-}
 
+    @PostMapping("/GiftPurchase")
+    public boolean purchaseProduct(@RequestParam Long userIdx, @RequestParam Long productIdx) {
+        return pointShopService.purchaseProduct(userIdx, productIdx);
+    }
+
+    @GetMapping("/GiftPurchase/{userIdx}")
+    public List<PurchasedGift> getPurchasedGiftsByUserIdx(@PathVariable Long userIdx) {
+        return pointShopService.getPurchasedGiftsByUserIdx(userIdx);
+    }
+}

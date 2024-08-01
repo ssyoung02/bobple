@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../assets/style/PointMain.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Carousel } from 'react-bootstrap';
 
 function PointMain() {
+    const location = useLocation();
     const navigate = useNavigate();
-    const [selectedTab, setSelectedTab] = useState('기프티콘');
+    const initialTab = location.state?.selectedTab || '기프티콘';
+    const [selectedTab, setSelectedTab] = useState(initialTab);
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [products, setProducts] = useState([]);
+    const [purchasedProducts, setPurchasedProducts] = useState([]);
+    const userIdx = 9; // 여기에 실제 userIdx를 설정하세요
 
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
 
@@ -23,7 +27,16 @@ function PointMain() {
             .catch(error => {
                 console.error('There was an error fetching the products!', error);
             });
-    }, []);
+
+        axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}`, { withCredentials: true })
+            .then(response => {
+                console.log(response.data); // 데이터 구조 확인
+                setPurchasedProducts(response.data);
+            })
+            .catch(error => {
+                console.error('There was an error fetching the purchased products!', error);
+            });
+    }, [userIdx]);
 
     const handleTabClick = (tab) => {
         setSelectedTab(tab);
@@ -48,6 +61,10 @@ function PointMain() {
     const filteredProducts = selectedCategory === '전체'
         ? products
         : products.filter(product => product.giftCategory === selectedCategory);
+
+    const filteredPurchasedProducts = selectedCategory === '전체'
+        ? purchasedProducts
+        : purchasedProducts.filter(product => product.pointShop.giftCategory === selectedCategory);
 
     return (
         <>
@@ -98,7 +115,6 @@ function PointMain() {
                     <div className="category-container">
                         <div className="product-list">
                             {filteredProducts.map(product => (
-                                // 버튼의 onClick 핸들러 업데이트
                                 <button key={product.giftIdx} className="product-item" onClick={() => movegiftDetail(product.giftIdx)}>
                                     <img src={product.giftImageUrl} alt={product.giftDescription} />
                                     <h3>{product.giftBrand}</h3>
@@ -138,12 +154,13 @@ function PointMain() {
                     </div>
                     <div className="category-container">
                         <div className="product-list">
-                            {filteredProducts.map(product => (
-                                <div key={product.giftIdx} className="product-item">
-                                    <img src={product.giftImageUrl} alt={product.giftDescription} />
-                                    <h3>{product.giftDescription}</h3>
-                                    <p>{product.giftPoint}P</p>
-                                </div>
+                            {filteredPurchasedProducts.map(product => (
+                                <button key={product.purchaseIdx} className="product-item" onClick={() => movegiftDetail(product.pointShop.giftIdx)}>
+                                    <img src={product.pointShop.giftImageUrl} alt={product.pointShop.giftDescription} />
+                                    <h3>{product.pointShop.giftBrand}</h3>
+                                    <h4>{product.pointShop.giftDescription}</h4>
+                                    <p>{product.pointShop.giftPoint}P</p>
+                                </button>
                             ))}
                         </div>
                     </div>
