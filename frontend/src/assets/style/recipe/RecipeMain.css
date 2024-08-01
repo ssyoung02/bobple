@@ -1,0 +1,85 @@
+.recipe-main{
+    display: grid;
+    gap: 1.5em;
+}
+h2{
+    font-family: NotoSansKR-Bold, serif;
+    color: #233B6F;
+}
+
+.SearchInput{
+    position: relative;
+}
+.RecipeSaerchBox{
+    width: 100%;
+    height: 3em;
+    border-radius: 30px;
+    border: 1px solid #233B6F;
+    padding: 1em;
+}
+.RecipeSearchButton{
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 1.3em;
+    color: #233B6F;
+}
+/*AIRecipe 버튼*/
+.AIRecipe{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #233B6F;
+    border-radius: 15px;
+    padding: 0.7em 1.5em;
+    color: #233B6F;
+}
+.AIRecipeTitle{
+    text-align: left;
+}
+.AIRecipeTitle p{
+    font-size: 0.7em;
+}
+.AIRecipe svg{
+    font-size: 1.5em;
+}
+/*도시락 레시피 추천*/
+.LunchBoxTag{
+    width: 100%;
+}
+.LunchBoxTagList{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+}
+.LunchBoxTagItem{
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+}
+.LunchBoxTagItem:after{
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+    margin-bottom: 5px;
+}
+.LunchBoxTagItem img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.LunchBoxTagItem p{
+    position: absolute;
+    bottom: 10px;
+    left: 13px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1px 7px;
+    border-radius: 5px;
+}

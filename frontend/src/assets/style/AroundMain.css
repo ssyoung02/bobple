@@ -11,7 +11,7 @@
     align-items: center; /* 수직 정렬 */
     padding: 10px;
     background-color: #fff;
-    border-bottom: 1px solid #ddd;
+    margin-bottom: 0; /* 불필요한 줄 제거 */
 }
 
 .search-input {
@@ -145,26 +145,6 @@
 }
 .info .link {
     color: #5085BB;
-}
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    margin-top: 10px;
-}
-
-.pagination button {
-    padding: 5px 10px;
-    margin: 0 5px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    cursor: pointer;
-}
-
-.pagination button:disabled {
-    opacity: 0.5;
-    cursor: default;
 }
 
 .current-location-marker {

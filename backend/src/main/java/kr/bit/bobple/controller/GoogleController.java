@@ -1,5 +1,6 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.config.JwtTokenProvider;
 import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000") // CORS 설정 추가
 public class GoogleController {
 
@@ -29,7 +32,10 @@ public class GoogleController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/api/login/oauth2/callback/google")
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @GetMapping("/login/oauth2/callback/google")
     public ResponseEntity<?> googleCallback(@RequestParam String code) {
         // 넘어온 code를 출력하여 확인
         System.out.println("Authorization Code: " + code);
@@ -73,27 +79,48 @@ public class GoogleController {
         String email = (String) userInfo.get("email");
         String profileImage = (String) userInfo.get("picture");
 
-        User user = userRepository.findByEmail(email).orElseGet(() -> new User());
-        user.setUsername(email);
-        user.setEmail(email);
-        user.setName(username);
-        user.setNickName(username);
-        user.setProfileImage(profileImage);
-        user.setEnabled(true);
-        user.setProvider("google");
-        user.setCompanyId(0L);  // Assuming default companyId, adjust as needed
-        user.setReportCount(0);
-        user.setPoint(0);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        User user;
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+        } else {
+            user = new User();
+            user.setUsername(email); // username을 email로 설정
+            user.setEmail(email);
+            user.setName(username);
+            user.setNickName(username);
+            user.setProfileImage(profileImage);
+            user.setEnabled(true);
+            user.setProvider("google");
+            user.setCompanyId(0L);  // 기본값으로 설정, 필요에 따라 수정
+            user.setReportCount(0);
+            user.setPoint(0);
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
 
-        userRepository.save(user);
+            userRepository.save(user);
+        }
+
+        // 사용자 정보를 포함한 클레임 생성
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("email", email);
+        claims.put("name", username);
+        claims.put("profileImage", profileImage);
+        claims.put("provider", user.getProvider());
+        claims.put("companyId", user.getCompanyId());
+        claims.put("reportCount", user.getReportCount());
+        claims.put("point", user.getPoint());
+
+        // JWT 토큰 생성
+        String jwtToken = jwtTokenProvider.createToken(user.getUserIdx(), email, claims);
+        System.out.println("Generated JWT Token: " + jwtToken);
+        System.out.println(user.getUserIdx());
 
         // 사용자 정보 중 필요한 부분만 추출하여 클라이언트로 전송
-        Map<String, String> result = new HashMap<>();
-        result.put("username", username);
-        result.put("email", email);
-        result.put("token", accessToken);
+        Map<String, Object> result = new HashMap<>(claims);
+        result.put("user_idx", user.getUserIdx());
+        result.put("token", jwtToken);
 
         return ResponseEntity.ok(result);
     }

@@ -1,12 +1,12 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
-import CardGame from "../pages/mainGame/CardGame"
 import Swallow from "../pages/mainGame/Swallow"
+import Roulette from "../pages/mainGame/Roulette";
 
 function MainGameRouter(){
     return(
         <Routes>
-            <Route path="/cardGame" element={<CardGame/>}/>
+            <Route path="/roulette" element={<Roulette/>}/>
             <Route path="/swallow" element={<Swallow/>}/>
         </Routes>
     );

@@ -1,9 +1,11 @@
 // src/components/Recipe/RecipeMain.jsx
 import React, { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import RecipeCard from './RecipeCard';
-import '../recipe/css/RecipeMain.css';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMagnifyingGlass, faArrowRightLong} from "@fortawesome/free-solid-svg-icons";
+import '../../assets/style/recipe/RecipeMain.css';
 import axios from "axios";
 
 function RecipeMain() {
@@ -59,31 +61,38 @@ function RecipeMain() {
         getLatestRecipes();
     }, []);
 
+    const navigate = useNavigate();
+
+    const moveAIRecommendation = () => {
+        navigate('/recipe/ai-recommendation');
+    }
+
     return (
-        <div className="recipe-main-container">
-            <div className="search-area">
+        <div className="recipe-main">
+            <div className="SearchInput">
                 <input
                     type="text"
-                    className="search-input"
+                    className="RecipeSaerchBox"
                     placeholder="검색 키워드를 입력해주세요"
                     value={searchKeyword}
                     onChange={handleSearchInputChange}
                 />
-                <button className="search-button" onClick={handleSearchClick}>검색</button>
+                <button className="RecipeSearchButton" onClick={handleSearchClick}>
+                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </button>
             </div>
 
-            <div className="ai-recommendation">
-                <h3>AI 레시피 추천</h3>
-                <Link to="/recipe/ai-recommendation">
-                    <button className="ai-button">
-                        지금 냉장고에 있는 재료로 만들어봐!
-                    </button>
-                </Link>
-            </div>
+            <button className={"AIRecipe"} onClick={moveAIRecommendation}>
+                <div className={"AIRecipeTitle"}>
+                    <p>지금 냉장고에 있는 재료로 뭐 만들어 먹지?</p>
+                    <h3>AI 레시피 추천</h3>
+                </div>
+                <FontAwesomeIcon icon={faArrowRightLong} />
+            </button>
 
-            <div className="lunchbox-recipes">
+            <div className="LunchBoxTag">
                 <h3>도시락 레시피 추천</h3>
-                <div className="recipe-grid">
+                <div className="LunchBoxTagList">
                     {categoryRecipes.length > 0 ? (
                         categoryRecipes.map(recipe => (
                             <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)} className="recipe-card-wrapper">
