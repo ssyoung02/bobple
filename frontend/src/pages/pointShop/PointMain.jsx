@@ -9,10 +9,9 @@ import stamp from '../../assets/images/checkstamp.png';
 function PointMain() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [selectedTab, setSelectedTab] = useState('기프티콘');
-    const [selectedItemTab, setSelectedItemTab] = useState('보유중');
     const initialTab = location.state?.selectedTab || '기프티콘';
     const [selectedTab, setSelectedTab] = useState(initialTab);
+    const [selectedItemTab, setSelectedItemTab] = useState('보유중');
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [products, setProducts] = useState([]);
@@ -101,8 +100,7 @@ function PointMain() {
             </div>
             {selectedTab === '기프티콘' && (
                 <>
-                    <Carousel fade activeIndex={carouselIndex} onSelect={handleCarouselSelect}
-                              className="carousel-container">
+                    <Carousel fade activeIndex={carouselIndex} onSelect={handleCarouselSelect} className="carousel-container">
                         <Carousel.Item className="carousel-item">
                             <img
                                 style={{height: "200px"}}
@@ -178,48 +176,45 @@ function PointMain() {
                                     {category}
                                 </button>
                             ))}
+                        </div>
+                    </div>
                     <h3 className="item-header">사용가능한 선물이<br/>n개 남아있어요.</h3>
                     <div className="item-tabs-nav">
                         <div className="point-tab">
-                            <Tab name="보유중" onClick={() => handleItemTabClick('보유중')}
-                                 isActive={selectedItemTab === '보유중'}/>
+                            <Tab name="보유중" onClick={() => handleItemTabClick('보유중')} isActive={selectedItemTab === '보유중'}/>
                         </div>
                         <div className="point-tab">
-                            <Tab name="사용완료" onClick={() => handleItemTabClick('사용완료')}
-                                 isActive={selectedItemTab === '사용완료'}/>
+                            <Tab name="사용완료" onClick={() => handleItemTabClick('사용완료')} isActive={selectedItemTab === '사용완료'}/>
                         </div>
                     </div>
                     {selectedItemTab === '보유중' && (
-                        <>
-                            <div className="item-container">
-                                <div className="product-list">
-                                    {filteredPurchasedProducts.map(product => (
-                                        <button key={product.purchaseIdx} className="product-item" onClick={() => moveGifticonBarcode(product.pointShop.giftIdx)}>
-                                            <img src={product.pointShop.giftImageUrl} alt={product.pointShop.giftDescription} />
-                                            <h3>{product.pointShop.giftBrand}</h3>
-                                            <h4>{product.pointShop.giftDescription}</h4>
-                                            <p>{product.pointShop.giftPoint}P</p>
-                                        </button>
-                                    ))}
-                                </div>
+                        <div className="item-container">
+                            <div className="product-list">
+                                {filteredPurchasedProducts.map(product => (
+                                    <button key={product.purchaseIdx} className="product-item" onClick={() => moveGifticonBarcode(product.pointShop.giftIdx)}>
+                                        <img src={product.pointShop.giftImageUrl} alt={product.pointShop.giftDescription}/>
+                                        <h3>{product.pointShop.giftBrand}</h3>
+                                        <h4>{product.pointShop.giftDescription}</h4>
+                                        <p>{product.pointShop.giftPoint}P</p>
+                                    </button>
+                                ))}
                             </div>
-                        </>
+                        </div>
                     )}
                     {selectedItemTab === '사용완료' && (
-                        <>
-                            <div className="item-container">
-                                <div className="product-list-blur">
-                                    {filteredProducts.map(product => (
-                                        <div key={product.purchaseIdx} className="product-item-blur">
-                                            <img src={stamp} alt="stamp" className="stamp-image"/>
-                                            <img src={product.image} alt={product.name}/>
-                                            <h3>{product.name}</h3>
-                                            <p>{product.date}까지</p>
-                                        </div>
-                                    ))}
-                                </div>
+                        <div className="item-container">
+                            <div className="product-list-blur">
+                                {filteredPurchasedProducts.map(product => (
+                                    <div key={product.purchaseIdx} className="product-item-blur">
+                                        <img src={stamp} alt="stamp" className="stamp-image"/>
+                                        <img src={product.pointShop.giftImageUrl} alt={product.pointShop.giftDescription}/>
+                                        <h3>{product.pointShop.giftBrand}</h3>
+                                        <h4>{product.pointShop.giftDescription}</h4>
+                                        <p>{product.pointShop.giftPoint}P</p>
+                                    </div>
+                                ))}
                             </div>
-                        </>
+                        </div>
                     )}
                 </>
             )}
