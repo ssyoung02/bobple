@@ -27,7 +27,6 @@ export const ModalProvider = ({children}) => {
         <ModalContext.Provider
             // 커스텀 훅을 이용해서 useState / 함수를 제공
             value={{setModalType, setModalTitle, setModalBody, setModalCallback, showModal, hideModal}}>
-            {/*제작한 모달 컴포넌트를 여기에 넣어서 한번에 관리 가능*/}
             {/*{modalType === "inform" &&*/}
             {/*    // 일반적인 알림 모달*/}
             {/*    <InformModal modalState={modalState} modalTitle={modalTitle} modalBody={modalBody}*/}

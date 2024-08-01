@@ -1,27 +1,33 @@
 import React, {useState, useRef, useEffect} from 'react';
 import '../../assets/style/GroupMain.css';
 import {useModal} from "../../components/modal/ModalContext";
+import {useNavigate} from "react-router-dom";
 
 const GroupMain = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const modalBackground = useRef();
     const { setModalType, showModal } = useModal();
+    const navigate = useNavigate();
 
     useEffect(() => {
         setModalType("groupInform");
     });
+
+    const moveGroupChat = () => {
+        navigate('/chatting')
+    }
 
     return (
         <div className="group-main">
             <h2 className="group-title">참여중인 모임</h2>
             <div className="group-header">
                 <div className="scroll-container">
-                    <button className="item"><img src="" alt=""/><span>강남된코회식</span></button>
-                    <button className="item"><img src="" alt=""/><span>마라탕??</span></button>
-                    <button className="item"><img src="" alt=""/><span>집에가기싫음</span></button>
-                    <button className="item"><img src="" alt=""/><span>퇴근하기모임</span></button>
-                    <button className="item"><img src="" alt=""/><span>퇴근하기모임</span></button>
-                    <button className="item"><img src="" alt=""/><span>퇴근하기모임</span></button>
+                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>강남된코회식</span></button>
+                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>마라탕??</span></button>
+                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>집에가기싫음</span></button>
+                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>퇴근하기모임</span></button>
+                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>퇴근하기모임</span></button>
+                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>퇴근하기모임</span></button>
                 </div>
             </div>
             <div className="meeting-list">

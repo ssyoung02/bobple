@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
 import GroupMain from "../pages/eatingGroup/GroupMain";
-import Chatting from "../pages/eatingGroup/chatting/Chatting";
+import GroupChatting from "../pages/eatingGroup/chatting/GroupChatting";
 import {ModalProvider} from "../components/modal/ModalContext";
 
 function EatingGroupRouter(){
@@ -12,7 +12,7 @@ function EatingGroupRouter(){
                     <GroupMain/>
                 </ModalProvider>
                 }/>
-            <Route path="/chatting" element={<Chatting/>}/>
+            <Route path="/chatting" element={<GroupChatting/>}/>
         </Routes>
     );
 }
