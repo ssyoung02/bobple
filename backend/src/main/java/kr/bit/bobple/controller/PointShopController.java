@@ -47,9 +47,14 @@ public class PointShopController {
         }
     }
 
+//    @GetMapping("/GifticonBarcode/{productIdx}")
+//    public PointShop getBarcodeByProductIdx(@PathVariable Long productIdx) {
+//        return pointShopService.getBarcodeByProductIdx(productIdx);
+//    }
+
     @GetMapping("/GifticonBarcode/{productIdx}")
-    public PointShop getBarcodeByProductIdx(@PathVariable Long productIdx) {
-        return pointShopService.getBarcodeByProductIdx(productIdx);
+    public PurchasedGift getBarcodeByProductIdx(@PathVariable Long productIdx, @RequestParam Long userIdx) {
+        return pointShopService.getPurchasedGiftByProductIdxAndUserIdx(productIdx, userIdx);
     }
 
     @PostMapping("/GiftUse")

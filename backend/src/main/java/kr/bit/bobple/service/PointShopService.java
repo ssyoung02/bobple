@@ -91,8 +91,13 @@ public class PointShopService {
         return false;
     }
 
-    public PointShop getBarcodeByProductIdx(Long productIdx) {
-        Optional<PointShop> pointShop = pointShopRepository.findById(productIdx);
-        return pointShop.orElse(null);
+//    public PointShop getBarcodeByProductIdx(Long productIdx) {
+//        Optional<PointShop> pointShop = pointShopRepository.findById(productIdx);
+//        return pointShop.orElse(null);
+//    }
+
+    public PurchasedGift getPurchasedGiftByProductIdxAndUserIdx(Long productIdx, Long userIdx) {
+        Optional<PurchasedGift> purchasedGift = purchasedGiftRepository.findByUserUserIdxAndPointShopGiftIdx(userIdx, productIdx);
+        return purchasedGift.orElse(null);
     }
 }

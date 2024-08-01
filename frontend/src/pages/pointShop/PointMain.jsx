@@ -16,12 +16,14 @@ function PointMain() {
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [products, setProducts] = useState([]);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
+    const [unusedGiftCount, setUnusedGiftCount] = useState(0);
     const [sortOrder, setSortOrder] = useState('desc');
     const userIdx = 9; // Set the actual userIdx here
 
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
 
     useEffect(() => {
+        // Fetch all products when "기프티콘" tab is selected
         if (selectedTab === '기프티콘') {
             axios.get('http://localhost:8080/api/PointMain', { withCredentials: true })
                 .then(response => {
@@ -33,6 +35,7 @@ function PointMain() {
                 });
         }
 
+        // Fetch purchased products when "보관함" tab is selected
         if (selectedTab === '보관함') {
             const isUsed = selectedItemTab === '사용완료';
             axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?sort=${sortOrder}&isUsed=${isUsed}`, { withCredentials: true })
@@ -46,13 +49,24 @@ function PointMain() {
         }
     }, [userIdx, selectedTab, selectedItemTab, sortOrder]);
 
+    // Fetch count of unused gifts
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?isUsed=false`, { withCredentials: true })
+            .then(response => {
+                setUnusedGiftCount(response.data.length);
+            })
+            .catch(error => {
+                console.error('There was an error fetching the unused gift count!', error);
+            });
+    }, [userIdx, selectedTab, selectedItemTab, sortOrder]);
+
     const handleTabClick = (tab) => {
         setSelectedTab(tab);
     };
 
     const handleItemTabClick = (tab) => {
         setSelectedItemTab(tab);
-    }
+    };
 
     const moveGacha = () => {
         navigate('/point/pointGame/GachaGame');
@@ -179,7 +193,7 @@ function PointMain() {
                             ))}
                         </div>
                     </div>
-                    <h3 className="item-header">사용가능한 선물이<br/>n개 남아있어요.</h3>
+                    <h3 className="item-header">사용가능한 선물이<br/>{unusedGiftCount}개 남아있어요.</h3>
                     <div className="item-tabs-nav">
                         <div className="point-tab">
                             <Tab name="보유중" onClick={() => handleItemTabClick('보유중')} isActive={selectedItemTab === '보유중'}/>

@@ -17,5 +17,8 @@ public interface PurchasedGiftRepository extends JpaRepository<PurchasedGift, Lo
     List<PurchasedGift> findByUserUserIdxAndIsUsedOrderByPurchaseDateAsc(Long userIdx, boolean isUsed);
     List<PurchasedGift> findByUserUserIdxAndIsUsedOrderByPurchaseDateDesc(Long userIdx, boolean isUsed);
 
+    //Optional<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
+
     Optional<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
+
 }
