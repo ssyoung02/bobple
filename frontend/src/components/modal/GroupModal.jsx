@@ -13,13 +13,13 @@ const GroupModal = ({ modalState, hideModal }) => {
     const [roomPeople, setRoomPeople] = useState(1);
 
     const moveChat = (chatRoomId) => {
-        console.log(`Navigating to /chatting/${chatRoomId}`);
-        navigate(`/chatting/${chatRoomId}`);
+        console.log(`Navigating to /group/chatting/${chatRoomId}`);
+        navigate(`/group/chatting/${chatRoomId}`);
     };
 
     const createChatRoom = async () => {
         try {
-            const response = await axios.post('/api/chatrooms', {
+            const response = await axios.post('http://localhost:8080/api/chatrooms', {
                 chatRoomTitle: title,
                 description: description,
                 location: location,

@@ -12,7 +12,7 @@ const GroupMain = () => {
     useEffect(() => {
         const fetchChatRooms = async () => {
             try {
-                const response = await axios.get('/api/chatrooms');
+                const response = await axios.get('http://localhost:8080/api/chatrooms');
                 setChatRooms(response.data);
             } catch (error) {
                 console.error('Failed to fetch chat rooms', error);
