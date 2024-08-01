@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from "react-router-dom";
-import '../../assets/style/PointGifticonDetail.css'
+import '../../assets/style/pointShop/PointGifticonDetail.css'
 
 function PointGifticonDetail() {
     const location = useLocation();

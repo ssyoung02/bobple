@@ -1,6 +1,6 @@
 import React, {forwardRef} from 'react';
 import Prize from './Prize';
-import '../../../../assets/style/UILayer.scss';
+import '../../../../assets/style/pointGame/gacha/UILayer.scss';
 
 const UILayer = forwardRef((props, ref) => {
     return (

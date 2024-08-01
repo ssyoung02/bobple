@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../assets/style/GroupMain.css';
+import '../../assets/style/eatingGroup/GroupMain.css';
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../components/modal/ModalContext";
 import axios from 'axios';

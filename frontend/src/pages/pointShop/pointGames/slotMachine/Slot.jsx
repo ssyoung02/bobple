@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, forwardRef, useState, useEffect } from "react";
-import "../../../../assets/style/SlotMachine.css";
+import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 
 const Slot = forwardRef(({ fruits }, ref) => {
     const [rolling, setRolling] = useState(false);

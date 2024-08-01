@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../assets/style/PointMain.css';
+import '../../assets/style/pointShop/PointMain.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Carousel } from 'react-bootstrap';
 import stamp from '../../assets/images/checkstamp.png';

@@ -1,10 +1,10 @@
 import React from "react";
 import Slot from "./Slot";
-import "../../../../assets/style/SlotMachine.css";
+import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 
-const Dashboard = ({ rolling, slotRefs, fruits }) => {
+const Dashboard = ({ slotRefs, fruits }) => {
     return (
-        <div className="slot-machine">
+        <div>
             {slotRefs.map((ref, index) => (
                 <Slot key={index} ref={ref} fruits={fruits} />
             ))}

@@ -1,3 +1,4 @@
+/*SlotMachine.css*/
 .slot-game {
     font-family: sans-serif;
     text-align: center;
@@ -6,6 +7,31 @@
     align-items: center;
 }
 
+.machine-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.machine-roll, .machine-reset {
+    width: 100px;
+    cursor: pointer;
+    background-color: yellow;
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 20px;
+    border: 3px solid black;
+}
+
+.slot-result {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/*---------------------------------------------------------------*/
+
+/*Slot.jsx*/
 .slot {
     position: relative;
     display: inline-block;
@@ -45,28 +71,6 @@
 
 .slot-container:not(.rolling) {
     animation-play-state: paused;
-}
-
-.controls {
-    display: flex;
-    gap: 10px;
-}
-
-.roll, .reset {
-    width: 100px;
-    cursor: pointer;
-    background-color: yellow;
-    padding: 10px;
-    text-align: center;
-    font-size: 20px;
-    border-radius: 20px;
-    border: 3px solid black;
-}
-
-.slot-result {
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
 }
 
 @keyframes aniScroll {
