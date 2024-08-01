@@ -34,14 +34,17 @@ public class PointShopController {
         return pointShopService.purchaseProduct(userIdx, productIdx);
     }
 
-//    @GetMapping("/GiftPurchase/{userIdx}")
-//    public List<PurchasedGift> getPurchasedGiftsByUserIdx(@PathVariable Long userIdx) {
-//        return pointShopService.getPurchasedGiftsByUserIdx(userIdx);
-//    }
-
     @GetMapping("/GiftPurchase/{userIdx}")
-    public List<PurchasedGift> getPurchasedGiftsByUserIdx(@PathVariable Long userIdx, @RequestParam(defaultValue = "desc") String sort) {
-        return pointShopService.getPurchasedGiftsByUserIdx(userIdx, sort);
+    public List<PurchasedGift> getPurchasedGiftsByUserIdx(
+            @PathVariable Long userIdx,
+            @RequestParam(defaultValue = "desc") String sort,
+            @RequestParam(required = false) Boolean isUsed
+    ) {
+        if (isUsed == null) {
+            return pointShopService.getPurchasedGiftsByUserIdx(userIdx, sort);
+        } else {
+            return pointShopService.getPurchasedGiftsByUserIdxAndIsUsed(userIdx, isUsed, sort);
+        }
     }
 
     @GetMapping("/GifticonBarcode/{productIdx}")
@@ -53,5 +56,4 @@ public class PointShopController {
     public boolean useGift(@RequestParam Long userIdx, @RequestParam Long productIdx) {
         return pointShopService.useGift(userIdx, productIdx);
     }
-
 }

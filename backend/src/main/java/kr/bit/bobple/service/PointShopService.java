@@ -49,10 +49,10 @@ public class PointShopService {
             if (user.getPoint() >= product.getGiftPoint()) {
                 user.setPoint(user.getPoint() - product.getGiftPoint());
 
-                // 사용자 정보를 먼저 저장
+                // Save user info first
                 userRepository.save(user);
 
-                // 구매 내역 저장
+                // Save purchase history
                 PurchasedGift purchasedGift = new PurchasedGift(user, product);
                 purchasedGiftRepository.save(purchasedGift);
 
@@ -62,15 +62,19 @@ public class PointShopService {
         return false;
     }
 
-//    public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx) {
-//        return purchasedGiftRepository.findByUserUserIdx(userIdx);
-//    }
-
     public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx, String sort) {
         if ("asc".equalsIgnoreCase(sort)) {
             return purchasedGiftRepository.findByUserUserIdxOrderByPurchaseDateAsc(userIdx);
         } else {
             return purchasedGiftRepository.findByUserUserIdxOrderByPurchaseDateDesc(userIdx);
+        }
+    }
+
+    public List<PurchasedGift> getPurchasedGiftsByUserIdxAndIsUsed(Long userIdx, boolean isUsed, String sort) {
+        if ("asc".equalsIgnoreCase(sort)) {
+            return purchasedGiftRepository.findByUserUserIdxAndIsUsedOrderByPurchaseDateAsc(userIdx, isUsed);
+        } else {
+            return purchasedGiftRepository.findByUserUserIdxAndIsUsedOrderByPurchaseDateDesc(userIdx, isUsed);
         }
     }
 
@@ -80,7 +84,7 @@ public class PointShopService {
 
         if (purchasedGiftOpt.isPresent()) {
             PurchasedGift purchasedGift = purchasedGiftOpt.get();
-            purchasedGift.setUsed(true); // is_used를 true로 설정
+            purchasedGift.setUsed(true); // Set is_used to true
             purchasedGiftRepository.save(purchasedGift);
             return true;
         }
@@ -91,5 +95,4 @@ public class PointShopService {
         Optional<PointShop> pointShop = pointShopRepository.findById(productIdx);
         return pointShop.orElse(null);
     }
-
 }

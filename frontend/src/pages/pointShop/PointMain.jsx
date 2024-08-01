@@ -17,7 +17,7 @@ function PointMain() {
     const [products, setProducts] = useState([]);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [sortOrder, setSortOrder] = useState('desc');
-    const userIdx = 9; // 여기에 실제 userIdx를 설정하세요
+    const userIdx = 9; // Set the actual userIdx here
 
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
 
@@ -25,7 +25,7 @@ function PointMain() {
         if (selectedTab === '기프티콘') {
             axios.get('http://localhost:8080/api/PointMain', { withCredentials: true })
                 .then(response => {
-                    console.log(response.data); // 데이터 구조 확인
+                    console.log(response.data); // Check data structure
                     setProducts(response.data);
                 })
                 .catch(error => {
@@ -34,16 +34,17 @@ function PointMain() {
         }
 
         if (selectedTab === '보관함') {
-            axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?sort=${sortOrder}`, { withCredentials: true })
+            const isUsed = selectedItemTab === '사용완료';
+            axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?sort=${sortOrder}&isUsed=${isUsed}`, { withCredentials: true })
                 .then(response => {
-                    console.log(response.data); // 데이터 구조 확인
+                    console.log(response.data); // Check data structure
                     setPurchasedProducts(response.data);
                 })
                 .catch(error => {
                     console.error('There was an error fetching the purchased products!', error);
                 });
         }
-    }, [userIdx, selectedTab, sortOrder]);
+    }, [userIdx, selectedTab, selectedItemTab, sortOrder]);
 
     const handleTabClick = (tab) => {
         setSelectedTab(tab);

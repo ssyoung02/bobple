@@ -14,8 +14,8 @@ public interface PurchasedGiftRepository extends JpaRepository<PurchasedGift, Lo
     List<PurchasedGift> findByUserUserIdxOrderByPurchaseDateAsc(Long userIdx);
     List<PurchasedGift> findByUserUserIdxOrderByPurchaseDateDesc(Long userIdx);
 
-    Optional<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
+    List<PurchasedGift> findByUserUserIdxAndIsUsedOrderByPurchaseDateAsc(Long userIdx, boolean isUsed);
+    List<PurchasedGift> findByUserUserIdxAndIsUsedOrderByPurchaseDateDesc(Long userIdx, boolean isUsed);
 
-//    @Query(value = "SELECT pg.* FROM purchasedGift pg JOIN point_shop ps ON pg.gift_idx = ps.gift_idx WHERE pg.user_idx = :userIdx", nativeQuery = true)
-//    List<PurchasedGift> findPurchasedGiftsWithDetails(@Param("userIdx") Long userIdx);
+    Optional<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
 }
