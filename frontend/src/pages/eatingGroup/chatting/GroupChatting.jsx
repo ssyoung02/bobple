@@ -12,7 +12,7 @@ const GroupChatting = () => {
     useEffect(() => {
         const fetchChatRoom = async () => {
             try {
-                const response = await axios.get(`/api/chatrooms/${chatRoomId}`);
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}`);
                 setChatRoom(response.data);
             } catch (error) {
                 console.error('Failed to fetch chat room', error);
@@ -21,7 +21,7 @@ const GroupChatting = () => {
 
         const fetchMessages = async () => {
             try {
-                const response = await axios.get(`/api/chatrooms/${chatRoomId}/messages`);
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/messages`);
                 setMessages(response.data);
             } catch (error) {
                 console.error('Failed to fetch messages', error);
@@ -34,7 +34,7 @@ const GroupChatting = () => {
 
     const handleSendMessage = async () => {
         try {
-            const response = await axios.post(`/api/chatrooms/${chatRoomId}/messages`, {
+            const response = await axios.post(`http://localhost:8080/api/chatrooms/${chatRoomId}/messages`, {
                 content: newMessage
             });
             setMessages([...messages, response.data]);

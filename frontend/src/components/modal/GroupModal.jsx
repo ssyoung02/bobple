@@ -19,7 +19,7 @@ const GroupModal = ({ modalState, hideModal }) => {
 
     const createChatRoom = async () => {
         try {
-            const response = await axios.post('/api/chatrooms', {
+            const response = await axios.post('http://localhost:8080/api/chatrooms', {
                 chatRoomTitle: title,
                 description: description,
                 location: location,
