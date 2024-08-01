@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
@@ -26,6 +27,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
@@ -40,16 +47,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/").permitAll()
+                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .oauth2Login(oauth2Login ->
-                        oauth2Login
-                                .loginPage("/login")
-                                .defaultSuccessUrl("/", true)
-                                .failureUrl("/login?error=true")
-                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                         .accessDeniedHandler((request, response, accessDeniedException) -> response.sendError(HttpServletResponse.SC_FORBIDDEN))
@@ -88,21 +90,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(authorizeRequests ->
-//                        authorizeRequests
-//                                .requestMatchers("/myPage", "/login/**", "/login/oauth2/callback/kakao", "/").permitAll()
-//                                .anyRequest().authenticated()
-//                )
-//                .oauth2Login(oauth2Login ->
-//                        oauth2Login
-//                                .loginPage("/login")
-//                                .defaultSuccessUrl("/", true)
-//                                .failureUrl("/login?error=true")
-//                );
-//        return http.build();
-//    }
 }
