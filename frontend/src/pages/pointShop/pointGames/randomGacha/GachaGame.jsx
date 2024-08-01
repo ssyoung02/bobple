@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Machine from './Machine';
 import UILayer from './UILayer';
-import '../../../../assets/style/GachaGame.scss';
+import '../../../../assets/style/pointGame/gacha/GachaGame.scss';
 import { gsap } from 'gsap';
 import { getPrize, createBalls, showHint, hideHint, showHint2, prepare, start, stopJittering, pickup, pop, confetti, delay, addAnimClass } from '../../../../utils/GachaUtils';
 

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import Dashboard from "./Dashboard";
-import "../../../../assets/style/SlotMachine.css";
+import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 
 const SlotMachine = () => {
     const [rolling, setRolling] = useState(false);
@@ -60,11 +60,11 @@ const SlotMachine = () => {
     return (
         <div className="slot-game">
             <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits} />
-            <div className="controls">
-                <div className="roll" onClick={roll}>
+            <div className="machine-controls">
+                <div className="machine-roll" onClick={roll}>
                     {rolling ? `STOP ${3 - stoppedSlots}` : "ROLL"}
                 </div>
-                <div className="reset" onClick={reset}>
+                <div className="machine-reset" onClick={reset}>
                     RESET
                 </div>
             </div>
