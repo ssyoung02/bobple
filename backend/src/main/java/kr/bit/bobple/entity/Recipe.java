@@ -41,8 +41,8 @@ public class Recipe {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // 지연 로딩 설정
-    private List<RecipeComment> recipeComments = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private final List<RecipeComment> recipeComments = new ArrayList<>();
 
     public Long getRecipeIdx() {
         return id;

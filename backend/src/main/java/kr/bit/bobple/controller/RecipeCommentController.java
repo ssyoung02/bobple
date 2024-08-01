@@ -25,6 +25,6 @@ public class RecipeCommentController {
 
     @PostMapping
     public ResponseEntity<RecipeCommentDto> createComment(@PathVariable Long recipeId, @RequestBody RecipeCommentDto commentDto, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(recipeCommentService.createComment(recipeId, commentDto.getRecipeContent())); // 수정된 부분
+        return ResponseEntity.ok(recipeCommentService.createComment(recipeId, commentDto.getRecipeContent()));
     }
 }

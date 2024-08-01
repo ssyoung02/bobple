@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import kr.bit.bobple.entity.User;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -27,12 +26,24 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final LikeRecipeService likeRecipeService;
-    private final RecipeCommentService recipeCommentService;
+
+
 
     @GetMapping
     public ResponseEntity<Page<RecipeDto>> getAllRecipes(Pageable pageable) {
         return ResponseEntity.ok(recipeService.getAllRecipes(pageable));
     }
+
+    @GetMapping("/latest")
+    public ResponseEntity<Page<RecipeDto>> getLatestRecipes(
+            @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<Recipe> recipePage = recipeService.getLatestRecipes(pageable);
+        Page<RecipeDto> recipeDtoPage = recipePage.map(RecipeDto::fromEntity);
+        return ResponseEntity.ok(recipeDtoPage); // Page<RecipeDto> 직접 반환
+    }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDto> getRecipeById(@PathVariable Long id) {
@@ -63,14 +74,14 @@ public class RecipeController {
     }
 
     // RecipeController.java
-
     @GetMapping("/search")
     public ResponseEntity<Page<RecipeDto>> searchRecipes(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(recipeService.searchRecipes(keyword, category, pageable));
+        Page<RecipeDto> recipeDtoPage = recipeService.searchRecipes(keyword, category, pageable);
+        return ResponseEntity.ok(recipeDtoPage); // Page<RecipeDto> 직접 반환
     }
 
 

@@ -21,7 +21,6 @@
 .recipe-card-wrapper {
     /* 카드 wrapper 스타일 (선택 사항) */
 }
-
 .pagination {
     display: flex;
     justify-content: center;
@@ -41,4 +40,9 @@
 .pagination button:disabled {
     background-color: #eee;
     cursor: default;
+}
+
+.pagination .active {
+    background-color: #007bff; /* 활성화된 페이지 버튼 스타일 */
+    color: white;
 }

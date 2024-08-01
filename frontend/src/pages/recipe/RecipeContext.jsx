@@ -1,5 +1,5 @@
 // src/context/RecipeContext.jsx
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react'; // useCallback 추가
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,7 +24,8 @@ const RecipeContext = createContext({
     createComment: () => {}, // 댓글 생성 함수
     updateComment: () => {}, // 댓글 수정 함수
     deleteComment: () => {}, // 댓글 삭제 함수
-    setSelectedRecipe: () => {} // 선택된 레시피 설정 함수
+    setSelectedRecipe: () => {},// 선택된 레시피 설정 함수
+    setError: () => {}, // setError 함수 추가
 });
 
 export const RecipeProvider = ({ children }) => {
@@ -44,7 +45,7 @@ export const RecipeProvider = ({ children }) => {
 
 
     // 레시피 검색 함수
-    const searchRecipes = async (keyword = '', category = '', page = 0, size = 10, sort = 'createdAt,desc') => {
+    const searchRecipes = useCallback(async (keyword = '', category = '', page = 0, size = 10, sort = 'createdAt,desc') => {
         try {
             const response = await axios.get('/api/recipes/search', {
                 params: { keyword, category, page, size, sort }
@@ -65,7 +66,7 @@ export const RecipeProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [navigate]);
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
@@ -77,14 +78,15 @@ export const RecipeProvider = ({ children }) => {
     }, [page, size, searchRecipes]); // searchRecipes 추가
 
     // 레시피 상세 정보 조회 함수
+
     const getRecipeById = async (id) => {
         try {
             const response = await axios.get(`/api/recipes/${id}`);
-            setSelectedRecipe(response.data);
+            setSelectedRecipe(response.data); // 레시피 상세 정보 설정
+            setLoading(false);
         } catch (error) {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
             console.error(error);
-        } finally {
             setLoading(false);
         }
     };
@@ -199,7 +201,7 @@ export const RecipeProvider = ({ children }) => {
             createRecipe, updateRecipe, deleteRecipe, likeRecipe,
             totalElements, totalPages, page, size, changePage,
             createComment,
-            updateComment, deleteComment,
+            updateComment, deleteComment,setError,
             setSelectedRecipe
         }}>
             {children}
