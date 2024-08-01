@@ -71,7 +71,15 @@ function AroundMain() {
             ps.keywordSearch(keyword, (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
                     setRestaurants(data);
+                    // 리스트에 뜨는 데이터 중 첫 번째 음식점을 지도 중앙에 배치
+                    if (data.length > 0) {
+                        const firstRestaurant = data[0];
+                        const newCenter = {lat: firstRestaurant.y, lng: firstRestaurant.x};
 
+                        // 지도 중심 이동 및 상태 업데이트
+                        setState((prev) => ({...prev, center: newCenter}));
+                        mapRef.current.setCenter(new kakao.maps.LatLng(newCenter.lat, newCenter.lng));
+                    }
                 } else {
                     console.error("음식점 검색 실패:", status);
                 }
@@ -126,10 +134,7 @@ function AroundMain() {
                 // 검색어에 주소가 포함된 경우
                 const { x, y, address_name } = result[0];
                 const newCenter = { lat: y, lng: x };
-                if (mapRef.current) {
-                    setState((prev) => ({ ...prev, center: newCenter }));
-                    mapRef.current.setCenter(new kakao.maps.LatLng(newCenter.lat, newCenter.lng));
-                }
+
                 // 검색어에서 지역 정보 추출 (예: "강남구")
                 const region = address_name.split(' ')[1];
                 searchRestaurants(newCenter.lat, newCenter.lng, region + ' ' + trimmedKeyword); // 지역 정보 포함하여 검색
@@ -137,6 +142,7 @@ function AroundMain() {
                 // 검색어에 주소가 포함되지 않은 경우 현재 위치 기준으로 검색
                 if (currentLocation) {
                     searchRestaurants(currentLocation.lat, currentLocation.lng, trimmedKeyword);
+
                 } else {
                     alert('현재 위치를 가져올 수 없습니다.');
                 }
@@ -146,7 +152,15 @@ function AroundMain() {
         ps.keywordSearch(trimmedKeyword, (data, status) => {
             if (status === kakao.maps.services.Status.OK) {
                 setRestaurants(data);
+                // 리스트에 뜨는 데이터 중 첫 번째 음식점을 지도 중앙에 배치
+                if (data.length > 0) {
+                    const firstRestaurant = data[0];
+                    const newCenter = {lat: firstRestaurant.y, lng: firstRestaurant.x};
 
+                    // 지도 중심 이동 및 상태 업데이트
+                    setState((prev) => ({...prev, center: newCenter}));
+                    mapRef.current.setCenter(new kakao.maps.LatLng(newCenter.lat, newCenter.lng));
+                }
             } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                 alert('검색 결과가 존재하지 않습니다.');
             } else if (status === kakao.maps.services.Status.ERROR) {
