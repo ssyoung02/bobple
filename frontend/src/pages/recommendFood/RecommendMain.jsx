@@ -1,7 +1,5 @@
 /*global kakao*/
 import React, { useEffect, useState } from 'react';
-import '../../assets/style/RecommendMain.css';
-import React, {useEffect, useState} from 'react';
 import '../../assets/style/recommendFood/RecommendMain.css';
 import '../../assets/style/allSearch/AllSearch.css';
 import "slick-carousel/slick/slick.css";
@@ -11,12 +9,6 @@ import {MainFoodBanner, SearchIcon, Trophy} from "../../components/imgcomponents
 import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
 import { fetchTopKeywords, handleKeyDown, handleSearchClick } from '../../components/Search/SearchAll';
 
-const dummyRecommendations = [
-    {id: 1, place_name: '브레댄코 강남점', category_name: '음식점 > 카페 > 커피전문점', address: '서울특별시 강남구 역삼동 825-19', distance: '500', reviews: '125'},
-    {id: 2, place_name: '담미온', category_name: '음식점 > 한식 > 국수' , address: '서울특별시 강남구 역삼동 823', distance: '800', reviews: '256'},
-    {id: 3, place_name: '이삭토스트', category_name: '음식점 > 간식 > 토스트', address: '서울특별시 강남구 역삼동 817-11', distance: '1.2km', reviews: '88'},
-    {id: 4, place_name: '풍년참숯갈비', category_name: '음식점 > 한식 > 육류,고기 > 갈비', address: '서울 서초구 서초대로74길 29', distance: '600', reviews: '30'},
-];
 
 function RecommendMain() {
     const [topKeywords, setTopKeywords] = useState([]);
@@ -31,7 +23,7 @@ function RecommendMain() {
 
     const [nearbyPub, setNearbyPub] = useState([]);
 
-    const categories = ['전체', '고기', '한식', '간식', '카페', '파스타'];
+    const categories = ['전체', '한식', '중식', '일식', '양식', '패스트푸드', '분식', '치킨', '피자', '아시아음식', '뷔페', '도시락'];
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const navigate = useNavigate();
     const [keyword, setKeyword] = useState("");
@@ -39,7 +31,7 @@ function RecommendMain() {
     const handleGroupDinnerPickClick = (category) => {
         const searchCategory = category === '이자카야' ? '일본식주점' : category;
         setSelectedCategory(searchCategory);
-        navigate(`/recommend/recommendFoodCategory?category=${searchCategory}`); // 카테고리 정보 전달
+        //navigate(`/recommend/recommendFoodCategory?category=${searchCategory}`); // 카테고리 정보 전달
     };
 
 
