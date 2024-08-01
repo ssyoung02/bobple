@@ -1,0 +1,25 @@
+/* src/components/Recipe/AIRecommendation.css */
+.ai-recommendation-container {
+    /* 컨테이너 스타일 */
+}
+
+.ai-recommendation-container h2 {
+    /* 제목 스타일 */
+}
+
+.ai-recommendation-container form {
+    /* 폼 스타일 */
+}
+
+.ai-recommendation-container input[type="text"] {
+    /* 입력 필드 스타일 */
+}
+
+.ai-recommendation-container button {
+    /* 버튼 스타일 */
+}
+
+.ai-recommendation-container .error-message {
+    /* 에러 메시지 스타일 */
+    color: red;
+}

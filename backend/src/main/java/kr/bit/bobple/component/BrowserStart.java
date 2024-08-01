@@ -6,20 +6,32 @@ import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.net.URI;
-
 import java.io.IOException;
-//스프링 어플리케이션 실행시 바로 localhost:8080으로 브라우저에 새창 띄워주는 클래스입니다
-//원하지 않으시거나 충돌이 일어난다고 생각하시면 주석처리하서도 됩니다.
-@Component
-public class BrowserStart implements ApplicationRunner {
+
+/*
+ * Spring Boot 애플리케이션 실행 시 브라우저를 자동으로 여는 컴포넌트
+ * (원하지 않거나 충돌 발생 시 주석 처리 가능)
+ */
+@Component // Spring 빈으로 등록
+public class BrowserStart implements ApplicationRunner { // ApplicationRunner 인터페이스 구현
+
+    /*
+     * 애플리케이션 실행 후 호출되는 메서드
+     *
+     * @ param args 애플리케이션 실행 시 전달된 인자
+     * @ throws Exception 예외 발생 시
+     */
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        // 현재 운영체제 정보 가져오기 (소문자로 변환)
         String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
+
+        // 운영체제별 브라우저 실행 명령어
+        if (os.contains("win")) { // Windows
             Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler http://localhost:8080");
-        } else if (os.contains("mac")) {
+        } else if (os.contains("mac")) { // macOS
             Runtime.getRuntime().exec("open http://localhost:8080");
-        } else if (os.contains("nix") || os.contains("nux")) {
+        } else if (os.contains("nix") || os.contains("nux")) { // Linux/Unix
             Runtime.getRuntime().exec("xdg-open http://localhost:8080");
         }
     }

@@ -2,6 +2,11 @@ plugins {
     id 'org.springframework.boot' version "${springBootVersion}"  // Spring Boot 플러그인 적용
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
 }
+
+repositories {
+    mavenCentral()
+}
+
 // 프로젝트 의존성 설정
 dependencies {
     // 웹 개발 프레임워크
@@ -13,6 +18,8 @@ dependencies {
     // JPA (Java Persistence API) 및 데이터베이스 연동
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc' // JDBC 드라이버
+    //json 파싱용
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     // MySQL 데이터베이스 드라이버
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -35,7 +42,23 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 5 사용
 
     // JSON 라이브러리
-    implementation 'org.json:json:20210307'
+    implementation 'org.json:json:20231013'
+
+
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.1000'
+
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//    implementation 'com.ncloud.api:neointernal:1.2.0' // 네이버 클라우드 API 라이브러리
+
+
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238' // AWS S3 SDK 추가
 
     // s3
     implementation 'com.amazonaws:aws-java-sdk-core:1.12.476'

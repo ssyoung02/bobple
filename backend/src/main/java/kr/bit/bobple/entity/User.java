@@ -45,7 +45,7 @@ public class User {
     private String provider;
 
     @Column(name = "company_id", nullable = false)
-    private Long companyId;
+    private Long companyId =0L;
 
     @Column(name = "report_count", nullable = false)
     private Integer reportCount;

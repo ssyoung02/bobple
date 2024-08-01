@@ -4,8 +4,8 @@ import googleImage from '../../../assets/images/google_login.png';
 import naverImage from '../../../assets/images/naver_login.png';
 
 function Login() {
-    const CLIENT_KAKAO_ID = process.env.REACT_APP_REST_API_KEY;
-    const REDIRECT_KAKAO_URI = process.env.REACT_APP_REDIRECT_URL;
+    const CLIENT_KAKAO_ID = process.env.REACT_APP_KAKAO_REST_API_KEY;
+    const REDIRECT_KAKAO_URI = process.env.REACT_APP_KAKAO_REDIRECT_URL;
     const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_KAKAO_ID}&redirect_uri=${REDIRECT_KAKAO_URI}&response_type=code`;
 
     const CLIENT_GOOGLE_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
