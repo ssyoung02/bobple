@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
 public class User {
@@ -26,14 +25,14 @@ public class User {
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(name = "name", nullable = false, unique = true, length = 50)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @Column(name = "nick_name", nullable = false, length = 50)
-    private String nickName;
+    @Column(name = "nick_name", nullable = true, length = 50)
+    private String nickName = "";
 
     @Column(name = "profile_image", length = 255)
     private String profileImage;
@@ -44,18 +43,26 @@ public class User {
     @Column(name = "provider", length = 20)
     private String provider;
 
-    @Column(name = "company_id", nullable = false)
-    private Long companyId =0L;
+    @Column(name = "company_id", nullable = true)
+    private Long companyId = 0L;
 
     @Column(name = "report_count", nullable = false)
-    private Integer reportCount;
+    private Integer reportCount = 0;
 
     @Column(name = "point", nullable = false)
-    private Integer point;
+    private Integer point = 0;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    // 기본 생성자에 기본값 설정
+    public User() {
+        this.nickName = "";
+        this.companyId = 0L;
+        this.reportCount = 0;
+        this.point = 0;
+    }
 }
