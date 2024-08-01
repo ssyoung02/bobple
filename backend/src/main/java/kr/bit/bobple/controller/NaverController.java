@@ -13,8 +13,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000") // CORS 설정 추가
 public class NaverController {
 
@@ -33,7 +35,7 @@ public class NaverController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/api/login/oauth2/callback/naver")
+    @GetMapping("/login/oauth2/callback/naver")
     public ResponseEntity<?> naverCallback(@RequestParam String code) {
         // 넘어온 code를 출력하여 확인
         System.out.println("Authorization Code: " + code);
@@ -63,11 +65,14 @@ public class NaverController {
         String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
         HttpHeaders userInfoHeaders = new HttpHeaders();
         userInfoHeaders.setBearerAuth(accessToken);
-        userInfoHeaders.setContentType(MediaType.APPLICATION_JSON);
+        userInfoHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         HttpEntity<?> userInfoEntity = new HttpEntity<>(userInfoHeaders);
         ResponseEntity<Map> userInfoResponse = restTemplate.exchange(userInfoUrl, HttpMethod.GET, userInfoEntity, Map.class);
         Map<String, Object> userInfo = userInfoResponse.getBody();
+
+        System.out.println("네이버 사용자 정보");
+        System.out.println(userInfo);
 
         Map<String, Object> responseMap = (Map<String, Object>) userInfo.get("response");
 
@@ -77,19 +82,26 @@ public class NaverController {
         String name = (String) responseMap.get("name");
         String profileImage = (String) responseMap.get("profile_image");
 
-        User user = userRepository.findByEmail(email).orElseGet(() -> new User());
-        user.setUsername(email);
-        user.setEmail(email);
-        user.setName(name);
-        user.setProfileImage(profileImage);
-        user.setEnabled(true);
-        user.setProvider("naver");
-        user.setReportCount(0);
-        user.setPoint(0);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        User user;
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+        } else {
+            user = new User();
+            user.setUsername(email);
+            user.setEmail(email);
+            user.setName(name);
+            user.setProfileImage(profileImage);
+            user.setEnabled(true);
+            user.setProvider("naver");
+            user.setCompanyId(0L);  // 기본값 설정
+            user.setReportCount(0);
+            user.setPoint(0);
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
 
-        userRepository.save(user);
+            userRepository.save(user);
+        }
 
         // 사용자 정보를 포함한 클레임 생성
         Map<String, Object> claims = new HashMap<>();
@@ -104,6 +116,8 @@ public class NaverController {
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.createToken(user.getUserIdx(), email, claims);
         System.out.println("Generated JWT Token: " + jwtToken);
+        System.out.println(user.getUserIdx());
+
 
         // 사용자 정보 중 필요한 부분만 추출하여 클라이언트로 전송
         Map<String, Object> result = new HashMap<>(claims);

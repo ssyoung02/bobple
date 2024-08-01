@@ -21,7 +21,7 @@ const NaverLoginHandler = () => {
 
                 // 백엔드에서 받은 데이터 처리
                 console.log(res);
-                localStorage.setItem("name", res.data.username);
+                localStorage.setItem("name", res.data.name);
                 localStorage.setItem("email", res.data.email);
                 localStorage.setItem("token", res.data.token);
 

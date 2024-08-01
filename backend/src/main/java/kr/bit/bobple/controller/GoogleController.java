@@ -13,8 +13,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000") // CORS 설정 추가
 public class GoogleController {
 
@@ -33,7 +35,7 @@ public class GoogleController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/api/login/oauth2/callback/google")
+    @GetMapping("/login/oauth2/callback/google")
     public ResponseEntity<?> googleCallback(@RequestParam String code) {
         // 넘어온 code를 출력하여 확인
         System.out.println("Authorization Code: " + code);
@@ -77,21 +79,27 @@ public class GoogleController {
         String email = (String) userInfo.get("email");
         String profileImage = (String) userInfo.get("picture");
 
-        User user = userRepository.findByEmail(email).orElseGet(() -> new User());
-        user.setUsername(email); // username을 email로 설정
-        user.setEmail(email);
-        user.setName(username);
-        user.setNickName(username);
-        user.setProfileImage(profileImage);
-        user.setEnabled(true);
-        user.setProvider("google");
-        user.setCompanyId(0L);  // 기본값으로 설정, 필요에 따라 수정
-        user.setReportCount(0);
-        user.setPoint(0);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        User user;
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+        } else {
+            user = new User();
+            user.setUsername(email); // username을 email로 설정
+            user.setEmail(email);
+            user.setName(username);
+            user.setNickName(username);
+            user.setProfileImage(profileImage);
+            user.setEnabled(true);
+            user.setProvider("google");
+            user.setCompanyId(0L);  // 기본값으로 설정, 필요에 따라 수정
+            user.setReportCount(0);
+            user.setPoint(0);
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
 
-        userRepository.save(user);
+            userRepository.save(user);
+        }
 
         // 사용자 정보를 포함한 클레임 생성
         Map<String, Object> claims = new HashMap<>();
