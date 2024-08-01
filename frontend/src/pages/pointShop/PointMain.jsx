@@ -19,24 +19,28 @@ function PointMain() {
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/PointMain', { withCredentials: true })
-            .then(response => {
-                console.log(response.data); // 데이터 구조 확인
-                setProducts(response.data);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the products!', error);
-            });
+        if (selectedTab === '기프티콘') {
+            axios.get('http://localhost:8080/api/PointMain', { withCredentials: true })
+                .then(response => {
+                    console.log(response.data); // 데이터 구조 확인
+                    setProducts(response.data);
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the products!', error);
+                });
+        }
 
-        axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}`, { withCredentials: true })
-            .then(response => {
-                console.log(response.data); // 데이터 구조 확인
-                setPurchasedProducts(response.data);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the purchased products!', error);
-            });
-    }, [userIdx]);
+        if (selectedTab === '보관함') {
+            axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}`, { withCredentials: true })
+                .then(response => {
+                    console.log(response.data); // 데이터 구조 확인
+                    setPurchasedProducts(response.data);
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the purchased products!', error);
+                });
+        }
+    }, [userIdx, selectedTab]);
 
     const handleTabClick = (tab) => {
         setSelectedTab(tab);

@@ -61,13 +61,14 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_purchases",
-            joinColumns = @JoinColumn(name = "user_idx"),
-            inverseJoinColumns = @JoinColumn(name = "gift_idx")
-    )
-    private List<PointShop> purchasedItems = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "purchasedGift",  // 조인 테이블 이름
+//            joinColumns = @JoinColumn(name = "user_idx"),  // 현재 엔티티의 조인 컬럼 이름
+//            inverseJoinColumns = @JoinColumn(name = "gift_idx")  // 반대편 엔티티의 조인 컬럼 이름
+//    )
+//    private List<PointShop> purchasedItems = new ArrayList<>();
+
 
     // 생성자 추가
     public User(String username, int point) {

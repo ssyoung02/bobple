@@ -62,10 +62,6 @@ public class PointShopService {
         return false;
     }
 
-    public User getUserById(Long userIdx) {
-        return userRepository.findById(userIdx).orElse(null);
-    }
-
     public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx) {
         return purchasedGiftRepository.findByUserUserIdx(userIdx);
     }

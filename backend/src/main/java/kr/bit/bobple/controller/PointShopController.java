@@ -2,7 +2,6 @@ package kr.bit.bobple.controller;
 
 import kr.bit.bobple.entity.PointShop;
 import kr.bit.bobple.entity.PurchasedGift;
-import kr.bit.bobple.entity.User;
 import kr.bit.bobple.service.PointShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

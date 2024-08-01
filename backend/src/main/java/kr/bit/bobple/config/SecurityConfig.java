@@ -41,7 +41,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/api/GiftPurchase/**").permitAll()
                                 .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/", "/pointShop/**").permitAll()
                                 .anyRequest().authenticated()
                 )
