@@ -62,7 +62,34 @@ public class PointShopService {
         return false;
     }
 
-    public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx) {
-        return purchasedGiftRepository.findByUserUserIdx(userIdx);
+//    public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx) {
+//        return purchasedGiftRepository.findByUserUserIdx(userIdx);
+//    }
+
+    public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx, String sort) {
+        if ("asc".equalsIgnoreCase(sort)) {
+            return purchasedGiftRepository.findByUserUserIdxOrderByPurchaseDateAsc(userIdx);
+        } else {
+            return purchasedGiftRepository.findByUserUserIdxOrderByPurchaseDateDesc(userIdx);
+        }
     }
+
+    @Transactional
+    public boolean useGift(Long userIdx, Long productIdx) {
+        Optional<PurchasedGift> purchasedGiftOpt = purchasedGiftRepository.findByUserUserIdxAndPointShopGiftIdx(userIdx, productIdx);
+
+        if (purchasedGiftOpt.isPresent()) {
+            PurchasedGift purchasedGift = purchasedGiftOpt.get();
+            purchasedGift.setUsed(true); // is_used를 true로 설정
+            purchasedGiftRepository.save(purchasedGift);
+            return true;
+        }
+        return false;
+    }
+
+    public PointShop getBarcodeByProductIdx(Long productIdx) {
+        Optional<PointShop> pointShop = pointShopRepository.findById(productIdx);
+        return pointShop.orElse(null);
+    }
+
 }

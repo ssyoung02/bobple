@@ -6,9 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PurchasedGiftRepository extends JpaRepository<PurchasedGift, Long> {
     List<PurchasedGift> findByUserUserIdx(Long userIdx);
+
+    List<PurchasedGift> findByUserUserIdxOrderByPurchaseDateAsc(Long userIdx);
+    List<PurchasedGift> findByUserUserIdxOrderByPurchaseDateDesc(Long userIdx);
+
+    Optional<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
 
 //    @Query(value = "SELECT pg.* FROM purchasedGift pg JOIN point_shop ps ON pg.gift_idx = ps.gift_idx WHERE pg.user_idx = :userIdx", nativeQuery = true)
 //    List<PurchasedGift> findPurchasedGiftsWithDetails(@Param("userIdx") Long userIdx);

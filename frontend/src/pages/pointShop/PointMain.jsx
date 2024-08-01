@@ -14,6 +14,7 @@ function PointMain() {
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [products, setProducts] = useState([]);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
+    const [sortOrder, setSortOrder] = useState('desc');
     const userIdx = 9; // 여기에 실제 userIdx를 설정하세요
 
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
@@ -31,7 +32,7 @@ function PointMain() {
         }
 
         if (selectedTab === '보관함') {
-            axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}`, { withCredentials: true })
+            axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?sort=${sortOrder}`, { withCredentials: true })
                 .then(response => {
                     console.log(response.data); // 데이터 구조 확인
                     setPurchasedProducts(response.data);
@@ -40,7 +41,7 @@ function PointMain() {
                     console.error('There was an error fetching the purchased products!', error);
                 });
         }
-    }, [userIdx, selectedTab]);
+    }, [userIdx, selectedTab, sortOrder]);
 
     const handleTabClick = (tab) => {
         setSelectedTab(tab);
@@ -52,6 +53,10 @@ function PointMain() {
 
     const movegiftDetail = (productIdx) => {
         navigate('/point/pointGifticonDetail', { state: { productIdx } });
+    };
+
+    const moveGifticonBarcode = (productIdx) => {
+        navigate('/point/GifticonBarcode', { state: { productIdx } });
     };
 
     const handleCategoryClick = (category) => {
@@ -143,6 +148,14 @@ function PointMain() {
             )}
             {selectedTab === '보관함' && (
                 <>
+                    <div className="sort-buttons">
+                        <button onClick={() => setSortOrder('desc')} className={sortOrder === 'desc' ? 'active' : ''}>
+                            최신순
+                        </button>
+                        <button onClick={() => setSortOrder('asc')} className={sortOrder === 'asc' ? 'active' : ''}>
+                            오래된순
+                        </button>
+                    </div>
                     <div className="category-btn-container">
                         <div className="category-buttons">
                             {categories.map(category => (
@@ -159,7 +172,7 @@ function PointMain() {
                     <div className="category-container">
                         <div className="product-list">
                             {filteredPurchasedProducts.map(product => (
-                                <button key={product.purchaseIdx} className="product-item" onClick={() => movegiftDetail(product.pointShop.giftIdx)}>
+                                <button key={product.purchaseIdx} className="product-item" onClick={() => moveGifticonBarcode(product.pointShop.giftIdx)}>
                                     <img src={product.pointShop.giftImageUrl} alt={product.pointShop.giftDescription} />
                                     <h3>{product.pointShop.giftBrand}</h3>
                                     <h4>{product.pointShop.giftDescription}</h4>
