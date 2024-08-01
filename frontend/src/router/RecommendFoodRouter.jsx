@@ -9,7 +9,8 @@ function RecommendFoodRouter(){
         <Routes>
             <Route path="/" element={<RecommendMain/>}/>
             <Route path="/recommendFoodCategory" element={<RecommendFoodCategory />}>
-                <Route path=":category" element={<RecommendFoodCategory />} /> {/* 쿼리 파라미터 추가 */}
+                <Route path=":category" element={<RecommendFoodCategory />} />
+                <Route path=":keyword" element={<RecommendFoodCategory />} />
             </Route>
 
             <Route path="/foodWorldCup/foodWorldCup" element={<FoodWorldCup/>}/>

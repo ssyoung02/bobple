@@ -96,17 +96,6 @@
     color: white;
 }
 
-/* 회식장소 Pick 스타일 */
-.group-dinner-pick {
-    margin-bottom: 20px; /* 회식장소 Pick 아래 여백 */
-}
-
-.group-dinner-pick h3 {
-    font-size: 18px; /* 회식장소 Pick 폰트 크기 */
-    font-weight: bold; /* 회식장소 Pick 폰트 굵기 */
-    margin-bottom: 10px; /* 회식장소 Pick 아래 여백 */
-}
-
 .text-buttons {
     display: flex; /* flexbox 레이아웃 사용 */
     gap: 10px; /* 버튼 간격 */
@@ -120,18 +109,42 @@
     cursor: pointer; /* 커서 스타일 변경 */
 }
 
-/* 음식점 정보 목록 스타일 */
-.restaurant-info-list {
-    list-style: none; /* 리스트 스타일 제거 */
-    padding: 0;
+
+
+.group-dinner-pick .restaurant-info-list {
+    display: flex; /* 컨테이너 수평 배열 */
+    justify-content: space-around; /* 컨테이너 간격 조정 */
+    flex-wrap: wrap; /* 아이템들이 컨테이너 너비를 초과할 경우 줄바꿈 */
+    width: 100%; /* 컨테이너 너비 확장 - 필요에 따라 조정 */
 }
 
 .restaurant-info-item {
-    display: flex; /* flexbox 레이아웃 사용 */
-    align-items: center; /* 수직 가운데 정렬 */
-    padding: 10px; /* 아이템 패딩 */
-    border-bottom: 1px solid #ddd; /* 아이템 아래쪽 테두리 */
+    display: flex; /* 내부 요소 수직 배열 (이미지, 정보 컨테이너) */
+    flex-direction: column;
+    align-items: center; /* 수평 중앙 정렬 */
+    width: 30%; /* 아이템 너비 조정 - 필요에 따라 조정 */
+    margin-bottom: 10px; /* 아이템 간 간격 */
 }
+
+
+.pub-image {
+    width: 100px;        /* 이미지 크기 조정 */
+    height: 100px;
+    margin-bottom: 10px;  /* 이미지 아래 간격 */
+}
+
+
+.pub-info-container {
+    display: flex; /* 내부 요소 수직 배열 (이름, 상세 정보) */
+    flex-direction: column;
+}
+
+.pub-details {
+    display: flex; /* 거리와 북마크 수평 배열 */
+    justify-content: space-around; /* 간격 조정 */
+    font-size: 12px;
+}
+
 
 .restaurant-name {
     font-size: 16px; /* 음식점 이름 폰트 크기 */
