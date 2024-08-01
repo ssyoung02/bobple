@@ -1,9 +1,11 @@
-body,button,code,Link,div,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,input,legend,li,ol,p,pre,select,td,textarea,th,ul{
+body,button,code,Link,div,dl,dt,fieldset,form,input,legend,li,ol,p,pre,select,td,textarea,th,ul{
   font-family: NotoSansKR-Light, serif;
   margin: 0;
   padding: 0;
 }
-
+h1,h2,h3,h4,h5,h6{
+  font-family: NotoSansKR-Bold, serif;
+}
 a{
   text-decoration: none;
 }
@@ -13,7 +15,7 @@ body{
 }
 
 main{
-  padding: 0 1.25rem;
+  padding: 0 1.25rem 1em 1.25rem;
 }
 
 @font-face {

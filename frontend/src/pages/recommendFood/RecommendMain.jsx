@@ -1,18 +1,51 @@
 /*global kakao*/
 import React, { useEffect, useState } from 'react';
 import '../../assets/style/RecommendMain.css';
+import React, {useEffect, useState} from 'react';
+import '../../assets/style/recommendFood/RecommendMain.css';
+import '../../assets/style/allSearch/AllSearch.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { useNavigate } from 'react-router-dom';
+import {MainFoodBanner, SearchIcon, Trophy} from "../../components/imgcomponents/ImgComponents";
+import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
+import { fetchTopKeywords, handleKeyDown, handleSearchClick } from '../../components/Search/SearchAll';
+
+const dummyRecommendations = [
+    {id: 1, place_name: '브레댄코 강남점', category_name: '음식점 > 카페 > 커피전문점', address: '서울특별시 강남구 역삼동 825-19', distance: '500', reviews: '125'},
+    {id: 2, place_name: '담미온', category_name: '음식점 > 한식 > 국수' , address: '서울특별시 강남구 역삼동 823', distance: '800', reviews: '256'},
+    {id: 3, place_name: '이삭토스트', category_name: '음식점 > 간식 > 토스트', address: '서울특별시 강남구 역삼동 817-11', distance: '1.2km', reviews: '88'},
+    {id: 4, place_name: '풍년참숯갈비', category_name: '음식점 > 한식 > 육류,고기 > 갈비', address: '서울 서초구 서초대로74길 29', distance: '600', reviews: '30'},
+];
 
 function RecommendMain() {
+    const [topKeywords, setTopKeywords] = useState([]);
+
+    useEffect(() => {
+        fetchTopKeywords(setTopKeywords);
+    }, []);
+
+    const moveFoodWorldCup = () => {
+        navigate('/recommend/foodWorldCup/foodWorldCup');
+    }
+
+    const [nearbyPub, setNearbyPub] = useState([]);
+
+    const categories = ['전체', '고기', '한식', '간식', '카페', '파스타'];
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const navigate = useNavigate();
-    const [nearbyPub, setNearbyPub] = useState([]);
     const [keyword, setKeyword] = useState("");
 
-    const handleCategoryClick = (category) => {
-        setSelectedCategory(category);
-        navigate(`/recommend/recommendFoodCategory?category=${category}`); // 카테고리 정보 전달
+    const handleGroupDinnerPickClick = (category) => {
+        const searchCategory = category === '이자카야' ? '일본식주점' : category;
+        setSelectedCategory(searchCategory);
+        navigate(`/recommend/recommendFoodCategory?category=${searchCategory}`); // 카테고리 정보 전달
     };
+
+
+    const filteredProducts = selectedCategory === '전체'
+        ? nearbyPub
+        : nearbyPub.filter(nearbyPub => nearbyPub.category_name === selectedCategory);
 
     const handleSearch = () => {
         const trimmedKeyword = keyword.trim();
@@ -60,112 +93,111 @@ function RecommendMain() {
         }
     }, []);
 
-    const handleGroupDinnerPickClick = (category) => {
-        const searchCategory = category === '이자카야' ? '일본식주점' : category; // 이자카야 특별 처리
-        navigate(`/recommend/recommendFoodCategory?category=${searchCategory}`);
-    };
     const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
 
     return (
-        <div className="recommend-container">
-            <h3 className="recommend-title">메뉴가 고민되시나요?</h3>
-
-            {/* 검색창 */}
-            <div className="search-container">
-                <input
-                    type="text"
-                    placeholder="검색 키워드를 입력해주세요"
-                    className="search-input"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSearch();
-                        }
-                    }}
-                />
-                <button onClick={handleSearch}>검색</button>
-            </div>
-
-            {/* 실시간 인기 메뉴 */}
-            <div className="popular-menus">
-                <h6>실시간 인기 메뉴</h6>
+        <div className={"recommend-main"}>
+            <div className={"recommend-search"}>
+                <h3>메뉴가 고민되시나요?</h3>
+                {/*검색영역*/}
+                <div className="SearchInput">
+                    <input
+                        className="AllSaerchBox"
+                        type="text"
+                        placeholder="검색 키워드를 입력해주세요"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSearch();
+                            }
+                        }}
+                    />
+                    <button className="AllSearchButton" onClick={handleSearch}>
+                        <SearchIcon/>
+                    </button>
+                    {/*실시간 인기*/}
+                    <TopSearch/>
+                </div>
             </div>
 
             {/* 메뉴 추천 */}
             <div className="menu-recommendation">
-                <p>이건 어떠신가요?</p>
-                <button className="recommend-button">마라탕</button>
+                <h4>이건 어떠신가요?</h4>
+                <div className={"menu-recommendation-back"}></div>
+                <button className="recommend-button">
+                    <div className={"menu-recommendation-img"}>
+                        <MainFoodBanner/>
+                    </div>
+                    <p className={"menu-recommendation-title"}>마라탕</p>
+                </button>
             </div>
 
             {/* 월드컵 */}
             <div className="menu-worldcup">
-                <p>메뉴 정하기 힘들 때</p>
-                <button className="worldcup">월드컵</button>
+                <h5>메뉴 정하기 힘들 때</h5>
+                <button className="worldcup" onClick={moveFoodWorldCup}>
+                    <h4>음식 월드컵</h4>
+                    <Trophy/>
+                </button>
             </div>
 
             {/* 추천 카테고리 */}
             <div className="recommended-categories">
-                추천 카테고리
-                <div className="category-icons">
-                    {/* 아이콘 제거 */}
-                </div>
-                <div className="category-description">
-                    <button>칼칼</button>
-                    <button>부장님은 느끼한 게 싫다고 하셨어</button>
-                </div>
+                <h5>추천 카테고리</h5>
+                <RecommendedCategories/>
             </div>
 
 
             {/* 카테고리 */}
-            <div className="recommend-title">카테고리별 맛집 추천</div>
-            <div>
-                {['전체', '한식', '중식', '일식', '양식', '패스트푸드', '분식', '치킨', '피자', '아시아음식', '뷔페', '도시락'].map((category) => (
-                    <button
-                        key={category}
-                        className={`recommend-category-button ${selectedCategory === category ? 'active' : ''}`}
-                        onClick={() => handleGroupDinnerPickClick(category)} // Link 대신 onClick 사용
-                    >
-                        {category}
-                    </button>
-                ))}
+            <div className={"food-categories"}>
+                <h4>카테고리별 맛집 추천</h4>
+                <FoodCategories/>
             </div>
 
             {/* 회식장소 Pick */}
             <div className="group-dinner-pick">
-                회식장소 Pick
-                <div className="text-buttons">
-                    {/* 버튼 클릭 시 handleGroupDinnerPickClick 함수 호출 */}
-                    {['고기', '회', '호프', '이자카야'].map((category) => (
-                        <button key={category} onClick={() => handleGroupDinnerPickClick(category)}>
-                            {category}
-                        </button>
-                    ))}
-                </div>
-            </div>
-            {/* 주변 술집 정보 표시 (조건부 렌더링 추가) */}
-            {nearbyPub.length > 0 ? ( // nearbyPubs 배열이 비어있지 않을 때만 렌더링
-                <ul className="restaurant-info-list">
-                    {nearbyPub.map((pub) => (
-                        <li key={pub.id} className="restaurant-info-item">
-                            <a href={pub.place_url} target="_blank" rel="noreferrer">
-                                <img src={dummyImage} alt={pub.place_name} className="pub-image"/> {/* 이미지 추가 */}
-                            </a>
-                            <div className="pub-info-container">
-                                <a href={pub.place_url} target="_blank" rel="noreferrer">
-                                    <div className="pub-name">{pub.place_name}</div>
-                                </a>
-                                    <div className="pub-details">
-                                        <span className="pub-distance">{Math.round(pub.distance)}m</span>
-                                        <span className="pub-bookmarks">북마크 {pub.bookmarks_count || 0}</span>
-                                    </div>
-                            </div>
-                        </li>
+                <h4>회식장소 Pick</h4>
+                <div className="restaurant-category-btn-container">
+                    <div className="restaurant-category-buttons">
+                        {categories.map(category => (
+                            <button
+                                key={category}
+                                onClick={() => handleGroupDinnerPickClick(category)}
+                                className={selectedCategory === category ? 'active' : ''}
+                            >
+                                {category}
+                            </button>
                         ))}
-                </ul>
-            ) : (
-                <p>주변 술집이 없습니다.</p>
-            )}
+                    </div>
+                </div>
+                <div className="restaurant-category-container">
+                    {/* 주변 술집 정보 표시 (조건부 렌더링 추가) */}
+                    {nearbyPub.length > 0 ? ( // nearbyPubs 배열이 비어있지 않을 때만 렌더링
+                        <ul className="restaurant-info-list">
+                            {nearbyPub.map((pub) => (
+                                <li key={pub.id} className="restaurant-info-item">
+                                    <a href={pub.place_url} target="_blank" rel="noreferrer">
+                                        <img src={dummyImage} alt={pub.place_name} className="pub-image"/> {/* 이미지 추가 */}
+                                    </a>
+                                    <div className="pub-info-container">
+                                        <a href={pub.place_url} target="_blank" rel="noreferrer">
+                                            <div className="pub-name">{pub.place_name}</div>
+                                        </a>
+                                        <div className="pub-details">
+                                            <span className="pub-distance">{Math.round(pub.distance)}m</span>
+                                            <span className="pub-bookmarks">북마크 {pub.bookmarks_count || 0}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>주변 술집이 없습니다.</p>
+                    )}
+                </div>
+
+            </div>
         </div>
     );
 }
