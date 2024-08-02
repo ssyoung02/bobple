@@ -18,16 +18,14 @@ function PointMain() {
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [unusedGiftCount, setUnusedGiftCount] = useState(0);
     const [sortOrder, setSortOrder] = useState('desc');
-    const userIdx = 9; // Set the actual userIdx here
+    const userIdx = 9;
 
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
 
     useEffect(() => {
-        // Fetch all products when "기프티콘" tab is selected
         if (selectedTab === '기프티콘') {
             axios.get('http://localhost:8080/api/PointMain', { withCredentials: true })
                 .then(response => {
-                    console.log(response.data); // Check data structure
                     setProducts(response.data);
                 })
                 .catch(error => {
@@ -35,12 +33,10 @@ function PointMain() {
                 });
         }
 
-        // Fetch purchased products when "보관함" tab is selected
         if (selectedTab === '보관함') {
             const isUsed = selectedItemTab === '사용완료';
             axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?sort=${sortOrder}&isUsed=${isUsed}`, { withCredentials: true })
                 .then(response => {
-                    console.log(response.data); // Check data structure
                     setPurchasedProducts(response.data);
                 })
                 .catch(error => {
@@ -49,7 +45,6 @@ function PointMain() {
         }
     }, [userIdx, selectedTab, selectedItemTab, sortOrder]);
 
-    // Fetch count of unused gifts
     useEffect(() => {
         axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?isUsed=false`, { withCredentials: true })
             .then(response => {
@@ -68,6 +63,18 @@ function PointMain() {
         setSelectedItemTab(tab);
     };
 
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category);
+    };
+
+    const handleCarouselSelect = (selectedIndex) => {
+        setCarouselIndex(selectedIndex);
+    };
+
+    const handleSortOrderChange = (event) => {
+        setSortOrder(event.target.value);
+    };
+
     const moveGacha = () => {
         navigate('/point/pointGame/GachaGame');
     };
@@ -82,14 +89,6 @@ function PointMain() {
 
     const moveGifticonBarcode = (productIdx) => {
         navigate('/point/GifticonBarcode', { state: { productIdx } });
-    };
-
-    const handleCategoryClick = (category) => {
-        setSelectedCategory(category);
-    };
-
-    const handleCarouselSelect = (selectedIndex) => {
-        setCarouselIndex(selectedIndex);
     };
 
     const filteredProducts = selectedCategory === '전체'
@@ -164,21 +163,17 @@ function PointMain() {
                     <h2 className="game-header">포인트 게임</h2>
                     <div className="game-container">
                         <button className="game-button" onClick={moveGacha}>Gacha</button>
-                        <button className="game-button" onClick={moveGacha}>matching</button>
-                        <button className="game-button" onClick={moveGacha}>avoid</button>
-                        <button className="game-button" onClick={moveSlot}>slot</button>
+                        <button className="game-button" onClick={moveSlot}>Slot</button>
                     </div>
                 </>
             )}
             {selectedTab === '보관함' && (
                 <>
-                    <div className="sort-buttons">
-                        <button onClick={() => setSortOrder('desc')} className={sortOrder === 'desc' ? 'active' : ''}>
-                            최신순
-                        </button>
-                        <button onClick={() => setSortOrder('asc')} className={sortOrder === 'asc' ? 'active' : ''}>
-                            오래된순
-                        </button>
+                    <div className="sort-select-container">
+                        <select onChange={handleSortOrderChange} value={sortOrder} className="sort-select">
+                            <option value="desc">최신순</option>
+                            <option value="asc">오래된순</option>
+                        </select>
                     </div>
                     <div className="category-btn-container">
                         <div className="category-buttons">
