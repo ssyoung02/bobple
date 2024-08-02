@@ -9,9 +9,10 @@ const KakaoLoginHandler = () => {
     useEffect(() => {
         const kakaoLogin = async () => {
             try {
+                console.log('Kakao Backend URL:', process.env.REACT_APP_KAKAO_BACKEND_URL);  // Debugging line
                 const res = await axios({
                     method: "GET",
-                    url: `${process.env.REACT_APP_BACKEND_URL}?code=${code}`,
+                    url: `${process.env.REACT_APP_KAKAO_BACKEND_URL}?code=${code}`,
                     headers: {
                         "Content-Type": "application/json;charset=utf-8",
                     },
@@ -19,6 +20,8 @@ const KakaoLoginHandler = () => {
 
                 // 백엔드에서 받은 데이터 처리
                 console.log(res);
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("userIdx", res.data.user_idx);
                 localStorage.setItem("name", res.data.username);
                 localStorage.setItem("email", res.data.email);
                 localStorage.setItem("token", res.data.token);
@@ -39,7 +42,6 @@ const KakaoLoginHandler = () => {
     }, [code, navigate]);
 
     return null;
-
 };
 
 export default KakaoLoginHandler;

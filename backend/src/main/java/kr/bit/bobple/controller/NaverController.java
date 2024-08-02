@@ -94,7 +94,6 @@ public class NaverController {
             user.setProfileImage(profileImage);
             user.setEnabled(true);
             user.setProvider("naver");
-            user.setCompanyId(0L);  // 기본값 설정
             user.setReportCount(0);
             user.setPoint(0);
             user.setCreatedAt(LocalDateTime.now());
