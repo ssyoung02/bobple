@@ -2,6 +2,8 @@ import React from 'react';
 import kakaoImage from '../../../assets/images/kakao_login_medium_narrow.png';
 import googleImage from '../../../assets/images/google_login.png';
 import naverImage from '../../../assets/images/naver_login.png';
+import {useNavigate} from "react-router-dom";
+import '../../../assets/style/myPage/Login.css'
 
 function Login() {
     const CLIENT_KAKAO_ID = process.env.REACT_APP_KAKAO_REST_API_KEY;
@@ -16,9 +18,15 @@ function Login() {
     const REDIRECT_NAVER_URI = process.env.REACT_APP_NAVER_REDIRECT_URL;
     const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${CLIENT_NAVER_ID}&redirect_uri=${REDIRECT_NAVER_URI}&response_type=code`;
 
+    const navigate = useNavigate();
+
+    const moveAdmin = () => {
+        navigate('/myPage/login/admin');
+    }
+
     return (
-        <div>
-            <h1>로그인 페이지</h1>
+        <div className="login-btns">
+            <h3 className="login-title">소셜 로그인</h3>
             <a href={KAKAO_AUTH_URL} className="kakaobtn">
                 <img src={kakaoImage} alt="Kakao Login"/>
             </a>
@@ -28,6 +36,8 @@ function Login() {
             <a href={NAVER_AUTH_URL} className="naverbtn">
                 <img src={naverImage} alt="Naver Login"/>
             </a>
+
+            <button className="admin-btn" onClick={moveAdmin}>관리자 로그인</button>
         </div>
     );
 }

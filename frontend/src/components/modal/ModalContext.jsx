@@ -1,12 +1,14 @@
 import { createContext, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import GroupModal from './GroupModal';
+import CreateGroupModal from './CreateGroupModal';
+import JoinGroupModal from "./JoinGroupModal";
 
 // Context 생성
 const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
     const [modalState, setModalState] = useState("hide");
+    const [modalType, setModalType] = useState('');
 
     const showModal = () => {
         setModalState("show");
@@ -17,8 +19,13 @@ export const ModalProvider = ({ children }) => {
     };
 
     return (
-        <ModalContext.Provider value={{ modalState, showModal, hideModal }}>
-            {modalState === "show" && <GroupModal modalState={modalState} hideModal={hideModal} />}
+        <ModalContext.Provider value={{ modalState, showModal, hideModal, setModalType }}>
+            {modalType === 'createGroup' &&
+                <CreateGroupModal modalState={modalState} hideModal={hideModal} />
+            }
+            {modalType === 'joinGroup' &&
+                <JoinGroupModal modalState={modalState} hideModal={hideModal} />
+            }
             {children}
         </ModalContext.Provider>
     );

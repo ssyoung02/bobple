@@ -5,12 +5,13 @@ import { useState } from 'react';
 import axios from "axios";
 
 // props로 받은 제목, 내용을 출력하는 모달
-const GroupModal = ({ modalState, hideModal }) => {
+const CreateGroupModal = ({ modalState, hideModal }) => {
     const navigate = useNavigate();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [location, setLocation] = useState("");
     const [roomPeople, setRoomPeople] = useState(1);
+    const [image, setImage] = useState(null);
 
     const moveChat = (chatRoomId) => {
         console.log(`Navigating to /group/chatting/${chatRoomId}`);
@@ -43,6 +44,22 @@ const GroupModal = ({ modalState, hideModal }) => {
         hideModal();
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const triggerFileInput = () => {
+        document.getElementById('file-input').click();
+    };
+
+
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content">
@@ -52,6 +69,24 @@ const GroupModal = ({ modalState, hideModal }) => {
                     <button className="group-modal-create-btn" onClick={createChatRoom}>생성</button>
                 </div>
                 <div className="modal-body">
+                    <div className="group-image-container">
+                        <div className="group-image-box" onClick={triggerFileInput}>
+                            {image ? (
+                                <img src={image} alt="이미지 미리보기" className="preview-image"/>
+                            ) : (
+                                <div className="placeholder"></div>
+                            )}
+                        </div>
+                        <button className="plus-button" onClick={triggerFileInput}>+</button>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="file-input"
+                            id="file-input"
+                            style={{display: 'none'}} // input을 숨김
+                        />
+                    </div>
                     <div className="form-group">
                         <label>모임제목</label>
                         <input
@@ -96,9 +131,9 @@ const GroupModal = ({ modalState, hideModal }) => {
     );
 };
 
-GroupModal.propTypes = {
+CreateGroupModal.propTypes = {
     modalState: PropTypes.string.isRequired,
     hideModal: PropTypes.func.isRequired,
 };
 
-export default GroupModal;
+export default CreateGroupModal;
