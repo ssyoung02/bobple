@@ -24,11 +24,14 @@ function RecommendMain() {
     const [nearbyPub, setNearbyPub] = useState([]);
     const [allNearbyPub, setAllNearbyPub] = useState([]);
     const [keyword, setKeyword] = useState("");
+
     const [recommendedFood, setRecommendedFood] = useState(null);
     const [recommendThemes, setRecommendThemes] = useState([]);
+
     const [page, setPage] = useState(1);
     const observer = useRef();
-    const categories = ['전체', '한식', '중식', '일식', '양식', '패스트푸드', '분식', '치킨', '피자', '아시아음식', '도시락'];
+    const categories = ['전체', '고기', '회', '호프', '이자카야'];
+
     useEffect(() => {
         fetchTopKeywords(setTopKeywords);
     }, []);
@@ -122,8 +125,9 @@ function RecommendMain() {
 
     useEffect(() => {
         // 서버에서 추천 음식 정보 가져오기 (axios 사용)
-        axios.get('/api/recommendFood')
+        axios.get('http://localhost:8080/api/recommendFood')
             .then(response => {
+                console.log("API Response:", response); // 응답 데이터 출력
                 setRecommendedFood(response.data); // axios는 자동으로 JSON 변환
             })
             .catch(error => {
@@ -133,8 +137,9 @@ function RecommendMain() {
 
     useEffect(() => {
         // 서버에서 추천 테마 정보 가져오기
-        axios.get('/api/recommendThemes')
+        axios.get('http://localhost:8080/api/recommendThemes')
             .then(response => {
+                console.log("API Response:", response); // 응답 데이터 출력
                 setRecommendThemes(response.data);
             })
             .catch(error => {
@@ -143,19 +148,6 @@ function RecommendMain() {
     }, []);
 
     const handleThemeClick = (themeIdx) => {
-        /* themeIdx에 해당하는 음식 목록 가져오기
-        axios.get(`/api/recommendFoods/${themeIdx}`)
-            .then(response => {
-                const foodNames = response.data;
-                console.log("선택된 테마 음식 목록:", foodNames);
-                const keyword = foodNames.join(' OR '); // 음식 이름들을 OR 연산자로 연결하여 검색어 생성
-                navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`);
-            })
-            .catch(error => {
-                console.error('추천 음식 목록 가져오기 실패:', error);
-            });
-
-         */
         // 바로 RecommendFoodCategory 페이지로 이동, 필요한 정보는 이미 recommendThemes에 있음
         const selectedTheme = recommendThemes.find(theme => theme.themeIdx === themeIdx);
         if (selectedTheme) {
@@ -192,18 +184,18 @@ function RecommendMain() {
             <div className="menu-recommendation">
                 <h4>이건 어떠신가요?</h4>
                 {recommendedFood && ( // 추천 음식 정보가 있을 때만 표시
-                <>
-                    <div className={"menu-recommendation-back"}></div>
-                    <button className="recommend-button" onClick={handleRecommendedFoodClick}>
-                        <div className={"menu-recommendation-img"}>
-                            <img src={recommendedFood.foodImageUrl} alt={recommendedFood.foodName}/>
-                        </div>
-                        <p className={"menu-recommendation-title"}>
-                            {recommendedFood.foodName}
-                        </p>
-                    </button>
+                    <>
+                        <div className={"menu-recommendation-back"}></div>
+                        <button className="recommend-button" onClick={handleRecommendedFoodClick}>
+                            <div className={"menu-recommendation-img"}>
+                                <img src={recommendedFood.foodImageUrl} alt={recommendedFood.foodName}/>
+                            </div>
+                            <p className={"menu-recommendation-title"}>
+                                {recommendedFood.foodName}
+                            </p>
+                        </button>
                     </>
-                    )}
+                )}
             </div>
 
             {/* 월드컵 */}
@@ -217,7 +209,7 @@ function RecommendMain() {
 
             {/* 추천 카테고리 */}
             <div className="recommended-categories">
-                추천 카테고리
+                <h5>추천 카테고리</h5>
                 <div className="category-description">
                     {recommendThemes.map(theme => (
                         <button key={theme.themeIdx} onClick={() => handleThemeClick(theme.themeIdx)}>
@@ -225,6 +217,11 @@ function RecommendMain() {
                         </button>
                     ))}
                 </div>
+            </div>
+
+            <div className={"food-categories"}>
+                <h4>카테고리별 맛집 추천</h4>
+                <FoodCategories/>
             </div>
 
             <div className="group-dinner-pick">
@@ -251,7 +248,8 @@ function RecommendMain() {
                                     className="restaurant-info-item"
                                     ref={filteredProducts.length === index + 1 ? lastPubElementRef : null}
                                 >
-                                    <a className={"restaurant-image-link"} href={pub.place_url} target="_blank" rel="noreferrer">
+                                    <a className={"restaurant-image-link"} href={pub.place_url} target="_blank"
+                                       rel="noreferrer">
                                         <img src={dummyImage} alt={pub.place_name} className="pub-image"/>
                                     </a>
                                     <div className="pub-info-container">

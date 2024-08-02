@@ -29,6 +29,8 @@ public class RecommendController {
     @GetMapping("/api/recommendFood")
     public RecommendFood getRandomRecommendFood() {
         List<RecommendFood> allFoods = recommendFoodRepository.findAll(); // 전체 음식 조회
+        // 디버깅 정보 출력
+        System.out.println("Fetched allFoods: " + allFoods);
 
         Random random = new Random();
         int randomIndex = random.nextInt(allFoods.size());
@@ -38,7 +40,8 @@ public class RecommendController {
     @GetMapping("/api/recommendThemes")
     public List<RecommendThemeDto> getRecommendThemes() {
         List<RecommendTheme> themes = recommendThemeRepository.findAll();
-
+        // 디버깅 정보 출력
+        System.out.println("Fetched themes: " + themes);
         // RecommendTheme 엔티티를 RecommendThemeDto로 변환하여 반환
         return themes.stream()
                 .map(RecommendThemeDto::new)
@@ -49,6 +52,10 @@ public class RecommendController {
     public List<String> getRecommendFoodsByTheme(@PathVariable Long themeIdx) {
         RecommendTheme theme = recommendThemeRepository.findById(themeIdx)
                 .orElseThrow(() -> new RuntimeException("테마를 찾을 수 없습니다. themeIdx: " + themeIdx));
+
+        // 디버깅 정보 출력
+        System.out.println("Fetched theme for themeIdx " + themeIdx + ": " + theme);
+
         return theme.getFoodThemes().stream()
                 .map(FoodTheme::getFoodName)
                 .collect(Collectors.toList());
