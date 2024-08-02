@@ -1,85 +1,63 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../assets/style/GroupMain.css';
-import {useModal} from "../../components/modal/ModalContext";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useModal } from "../../components/modal/ModalContext";
+import axios from 'axios';
 
 const GroupMain = () => {
-    const [modalOpen, setModalOpen] = useState(false);
-    const modalBackground = useRef();
-    const { setModalType, showModal } = useModal();
     const navigate = useNavigate();
+    const { showModal } = useModal();
+    const [chatRooms, setChatRooms] = useState([]);
 
     useEffect(() => {
-        setModalType("groupInform");
-    });
+        const fetchChatRooms = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/chatrooms');
+                setChatRooms(response.data);
+            } catch (error) {
+                console.error('Failed to fetch chat rooms', error);
+            }
+        };
 
-    const moveGroupChat = () => {
-        navigate('/chatting')
-    }
+        fetchChatRooms();
+    }, []);
+
+    const handleRoomClick = (chatRoomId) => {
+        navigate(`/group/chatting/${chatRoomId}`);
+    };
 
     return (
         <div className="group-main">
             <h2 className="group-title">참여중인 모임</h2>
             <div className="group-header">
                 <div className="scroll-container">
-                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>강남된코회식</span></button>
-                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>마라탕??</span></button>
-                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>집에가기싫음</span></button>
-                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>퇴근하기모임</span></button>
-                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>퇴근하기모임</span></button>
-                    <button className="item" onClick={moveGroupChat}><img src="" alt=""/><span>퇴근하기모임</span></button>
+                    {chatRooms.map(chatRoom => (
+                        <button
+                            key={chatRoom.chatRoomIdx}
+                            className="item"
+                            onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
+                        >
+                            <img src="" alt=""/><span>{chatRoom.chatRoomTitle}</span>
+                        </button>
+                    ))}
                 </div>
             </div>
             <div className="meeting-list">
                 <h2 className="group-title">모집 중인 모임</h2>
-                <button className="meeting-item">
-                    <img src="" alt=""/>
-                    <div className="meeting-info">
-                        <h3>매일점심메이트 13</h3>
-                        <p>진짜 점심만 먹고 헤어집니다. 친목질X</p>
-                        <span>어제</span>
-                    </div>
-                </button>
-                <button className="meeting-item">
-                    <img src="" alt=""/>
-                    <div className="meeting-info">
-                        <h3>마라탕메이트 8</h3>
-                        <p>마라탕 같이 먹어주실분! 탕후루는 알아서</p>
-                        <span>07.13</span>
-                    </div>
-                </button>
-                <button className="meeting-item">
-                    <img src="" alt=""/>
-                    <div className="meeting-info">
-                        <h3>아침먹는모임 5</h3>
-                        <p>집에서 아침 안먹고 오는사람 모여라</p>
-                        <span>07.10</span>
-                    </div>
-                </button>
-                <button className="meeting-item">
-                    <img src="" alt=""/>
-                    <div className="meeting-info">
-                        <h3>아침먹는모임 5</h3>
-                        <p>집에서 아침 안먹고 오는사람 모여라</p>
-                        <span>07.10</span>
-                    </div>
-                </button>
-                <button className="meeting-item">
-                    <img src="" alt=""/>
-                    <div className="meeting-info">
-                        <h3>아침먹는모임 5</h3>
-                        <p>집에서 아침 안먹고 오는사람 모여라</p>
-                        <span>07.10</span>
-                    </div>
-                </button>
-                <button className="meeting-item">
-                    <img src="" alt=""/>
-                    <div className="meeting-info">
-                        <h3>아침먹는모임 5</h3>
-                        <p>집에서 아침 안먹고 오는사람 모여라</p>
-                        <span>07.10</span>
-                    </div>
-                </button>
+                {chatRooms.map(chatRoom => (
+                    <button
+                        key={chatRoom.chatRoomIdx}
+                        className="meeting-item"
+                        onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
+                    >
+                        <img src="" alt=""/>
+                        <div className="meeting-info">
+                            <h3>{chatRoom.chatRoomTitle}</h3>
+                            <p>{chatRoom.description}</p>
+                            <span>{new Date(chatRoom.createdAt).toLocaleDateString()}</span>
+                        </div>
+                    </button>
+                ))}
             </div>
 
             <button className="fab" onClick={showModal}>+</button>

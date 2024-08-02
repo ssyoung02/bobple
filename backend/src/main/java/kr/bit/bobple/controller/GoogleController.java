@@ -88,11 +88,9 @@ public class GoogleController {
             user.setUsername(email); // username을 email로 설정
             user.setEmail(email);
             user.setName(username);
-            user.setNickName(username);
             user.setProfileImage(profileImage);
             user.setEnabled(true);
             user.setProvider("google");
-            user.setCompanyId(0L);  // 기본값으로 설정, 필요에 따라 수정
             user.setReportCount(0);
             user.setPoint(0);
             user.setCreatedAt(LocalDateTime.now());
