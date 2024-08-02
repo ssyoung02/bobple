@@ -1,7 +1,7 @@
 /*global kakao*/
 import React, {useEffect, useState, useRef} from 'react';
 import {Map, MapMarker, ZoomControl, CustomOverlayMap} from 'react-kakao-maps-sdk';
-import '../../assets/style/AroundMain.css';
+import '../../assets/style/aroundFood/AroundMain.css';
 import axios from 'axios';
 
 function AroundMain() {

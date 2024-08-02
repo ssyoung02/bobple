@@ -42,7 +42,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(withDefaults())
+                .cors(withDefaults()) // CORS 설정 적용
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
@@ -54,8 +54,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/recipes/**").authenticated() // 레시피 수정은 인증 필요
                                 .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").authenticated() // 레시피 삭제는 인증 필요
                                 .requestMatchers("/api/recipes/search").permitAll() // 레시피 검색은 인증 없이 허용
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**").permitAll()
-                                .requestMatchers("/api/recipes/recommend").permitAll()
+                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update","/api/users/**").permitAll()
+                                .requestMatchers("/api/recipes/recommend").permitAll()// AI 레시피 추천 엔드포인트 허용
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -92,7 +92,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedHeader("*");
-        configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

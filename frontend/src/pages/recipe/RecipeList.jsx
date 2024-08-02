@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import RecipeCard from './RecipeCard';
 import '../recipe/css/RecipeList.css';
+import '../../assets/style/recipe/RecipeList.css'; // CSS 파일 import
 
 function RecipeList() {
     const { recipes, loading, error, searchRecipes, getRecipeById, totalPages, page, changePage } = useContext(RecipeContext);

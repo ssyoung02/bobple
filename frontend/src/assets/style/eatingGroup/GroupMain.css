@@ -86,11 +86,15 @@
     color: #999;
 }
 
+.fab-box {
+    display: flex;
+    justify-content: flex-end;
+}
+
 /*모임 만들기 바*/
 .fab {
     position: fixed;
-    bottom: 80px; /* Adjust this value based on the height of the navbar */
-    right: 15px;
+    bottom: 90px; /* Adjust this value based on the height of the navbar */
     width: 60px;
     height: 60px;
     background-color: pink;

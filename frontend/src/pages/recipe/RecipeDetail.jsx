@@ -5,6 +5,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import RecipeComment from './RecipeComment';
 import '../recipe/css/RecipeDetail.css';
 import axios from "axios";
+import '../../assets/style/recipe/RecipeDetail.css';
 
 function RecipeDetail() {
     const { recipeIdx } = useParams();

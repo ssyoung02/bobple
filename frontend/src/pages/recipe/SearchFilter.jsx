@@ -1,7 +1,7 @@
 // src/components/Recipe/SearchFilter.jsx
 import React, { useState, useContext } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import '../recipe/css/SearchFilter.css'; // CSS 파일 import
+import '../../assets/style/recipe/SearchFilter.css'; // CSS 파일 import
 
 function SearchFilter() {
     const { searchRecipes, page, size } = useContext(RecipeContext);
