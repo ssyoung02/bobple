@@ -23,11 +23,13 @@ public class UserController {
 
     @GetMapping("/{userIdx}")
     public ResponseEntity<User> getUserById(@PathVariable Long userIdx) {
+        System.out.println("Fetching user with ID: " + userIdx);
         Optional<User> optionalUser = userRepository.findById(userIdx);
         if (optionalUser.isPresent()) {
-            System.out.println(optionalUser.toString());
+            System.out.println("User found: " + optionalUser.toString());
             return ResponseEntity.ok(optionalUser.get());
         } else {
+            System.out.println("User not found");
             return ResponseEntity.notFound().build();
         }
     }

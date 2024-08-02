@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import '../../assets/style/mypage/MyPageMain.css'; // 상대 경로로 수정
+import '../../assets/style/myPage/MyPageMain.css'; // 상대 경로로 수정
 
 function MyPageMain() {
     const navigate = useNavigate();
@@ -53,7 +53,7 @@ function MyPageMain() {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData({
             ...formData,
             [name]: value
@@ -154,7 +154,7 @@ function MyPageMain() {
                             type="file"
                             accept="image/*"
                             onChange={handleProfileImageChange}
-                            style={{ display: 'none' }}
+                            style={{display: 'none'}}
                             id="profileImageInput"
                         />
                         <label htmlFor="profileImageInput" className="upload-btn">
@@ -184,7 +184,6 @@ function MyPageMain() {
                             <button className="save-btn" type="submit">Save Changes</button>
                         </form>
                     )}
-                    {/* 회원탈퇴 버튼 추가 */}
                     <button className="delete-account-btn" onClick={handleDeleteAccount}>회원탈퇴하기</button>
                 </>
             ) : (
