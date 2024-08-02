@@ -7,8 +7,8 @@ import MyPointPurchase from "../pages/pointShop/MyPointPurchase";
 import GifticonBarcode from "../pages/pointShop/GifticonBarcode";
 import GachaGame from "../pages/pointShop/pointGames/randomGacha/GachaGame";
 import SlotMachine from "../pages/pointShop/pointGames/slotMachine/SlotMachine";
-import PointShopForm from "../pages/pointShop/PointShopForm";
-import PointShopList from "../pages/pointShop/PointShopList";
+// import PointShopForm from "../pages/pointShop/PointShopForm";
+// import PointShopList from "../pages/pointShop/PointShopList";
 
 function PointShopRouter() {
     const [pointShops, setPointShops] = useState([]);
@@ -37,8 +37,8 @@ function PointShopRouter() {
             <Route path="/pointGame/GachaGame" element={<GachaGame/>}/>
             <Route path="/pointGame/SlotGame" element={<SlotMachine/>}/>
 
-            <Route path="/form" element={<PointShopForm />} />
-            <Route path="/list" element={<PointShopList pointShops={pointShops} />} />
+            {/*<Route path="/form" element={<PointShopForm />} />*/}
+            {/*<Route path="/list" element={<PointShopList pointShops={pointShops} />} />*/}
         </Routes>
     );
 }

@@ -19,6 +19,6 @@ public interface PurchasedGiftRepository extends JpaRepository<PurchasedGift, Lo
 
     //Optional<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
 
-    Optional<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
+    List<PurchasedGift> findByUserUserIdxAndPointShopGiftIdx(Long userIdx, Long giftIdx);
 
 }

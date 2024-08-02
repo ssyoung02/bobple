@@ -10,7 +10,7 @@ public class PointShop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "gift_idx")
+    @Column(name = "gift_idx", nullable = true)
     private Long giftIdx;
 
     @Column(name = "gift_category", nullable = true, length = 20)

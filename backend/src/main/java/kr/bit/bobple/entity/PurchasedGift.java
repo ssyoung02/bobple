@@ -11,15 +11,15 @@ public class PurchasedGift {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "purchase_idx")
+    @Column(name = "purchase_idx", nullable = false)
     private Long purchaseIdx;
 
     @ManyToOne
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "user_idx", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "gift_idx")
+    @JoinColumn(name = "gift_idx", nullable = false)
     private PointShop pointShop;
 
     @Column(name = "purchase_date", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

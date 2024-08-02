@@ -1,5 +1,7 @@
 package kr.bit.bobple.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
+import jakarta.persistence.NonUniqueResultException;
 import kr.bit.bobple.entity.PointShop;
 import kr.bit.bobple.entity.PurchasedGift;
 import kr.bit.bobple.entity.User;
@@ -80,14 +82,21 @@ public class PointShopService {
 
     @Transactional
     public boolean useGift(Long userIdx, Long productIdx) {
-        Optional<PurchasedGift> purchasedGiftOpt = purchasedGiftRepository.findByUserUserIdxAndPointShopGiftIdx(userIdx, productIdx);
+        List<PurchasedGift> purchasedGifts = purchasedGiftRepository.findByUserUserIdxAndPointShopGiftIdx(userIdx, productIdx);
 
-        if (purchasedGiftOpt.isPresent()) {
-            PurchasedGift purchasedGift = purchasedGiftOpt.get();
-            purchasedGift.setUsed(true); // Set is_used to true
-            purchasedGiftRepository.save(purchasedGift);
-            return true;
+        if (purchasedGifts.isEmpty()) {
+            return false;
         }
+
+        // 여러 결과가 있을 경우 하나씩 처리할 수 있습니다.
+        for (PurchasedGift purchasedGift : purchasedGifts) {
+            if (!purchasedGift.isUsed()) { // 사용되지 않은 기프티콘만 처리
+                purchasedGift.setUsed(true);
+                purchasedGiftRepository.save(purchasedGift);
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -97,7 +106,14 @@ public class PointShopService {
 //    }
 
     public PurchasedGift getPurchasedGiftByProductIdxAndUserIdx(Long productIdx, Long userIdx) {
-        Optional<PurchasedGift> purchasedGift = purchasedGiftRepository.findByUserUserIdxAndPointShopGiftIdx(userIdx, productIdx);
-        return purchasedGift.orElse(null);
+        List<PurchasedGift> purchasedGifts = purchasedGiftRepository.findByUserUserIdxAndPointShopGiftIdx(userIdx, productIdx);
+
+        if (purchasedGifts.isEmpty()) {
+            throw new NotFoundException("구매된 선물을 찾을 수 없습니다.");
+        }
+
+        // 여러 결과가 반환되는 경우 첫 번째 결과를 반환하거나 원하는 로직으로 처리합니다.
+        return purchasedGifts.get(0);
     }
+
 }
