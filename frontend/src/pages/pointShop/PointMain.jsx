@@ -37,6 +37,10 @@ function PointMain() {
         navigate('/point/pointGame/SlotGame');
     };
 
+    const moveAvoid = () => {
+        navigate('/point/pointGame/FoodAvoid');
+    };
+
     const movegiftDetail = (product) => {
         navigate('/point/pointGifticonDetail', { state : {product}});
     }
@@ -119,7 +123,7 @@ function PointMain() {
                     <div className="game-container">
                         <button className="game-button" onClick={moveGacha}>Gacha</button>
                         <button className="game-button" onClick={moveGacha}>matching</button>
-                        <button className="game-button" onClick={moveGacha}>avoid</button>
+                        <button className="game-button" onClick={moveAvoid}>avoid</button>
                         <button className="game-button" onClick={moveSlot}>slot</button>
                     </div>
                 </>
