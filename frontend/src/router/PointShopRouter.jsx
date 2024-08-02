@@ -14,20 +14,20 @@ import FoodAvoid from "../pages/pointShop/pointGames/foodAvoid/FoodAvoid";
 function PointShopRouter() {
     const [pointShops, setPointShops] = useState([]);
 
-    useEffect(() => {
-        const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
-        axios.get('http://localhost:8080/api/point-shops', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(response => {
-                setPointShops(response.data);
-            })
-            .catch(error => {
-                console.error("There was an error fetching the point shops!", error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+    //     axios.get('http://localhost:8080/api/point-shops', {
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`
+    //         }
+    //     })
+    //         .then(response => {
+    //             setPointShops(response.data);
+    //         })
+    //         .catch(error => {
+    //             console.error("There was an error fetching the point shops!", error);
+    //         });
+    // }, []);
 
     return (
         <Routes>
@@ -39,8 +39,7 @@ function PointShopRouter() {
             <Route path="/pointGame/SlotGame" element={<SlotMachine/>}/>
             <Route path="/pointGame/FoodAvoid" element={<FoodAvoid/>}/>
 
-            {/*<Route path="/form" element={<PointShopForm />} />*/}
-            {/*<Route path="/list" element={<PointShopList pointShops={pointShops} />} />*/}
+
         </Routes>
     );
 }

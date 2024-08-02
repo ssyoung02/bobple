@@ -75,9 +75,9 @@ function PointMain() {
         navigate('/point/pointGame/FoodAvoid');
     };
 
-    const movegiftDetail = (product) => {
-        navigate('/point/pointGifticonDetail', { state : {product}});
-    }
+    // const movegiftDetail = (product) => {
+    //     navigate('/point/pointGifticonDetail', { state : {product}});
+    // }
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
@@ -98,10 +98,10 @@ function PointMain() {
     // const moveSlot = () => {
     //     navigate('/point/pointGame/SlotGame');
     // };
-    //
-    // const movegiftDetail = (productIdx) => {
-    //     navigate('/point/pointGifticonDetail', { state: { productIdx } });
-    // };
+
+    const movegiftDetail = (productIdx) => {
+        navigate('/point/pointGifticonDetail', { state: { productIdx } });
+    };
 
     const moveGifticonBarcode = (productIdx) => {
         navigate('/point/GifticonBarcode', { state: { productIdx } });
