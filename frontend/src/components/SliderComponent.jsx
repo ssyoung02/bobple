@@ -138,7 +138,7 @@ export const FoodCategories = () => {
         { name: '치킨', icon: images['fried-chicken.png'] },
         { name: '피자', icon: images['pizza.png'] },
         { name: '아시아음식', icon: images['lantern.png'] },
-        { name: '뷔페', icon: images['buffet.png'] },
+        // { name: '뷔페', icon: images['buffet.png'] },
         { name: '도시락', icon: images['bento.png'] },
     ];
 

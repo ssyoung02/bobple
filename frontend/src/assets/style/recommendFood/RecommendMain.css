@@ -1,4 +1,4 @@
-/* 전체 컨테이너 스타일 */
+/* 컨테이너 스타일 */
 .recommend-main{
     display: grid;
     gap: 1.5em;
@@ -173,4 +173,69 @@
 .restaurant-category-buttons .active {
     background-color: #ea4197;
     color: white;
+}
+
+/*회식장소 pick item*/
+.restaurant-info-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1em;
+    padding: 0 10px;
+}
+.restaurant-info-item{
+    display: flex;
+    gap: 10px;
+}
+.restaurant-image-link{
+    flex: 1;
+    position: relative;
+    width: 20%;
+    overflow: hidden;
+}
+.restaurant-image-link:after{
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.restaurant-image-link img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.pub-info-container{
+    flex: 3.5;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 5px 0;
+}
+
+.pub-info-container a{
+    display: inline-block;
+    width: 100%;
+    color: #092543;
+}
+
+.pub-info-container h6{
+    margin: 0;
+}
+
+.pub-distance svg{
+    margin-right: 5px;
+}
+
+.pub-bookmarks{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.pub-bookmarks svg{
+    height: 16px;
 }
