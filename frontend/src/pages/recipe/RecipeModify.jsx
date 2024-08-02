@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import RecipeForm from './RecipeForm';
-import '../recipe/css/RecipeModify.css'; // CSS 파일 import
+import '../../assets/style/recipe/RecipeModify.css'; // CSS 파일 import
 
 function RecipeModify() {
     const { recipeIdx } = useParams();
