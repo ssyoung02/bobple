@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../../assets/style/PointMain.css';
+import '../../assets/style/pointShop/PointMain.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Carousel } from 'react-bootstrap';
 import stamp from '../../assets/images/checkstamp.png';
@@ -61,7 +61,23 @@ function PointMain() {
 
     const handleItemTabClick = (tab) => {
         setSelectedItemTab(tab);
+    }
+
+    const moveGacha = () => {
+        navigate('/point/pointGame/GachaGame');
     };
+
+    const moveSlot = () => {
+        navigate('/point/pointGame/SlotGame');
+    };
+
+    const moveAvoid = () => {
+        navigate('/point/pointGame/FoodAvoid');
+    };
+
+    const movegiftDetail = (product) => {
+        navigate('/point/pointGifticonDetail', { state : {product}});
+    }
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
@@ -75,17 +91,17 @@ function PointMain() {
         setSortOrder(event.target.value);
     };
 
-    const moveGacha = () => {
-        navigate('/point/pointGame/GachaGame');
-    };
-
-    const moveSlot = () => {
-        navigate('/point/pointGame/SlotGame');
-    };
-
-    const movegiftDetail = (productIdx) => {
-        navigate('/point/pointGifticonDetail', { state: { productIdx } });
-    };
+    // const moveGacha = () => {
+    //     navigate('/point/pointGame/GachaGame');
+    // };
+    //
+    // const moveSlot = () => {
+    //     navigate('/point/pointGame/SlotGame');
+    // };
+    //
+    // const movegiftDetail = (productIdx) => {
+    //     navigate('/point/pointGifticonDetail', { state: { productIdx } });
+    // };
 
     const moveGifticonBarcode = (productIdx) => {
         navigate('/point/GifticonBarcode', { state: { productIdx } });
@@ -163,7 +179,9 @@ function PointMain() {
                     <h2 className="game-header">포인트 게임</h2>
                     <div className="game-container">
                         <button className="game-button" onClick={moveGacha}>Gacha</button>
-                        <button className="game-button" onClick={moveSlot}>Slot</button>
+                        <button className="game-button" onClick={moveGacha}>matching</button>
+                        <button className="game-button" onClick={moveAvoid}>avoid</button>
+                        <button className="game-button" onClick={moveSlot}>slot</button>
                     </div>
                 </>
             )}

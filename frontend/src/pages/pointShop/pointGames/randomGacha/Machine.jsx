@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../../../assets/style/Machine.scss';
+import '../../../../assets/style/pointGame/gacha/Machine.scss';
 
 const Machine = () => {
     return (

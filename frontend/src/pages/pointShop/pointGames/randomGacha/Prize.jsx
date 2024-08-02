@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../../../assets/style/Prize.scss';
+import '../../../../assets/style/pointGame/gacha/Prize.scss';
 import {useNavigate} from "react-router-dom";
 
 const Prize = () => {
