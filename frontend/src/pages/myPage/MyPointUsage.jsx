@@ -19,48 +19,10 @@ function MyPointUsage() {
             });
     }, []);
 
-    const styles = {
-        container: {
-            padding: '20px',
-            fontFamily: 'Arial, sans-serif',
-        },
-        header: {
-            textAlign: 'center',
-            marginBottom: '20px',
-        },
-        listItem: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '10px',
-            padding: '10px',
-            borderBottom: '1px solid #ccc',
-        },
-        pointsChange: {
-            fontWeight: 'bold',
-            color: 'green',
-        },
-        pointsChangeNegative: {
-            color: 'red',
-        }
-    };
-
     return (
-        <div style={styles.container}>
-            <div style={styles.header}>
-                <h1>{nickName}의 포인트</h1> {/* 닉네임 표시 */}
-                <h2>{currentPoints}P</h2>
-            </div>
-            <div>
-                {pointHistory.map((item, index) => (
-                    <div key={index} style={styles.listItem}>
-                        <div>{item.date}</div>
-                        <div>{item.description}</div>
-                        <div style={item.points > 0 ? styles.pointsChange : {...styles.pointsChange, ...styles.pointsChangeNegative}}>
-                            {item.points > 0 ? `+${item.points}` : item.points}P
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <div>
+            <h1>{nickName}의 포인트</h1> {/* 닉네임 표시 */}
+            <h2>{currentPoints}P</h2> {/* 현재 포인트 표시 */}
         </div>
     );
 }
