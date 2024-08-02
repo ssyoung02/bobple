@@ -40,6 +40,17 @@
     margin-bottom: 20px; /* 메뉴 추천 아래 여백 */
 }
 
+.recommend-food-container {
+    display: flex;
+    flex-direction: column; /* 수직 배열 */
+    align-items: center; /* 수평 중앙 정렬 */
+}
+
+.recommend-food-image {
+    width: 100px; /* 원하는 너비로 설정 */
+    height: 100px; /* 원하는 높이로 설정 */
+    object-fit: cover; /* 이미지 비율 유지하며 컨테이너에 꽉 채우기 */
+}
 
 .recommend-button {
     padding: 8px 16px; /* 버튼 패딩 */
