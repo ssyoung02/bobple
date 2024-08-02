@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import axios from "axios";
-import { useModal } from "../../components/modal/ModalContext"; // useModal import
+import { useModal } from "./ModalContext"; // useModal import
 
 // props로 받은 제목, 내용을 출력하는 모달
 const CreateGroupModal = ({ modalState, hideModal }) => {
