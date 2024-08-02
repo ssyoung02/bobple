@@ -1,35 +1,41 @@
-// src/context/RecipeContext.jsx
-import React, { createContext, useState, useEffect, useCallback } from 'react'; // useCallback 추가
-import axios from 'axios';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
+import axios from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
 
-// 레시피 관련 데이터와 함수들을 전달하는 Context 객체 생성
 const RecipeContext = createContext({
-    recipes: [], // 레시피 목록 데이터
-    selectedRecipe: null, // 현재 선택된 레시피 상세 정보
-    loading: true, // 데이터 로딩 상태
-    error: null, // 에러 메시지
-    searchRecipes: () => {}, // 레시피 검색 함수
-    getRecipeById: () => {}, // 레시피 ID로 레시피 조회 함수
-    recommendRecipes: () => {}, // AI 레시피 추천 함수
-    createRecipe: () => {}, // 레시피 생성 함수
-    updateRecipe: () => {}, // 레시피 수정 함수
-    deleteRecipe: () => {}, // 레시피 삭제 함수
-    likeRecipe: () => {}, // 레시피 좋아요 토글 함수
-    totalElements: 0, // 전체 레시피 개수
-    totalPages: 0, // 전체 페이지 수
-    page: 0, // 현재 페이지 번호
-    size: 10, // 페이지당 레시피 개수
-    changePage: () => {}, // 페이지 변경 함수
-    createComment: () => {}, // 댓글 생성 함수
-    updateComment: () => {}, // 댓글 수정 함수
-    deleteComment: () => {}, // 댓글 삭제 함수
-    setSelectedRecipe: () => {},// 선택된 레시피 설정 함수
-    setError: () => {}, // setError 함수 추가
+    recipes: [],
+    selectedRecipe: null,
+    loading: true,
+    error: null,
+    searchRecipes: () => { },
+    getRecipeById: () => { },
+    aiRecommendRecipes: () => {},
+    getUserRecommendedRecipes: () => {},
+    createRecipe: () => { },
+    updateRecipe: () => { },
+    deleteRecipe: () => { },
+    likeRecipe: () => { },
+    totalElements: 0,
+    totalPages: 0,
+    page: 0,
+    size: 10,
+    changePage: () => { },
+    createComment: () => { },
+    updateComment: () => { },
+    deleteComment: () => { },
+    setSelectedRecipe: () => { },
+    setError: () => {},
+    categoryRecipes: [],
+    latestRecipes: [],
+    setCategoryRecipes: () => {},
+    setLatestRecipes: () => {},
+    searchedRecipes: [],
+    userRecommendedRecipes: [],
+    setSearchedRecipes: () => {},
+    setUserRecommendedRecipes: () => {} // 추가
 });
 
 export const RecipeProvider = ({ children }) => {
-    // 상태 변수 초기값 설정
     const [recipes, setRecipes] = useState([]);
     const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -38,27 +44,29 @@ export const RecipeProvider = ({ children }) => {
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
-
+    const [categoryRecipes, setCategoryRecipes] = useState([]); // 카테고리별 레시피
+    const [latestRecipes, setLatestRecipes] = useState([]); // 최신 레시피
+    const [userRecommendedRecipes, setUserRecommendedRecipes] = useState([]);
+    const [searchedRecipes, setSearchedRecipes] = useState([]);
     const navigate = useNavigate();
 
 
 
-
-    // 레시피 검색 함수
+    // 레시피 검색 함수 (useCallback으로 메모이징)
     const searchRecipes = useCallback(async (keyword = '', category = '', page = 0, size = 10, sort = 'createdAt,desc') => {
         try {
             const response = await axios.get('/api/recipes/search', {
                 params: { keyword, category, page, size, sort }
             });
-            setRecipes(response.data.content);
+            // setRecipes(response.data.content);
+            setSearchedRecipes(response.data.content); // 검색 결과를 searchedRecipes에 저장\
             setTotalElements(response.data.totalElements || 0);
             setTotalPages(response.data.totalPages || 0);
             setPage(response.data.number);
             setSize(response.data.size);
         } catch (error) {
-            // 에러 처리 (401 Unauthorized 에러는 로그인 페이지로 리다이렉트)
-            if (error.response && error.response.status === 401) {
-                navigate('/login');
+            if (error.redirectTo) {
+                navigate(error.redirectTo);
             } else {
                 setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
                 console.error(error);
@@ -68,21 +76,49 @@ export const RecipeProvider = ({ children }) => {
         }
     }, [navigate]);
 
+    // useEffect(() => {
+    //     searchRecipes('', '', page, size);
+    // }, [page, size, searchRecipes]);
+
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
         }
 
-        searchRecipes('', '', page, size); // 토큰이 있으면 레시피 목록 요청
-    }, [page, size, searchRecipes]); // searchRecipes 추가
+        getUserRecommendedRecipes(); // 초기에는 유저 추천 레시피만 로드
+
+    }, []);
+
+    const getLatestRecipes = async () => {
+        try {
+            const response = await axios.get('/api/recipes/latest', {
+                params: { page: 0, size: 4 }
+            });
+            setLatestRecipes(response.data.content);
+        } catch (error) {
+            setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
+        }
+    };
+
+    const getRecipesByCategory = async (category) => {
+        try {
+            const response = await axios.get('/api/recipes/search', {
+                params: { category, page: 0, size: 4, sort: 'createdAt,desc' }
+            });
+            setCategoryRecipes(response.data.content);
+        } catch (error) {
+            setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
+        }
+    };
+
 
     // 레시피 상세 정보 조회 함수
 
     const getRecipeById = async (id) => {
         try {
             const response = await axios.get(`/api/recipes/${id}`);
-            setSelectedRecipe(response.data); // 레시피 상세 정보 설정
+            setSelectedRecipe(response.data);
             setLoading(false);
         } catch (error) {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
@@ -92,12 +128,26 @@ export const RecipeProvider = ({ children }) => {
     };
 
     // AI 레시피 추천 함수
-    const recommendRecipes = async (ingredients) => {
+    const aiRecommendRecipes = async (ingredients) => {
         try {
             const response = await axios.post('/api/recipes/recommend', { ingredients });
-            setRecipes(response.data);
+            setRecipes(response.data); // AI 추천 결과를 recipes 상태에 저장
         } catch (error) {
             setError(error.message || 'AI 추천 중 오류가 발생했습니다.');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 유저 추천 레시피 함수
+    const getUserRecommendedRecipes = async () => {
+        try {
+            const response = await axios.get('/api/recipes/recommended');
+            setUserRecommendedRecipes(response.data); // 유저 추천 레시피를 userRecommendedRecipes에 저장
+            // setRecipes(response.data);
+        } catch (error) {
+            setError(error.message || '유저 추천 레시피를 불러오는 중 오류가 발생했습니다.');
             console.error(error);
         } finally {
             setLoading(false);
@@ -154,15 +204,14 @@ export const RecipeProvider = ({ children }) => {
     // 페이지 변경 함수
     const changePage = (newPage) => {
         setPage(newPage);
-        searchRecipes('', '', newPage, size); //  sortBy 제거
+        searchRecipes('', '', newPage, size);
     };
 
     // 댓글 생성 함수
     const createComment = async (recipeId, content) => {
         try {
             await axios.post(`/api/recipes/${recipeId}/comments`, { recipeContent: content });
-            // 댓글 작성 후, 레시피 상세 정보를 다시 불러오기 (response 사용)
-            await getRecipeById(recipeId);
+            getRecipeById(recipeId);
         } catch (error) {
             setError(error.message || '댓글 작성 실패');
         }
@@ -172,9 +221,8 @@ export const RecipeProvider = ({ children }) => {
     const updateComment = async (commentId, updatedContent) => {
         try {
             await axios.patch(`/api/recipes/comments/${commentId}`, { recipeContent: updatedContent });
-            // 댓글 수정 후, 레시피 상세 정보를 다시 불러오기 (response 사용)
             if (selectedRecipe && selectedRecipe.recipeIdx === commentId) {
-                await getRecipeById(selectedRecipe.recipeIdx);
+                getRecipeById(selectedRecipe.recipeIdx);
             }
         } catch (error) {
             setError(error.message || '댓글 수정 실패');
@@ -193,16 +241,27 @@ export const RecipeProvider = ({ children }) => {
         }
     };
 
-    // RecipeContext 값 제공
     return (
         <RecipeContext.Provider value={{
             recipes, selectedRecipe, loading, error,
-            searchRecipes, getRecipeById, recommendRecipes,
+            searchRecipes, getRecipeById,
+            // recommendRecipes,
             createRecipe, updateRecipe, deleteRecipe, likeRecipe,
             totalElements, totalPages, page, size, changePage,
-            createComment,
-            updateComment, deleteComment,setError,
-            setSelectedRecipe
+            createComment, updateComment, deleteComment,
+            setSelectedRecipe, setError, latestRecipes, // latestRecipes 추가
+            setLatestRecipes, // setLatestRecipes 추가
+            getRecipesByCategory, // getRecipesByCategory 추가
+            getUserRecommendedRecipes, // getUserRecommendedRecipes 추가
+            aiRecommendRecipes, // aiRecommendRecipes 추가
+            navigate, // navigate 추가
+            setLoading,
+            categoryRecipes,
+            setCategoryRecipes,
+            userRecommendedRecipes,
+            searchedRecipes,
+            setUserRecommendedRecipes, // 추가
+            setSearchedRecipes, // 추가
         }}>
             {children}
         </RecipeContext.Provider>

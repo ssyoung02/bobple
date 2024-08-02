@@ -1,24 +1,33 @@
-// src/components/Recipe/RecipeMain.jsx
 import React, { useState, useContext, useEffect } from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import RecipeCard from './RecipeCard';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMagnifyingGlass, faArrowRightLong} from "@fortawesome/free-solid-svg-icons";
-import '../../assets/style/recipe/RecipeMain.css';
-import axios from "axios";
+import '../recipe/css/RecipeMain.css';
+import axios from "../../utils/axios";
 
 function RecipeMain() {
-    const { recipes, loading, error, searchRecipes, getRecipeById, totalPages, page, changePage, setError } = useContext(RecipeContext);
+    const {
+        recipes, loading, searchRecipes, getRecipeById, totalPages, page, changePage,
+        setRecipes, setError, categoryRecipes, latestRecipes, setCategoryRecipes, setLatestRecipes,userRecommendedRecipes
+        // 필요한 값 가져오기
+    } = useContext(RecipeContext);
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [categoryRecipes, setCategoryRecipes] = useState([]); // 카테고리별 레시피
-    const [latestRecipes, setLatestRecipes] = useState([]); // 최신 레시피
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // useNavigate 훅 사용
+
+
+    const categoryButtons = [
+        { name: '한식', image: '/images/korean.jpg', category: '한식' },
+        { name: '양식', image: '/images/western.jpg', category: '양식' },
+        { name: '일식', image: '/images/japanese.jpg', category: '일식' },
+        { name: '중식', image: '/images/chinese.jpg', category: '중식' },
+    ];
 
     useEffect(() => {
-        // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
-        searchRecipes('', '', 0, 10, 'createdAt,desc');
-    }, [searchRecipes]);
+        getRecipesByCategory('도시락');
+        getLatestRecipes();
+        // // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
+        // searchRecipes('', '', 0, 10, 'createdAt,desc');
+    }, []);
 
     const handleRecipeClick = (recipeId) => {
         getRecipeById(recipeId); // 레시피 상세 정보 가져오기
@@ -31,6 +40,10 @@ function RecipeMain() {
 
     const handleSearchClick = () => {
         searchRecipes(searchKeyword, '', 0, 10, 'createdAt,desc');
+    };
+
+    const handleCategoryClick = (category) => {
+        searchRecipes('', category, 0, 10, 'createdAt,desc'); // 해당 카테고리 레시피 검색
     };
 
     const getRecipesByCategory = async (category) => {
@@ -91,11 +104,21 @@ function RecipeMain() {
             {/* 도시락 레시피 추천 섹션 */}
             <div className="lunchbox-recipes">
                 <h3>도시락 레시피 추천</h3>
+                <div className="category-buttons"> {/* 카테고리 버튼 섹션 추가 */}
+                    {categoryButtons.map(button => (
+                        <button key={button.name} onClick={() => handleCategoryClick(button.category)}
+                                className="category-button">
+                            <img src={button.image} alt={button.name}/>
+                            <span>{button.name}</span>
+                        </button>
+                    ))}
+                </div>
                 <div className="recipe-grid">
                     {categoryRecipes.length > 0 ? (
                         categoryRecipes.map(recipe => (
-                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)} className="recipe-card-wrapper">
-                                <RecipeCard recipe={recipe} />
+                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}
+                                 className="recipe-card-wrapper">
+                                <RecipeCard recipe={recipe}/>
                             </div>
                         ))
                     ) : (
@@ -111,10 +134,11 @@ function RecipeMain() {
             <div className="user-recommended-recipes">
                 <h3>유저 추천 레시피</h3>
                 <div className="recipe-grid">
-                    {recipes.length > 0 ? (
-                        recipes.map(recipe => (
-                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)} className="recipe-card-wrapper">
-                                <RecipeCard recipe={recipe} />
+                    {userRecommendedRecipes.length > 0 ? ( // userRecommendedRecipes 사용
+                        userRecommendedRecipes.map(recipe => (
+                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}
+                                 className="recipe-card-wrapper">
+                                <RecipeCard recipe={recipe}/>
                             </div>
                         ))
                     ) : (
@@ -132,8 +156,9 @@ function RecipeMain() {
                 <div className="recipe-grid">
                     {latestRecipes.length > 0 ? (
                         latestRecipes.map(recipe => (
-                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)} className="recipe-card-wrapper">
-                                <RecipeCard recipe={recipe} />
+                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}
+                                 className="recipe-card-wrapper">
+                                <RecipeCard recipe={recipe}/>
                             </div>
                         ))
                     ) : (

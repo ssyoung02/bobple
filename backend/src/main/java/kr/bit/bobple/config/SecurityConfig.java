@@ -49,14 +49,14 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll() // 레시피 조회는 인증 없이 허용
-                                .requestMatchers("/api/recipes/{recipeId}/comments").permitAll() // 댓글 조회도 인증 없이 허용 (필요에 따라 수정 가능)
+                                .requestMatchers("/api/recipes/{recipeId}/comments").permitAll() // 댓글 조회도 인증 없이 허용
                                 .requestMatchers("/api/recipes", "/api/recipes/*/comments").authenticated() // 레시피 생성, 댓글 작성 등은 인증 필요
-                                .requestMatchers("/api/recipes/search").authenticated() // 레시피 생성, 댓글 작성 등은 인증 필요
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/kakao", "/").permitAll()
-//                                .requestMatchers("/api/recipes/**").authenticated() // POST, PUT, DELETE 요청은 인증 필요
-                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // static resources 허용
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**").permitAll()
-                                .requestMatchers("/api/recipes/recommend").permitAll() // AI 레시피 추천 엔드포인트 허용
+                                .requestMatchers(HttpMethod.PUT, "/api/recipes/**").authenticated() // 레시피 수정은 인증 필요
+                                .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").authenticated() // 레시피 삭제는 인증 필요
+                                .requestMatchers("/api/recipes/search").permitAll() // 레시피 검색은 인증 없이 허용
+                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**").permitAll()
+                                .requestMatchers("/api/recipes/recommend").permitAll()
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

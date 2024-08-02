@@ -54,6 +54,9 @@ public class RecipeService {
     @Transactional
     public RecipeDto createRecipe(RecipeDto recipeDto) {
         User user = authenticationFacade.getCurrentUser(); // 현재 로그인된 사용자 정보 가져오기
+        if (user == null) {
+            throw new IllegalArgumentException("로그인이 필요합니다.");
+        }
         Recipe recipe = recipeDto.toEntity(user);
 
         // 좋아요 수, 조회수, 댓글 수 초기화
@@ -95,6 +98,20 @@ public class RecipeService {
         return recipeRepository.findAll(pageable);
     }
 
+    // 유저 추천 레시피 목록 조회 (실제 추천 로직 구현)
+    @Transactional(readOnly = true)
+    public List<RecipeDto> getRecommendedRecipes(User user) {
+        // TODO: 사용자 정보(user)를 기반으로 추천 레시피 목록 가져오기
+        // 예시: 사용자의 좋아요, 조회수 등을 기반으로 추천 알고리즘 구현
+
+        // 현재는 모든 레시피를 가져오는 예시 코드입니다.
+        List<Recipe> recommendedRecipes = recipeRepository.findAll();
+        return recommendedRecipes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional(readOnly = true)
     public List<RecipeDto> recommendRecipesByAI(String ingredients) {
         String prompt = "다음 재료들을 활용한 레시피를 추천해줘: " + ingredients;
@@ -112,6 +129,7 @@ public class RecipeService {
             recipeDto.setInstructions(matcher.group(3));
             recipeDtos.add(recipeDto);
         }
+
 
         return recipeDtos;
     }
