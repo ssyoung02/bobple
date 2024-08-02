@@ -10,8 +10,8 @@ a{
   text-decoration: none;
 }
 
-body{
-  background-color: #f2f2f2;
+body {
+  background-color: #f2f2f2 !important;
 }
 
 main{
@@ -49,7 +49,6 @@ main{
   height: 100dvh;
   margin-left: auto;
   margin-right: auto;
-  background: white;
 }
 button{
   background: transparent;
