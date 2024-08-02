@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import '../../assets/style/PointGifticonDetail.css';
+import '../../assets/style/pointShop/PointGifticonDetail.css';
 
 function PointGifticonDetail() {
     const location = useLocation();
