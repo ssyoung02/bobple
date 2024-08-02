@@ -2,7 +2,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../recipe/css/RecipeForm.css';
+import '../../assets/style/recipe/RecipeForm.css';
 import axios from "axios"; // CSS 파일 import
 
 function RecipeForm() {

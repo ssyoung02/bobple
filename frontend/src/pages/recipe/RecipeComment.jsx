@@ -1,7 +1,7 @@
 //Recipe/RecipeComment.jsx
 import React, { useState, useContext } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import '../recipe/css/RecipeComment.css'; // CSS 파일 import
+import '../../assets/style/recipe/RecipeComment.css'; // CSS 파일 import
 
 function RecipeComment({ comment }) {
     const { updateComment, deleteComment } = useContext(RecipeContext);
