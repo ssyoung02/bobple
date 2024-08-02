@@ -21,6 +21,8 @@ const GoogleLoginHandler = () => {
 
                 // 백엔드에서 받은 데이터 처리
                 console.log(res);
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("userIdx", res.data.user_idx);
                 localStorage.setItem("name", res.data.username);
                 localStorage.setItem("email", res.data.email);
                 localStorage.setItem("token", res.data.token);
