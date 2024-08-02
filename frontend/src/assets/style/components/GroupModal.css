@@ -140,10 +140,40 @@
     translate: 9px 4px;
 }
 
+.placeholder.default-image {
+    background: none;
+}
+
+.placeholder.default-image img {
+    width: 90%;
+    translate: 3px;
+}
+
+.group-text-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.group-text-container h3 {
+    font-size: 25px;
+}
+
+.group-text-container h5 {
+    font-size: 15px;
+}
+
+.group-text-container p {
+    padding: 30px;
+    font-size: 20px;
+}
+
 .group-modal-create-btn.join-btn {
+    margin: 20px;
     background-color: navy;
     color: white;
     font-weight: bold;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 8px;
 }
