@@ -1,38 +1,37 @@
 /* 기본 모달 스타일 */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100px;
-    height: 100%;
-    overflow: auto;
+    display: flex;
     justify-content: center;
     align-items: center;
+    overflow: auto;
 }
 
 /* 모달이 표시될 때 적용될 스타일 */
 .modal.show {
     display: flex;
 }
+.modal.hide {
+    display: none;
+}
 
 /* 모달 컨텐츠 스타일 */
 .modal-content {
-    max-width: 350px;
-    height: 50%;
+    max-width: 380px;
+    height: 70%;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    padding: 5px;
+    padding: 10px;
     animation: fadeIn 0.3s ease-in-out;
     font-weight: bold;
-    text-align: center; /* 텍스트를 중앙 정렬 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-/*--------------------------------------------------------------*/
 
 .group-modal-header {
     display: flex;
     justify-content: space-between;
+    width: 100%;
     padding: 15px;
     font-size: 20px;
 }
@@ -44,11 +43,12 @@
 .group-modal-title {
     font-size: 20px;
     font-weight: bold;
-    translate: 5px 3px;
+    translate: 5px 5px;
 }
 
 .form-group {
     margin-bottom: 20px;
+    width: 90%;
 }
 
 .form-group label {
@@ -56,50 +56,94 @@
     margin-bottom: 5px;
 }
 
+.form-group textarea {
+    background-color: #dddddd;
+    border: none;
+}
+
 .form-group input,
 .form-group textarea {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
+    border-radius: 5px;
 }
-/*!* 모달 제목 스타일 *!*/
-/*.modal-title {*/
-/*    font-size: 1.5em;*/
-/*    color: #4b0082; !* 진한 인디고 *!*/
-/*    margin-bottom: 20px;*/
-/*}*/
 
-/*!* 모달 본문 스타일 *!*/
-/*.modal-body {*/
-/*    font-size: 1em;*/
-/*    color: #333;*/
-/*    margin-bottom: 20px;*/
-/*}*/
+.group-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 20px;
+}
 
-/*!* 닫기 버튼 스타일 *!*/
-/*.close-button {*/
-/*    background-color:  #8a2be2;*/
-/*    color: white;*/
-/*    padding: 10px 20px;*/
-/*    margin-top: 15px;*/
-/*    border: none;*/
-/*    border-radius: 5px;*/
-/*    cursor: pointer;*/
-/*    transition: background-color 0.3s ease;*/
-/*}*/
+.group-image-box {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #dddddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
 
-/*.close-button:hover {*/
-/*    background-color: #7a1bbd;*/
-/*}*/
+.group-image-box img {
+    max-width: 100%;
+    max-height: 100%;
+}
 
-/*!* 키프레임 애니메이션 *!*/
-/*@keyframes fadeIn {*/
-/*    from {*/
-/*        opacity: 0;*/
-/*        transform: translateY(-10%);*/
-/*    }*/
-/*    to {*/
-/*        opacity: 1;*/
-/*        transform: translateY(0);*/
-/*    }*/
-/*}*/
+.plus-button {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: navy;
+    color: white;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.file-input {
+    display: none;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/*------------------------------------------------------------*/
+
+/*JoinGroupModal.jsx*/
+
+.modal-content.join-content {
+    height: 50%;
+}
+
+.group-modal-header.join-header {
+    justify-content: space-around;
+}
+
+.group-modal-title.join-title {
+    flex-grow: 1;
+    text-align: center;
+    translate: 9px 4px;
+}
+
+.group-modal-create-btn.join-btn {
+    background-color: navy;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 15px;
+}
