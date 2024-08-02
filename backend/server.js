@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // application.yaml 파일에서 MySQL 설정 읽기
-const yamlPath = path.resolve(__dirname, '../backend/src/main/resources/application.yaml');
+const yamlPath = path.resolve(__dirname, '../backend/src/main/resources/application.yml');
 const yamlConfig = yaml.load(fs.readFileSync(yamlPath, 'utf8'));
 
 const dbConfig = yamlConfig.spring.datasource;

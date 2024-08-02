@@ -3,10 +3,11 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import axios from "axios";
+import { useModal } from "../../components/modal/ModalContext"; // useModal import
 
-// props로 받은 제목, 내용을 출력하는 모달
 const GroupModal = ({ modalState, hideModal }) => {
     const navigate = useNavigate();
+    const { showErrorModal } = useModal(); // useModal 훅 사용
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [location, setLocation] = useState("");
@@ -18,15 +19,22 @@ const GroupModal = ({ modalState, hideModal }) => {
     };
 
     const createChatRoom = async () => {
+        if (!title.trim() || !description.trim()) {
+            showErrorModal("모임제목 및 모임설명을 작성해주세요!");
+            return;
+        }
+
+        const finalLocation = location.trim() || "미정";
+
         try {
             const response = await axios.post('http://localhost:8080/api/chatrooms', {
                 chatRoomTitle: title,
                 description: description,
-                location: location,
+                location: finalLocation,
                 roomPeople: roomPeople
             });
 
-            if (response.status === 201 || response.status === 200 ) {
+            if (response.status === 201 || response.status === 200) {
                 const chatRoomId = response.data.chatRoomIdx; // 생성된 chat_room_idx 받아오기
                 console.log(`Chat room created with ID: ${chatRoomId}`);
                 moveChat(chatRoomId); // 해당 chat_room_idx로 채팅 페이지로 이동
