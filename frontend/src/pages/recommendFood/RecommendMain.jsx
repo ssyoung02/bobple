@@ -32,6 +32,9 @@ function RecommendMain() {
     const observer = useRef();
     const categories = ['전체', '고기', '회', '호프', '이자카야'];
 
+    // nearbyPub 상태를 거리순으로 정렬
+    const sortedNearbyPub = [...nearbyPub].sort((a, b) => a.distance - b.distance);
+
     useEffect(() => {
         fetchTopKeywords(setTopKeywords);
     }, []);
@@ -40,19 +43,17 @@ function RecommendMain() {
         navigate('/recommend/foodWorldCup/foodWorldCup');
     }
 
-    const handleGroupDinnerPickClick = (category) => {
-        const searchCategory = category === '이자카야' ? '일본식주점' : category;
-        setSelectedCategory(searchCategory);
-    };
-
     // New function to load more pubs on scroll
     const loadMorePubs = useCallback(() => {
-        const nextPagePubs = allNearbyPub.slice(page * 5, (page + 1) * 5);
+        const loadedPubIds = new Set(nearbyPub.map(pub => pub.id)); // 이미 로드된 술집 id 저장
+        const nextPagePubs = allNearbyPub.slice(page * 5, (page + 1) * 5)
+            .filter(pub => !loadedPubIds.has(pub.id)); // 이미 로드된 술집 제외
+
         if (nextPagePubs.length > 0) {
             setNearbyPub(prevPubs => [...prevPubs, ...nextPagePubs]);
             setPage(prevPage => prevPage + 1);
         }
-    }, [allNearbyPub, page]);
+    }, [allNearbyPub, page, nearbyPub]); // nearbyPub 추가
 
     // Infinite scroll observer
     const lastPubElementRef = useCallback(node => {
@@ -65,14 +66,16 @@ function RecommendMain() {
         if (node) observer.current.observe(node);
     }, [loadMorePubs]);
 
-    const filteredProducts = selectedCategory === '전체'
-        ? nearbyPub
-        : nearbyPub.filter(pub => pub.category_name === selectedCategory);
 
     const handleRecommendedFoodClick = () => {
         if (recommendedFood) {
             navigate(`/recommend/recommendFoodCategory?keyword=${recommendedFood.foodName}`);
         }
+    };
+
+
+    const handleGroupDinnerPickClick = (category) => {
+        setSelectedCategory(category);
     };
 
     const handleSearch = () => {
@@ -93,7 +96,7 @@ function RecommendMain() {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    searchNearbyPub(latitude, longitude);
+                    searchPubsByCategory(latitude, longitude, selectedCategory);
                 },
                 (err) => {
                     console.error("geolocation을 사용할 수 없어요:", err.message);
@@ -103,23 +106,35 @@ function RecommendMain() {
             console.error("geolocation을 사용할 수 없어요.");
         }
 
-        function searchNearbyPub(latitude, longitude) {
+        function searchPubsByCategory(latitude, longitude, category) {
             const searchOptions = {
                 location: new kakao.maps.LatLng(latitude, longitude),
-                radius: 1000,
+                radius: 2000,
                 size: 15, // Load more pubs initially
             };
 
-            ps.keywordSearch('술집', (data, status) => {
-                if (status === kakao.maps.services.Status.OK && data.length > 0) {
-                    setAllNearbyPub(data); // Store all results
-                    setNearbyPub(data.slice(0, 5)); // Load initial 5 pubs
+            // 검색 키워드 설정 (전체 또는 선택된 카테고리, 이자카야는 일본식주점으로 검색)
+            const searchKeyword = category === '전체' ? '술집' :
+                category === '이자카야' ? '일본식주점' : category;
+
+            ps.keywordSearch(searchKeyword, (data, status) => {
+                if (status === kakao.maps.services.Status.OK) {
+                    let filteredData = data;
+                    if (category !== '전체') {
+                        // '전체'가 아닌 경우, 카테고리 이름 또는 '일본식주점'을 포함하는 술집만 필터링
+                        filteredData = data.filter(pub =>
+                            pub.category_name.includes(category) ||
+                            (category === '이자카야' && pub.category_name.includes('일본식주점'))
+                        );
+                    }
+                    setAllNearbyPub(data); // 원본 데이터를 allNearbyPub에 저장
+                    setNearbyPub(filteredData.slice(0, 15)); // 초기 15개만 표시
                 } else {
                     console.error("술집 검색 실패:", status);
                 }
             }, searchOptions);
         }
-    }, []);
+    }, [selectedCategory]);
 
     const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
 
@@ -127,7 +142,6 @@ function RecommendMain() {
         // 서버에서 추천 음식 정보 가져오기 (axios 사용)
         axios.get('http://localhost:8080/api/recommendFood')
             .then(response => {
-                console.log("API Response:", response); // 응답 데이터 출력
                 setRecommendedFood(response.data); // axios는 자동으로 JSON 변환
             })
             .catch(error => {
@@ -139,7 +153,6 @@ function RecommendMain() {
         // 서버에서 추천 테마 정보 가져오기
         axios.get('http://localhost:8080/api/recommendThemes')
             .then(response => {
-                console.log("API Response:", response); // 응답 데이터 출력
                 setRecommendThemes(response.data);
             })
             .catch(error => {
@@ -151,8 +164,8 @@ function RecommendMain() {
         // 바로 RecommendFoodCategory 페이지로 이동, 필요한 정보는 이미 recommendThemes에 있음
         const selectedTheme = recommendThemes.find(theme => theme.themeIdx === themeIdx);
         if (selectedTheme) {
-            const keyword = selectedTheme.foodNames.join(' OR ');
-            navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`);
+            const themeKeyword = selectedTheme.foodNames.join(' ');
+            navigate(`/recommend/recommendFoodCategory?theme=${themeKeyword}&themeName=${selectedTheme.themeName}`);
         }
     };
 
@@ -240,13 +253,13 @@ function RecommendMain() {
                     </div>
                 </div>
                 <div className="restaurant-category-container">
-                    {filteredProducts.length > 0 ? (
+                    {nearbyPub.length > 0 ? ( // nearbyPub 사용
                         <ul className="restaurant-info-list">
-                            {filteredProducts.map((pub, index) => (
+                            {sortedNearbyPub.map((pub, index) => (
                                 <li
                                     key={pub.id}
                                     className="restaurant-info-item"
-                                    ref={filteredProducts.length === index + 1 ? lastPubElementRef : null}
+                                    ref={nearbyPub.length === index + 1 ? lastPubElementRef : null}
                                 >
                                     <a className={"restaurant-image-link"} href={pub.place_url} target="_blank"
                                        rel="noreferrer">
