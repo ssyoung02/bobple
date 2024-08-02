@@ -17,7 +17,7 @@ function RecommendFoodCategory() {
     const [category, setCategory] = useState(initialCategory || ''); // 초기값 설정
     const [keyword, setKeyword] = useState(initialKeyword || ''); // 초기값 설정
     const [restaurants, setRestaurants] = useState([]);
-
+    const [displayedKeyword, setDisplayedKeyword] = useState(initialKeyword || ''); // 표시될 검색어 상태 추가
     const navigate = useNavigate();
 
     // 주변 음식점 정렬 (거리순)
@@ -148,13 +148,17 @@ function RecommendFoodCategory() {
 
         // 검색 키워드를 쿼리 파라미터로 설정하고 페이지 새로고침
         setSearchParams({ keyword: trimmedKeyword });
+
         window.location.reload();
+
+        // 검색 실행 후 displayedKeyword 업데이트
+        setDisplayedKeyword(trimmedKeyword);
     };
 
     const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
 
     // displayedCategory 또는 displayedKeyword 또는 initialThemeName을 표시
-    const displayedTitle = category || keyword || initialThemeName;
+    const displayedTitle = keyword ? displayedKeyword : (category || initialThemeName);
 
 
     return (
