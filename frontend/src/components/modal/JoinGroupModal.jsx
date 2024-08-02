@@ -1,8 +1,11 @@
 import '../../assets/style/components/GroupModal.css';
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import bobple from '../../assets/images/bobple_mascot.png';
+
+
 
 // props로 받은 제목, 내용을 출력하는 모달
 const JoinGroupModal = ({ modalState, hideModal }) => {
@@ -53,7 +56,20 @@ const JoinGroupModal = ({ modalState, hideModal }) => {
                     <button className="group-modal-close-btn" onClick={closeModal}>×</button>
                 </div>
                 <div className="group-room-container">
-
+                    <div className="group-image-box">
+                        {image ? (
+                            <img src={image} alt="이미지 미리보기" className="preview-image"/>
+                        ) : (
+                            <div className="placeholder default-image">
+                                <img src={bobple} alt="기본 이미지" />
+                            </div>
+                        )}
+                    </div>
+                    <div className="group-text-container">
+                        <h3>제목</h3>
+                        <h5>n명 참여중</h5>
+                        <p>내용</p>
+                    </div>
                 </div>
                 {/*여기 안에 내용 데이터값 집어넣어주세용*/}
                 <button className="group-modal-create-btn join-btn" onClick={createChatRoom}>나도 함께하기</button>
