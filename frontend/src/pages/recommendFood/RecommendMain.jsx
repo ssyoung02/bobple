@@ -15,8 +15,7 @@ import {
     Trophy
 } from "../../components/imgcomponents/ImgComponents";
 import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
-import { fetchTopKeywords, handleKeyDown, handleSearchClick } from '../../components/Search/SearchAll';
-
+import { restaurantfetchTopKeywords } from '../../components/Search/RestaurantSearch';
 function RecommendMain() {
     const [topKeywords, setTopKeywords] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('전체');
@@ -35,8 +34,9 @@ function RecommendMain() {
     // nearbyPub 상태를 거리순으로 정렬
     const sortedNearbyPub = [...nearbyPub].sort((a, b) => a.distance - b.distance);
 
+
     useEffect(() => {
-        fetchTopKeywords(setTopKeywords);
+        restaurantfetchTopKeywords(setTopKeywords);
     }, []);
 
     const moveFoodWorldCup = () => {
@@ -83,6 +83,18 @@ function RecommendMain() {
         if (!trimmedKeyword) {
             alert('키워드를 입력해주세요!');
             return;
+        }
+        try {
+            axios.post('http://localhost:8080/api/search/saveKeyword', trimmedKeyword, {
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                withCredentials: true, // 필요에 따라 쿠키 등을 전송할 수 있도록 설정
+            });
+            console.log('검색어가 저장되었습니다.');
+            restaurantfetchTopKeywords(setTopKeywords); // 검색어 저장 후 인기 검색어 업데이트
+        } catch (error) {
+            console.error('검색어 저장 실패:', error);
         }
 
         // 검색 키워드를 쿼리 파라미터로 추가하여 RecommendFoodCategory 페이지로 이동

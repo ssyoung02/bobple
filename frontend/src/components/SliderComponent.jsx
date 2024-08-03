@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import '../assets/style/components/SliderComponent.css';
 import MainFoodBanner_jeon from "../assets/images/banner/MainFoodBanner_jeon.jpg"
-import {fetchTopKeywords} from "./Search/SearchAll";
+import {restaurantfetchTopKeywords} from "./Search/RestaurantSearch"
 import {useNavigate} from "react-router-dom";
 import {NextTo, PrevTo} from "./imgcomponents/ImgComponents";
 
@@ -44,7 +44,7 @@ export const TopSearch = () => {
     const [topKeywords, setTopKeywords] = useState([]);
 
     useEffect(() => {
-        fetchTopKeywords(setTopKeywords);
+        restaurantfetchTopKeywords(setTopKeywords);
     }, []);
 
     const settings = {
