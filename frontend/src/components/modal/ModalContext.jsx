@@ -12,6 +12,7 @@ export const ModalProvider = ({ children }) => {
     const [modalType, setModalType] = useState('');
     const [errorState, setErrorState] = useState('hide');
     const [errorMessage, setErrorMessage] = useState('');
+    const [chatRoomData, setChatRoomData] = useState(null);
 
     const showModal = () => {
         setModalState('show');
@@ -34,13 +35,20 @@ export const ModalProvider = ({ children }) => {
 
     return (
         <ModalContext.Provider
-            value={{ modalState, showModal, hideModal, setModalType, showErrorModal, hideErrorModal }}
+            value={{ modalState, showModal, hideModal, setModalType, showErrorModal, hideErrorModal, setChatRoomData }}
         >
             {modalType === 'createGroup' && modalState === 'show' && (
                 <CreateGroupModal modalState={modalState} hideModal={hideModal} />
             )}
-            {modalType === 'joinGroup' && modalState === 'show' && (
-                <JoinGroupModal modalState={modalState} hideModal={hideModal} />
+            {modalType === 'joinGroup' && modalState === 'show' && chatRoomData && (
+                <JoinGroupModal
+                    modalState={modalState}
+                    hideModal={hideModal}
+                    chatRoomId={chatRoomData.chatRoomIdx}
+                    chatRoomTitle={chatRoomData.chatRoomTitle}
+                    chatRoomDescription={chatRoomData.description}
+                    chatRoomPeople={chatRoomData.roomPeople}
+                />
             )}
             {errorState === 'show' && <ErrorModal message={errorMessage} hideErrorModal={hideErrorModal} />}
             {children}

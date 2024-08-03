@@ -10,7 +10,7 @@
     align-items: center;
 }
 
-.modal-content {
+.modal-error-content {
     background: white;
     padding: 20px;
     border-radius: 5px;
@@ -48,7 +48,7 @@
     margin: 20px 0; /* 오류 메시지와 버튼 사이의 간격 조정 */
 }
 
-.modal-body button {
+.modal-error-check-body button {
     background-color: #ff4c4c; /* 버튼 배경색 */
     color: white; /* 버튼 글자색 */
     border: none;
@@ -59,6 +59,6 @@
     margin-top: 20px;
 }
 
-.modal-body button:hover {
+.modal-error-check-body button:hover {
     background-color: #ff1f1f; /* 버튼 호버 시 배경색 */
 }

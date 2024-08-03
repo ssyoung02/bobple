@@ -5,12 +5,12 @@ import '../../assets/style/components/ErrorModal.css'; // ErrorModal 스타일 �
 const ErrorModal = ({ message, hideErrorModal }) => {
     return (
         <div className="modal show">
-            <div className="modal-content">
+            <div className="modal-error-content">
                 <div className="modal-header">
                     <button className="modal-close-btn" onClick={hideErrorModal}>×</button>
                     <h3 className="modal-title">오류</h3>
                 </div>
-                <div className="modal-body">
+                <div className="modal-error-check-body">
                     <p>{message}</p>
                     <button onClick={hideErrorModal}>확인</button> {/* 확인 버튼 추가 */}
                 </div>
