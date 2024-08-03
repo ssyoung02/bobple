@@ -54,8 +54,11 @@ public class PointShopService {
             PointShop product = productOpt.get();
 
             if (user.getPoint() >= product.getGiftPoint()) {
+                // 차감 후의 새로운 잔액 계산
+                int newBalance = user.getPoint() - product.getGiftPoint();
+
                 // 사용자 포인트 차감
-                user.setPoint(user.getPoint() - product.getGiftPoint());
+                user.setPoint(newBalance);
                 userRepository.save(user);
 
                 // 구매 내역 저장
@@ -69,6 +72,8 @@ public class PointShopService {
                 pointRecord.setPointState(Point.PointState.M);
                 pointRecord.setPointComment("기프티콘 구매");
                 pointRecord.setCreatedAt(new Date());
+                pointRecord.setPointBalance(newBalance); // 새로운 잔액 설정
+
                 pointRepository.save(pointRecord);
 
                 return true;
@@ -76,6 +81,7 @@ public class PointShopService {
         }
         return false;
     }
+
 
     public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx, String sort) {
         if ("asc".equalsIgnoreCase(sort)) {
