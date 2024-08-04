@@ -1,0 +1,86 @@
+.admin-form-container {
+    display: flex;
+    border: 1px solid #ddd;
+}
+
+.left-section {
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.nav-button:hover {
+    background-color: #e0e0e0;
+}
+
+.right-section {
+    flex: 1;
+    padding: 10px;
+}
+
+.section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.admin-search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.admin-search-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+}
+
+.refresh-button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.refresh-button:hover {
+    background-color: #e0e0e0;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.data-table th {
+    background-color: #f0f0f0;
+}
+
+.admin-delete-button {
+    padding: 5px 10px;
+    background-color: #ff6666;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.admin-delete-button:hover {
+    background-color: #ff3333;
+}
