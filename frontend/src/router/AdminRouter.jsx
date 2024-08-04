@@ -11,12 +11,14 @@ import UserInfo from "../pages/admin/UserInfo";
 function AdminRouter(){
     return(
         <Routes>
-            <Route path="/" element={<UserInfo/>}/>
-            <Route path="/recipeBoard" element={<RecipeBoard/>}/>
-            <Route path="/notice" element={<Notice/>}/>
+            <Route path="/userInfo" element={<UserInfo/>}/> {/* 유저정보 */}
+            <Route path="/recipeBoard" element={<RecipeBoard/>}/> {/* 레세피 관리 */}
+
+            <Route path="/notice" element={<Notice/>}/> {/* 공지사항 */}
             <Route path="/noticeContext" element={<NoticeContext/>}/>
             <Route path="/noticeModify" element={<NoticeModify/>}/>
-            <Route path="/qnADetail" element={<QnADetail/>}/>
+
+            <Route path="/qnADetail" element={<QnADetail/>}/> {/* 문의사항 */}
             <Route path="/qnAList" element={<QnAList/>}/>
         </Routes>
     );

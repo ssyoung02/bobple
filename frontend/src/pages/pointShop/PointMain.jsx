@@ -166,7 +166,7 @@ function PointMain() {
                                 <button key={product.giftIdx} className="product-item" onClick={() => movegiftDetail(product.giftIdx)}>
                                     <img src={product.giftImageUrl} alt={product.giftDescription} />
                                     <h3>{product.giftBrand}</h3>
-                                    <h4>{product.giftDescription}</h4>
+                                    <h6>{product.giftDescription}</h6>
                                     <p>{product.giftPoint}P</p>
                                 </button>
                             ))}
@@ -187,12 +187,6 @@ function PointMain() {
             )}
             {selectedTab === '보관함' && (
                 <>
-                    <div className="sort-select-container">
-                        <select onChange={handleSortOrderChange} value={sortOrder} className="sort-select">
-                            <option value="desc">최신순</option>
-                            <option value="asc">오래된순</option>
-                        </select>
-                    </div>
                     <div className="category-btn-container">
                         <div className="category-buttons">
                             {categories.map(category => (
@@ -206,23 +200,33 @@ function PointMain() {
                             ))}
                         </div>
                     </div>
-                    <h3 className="item-header">사용가능한 선물이<br/>{unusedGiftCount}개 남아있어요.</h3>
+                    <div className="sort-select-container">
+                        <h3 className="item-header">사용가능한 선물이<br/>{unusedGiftCount}개 남아있어요.</h3>
+                        <select onChange={handleSortOrderChange} value={sortOrder} className="sort-select">
+                            <option value="desc" className="item-select">최신순</option>
+                            <option value="asc" className="item-select">오래된순</option>
+                        </select>
+                    </div>
                     <div className="item-tabs-nav">
-                        <div className="point-tab">
-                            <Tab name="보유중" onClick={() => handleItemTabClick('보유중')} isActive={selectedItemTab === '보유중'}/>
+                    <div className="point-tab">
+                            <Tab name="보유중" onClick={() => handleItemTabClick('보유중')}
+                                 isActive={selectedItemTab === '보유중'}/>
                         </div>
                         <div className="point-tab">
-                            <Tab name="사용완료" onClick={() => handleItemTabClick('사용완료')} isActive={selectedItemTab === '사용완료'}/>
+                            <Tab name="사용완료" onClick={() => handleItemTabClick('사용완료')}
+                                 isActive={selectedItemTab === '사용완료'}/>
                         </div>
                     </div>
                     {selectedItemTab === '보유중' && (
                         <div className="item-container">
                             <div className="product-list">
                                 {filteredPurchasedProducts.map(product => (
-                                    <button key={product.purchaseIdx} className="product-item" onClick={() => moveGifticonBarcode(product.pointShop.giftIdx)}>
-                                        <img src={product.pointShop.giftImageUrl} alt={product.pointShop.giftDescription}/>
+                                    <button key={product.purchaseIdx} className="product-item"
+                                            onClick={() => moveGifticonBarcode(product.pointShop.giftIdx)}>
+                                        <img src={product.pointShop.giftImageUrl}
+                                             alt={product.pointShop.giftDescription}/>
                                         <h3>{product.pointShop.giftBrand}</h3>
-                                        <h4>{product.pointShop.giftDescription}</h4>
+                                        <h6>{product.pointShop.giftDescription}</h6>
                                         <p>{product.pointShop.giftPoint}P</p>
                                     </button>
                                 ))}
@@ -231,13 +235,14 @@ function PointMain() {
                     )}
                     {selectedItemTab === '사용완료' && (
                         <div className="item-container">
-                            <div className="product-list-blur">
+                            <div className="product-list list-blur">
                                 {filteredPurchasedProducts.map(product => (
-                                    <div key={product.purchaseIdx} className="product-item-blur">
+                                    <div key={product.purchaseIdx} className="product-item item-blur">
                                         <img src={stamp} alt="stamp" className="stamp-image"/>
-                                        <img src={product.pointShop.giftImageUrl} alt={product.pointShop.giftDescription}/>
+                                        <img src={product.pointShop.giftImageUrl}
+                                             alt={product.pointShop.giftDescription}/>
                                         <h3>{product.pointShop.giftBrand}</h3>
-                                        <h4>{product.pointShop.giftDescription}</h4>
+                                        <h6>{product.pointShop.giftDescription}</h6>
                                         <p>{product.pointShop.giftPoint}P</p>
                                     </div>
                                 ))}
@@ -249,7 +254,7 @@ function PointMain() {
         </>
     );
 
-    function Tab({ name, onClick, isActive }) {
+    function Tab({name, onClick, isActive}) {
         return (
             <button onClick={onClick} className={isActive ? 'active' : ''}>
                 {name}

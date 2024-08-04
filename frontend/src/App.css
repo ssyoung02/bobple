@@ -45,8 +45,8 @@ main{
 }
 #root{
   width: 100vw;
-  max-width: 480px;
   height: 100dvh;
+  max-width: 480px;
   margin-left: auto;
   margin-right: auto;
 }
