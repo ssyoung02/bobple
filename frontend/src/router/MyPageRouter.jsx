@@ -4,6 +4,7 @@ import MyPageMain from "../pages/myPage/MyPageMain";
 import Calculator from "../pages/myPage/Calculator";
 import LikeRecipe from "../pages/myPage/LikeRecipe";
 import MyRecipe from "../pages/myPage/MyRecipe";
+import BookMark from "../pages/myPage/BookMark"
 import MyPointUsage from "../pages/myPage/MyPointUsage";
 import UserModify from "../pages/myPage/UserModify";
 import Login from "../pages/myPage/login/Login";
@@ -24,6 +25,7 @@ function MyPageRouter(){
                     <Route path="/calculator" element={<Calculator/>}/>
                     <Route path="/likeRecipe" element={<LikeRecipe/>}/>
                     <Route path="/myRecipe" element={<MyRecipe/>}/>
+                    <Route path="/bookmark" element={<BookMark/>}/>
                     <Route path="/myPointUseage" element={<MyPointUsage/>}/>
                     <Route path="/userModify" element={<UserModify/>}/>
 

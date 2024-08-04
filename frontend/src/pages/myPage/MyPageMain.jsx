@@ -1,7 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import '../../assets/style/myPage/MyPageMain.css'; // 상대 경로로 수정
+import '../../assets/style/myPage/MyPageMain.css';
+import {
+    Bookmark,
+    Calculator,
+    CaretRight,
+    DefaultUser, Exclamation,
+    FilePen,
+    Hart,
+    NextTo, Notice, Question
+} from "../../components/imgcomponents/ImgComponents"; // 상대 경로로 수정
 
 function MyPageMain() {
     const navigate = useNavigate();
@@ -43,152 +52,149 @@ function MyPageMain() {
         fetchUserData();
     }, [navigate]);
 
+
+    const moveUserModify = () => {
+        navigate('/myPage/userModify');
+    };
+
+    const moveMyPointUsage = () => {
+        navigate('/myPage/myPointUseage');
+    };
+
+    const moveCalculator = () => {
+        navigate('/myPage/calculator');
+    };
+
+    const movePointShop = () => {
+        navigate('/point');
+    };
+
+    const moveMyRecipe = () => {
+        navigate('/myPage/myRecipe')
+    }
+
+    const moveLikeRecipe = () => {
+        navigate('/myPage/likeRecipe')
+    }
+
+    const moveBookMark = () => {
+        navigate('/myPage/bookmark')
+    }
+
+    const moveNotice = () => {
+        navigate('/mypage/serviceCenter/userNotice')
+    }
+
+    const moveUserFAQ = () => {
+        navigate('/mypage/serviceCenter/userFAQ')
+    }
+
+    const moveUserQnA = () => {
+        navigate('/mypage/serviceCenter/userQnA')
+    }
+
     const handleLogout = () => {
         localStorage.clear();
         navigate("/myPage/login/login");
     };
 
-    const handleEditToggle = () => {
-        setEditMode(!editMode);
-    };
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleProfileImageChange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append("profileImage", file);
-
-        try {
-            const token = localStorage.getItem("token");
-            const userIdx = localStorage.getItem("userIdx");
-            const response = await axios.put(`http://localhost:8080/api/users/${userIdx}/profile-image`, formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                },
-                withCredentials: true
-            });
-
-            const updatedUserData = response.data;
-            setUser(updatedUserData);
-            alert('Profile image updated successfully!');
-        } catch (error) {
-            console.error('Error updating profile image:', error);
-            alert('Failed to update profile image');
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const token = localStorage.getItem('token');
-            const userIdx = localStorage.getItem('userIdx');
-            const response = await axios.put('http://localhost:8080/api/users/update', {
-                userIdx: userIdx,
-                nickName: formData.nickName,
-                birthdate: formData.birthdate
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
-
-            localStorage.setItem("birthdate", formData.birthdate);
-            localStorage.setItem("nickName", formData.nickName);
-
-            setUser(prevUser => ({
-                ...prevUser,
-                birthdate: formData.birthdate,
-                nickName: formData.nickName
-            }));
-
-            setEditMode(false);
-            alert('Profile updated successfully!');
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            alert('Failed to update profile');
-        }
-    };
-
-    const handleDeleteAccount = async () => {
-        if (!window.confirm("정말로 회원탈퇴 하시겠습니까?")) return;
-
-        try {
-            const token = localStorage.getItem('token');
-            const userIdx = localStorage.getItem('userIdx');
-            await axios.delete(`http://localhost:8080/api/users/${userIdx}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                withCredentials: true
-            });
-
-            alert('회원탈퇴가 완료되었습니다.');
-            localStorage.clear();
-            navigate("/myPage/login/login");
-        } catch (error) {
-            console.error('Error deleting account:', error);
-            alert('Failed to delete account');
-        }
-    };
 
     return (
         <div className="my-page-main">
-            {user ? (
-                <>
-                    <h1>My Page Main</h1>
-                    <div className="user-info">
-                        <img src={user.profileImage} alt="Profile" className="profile-image"/>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleProfileImageChange}
-                            style={{display: 'none'}}
-                            id="profileImageInput"
-                        />
-                        <label htmlFor="profileImageInput" className="upload-btn">
-                            +
-                        </label>
-                        <p>Welcome, {user.name}!</p>
-                        <p>Email: {user.email}</p>
-                        <p>Birthdate: {user.birthdate || formData.birthdate}</p>
-                        <p>Nickname: {user.nickName || formData.nickName}</p>
-                        <button className="logout-btn" onClick={handleLogout}>Logout</button>
-                        <button className="edit-btn" onClick={handleEditToggle}>
-                            {editMode ? 'Cancel' : 'Edit Profile'}
+            <div className="user-info">
+                {user ? (
+                    <>
+                        <button className="goto-UserModify" onClick={moveUserModify}>
+                            <div className="mypage-profile">
+                                <img src={user.profileImage} alt="Profile" className="mypage-profile-image"/>
+                            </div>
+                            <div className="mypage-nickname">
+                                <span>{user.nickName}</span>
+                                <NextTo/>
+                            </div>
                         </button>
+                        <button className="goto-MyPointUsage" onClick={moveMyPointUsage}>
+                            15P
+                        </button>
+                    </>
+                ) : (
+                    <button>
+                        <div className="mypage-profile before-login">
+                            <DefaultUser/>
+                        </div>
+                        <div className="mypage-nickname">
+                            <span>로그인</span>
+                            <NextTo/>
+                        </div>
+                    </button>
+                )}
+            </div>
+            <button className="goto-Calculator" onClick={moveCalculator}>
+                <span>지금 당장 1/N이 필요하다면?</span>
+                <Calculator/>
+            </button>
+
+            {user &&
+            <>
+                <div className="my-activities">
+                    <h5>내 활동</h5>
+                    <button className="mypage-link" onClick={moveMyRecipe}>
+                        <span className="activites-icon">
+                            <FilePen/>
+                        </span>
+                        <h6>작성한 레시피</h6>
+                    </button>
+                    <button className="mypage-link" onClick={moveLikeRecipe}>
+                        <span className="activites-icon">
+                            <Hart/>
+                        </span>
+                        <h6>좋아요 레시피</h6>
+                    </button>
+                    <button className="mypage-link" onClick={moveBookMark}>
+                        <span className="activites-icon">
+                            <Bookmark/>
+                        </span>
+                        <h6>북마크 음식점</h6>
+                    </button>
+                </div>
+                <div className="mypag-point">
+                    <button className="goto-PointShop" onClick={movePointShop}>
+                        <h5>포인트 구매내역</h5>
+                        <NextTo/>
+                    </button>
+                    <div className="mypage-products">
+
+
+
                     </div>
-                    {editMode && (
-                        <form onSubmit={handleSubmit} className="edit-form">
-                            <label>
-                                Birthdate:
-                                <input type="date" name="birthdate" value={formData.birthdate} onChange={handleChange}/>
-                            </label>
-                            <br/>
-                            <label>
-                                Nickname:
-                                <input type="text" name="nickName" value={formData.nickName} onChange={handleChange}/>
-                            </label>
-                            <br/>
-                            <button className="save-btn" type="submit">Save Changes</button>
-                        </form>
-                    )}
-                    <button className="delete-account-btn" onClick={handleDeleteAccount}>회원탈퇴하기</button>
-                </>
-            ) : (
-                <p>Loading...</p>
-            )}
+                </div>
+            </>
+            }
+
+            <div className="service-center">
+                <h5>고객센터</h5>
+                <button className="mypage-link" onClick={moveNotice}>
+                    <span className="activites-icon">
+                        <Notice/>
+                    </span>
+                    <h6>공지사항</h6>
+                </button>
+                <button className="mypage-link" onClick={moveUserFAQ}>
+                    <span className="activites-icon circle-icon">
+                        <Exclamation/>
+                    </span>
+                    <h6>자주 묻는 질문</h6>
+                </button>
+                <button className="mypage-link" onClick={moveUserQnA}>
+                    <span className="activites-icon circle-icon">
+                        <Question/>
+                    </span>
+                    <h6>문의하기</h6>
+                </button>
+            </div>
+
+            <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
     );
 }

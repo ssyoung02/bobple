@@ -1,0 +1,146 @@
+.UserModify-main{
+    position: relative;
+    height: 80vh;
+}
+
+.profile {
+    text-align: center;
+    position: relative; /* 부모 요소에 상대 위치 설정 */
+}
+
+.profile-image {
+    border-radius: 50%;
+    width: 30%;
+    height: 30%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 1px solid #233B6F;
+}
+
+/* 프로필 사진 변경+ 버튼 스타일 */
+.upload-btn {
+    position: absolute;
+    top: 100px; /* 이미지의 위쪽에 배치 */
+    right: calc(50% - 75px + 0px); /* 이미지의 오른쪽에 배치 */
+    background-color: #233B6F;
+    color: white;
+    border: none;
+    padding: 0 10px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 파일 입력 필드 숨기기 */
+#profileImageInput {
+    display: none;
+}
+
+/*회원정보*/
+.nickname-form{
+    position: relative;
+    text-align: center;
+}
+
+.edit-btn{
+    position: absolute;
+    bottom: 0;
+    padding: 0 10px;
+}
+
+.edit-btn svg{
+    border-bottom: 1px solid #233B6F;
+}
+
+#user-modify-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 10px 50px;
+    font-size: 1.2em;
+}
+
+#user-modify-form input {
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid #233B6F;
+}
+
+.nickname{
+    padding: 10px;
+    width: 50%;
+}
+
+.user-data{
+    width: 100%;
+}
+
+.user-data li{
+    width: 100%;
+    margin-top: 40px;
+}
+
+.user-data dt{
+    display: inline-block;
+    width: 100px;
+    text-align: justify;
+    vertical-align: top;
+}
+
+.user-data dd{
+    display: inline-block;
+    width: calc(100% - 100px);
+    margin: 0;
+    text-align: right;
+}
+
+.user-data input{
+    width: 200px;
+}
+
+/*회원정보 수정 버튼등*/
+.user-modify-buttons{
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+.user-modify-buttons button{
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-family: NotoSansKR-Bold, serif;
+}
+
+.user-modify-close{
+    background: #D9D9D9;
+    color: #303030;
+}
+
+.user-modify-close:hover{
+    background: #a5a5a5;
+}
+
+.user-modify-save{
+    background: #2facff;
+    color: #fff;
+}
+
+.user-modify-save:hover{
+    background: #158dd5;
+}
+
+/*회원탈퇴 버튼*/
+.delete-user{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+.delete-account-btn {
+    color: #898989;
+}

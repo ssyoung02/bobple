@@ -140,7 +140,6 @@ function RecommendFoodCategory() {
                                     className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                                 <button
                                     className="restaurant-bookmarks"><Bookmark/>{restaurant.bookmarks_count}</button>
-
                             </div>
                         </li>
                     ))}

@@ -52,6 +52,8 @@ function RecommendMain() {
             setNearbyPub(prevPubs => [...prevPubs, ...nextPagePubs]);
             setPage(prevPage => prevPage + 1);
         }
+
+        console.log(page)
     }, [allNearbyPub, page]);
 
     // Infinite scroll observer

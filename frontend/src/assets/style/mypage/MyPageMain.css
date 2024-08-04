@@ -1,81 +1,111 @@
-.my-page-main {
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.user-info {
-    text-align: center;
-    position: relative; /* 부모 요소에 상대 위치 설정 */
-}
-
-.profile-image {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    margin-bottom: 20px;
-}
-
-.logout-btn, .edit-btn, .save-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.logout-btn:hover, .edit-btn:hover, .save-btn:hover {
-    background-color: #0056b3;
-}
-
-.edit-form {
+.my-page-main{
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 2em;
+    padding: 1em;
+}
+.user-info{
+    display: flex;
+    justify-content: space-between;
 }
 
-.edit-form label {
-    margin: 10px 0;
-}
-
-.edit-form input {
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 400px;
-}
-
-/* + 버튼 스타일 */
-.upload-btn {
-    position: absolute;
-    top: 100px; /* 이미지의 위쪽에 배치 */
-    right: calc(50% - 75px + 0px); /* 이미지의 오른쪽에 배치 */
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
+/*프로필사진*/
+.mypage-profile{
+    width: 50px;
+    height: 50px;
+    border: 1px solid #233B6F;
     border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    display: inline-flex;
+    overflow: hidden;
+}
+
+.mypage-profile-image{
+    width: 100%;
+    object-fit: cover;
+}
+
+.before-login{
+    background: #233B6F;
+}
+
+.before-login svg{
+    color: #fff;
+    width: 100%;
+    height: 100%;
+}
+
+/*회원정보*/
+.goto-UserModify{
+    display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 1em;
 }
 
-.upload-btn:hover {
-    background-color: #0056b3;
+.mypage-nickname, .goto-MyPointUsage{
+    font-family: NotoSansKR-Bold, serif;
+    color: #233B6F;
+    font-size: 1.2em;
 }
 
-/* 파일 입력 필드 숨기기 */
-#profileImageInput {
-    display: none;
+.mypage-nickname span{
+    margin-right: 5px;
 }
+
+/*계산기로 이동*/
+.goto-Calculator{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: #233B6F;
+    color: #fff;
+    border-radius: 10px;
+    text-align: left;
+    padding: 10px 30px;
+}
+
+.goto-Calculator span{
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.2em;
+}
+
+.goto-Calculator svg{
+    font-size: 2.5em;
+}
+
+/*내 활동*/
+.mypage-link{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    color: #233B6F;
+    margin-top: 1em;
+
+}
+.activites-icon{
+    width: 25px;
+    height: 25px;
+    overflow: hidden;
+}
+.activites-icon svg{
+    width: 100%;
+    height: 100%;
+    vertical-align: top;
+}
+
+.circle-icon{
+    border: 2px solid #233B6F;
+    border-radius: 50%;
+}
+
+.circle-icon svg{
+    width: 70%;
+    height: 70%;
+    vertical-align: inherit;
+}
+
+.goto-PointShop{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+/*포인트 구매내역*/
