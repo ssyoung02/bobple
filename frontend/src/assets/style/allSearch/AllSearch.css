@@ -1,7 +1,7 @@
 .SearchInput{
     position: relative;
 }
-.AllSaerchBox{
+.AllSaerchBox {
     width: 100%;
     height: 3em;
     border-radius: 30px;
@@ -14,4 +14,52 @@
     right: 20px;
     font-size: 1.3em;
     color: #233B6F;
+}
+
+.AllSearchButton svg {
+    width: 20px;
+    height: 20px;
+}
+
+.search-tagList {
+    display: flex;
+    gap: 10px;
+    margin: 20px;
+}
+
+.search-tag {
+    padding: 5px 10px;
+    border: 2px solid #eb517e;
+    border-radius: 15px;
+    color: black;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.star-search {
+    margin-left: 10px;
+}
+
+.all-search-title {
+    font-size: 18px;
+    margin: 10px;
+}
+
+.search-ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.search-list {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px auto;
+    display: inline-block;
+    width: 50%;
+    box-sizing: border-box;
+    padding-left: 10px;
+}
+
+.search-list span {
+    color: #eb517e;
 }
