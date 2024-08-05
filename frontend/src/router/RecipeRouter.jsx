@@ -8,18 +8,19 @@ import RecipeForm from '../pages/recipe/RecipeForm';
 import RecipeModify from '../pages/recipe/RecipeModify';
 import AIRecommendation from '../pages/recipe/AIRecommendation';
 import RecipeMain from '../pages/recipe/RecipeMain';
-import SearchFilter from "../pages/recipe/SearchFilter"; // RecipeMain 추가
+import SearchFilter from "../pages/recipe/SearchFilter";
+import RecipeSearchResults from "../pages/recipe/RecipeSearchResults"; // RecipeMain 추가
 
 function RecipeRouter() {
     return (
         <RecipeProvider>
             <Routes>
                 <Route path="/" element={<RecipeMain />} /> {/* RecipeMain 컴포넌트 추가 */}
+                <Route path="/search/results" element={<RecipeSearchResults />} /> {/* 추가 */}
                 <Route path="/:recipeIdx" element={<RecipeDetail />} />
                 <Route path="/create" element={<RecipeForm />} />
                 <Route path="/modify/:recipeIdx" element={<RecipeModify />} />
                 <Route path="/ai-recommendation" element={<AIRecommendation />} />
-                <Route path="/search" element={<SearchFilter />} /> {/* SearchFilter 라우트 추가 */}
             </Routes>
         </RecipeProvider>
     );

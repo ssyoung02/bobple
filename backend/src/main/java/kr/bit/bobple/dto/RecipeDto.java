@@ -19,6 +19,7 @@ public class RecipeDto {
     private Long recipeIdx; // 레시피 고유 ID
     private Long userIdx; // 작성자 고유 아이디
     private String nickname; // 작성자 닉네임
+    private String profileImage; //작성자 프로필이미지
     private String title; // 레시피 제목
     private String content; // 레시피 내용 (재료, 조리 방법 등)
     private String category; // 레시피 카테고리
@@ -44,6 +45,7 @@ public class RecipeDto {
         recipeDto.setRecipeIdx(recipe.getRecipeIdx());
         recipeDto.setUserIdx(recipe.getUser().getUserIdx());
         recipeDto.setNickname(recipe.getUser().getNickName());
+        recipeDto.setProfileImage(recipe.getUser().getProfileImage());
         recipeDto.setTitle(recipe.getTitle());
         recipeDto.setContent(recipe.getContent());
         recipeDto.setCategory(recipe.getCategory());
@@ -54,6 +56,8 @@ public class RecipeDto {
         recipeDto.setTags(recipe.getTag());
         recipeDto.setCreatedAt(recipe.getCreatedAt());
         recipeDto.setUpdatedAt(recipe.getUpdatedAt());
+        //recipeDto.setLiked(...); // 현재 사용자가 좋아요를 눌렀는지 여부 설정 필요
+
 
         // 댓글 목록은 별도의 API를 통해 가져오므로 주석 처리
         // if (recipe.getRecipeComments() != null) {
@@ -98,6 +102,7 @@ public class RecipeDto {
     public void setUser(User user) {
         this.userIdx = user.getUserIdx();
         this.nickname = user.getNickName();
+        this.profileImage = user.getProfileImage();
     }
 
     /**

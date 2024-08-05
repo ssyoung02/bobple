@@ -1,4 +1,3 @@
-// src/main/java/kr/bit/bobple/controller/RecipeCommentController.java
 package kr.bit.bobple.controller;
 
 import kr.bit.bobple.dto.RecipeCommentDto;
@@ -26,5 +25,17 @@ public class RecipeCommentController {
     @PostMapping
     public ResponseEntity<RecipeCommentDto> createComment(@PathVariable Long recipeId, @RequestBody RecipeCommentDto commentDto, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(recipeCommentService.createComment(recipeId, commentDto.getRecipeContent()));
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<RecipeCommentDto> updateComment(@PathVariable Long recipeId, @PathVariable Long commentId, @RequestBody RecipeCommentDto commentDto) {
+        RecipeCommentDto updatedComment = recipeCommentService.updateComment(commentId, commentDto.getRecipeContent());
+        return ResponseEntity.ok(updatedComment);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long recipeId, @PathVariable Long commentId) {
+        recipeCommentService.deleteComment(commentId);
+        return ResponseEntity.noContent().build();
     }
 }

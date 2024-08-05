@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'http://localhost:8080/',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
@@ -78,5 +78,28 @@ const getErrorMessage = (errorResponse) => {
         }
     }
 };
+
+// // 요청 인터셉터 (토큰 설정)
+// instance.interceptors.request.use(config => {
+//     const token = localStorage.getItem('token');
+//     console.log(token);
+//     // if (token && !config.url.includes('/api/recipes/search')) { // 인증이 필요 없는 엔드포인트를 제외합니다.
+//     //     config.headers.Authorization = `Bearer ${token}`;
+//     // }
+//     return config;
+// });
+//
+// // 응답 인터셉터
+// instance.interceptors.response.use(
+//     response => response,
+//     error => {
+//         if (error.response && error.response.status === 401) {
+//             // 401 에러 처리 (예: 로그아웃 처리)
+//             localStorage.removeItem('token');
+//             window.location.href = '/myPage/login/login'; // 로그인 페이지로 리디렉션
+//         }
+//         return Promise.reject(error);
+//     }
+// );
 
 export default instance;

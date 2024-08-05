@@ -79,16 +79,23 @@ export const RecipeProvider = ({ children }) => {
     // useEffect(() => {
     //     searchRecipes('', '', page, size);
     // }, [page, size, searchRecipes]);
-
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-        }
-
+        searchRecipes('', '', page, size); // 토큰 확인 없이 레시피 목록 요청
+        getRecipesByCategory('');
+        getLatestRecipes();
         getUserRecommendedRecipes(); // 초기에는 유저 추천 레시피만 로드
 
-    }, []);
+    }, [page, size]);
+
+    // useEffect(() => {
+    //     const storedToken = localStorage.getItem('token');
+    //     if (storedToken) {
+    //         axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+    //     }
+    //
+    //     // getUserRecommendedRecipes(); // 초기에는 유저 추천 레시피만 로드
+    //
+    // }, []);
 
     const getLatestRecipes = async () => {
         try {
@@ -210,8 +217,16 @@ export const RecipeProvider = ({ children }) => {
     // 댓글 생성 함수
     const createComment = async (recipeId, content) => {
         try {
-            await axios.post(`/api/recipes/${recipeId}/comments`, { recipeContent: content });
-            getRecipeById(recipeId);
+            const response = await axios.post(`/api/recipes/${recipeId}/comments`, { recipeContent: content });
+            setSelectedRecipe(prevRecipe => {
+                if (prevRecipe.recipeIdx === recipeId) {
+                    return {
+                        ...prevRecipe,
+                        comments: [...prevRecipe.comments, response.data]
+                    };
+                }
+                return prevRecipe;
+            });
         } catch (error) {
             setError(error.message || '댓글 작성 실패');
         }
@@ -220,10 +235,13 @@ export const RecipeProvider = ({ children }) => {
     // 댓글 수정 함수
     const updateComment = async (commentId, updatedContent) => {
         try {
-            await axios.patch(`/api/recipes/comments/${commentId}`, { recipeContent: updatedContent });
-            if (selectedRecipe && selectedRecipe.recipeIdx === commentId) {
-                getRecipeById(selectedRecipe.recipeIdx);
-            }
+            const response = await axios.patch(`/api/recipes/comments/${commentId}`, { recipeContent: updatedContent });
+            setSelectedRecipe(prevRecipe => {
+                const updatedComments = prevRecipe.comments.map(comment =>
+                    comment.recipeCommentIdx === commentId ? response.data : comment
+                );
+                return { ...prevRecipe, comments: updatedComments };
+            });
         } catch (error) {
             setError(error.message || '댓글 수정 실패');
         }
@@ -233,13 +251,15 @@ export const RecipeProvider = ({ children }) => {
     const deleteComment = async (commentId) => {
         try {
             await axios.delete(`/api/recipes/comments/${commentId}`);
-            if (selectedRecipe && selectedRecipe.recipeIdx === commentId) {
-                getRecipeById(selectedRecipe.recipeIdx);
-            }
+            setSelectedRecipe(prevRecipe => {
+                const updatedComments = prevRecipe.comments.filter(comment => comment.recipeCommentIdx !== commentId);
+                return { ...prevRecipe, comments: updatedComments };
+            });
         } catch (error) {
             setError(error.message || '댓글 삭제 실패');
         }
     };
+
 
     return (
         <RecipeContext.Provider value={{

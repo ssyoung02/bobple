@@ -9,6 +9,7 @@ import kr.bit.bobple.repository.LikeRecipeRepository;
 import kr.bit.bobple.repository.RecipeCommentRepository;
 import kr.bit.bobple.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,9 @@ public class RecipeService {
 
         recipe.setViewsCount(recipe.getViewsCount() + 1); // 조회수 증가
         recipeRepository.save(recipe);
+
+        // 강제로 초기화
+        Hibernate.initialize(recipe.getUser());
 
         return convertToDto(recipe); // 댓글 목록 포함하여 DTO 변환
     }
@@ -87,11 +91,19 @@ public class RecipeService {
         recipeRepository.deleteById(recipeId);
     }
 
+//    @Transactional(readOnly = true)
+//    public Page<RecipeDto> searchRecipes(String keyword, String category, Pageable pageable) {
+//        return recipeRepository.searchRecipes(keyword, category, pageable)
+//                .map(this::convertToDto);
+//    }
+
     @Transactional(readOnly = true)
-    public Page<RecipeDto> searchRecipes(String keyword, String category, Pageable pageable) {
-        return recipeRepository.searchRecipes(keyword, category, pageable)
-                .map(this::convertToDto);
-    }
+    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("likesCount"), Sort.Order.desc("viewsCount")));
+        Page<Recipe> recipes = recipeRepository.searchRecipes(keyword, category, pageable);
+
+        return recipes.map(this::convertToDto);    }
+
 
     @Transactional(readOnly = true)
     public Page<Recipe> getLatestRecipes(Pageable pageable) {
@@ -141,9 +153,11 @@ public class RecipeService {
     // recipe -> RecipeDto 변환 메서드
     private RecipeDto convertToDto(Recipe recipe) {
         RecipeDto recipeDto = RecipeDto.fromEntity(recipe);
+        // 댓글 리스트 설정
         recipeDto.setComments(recipeCommentRepository.findByRecipeIdOrderByCreatedAtDesc(recipe.getId())
                 .stream().map(RecipeCommentDto::fromEntity)
                 .collect(Collectors.toList()));
+        // 좋아요 여부 설정
         if (authenticationFacade.getCurrentUser() != null) {
             recipeDto.setLiked(likeRecipeRepository.existsByUser_UserIdxAndRecipe_Id(
                     authenticationFacade.getCurrentUser().getUserIdx(),
@@ -152,4 +166,8 @@ public class RecipeService {
         }
         return recipeDto;
     }
+
+
+
+
 }

@@ -1,177 +1,116 @@
-.recipe-main{
-    display: grid;
-    gap: 1.5em;
-}
-
-h2{
-    font-family: NotoSansKR-Bold, serif;
-    color: #233B6F;
-}
-
-.SearchInput{
-    position: relative;
-}
-.RecipeSaerchBox{
-    width: 100%;
-    height: 3em;
-    border-radius: 30px;
-    border: 1px solid #233B6F;
-    padding: 1em;
-}
-.RecipeSearchButton{
-    position: absolute;
-    top: 8px;
-    right: 20px;
-    font-size: 1.3em;
-    color: #233B6F;
-}
-/*AIRecipe 버튼*/
-.AIRecipe{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #233B6F;
-    border-radius: 15px;
-    padding: 0.7em 1.5em;
-    color: #233B6F;
-}
-.AIRecipeTitle{
-    text-align: left;
-}
-.AIRecipeTitle p{
-    font-size: 0.7em;
-}
-.AIRecipe svg{
-    font-size: 1.5em;
-}
-/*도시락 레시피 추천*/
-.LunchBoxTag{
-    width: 100%;
-}
-.LunchBoxTagList{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1em;
-}
-.LunchBoxTagItem{
-    position: relative;
-    width: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-}
-.LunchBoxTagItem:after{
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-    margin-bottom: 5px;
-}
-.LunchBoxTagItem img{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.LunchBoxTagItem p{
-    position: absolute;
-    bottom: 10px;
-    left: 13px;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 1px 7px;
-    border-radius: 5px;
-}
-
-/*----------------------------------------------------------*/
-
 /* src/components/Recipe/RecipeMain.css */
-/*.recipe-main-container {*/
-/*    width: 80%;*/
-/*    margin: 20px auto;*/
-/*    padding: 20px;*/
-/*}*/
+.recipe-main-container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+}
 
-/*.search-area {*/
-/*    display: flex;*/
-/*    margin-bottom: 20px;*/
-/*}*/
+.search-area {
+    display: flex;
+    margin-bottom: 20px;
+}
 
-/*.search-input {*/
-/*    flex-grow: 1;*/
-/*    padding: 10px;*/
-/*    border: 1px solid #ccc;*/
-/*    border-radius: 5px 0 0 5px;*/
-/*}*/
+.search-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+}
 
-/*.search-button {*/
-/*    padding: 10px 15px;*/
-/*    background-color: #007bff;*/
-/*    color: white;*/
-/*    border: none;*/
-/*    border-radius: 0 5px 5px 0;*/
-/*    cursor: pointer;*/
-/*}*/
+.search-button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
 
-/*.ai-recommendation,*/
-/*.lunchbox-recipes,*/
-/*.user-recommended-recipes,*/
-/*.latest-recipes {*/
-/*    margin-bottom: 20px;*/
-/*}*/
+.ai-recommendation,
+.lunchbox-recipes,
+.user-recommended-recipes,
+.latest-recipes {
+    margin-bottom: 20px;
+}
 
-/*.ai-button {*/
-/*    background-color: #2185d0;*/
-/*    color: white;*/
-/*    padding: 10px;*/
-/*    border: none;*/
-/*    border-radius: 5px;*/
-/*    width: 100%;*/
-/*    cursor: pointer;*/
-/*}*/
+.ai-button {
+    background-color: #2185d0;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+}
 
-/*.recipe-grid {*/
-/*    display: grid;*/
-/*    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));*/
-/*    gap: 1rem;*/
-/*}*/
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
 
-/*.no-recipes-message {*/
-/*    text-align: center;*/
-/*    padding: 20px;*/
-/*    font-size: 1.2rem;*/
-/*    color: #777;*/
-/*}*/
+.no-recipes-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2rem;
+    color: #777;
+}
 
-/*.more-button {*/
-/*    float: right;*/
-/*    margin-top: 10px;*/
-/*    background-color: #f0f0f0;*/
-/*    border: none;*/
-/*    padding: 8px 15px;*/
-/*    border-radius: 5px;*/
-/*    cursor: pointer;*/
-/*}*/
+.more-button {
+    float: right;
+    margin-top: 10px;
+    background-color: #f0f0f0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-/*.pagination {*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    margin-top: 20px;*/
-/*}*/
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
 
-/*.pagination button {*/
-/*    padding: 0.5rem 1rem;*/
-/*    margin: 0 5px;*/
-/*    border: 1px solid #ccc;*/
-/*    border-radius: 5px;*/
-/*    background-color: white;*/
-/*    cursor: pointer;*/
-/*}*/
+.pagination button {
+    padding: 0.5rem 1rem;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    cursor: pointer;
+}
 
-/*.pagination button:disabled {*/
-/*    background-color: #eee;*/
-/*    cursor: default;*/
-/*}*/
+.pagination button:disabled {
+    background-color: #eee;
+    cursor: default;
+}
+
+.category-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.category-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    border: none; /* 버튼 기본 스타일 제거 */
+    background-color: transparent; /* 버튼 배경색 투명하게 */
+}
+
+.category-button img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.category-name {
+    font-weight: bold;
+}

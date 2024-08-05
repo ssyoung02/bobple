@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import '../recipe/css/RecipeCard.css';
 import errorImage from '../../assets/images/error_image.jpg';
 import '../../assets/style/recipe/RecipeCard.css'; // CSS 파일 import
 

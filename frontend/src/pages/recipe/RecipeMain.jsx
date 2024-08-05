@@ -2,8 +2,10 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import RecipeCard from './RecipeCard';
-import '../recipe/css/RecipeMain.css';
+import UserRecommendedRecipeCard from './UserRecommendedRecipeCard';
+import LatestRecipeCard from './LatestRecipeCard';
 import axios from "../../utils/axios";
+import "../../assets/style/recipe/RecipeMain.css";
 
 function RecipeMain() {
     const {
@@ -23,7 +25,7 @@ function RecipeMain() {
     ];
 
     useEffect(() => {
-        getRecipesByCategory('도시락');
+        getRecipesByCategory('');
         getLatestRecipes();
         // // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
         // searchRecipes('', '', 0, 10, 'createdAt,desc');
@@ -39,11 +41,19 @@ function RecipeMain() {
     };
 
     const handleSearchClick = () => {
-        searchRecipes(searchKeyword, '', 0, 10, 'createdAt,desc');
+        navigate(`/recipe/search?keyword=${searchKeyword}`);
     };
 
+    // const handleSearchClick = () => {
+    //     searchRecipes(searchKeyword, '', 0, 10, 'createdAt,desc');
+    // };
+
+    // const handleCategoryClick = (category) => {
+    //     searchRecipes('', category, 0, 10, 'createdAt,desc'); // 해당 카테고리 레시피 검색
+    // };
+
     const handleCategoryClick = (category) => {
-        searchRecipes('', category, 0, 10, 'createdAt,desc'); // 해당 카테고리 레시피 검색
+        navigate(`/recipe/search?category=${category}`);
     };
 
     const getRecipesByCategory = async (category) => {
@@ -67,12 +77,6 @@ function RecipeMain() {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
         }
     };
-
-    // 컴포넌트 마운트 시 도시락 레시피와 최신 레시피 가져오기
-    useEffect(() => {
-        getRecipesByCategory('도시락');
-        getLatestRecipes();
-    }, []);
 
     return (
         <div className="recipe-main-container">
@@ -113,52 +117,33 @@ function RecipeMain() {
                         </button>
                     ))}
                 </div>
-                <div className="recipe-grid">
-                    {categoryRecipes.length > 0 ? (
-                        categoryRecipes.map(recipe => (
-                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}
-                                 className="recipe-card-wrapper">
-                                <RecipeCard recipe={recipe}/>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="no-recipes-message">조회된 레시피가 없습니다.</div>
-                    )}
-                </div>
-                <Link to="/recipe/search?category=도시락">
-                    <button className="more-button">더보기</button>
-                </Link>
             </div>
 
             {/* 유저 추천 레시피 섹션 */}
             <div className="user-recommended-recipes">
-                <h3>유저 추천 레시피</h3>
-                <div className="recipe-grid">
-                    {userRecommendedRecipes.length > 0 ? ( // userRecommendedRecipes 사용
+                <div className="header">
+                    <h3>유저 추천 레시피</h3>
+                    <Link to="/recipes/search?category=" className="more-button">더보기</Link>
+                </div>
+                <div className="recipe-list">
+                    {userRecommendedRecipes.length > 0 ? (
                         userRecommendedRecipes.map(recipe => (
-                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}
-                                 className="recipe-card-wrapper">
-                                <RecipeCard recipe={recipe}/>
-                            </div>
+                            <UserRecommendedRecipeCard key={recipe.recipeIdx} recipe={recipe}/>
                         ))
                     ) : (
                         <div className="no-recipes-message">조회된 레시피가 없습니다.</div>
                     )}
                 </div>
-                <Link to="/recipe/search">
-                    <button className="more-button">더보기</button>
-                </Link>
             </div>
 
-            {/* 최신 레시피 섹션 */}
             <div className="latest-recipes">
                 <h3>최신 레시피</h3>
-                <div className="recipe-grid">
+                <div className="latest-recipe-list">
                     {latestRecipes.length > 0 ? (
                         latestRecipes.map(recipe => (
                             <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}
-                                 className="recipe-card-wrapper">
-                                <RecipeCard recipe={recipe}/>
+                                 className="latest-recipe-card-wrapper">
+                                <LatestRecipeCard recipe={recipe}/>
                             </div>
                         ))
                     ) : (
@@ -166,6 +151,7 @@ function RecipeMain() {
                     )}
                 </div>
             </div>
+
 
             {/* 페이지네이션 추가 */}
             <div className="pagination">

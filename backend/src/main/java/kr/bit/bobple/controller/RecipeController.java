@@ -79,18 +79,25 @@ public class RecipeController {
         return ResponseEntity.noContent().build();
     }
 
-    // RecipeController.java
-    @GetMapping("/search") // GET 메서드 및 "/search" 경로 확인
-    public ResponseEntity<Page<RecipeDto>> searchRecipes(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String category,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    )  {
-        Page<RecipeDto> recipeDtoPage = recipeService.searchRecipes(keyword, category, pageable);
-        return ResponseEntity.ok(recipeDtoPage); // Page<RecipeDto> 직접 반환
-    }
-
-
+//    // RecipeController.java
+//    @GetMapping("/search") // GET 메서드 및 "/search" 경로 확인
+//    public ResponseEntity<Page<RecipeDto>> searchRecipes(
+//            @RequestParam(required = false) String keyword,
+//            @RequestParam(required = false) String category,
+//            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+//    )  {
+//        Page<RecipeDto> recipeDtoPage = recipeService.searchRecipes(keyword, category, pageable);
+//        return ResponseEntity.ok(recipeDtoPage); // Page<RecipeDto> 직접 반환
+//    }
+@GetMapping("/search")
+public ResponseEntity<Page<RecipeDto>> searchRecipes(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) String category,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+    Page<RecipeDto> recipes = recipeService.searchRecipes(keyword, category, page, size);
+    return ResponseEntity.ok(recipes);
+}
 
 
 

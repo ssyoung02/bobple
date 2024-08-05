@@ -1,0 +1,40 @@
+/* src/assets/style/recipe/LatestRecipeCard.css */
+.latest-recipe-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    transition: background-color 0.2s ease;
+}
+
+.latest-recipe-card:hover {
+    background-color: #f9f9f9;
+}
+
+.recipe-card-image img {
+    width: 70px;
+    height: 70px;
+    border-radius: 5px;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.recipe-card-content {
+    flex-grow: 1;
+}
+
+.recipe-card-content h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.recipe-card-content .description {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 0.9rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 최대 두 줄까지만 보여주기 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
