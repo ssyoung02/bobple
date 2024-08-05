@@ -235,7 +235,7 @@ function RecommendFoodCategory() {
                                     <h6 className="restaurant-name">{restaurant.place_name}</h6>
                                     <p className="restaurant-address">{restaurant.address_name}</p>
                                     <span className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
-                                    <span className="restaurant-category"><CaretRight/>{restaurant.category_name}</span>
+                                    <span className="restaurant-category"><CaretRight/> {restaurant.category_name.replace('음식점 > ', '')} </span>
                                 </a>
                             </div>
                         </li>
