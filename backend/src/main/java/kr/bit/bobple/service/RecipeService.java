@@ -8,6 +8,7 @@ import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.LikeRecipeRepository;
 import kr.bit.bobple.repository.RecipeCommentRepository;
 import kr.bit.bobple.repository.RecipeRepository;
+import kr.bit.bobple.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
@@ -28,11 +29,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecipeService {
 
+    private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
     private final HyperCLOVAClient hyperCLOVAClient;
     private final LikeRecipeRepository likeRecipeRepository;
     private final AuthenticationFacade authenticationFacade;
     private final RecipeCommentRepository recipeCommentRepository; // 추가: 댓글 레포지토리 의존성 주입
+
+    @Transactional(readOnly = true)
+    public Optional<User> getUserWithRecipes(Long userId) {
+        return userRepository.findUserWithRecipes(userId);
+    }
 
     @Transactional(readOnly = true)
     public Page<RecipeDto> getAllRecipes(Pageable pageable) {

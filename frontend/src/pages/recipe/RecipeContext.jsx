@@ -55,6 +55,7 @@ export const RecipeProvider = ({ children }) => {
     // 레시피 검색 함수 (useCallback으로 메모이징)
     const searchRecipes = useCallback(async (keyword = '', category = '', page = 0, size = 10, sort = 'createdAt,desc') => {
         try {
+            setLoading(true);
             const response = await axios.get('/api/recipes/search', {
                 params: { keyword, category, page, size, sort }
             });
@@ -85,7 +86,7 @@ export const RecipeProvider = ({ children }) => {
         getLatestRecipes();
         getUserRecommendedRecipes(); // 초기에는 유저 추천 레시피만 로드
 
-    }, [page, size]);
+    }, [page, size, searchRecipes]);
 
     // useEffect(() => {
     //     const storedToken = localStorage.getItem('token');
@@ -122,17 +123,18 @@ export const RecipeProvider = ({ children }) => {
 
     // 레시피 상세 정보 조회 함수
 
-    const getRecipeById = async (id) => {
+    const getRecipeById = useCallback(async (id) => {
         try {
+            setLoading(true);
             const response = await axios.get(`/api/recipes/${id}`);
             setSelectedRecipe(response.data);
-            setLoading(false);
         } catch (error) {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
             console.error(error);
+        } finally {
             setLoading(false);
         }
-    };
+    }, [setSelectedRecipe, setError]);
 
     // AI 레시피 추천 함수
     const aiRecommendRecipes = async (ingredients) => {

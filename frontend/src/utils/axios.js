@@ -25,7 +25,7 @@ const refreshToken = async () => {
         return response.data.token;
     } catch (error) {
         localStorage.removeItem('token');
-        window.location.href = '/myPage/login/login';
+        window.location.href = '/myPage/login';
         throw error;
     }
 };
@@ -43,7 +43,7 @@ instance.interceptors.response.use(
             } catch (refreshError) {
                 console.error('토큰 갱신 실패:', refreshError);
                 localStorage.removeItem('token');
-                return Promise.reject({ ...error, redirectTo: '/myPage/login/login' });
+                return Promise.reject({ ...error, redirectTo: '/myPage/login' });
             }
         } else if (error.response) {
             // 서버 응답 에러 (4xx, 5xx) 처리

@@ -58,15 +58,12 @@ public class RecipeDto {
         recipeDto.setUpdatedAt(recipe.getUpdatedAt());
         //recipeDto.setLiked(...); // 현재 사용자가 좋아요를 눌렀는지 여부 설정 필요
 
-
-        // 댓글 목록은 별도의 API를 통해 가져오므로 주석 처리
-        // if (recipe.getRecipeComments() != null) {
-        //     recipeDto.setComments(recipe.getRecipeComments().stream()
-        //             .map(RecipeCommentDto::fromEntity)
-        //             .collect(Collectors.toList()));
-        // } else {
-        //     recipeDto.setComments(new ArrayList<>());
-        // }
+        // 댓글 목록 설정
+        if (recipe.getRecipeComments() != null) {
+            recipeDto.setComments(recipe.getRecipeComments().stream()
+                    .map(RecipeCommentDto::fromEntity)
+                    .collect(Collectors.toList()));
+        }
 
         return recipeDto;
     }

@@ -1,11 +1,14 @@
 package kr.bit.bobple.dto;
 
+import kr.bit.bobple.entity.Recipe;
 import kr.bit.bobple.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -24,6 +27,8 @@ public class UserDto {
     private Integer point; // int -> Integer 타입으로 변경
     private LocalDateTime createdAt; // LocalDateTime 타입으로 변경
     private LocalDateTime updatedAt; // LocalDateTime 타입으로 변경
+    private List<RecipeDto> recipes; // 레시피 리스트 추가
+
 
     // User 엔티티를 UserDto로 변환하는 메서드 (타입 변경에 맞춰 수정)
     public static UserDto fromEntity(User user) {
@@ -42,6 +47,18 @@ public class UserDto {
         userDto.setPoint(user.getPoint());
         userDto.setCreatedAt(user.getCreatedAt());
         userDto.setUpdatedAt(user.getUpdatedAt());
+
+        return userDto;
+    }
+
+    // 레시피를 포함한 변환 메서드
+    public static UserDto fromEntityWithRecipes(User user) {
+        UserDto userDto = fromEntity(user);
+        if (user.getRecipes() != null) {
+            userDto.setRecipes(user.getRecipes().stream()
+                    .map(RecipeDto::fromEntity)
+                    .collect(Collectors.toList()));
+        }
         return userDto;
     }
 }
