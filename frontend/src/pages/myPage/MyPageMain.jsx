@@ -42,16 +42,19 @@ function MyPageMain() {
                     });
                 } catch (error) {
                     console.error('Error fetching user data:', error);
-                    navigate("/myPage/login/login");
+                    navigate("/myPage/login");
                 }
             } else {
-                navigate("/myPage/login/login");
+                navigate("");
             }
         };
 
         fetchUserData();
     }, [navigate]);
 
+    const moveLogin = () => {
+        navigate('/myPage/login');
+    };
 
     const moveUserModify = () => {
         navigate('/myPage/userModify');
@@ -95,7 +98,7 @@ function MyPageMain() {
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate("/myPage/login/login");
+        navigate("/");
     };
 
 
@@ -119,7 +122,7 @@ function MyPageMain() {
                         </button>
                     </>
                 ) : (
-                    <button>
+                    <button className="goto-UserModify" onClick={moveLogin}>
                         <div className="mypage-profile before-login">
                             <DefaultUser/>
                         </div>
@@ -193,8 +196,11 @@ function MyPageMain() {
                     <h6>문의하기</h6>
                 </button>
             </div>
-
-            <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            {user ?
+                <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                :
+                <></>
+            }
         </div>
     );
 }

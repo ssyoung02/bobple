@@ -7,10 +7,27 @@ import { faMagnifyingGlass, faChevronRight, faChevronLeft, faLocationDot,
 import MainFoodBanner_jeon from "../../assets/images/banner/MainFoodBanner_jeon.jpg";
 import trophy from "../../assets/images/gameimg/trophy.png";
 import receiptSettlementImg from "../../assets/images/gameimg/receipt_ settlement.png";
+import gLogin from "../../assets/images/icon/google.png"
+import nLogin from "../../assets/images/icon/naver.png"
+import kLogin from  "../../assets/images/icon/kakao.png"
 
 // 배너 이미지
 export const MainFoodBanner = () => {
     return (<img src={MainFoodBanner_jeon} alt={"전"} />);
+}
+
+//로그인 이미지
+
+export const Google = () => {
+    return (<img src={gLogin} alt={"구글 로그인"} />);
+}
+
+export const NLogin = () => {
+    return (<img src={nLogin} alt={"네이버 로그인"} />);
+}
+
+export const KLogin = () => {
+    return (<img src={kLogin} alt={"카카오 로그인"} />);
 }
 
 // 게임 이미지

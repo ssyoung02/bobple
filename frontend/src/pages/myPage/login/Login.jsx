@@ -2,6 +2,9 @@ import React from 'react';
 import kakaoImage from '../../../assets/images/kakao_login_medium_narrow.png';
 import googleImage from '../../../assets/images/google_login.png';
 import naverImage from '../../../assets/images/naver_login.png';
+import '../../../assets/style/myPage/Login.css';
+import {Google, KLogin, NLogin} from "../../../components/imgcomponents/ImgComponents";
+import {Link} from "react-router-dom";
 
 function Login() {
     const CLIENT_KAKAO_ID = process.env.REACT_APP_KAKAO_REST_API_KEY;
@@ -17,17 +20,38 @@ function Login() {
     const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${CLIENT_NAVER_ID}&redirect_uri=${REDIRECT_NAVER_URI}&response_type=code`;
 
     return (
-        <div>
-            <h1>로그인 페이지</h1>
-            <a href={KAKAO_AUTH_URL} className="kakaobtn">
-                <img src={kakaoImage} alt="Kakao Login"/>
-            </a>
-            <a href={GOOGLE_AUTH_URL} className="googlebtn">
-                <img src={googleImage} alt="Google Login"/>
-            </a>
-            <a href={NAVER_AUTH_URL} className="naverbtn">
-                <img src={naverImage} alt="Naver Login"/>
-            </a>
+        <div className="login-main">
+            <div className="login-buttons">
+                <h2>Login</h2>
+                <div className={"user-login-buttons"}>
+                    <a href={KAKAO_AUTH_URL} className="kakaobtn">
+                        <KLogin/>
+                        Kakao 로그인
+                    </a>
+                    <a href={GOOGLE_AUTH_URL} className="googlebtn">
+                        <Google/>
+                        Google 로그인
+                    </a>
+                    <a href={NAVER_AUTH_URL} className="naverbtn">
+                        <NLogin/>
+                        Naver 로그인
+                    </a>
+
+                </div>
+                {/*<div className="admin-login-buotton">*/}
+                {/*    <div className="admin-line">*/}
+                {/*        <div className="backline"></div>*/}
+                {/*        <h6>관리자 로그인</h6>*/}
+                {/*        <div className="backline"></div>*/}
+                {/*    </div>*/}
+                {/*    <button>*/}
+                {/*        관리자 로그인*/}
+                {/*    </button>*/}
+                {/*    <div className="admin-login-box">*/}
+                {/*        <label>아이디</label>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+            </div>
         </div>
     );
 }

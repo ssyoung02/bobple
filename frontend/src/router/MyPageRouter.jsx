@@ -29,7 +29,7 @@ function MyPageRouter(){
                     <Route path="/myPointUseage" element={<MyPointUsage/>}/>
                     <Route path="/userModify" element={<UserModify/>}/>
 
-                    <Route path="/login/login" element={<Login/>}/>
+                    <Route path="/login" element={<Login/>}/>
                     <Route path="/login/oauth2/callback/kakao" element={<KakaoLoginHandler/>} />
                     <Route path="/login/oauth2/callback/google" element={<GoogleLoginHandler/>} />
                     <Route path="/login/oauth2/callback/naver" element={<NaverLoginHandler/>} />

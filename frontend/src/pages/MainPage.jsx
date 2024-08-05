@@ -50,7 +50,6 @@ function MainPage() {
             {user && (
                 <div>
                     <p>환영합니다, {user.name}님!</p>
-                    <p>이메일: {user.email}</p>
                 </div>
             )}
             <h2>오늘의 주인공</h2>
