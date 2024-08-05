@@ -189,3 +189,7 @@
 .list-container::-webkit-scrollbar-button {
     display: none;
 }
+.list-container::-webkit-scrollbar-track,
+.list-container::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+}
