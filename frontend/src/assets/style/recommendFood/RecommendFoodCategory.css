@@ -21,7 +21,7 @@
 
 .top-item {
     position: relative;
-    width: 8.5em;
+    max-width: 8em;
     flex-direction: column;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;

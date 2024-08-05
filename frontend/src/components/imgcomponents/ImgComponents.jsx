@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faChevronRight, faChevronLeft, faLocationDot,
     faBookmark, faCaretRight, faArrowLeftLong, faRotateLeft, faReceipt,
     faPen, faUser, faCalculator, faFilePen, faHeart, faQuestion,
-    faExclamation, faVolumeOff} from "@fortawesome/free-solid-svg-icons";
+    faExclamation, faVolumeOff, faLocationCrosshairs} from "@fortawesome/free-solid-svg-icons";
 import MainFoodBanner_jeon from "../../assets/images/banner/MainFoodBanner_jeon.jpg";
 import trophy from "../../assets/images/gameimg/trophy.png";
 import receiptSettlementImg from "../../assets/images/gameimg/receipt_ settlement.png";
@@ -114,4 +114,8 @@ export const Question = () => {
 
 export const Exclamation = () => {
     return (<FontAwesomeIcon icon={faExclamation} />);
+}
+
+export const LocationTarget = () => {
+    return (<FontAwesomeIcon icon={faLocationCrosshairs} />);
 }
