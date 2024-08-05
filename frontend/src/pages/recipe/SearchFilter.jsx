@@ -1,7 +1,7 @@
 // src/components/Recipe/SearchFilter.jsx
 import React, { useState, useContext } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import '../recipe/css/SearchFilter.css'; // CSS 파일 import
+import '../../assets/style/recipe/SearchFilter.css'; // CSS 파일 import
 
 function SearchFilter() {
     const { searchRecipes, page, size } = useContext(RecipeContext);
@@ -47,7 +47,7 @@ function SearchFilter() {
                     ))}
                 </select>
 
-                <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                <select className="category-sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                     {sortOptions.map(option => (
                         <option key={option.key} value={option.value}>{option.text}</option>
                     ))}

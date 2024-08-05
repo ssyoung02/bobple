@@ -1,7 +1,6 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import MainPage from "../pages/MainPage";
-import AdminRouter from "./AdminRouter"
 import AroundFoodRouter from "./AroundFoodRouter"
 import EatingGroupRouter from "./EatingGroupRouter"
 import MainGameRouter from "./MainGameRouter"
@@ -16,7 +15,6 @@ function MainRouter(){
     return(
         <Routes>
             <Route path="/"  element={<MainPage/>}/>
-            <Route path="/admin/*" element={<AdminRouter/>}/>
             <Route path="/around/*" element={<AroundFoodRouter/>}/>
             <Route path="/group/*" element={<EatingGroupRouter/>}/>
             <Route path="/mainGame/*" element={<MainGameRouter/>}/>

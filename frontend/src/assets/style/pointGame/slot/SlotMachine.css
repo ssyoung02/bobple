@@ -1,0 +1,79 @@
+/*SlotMachine.css*/
+.slot-game {
+    font-family: sans-serif;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.machine-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.machine-roll, .machine-reset {
+    width: 100px;
+    cursor: pointer;
+    background-color: yellow;
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 20px;
+    border: 3px solid black;
+}
+
+.slot-result {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/*---------------------------------------------------------------*/
+
+/*Slot.jsx*/
+.slot {
+    position: relative;
+    display: inline-block;
+    height: 270px;
+    width: 100px; /* 슬롯 너비를 넓혀줍니다 */
+}
+
+.slot-section {
+    position: absolute;
+    border-radius: 15px;
+    border: 3px solid black;
+    width: 95px; /* 슬롯 섹션 너비를 넓혀줍니다 */
+    height: 100px; /* 슬롯 높이 설정 */
+    overflow: hidden;
+    background-color: grey;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    font-size: 80px; /* 과일 크기를 키웁니다 */
+    line-height: 90px; /* 줄 높이를 키워 과일이 중앙에 위치하게 합니다 */
+    cursor: default;
+}
+
+.slot-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    animation: aniScroll 1s linear infinite;
+    transition: none;
+}
+
+.slot-container.rolling {
+    animation-play-state: running;
+}
+
+.slot-container:not(.rolling) {
+    animation-play-state: paused;
+}
+
+@keyframes aniScroll {
+    0% { transform: translateY(0%); }
+    100% { transform: translateY(-100%); }
+}

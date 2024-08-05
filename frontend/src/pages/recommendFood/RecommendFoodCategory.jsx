@@ -4,16 +4,20 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import '../../assets/style/recommendFood/RecommendFoodCategory.css';
 import {Bookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {TopSearch} from "../../components/SliderComponent";
+import theme from "tailwindcss/defaultTheme";
 
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const initialThemeName = searchParams.get('themeName');
+
     const initialCategory = searchParams.get('category');
     const initialKeyword = searchParams.get('keyword');
+    const initialTheme = searchParams.get('theme');
+
     const [category, setCategory] = useState(initialCategory || ''); // 초기값 설정
     const [keyword, setKeyword] = useState(initialKeyword || ''); // 초기값 설정
     const [restaurants, setRestaurants] = useState([]);
     const [displayedKeyword, setDisplayedKeyword] = useState(initialKeyword || ''); // 표시될 검색어 상태 추가
-
     const navigate = useNavigate();
 
     // 주변 음식점 정렬 (거리순)
@@ -25,12 +29,17 @@ function RecommendFoodCategory() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const
-                        { latitude, longitude } = position.coords;
-                    if (category) {
-                        searchRestaurantsByCategory(latitude, longitude, category);
+                    const { latitude, longitude } = position.coords;
+
+                    // 카테고리가 '전체'인 경우 keywordSearch로 모든 음식점 검색
+                    if (category === '전체') {
+                        searchAllRestaurants(latitude, longitude);
                     } else if (keyword) {
                         searchRestaurantsByKeyword(latitude, longitude, keyword);
+                    } else if (initialTheme) { // theme 쿼리 파라미터 확인
+                        searchRestaurantsByTheme(latitude, longitude, initialTheme);
+                    } else {
+                        searchRestaurantsByCategory(latitude, longitude, category);
                     }
                 },
                 (err) => {
@@ -41,20 +50,32 @@ function RecommendFoodCategory() {
             console.error("geolocation을 사용할 수 없어요.");
         }
 
+        function searchAllRestaurants(latitude, longitude) { // 모든 음식점 검색 함수 추가
+            const searchOptions = {
+                location: new kakao.maps.LatLng(latitude, longitude),
+                radius: 2000, // 검색 반경 (미터 단위)
+            };
+
+            ps.keywordSearch('음식점', (data, status) => { // "음식점" 키워드로 검색
+                if (status === kakao.maps.services.Status.OK) {
+                    setRestaurants(data);
+                } else {
+                    console.error("음식점 검색 실패:", status);
+                }
+            }, searchOptions);
+        }
+
         function searchRestaurantsByCategory(latitude, longitude, category) {
             const searchOptions = {
                 location: new kakao.maps.LatLng(latitude, longitude),
                 radius: 2000, // 검색 반경 (미터 단위)
             };
 
-            console.log("검색 카테고리:", category); // 검색 카테고리 출력
-
             // categorySearch 대신 keywordSearch 사용
             ps.keywordSearch(category, (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
                     // 카테고리 이름을 포함하는 음식점만 필터링
                     const filteredData = data.filter(restaurant => restaurant.category_name.includes(category));
-                    console.log("검색 결과:", filteredData); // 검색 결과 출력
                     setRestaurants(filteredData);
 
                 } else {
@@ -69,18 +90,54 @@ function RecommendFoodCategory() {
                 radius: 2000, // 검색 반경 (미터 단위)
             };
 
-            console.log("검색 키워드:", keyword);
-
             ps.keywordSearch(keyword, (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
-                    console.log("검색 결과:", data);
-                    setRestaurants(data);
+                    // 음식점 카테고리를 포함하는 데이터만 필터링하여 resolve
+                    const filteredData = data.filter(restaurant => restaurant.category_name.includes("음식점"));
+                    setRestaurants(filteredData);
                 } else {
                     console.error("음식점 검색 실패:", status);
                 }
             }, searchOptions);
         }
+
+        function searchRestaurantsByTheme(latitude, longitude, themeKeyword) {
+            const searchOptions = {
+                location: new kakao.maps.LatLng(latitude, longitude),
+                radius: 2000, // 검색 반경 (미터 단위)
+            };
+
+            const foodNames = themeKeyword.split(" ");
+            let allSearchResults = [];
+
+            const promises = foodNames.map(foodName => {
+                return new Promise((resolve, reject) => {
+                    ps.keywordSearch(foodName.trim(), (data, status) => {
+                        if (status === kakao.maps.services.Status.OK) {
+                            // 음식점 카테고리를 포함하는 데이터만 필터링하여 resolve
+                            const filteredData = data.filter(restaurant => restaurant.category_name.includes("음식점"));
+                            resolve(filteredData);
+                        } else {
+                            reject(new Error("음식점 검색 실패: " + status));
+                        }
+                    }, searchOptions);
+                });
+            });
+
+            Promise.all(promises)
+                .then(results => {
+                    allSearchResults = results.flat();
+                    // 중복 제거 로직 추가
+                    const uniqueSearchResults = Array.from(new Set(allSearchResults.map(JSON.stringify))).map(JSON.parse);
+
+                    setRestaurants(uniqueSearchResults);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     }, [category]);
+
 
     const handleSearch = () => {
         const trimmedKeyword = keyword.trim();
@@ -91,13 +148,18 @@ function RecommendFoodCategory() {
 
         // 검색 키워드를 쿼리 파라미터로 설정하고 페이지 새로고침
         setSearchParams({ keyword: trimmedKeyword });
+
         window.location.reload();
+
+        // 검색 실행 후 displayedKeyword 업데이트
+        setDisplayedKeyword(trimmedKeyword);
     };
 
     const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
 
-    // category가 '일본식 주점'이면 '이자카야'로 변경
-    const displayedCategory = category === '일본식주점' ? '이자카야' : category;
+    // displayedCategory 또는 displayedKeyword 또는 initialThemeName을 표시
+    const displayedTitle = keyword ? displayedKeyword : (category || initialThemeName);
+
 
     return (
         <div className="recommend-category-container">
@@ -121,7 +183,7 @@ function RecommendFoodCategory() {
             </div>
             <div>
                 <h3 className="category-title">
-                    {(displayedCategory || displayedKeyword) && `${displayedCategory || displayedKeyword} `}
+                    {displayedTitle && `${displayedTitle} `}
                     <span>BEST</span>
                 </h3>
 

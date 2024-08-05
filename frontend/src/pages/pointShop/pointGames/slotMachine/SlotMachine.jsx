@@ -1,40 +1,76 @@
-import React, { useState, useRef, useEffect } from 'react';
-import '../../../../assets/style/SlotMachine.css';
+import React, { useState, useRef } from "react";
+import Dashboard from "./Dashboard";
+import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 
-function SlotMachine() {
-    const [numKeepTrack, setNumKeepTrack] = useState(0);
-    const [isSpinning, setIsSpinning] = useState([false, false, false]);
-    const symbols = ['🍒', '🍋', '🍊', '🍉'];
+const SlotMachine = () => {
+    const [rolling, setRolling] = useState(false);
+    const [stoppedSlots, setStoppedSlots] = useState(0);
+    const [resultMessage, setResultMessage] = useState("");
+    const slotRefs = [useRef(null), useRef(null), useRef(null)];
+    const fruits = ["🍒", "🍉", "🍊", "🍓", "🍇", "🥝"];
 
-    const handleStart = () => {
-        setNumKeepTrack(3);
-        setIsSpinning([true, true, true]);
-    };
-
-    const handleStop = () => {
-        if (numKeepTrack > 0) {
-            const newSpinningState = [...isSpinning];
-            newSpinningState[3 - numKeepTrack] = false;
-            setIsSpinning(newSpinningState);
-            setNumKeepTrack(numKeepTrack - 1);
+    const roll = () => {
+        if (!rolling) {
+            setRolling(true);
+            setStoppedSlots(0);
+            setResultMessage("");
+            startRolling();
+        } else {
+            stopSlot();
         }
     };
 
+    const startRolling = () => {
+        slotRefs.forEach((slot) => {
+            if (slot.current) {
+                slot.current.startRolling();
+            }
+        });
+    };
+
+    const stopSlot = () => {
+        slotRefs[stoppedSlots].current.stopRolling();
+        setStoppedSlots((prev) => {
+            const newStoppedSlots = prev + 1;
+            if (newStoppedSlots === 3) {
+                setRolling(false);
+                setTimeout(checkResult, 500); // Give some time for the slots to stop completely
+            }
+            return newStoppedSlots;
+        });
+    };
+
+    const checkResult = () => {
+        const slotItems = slotRefs.map(ref => ref.current.getResult());
+        const isWin = slotItems.every((item, _, arr) => item === arr[0]);
+        setResultMessage(isWin ? "당첨!" : "다음 기회에...");
+    };
+
+    const reset = () => {
+        setRolling(false);
+        setStoppedSlots(0);
+        setResultMessage("");
+        slotRefs.forEach(slot => {
+            if (slot.current) {
+                slot.current.reset();
+            }
+        });
+    };
+
     return (
-        <div id="example10">
-            {isSpinning.map((spinning, index) => (
-                <div key={index} className="slot">
-                    <div className={`slot-inner ${spinning ? 'scroll' : ''}`}>
-                        {symbols.concat(symbols, symbols).map((item, idx) => (
-                            <div key={idx}>{item}</div>
-                        ))}
-                    </div>
+        <div className="slot-game">
+            <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits} />
+            <div className="machine-controls">
+                <div className="machine-roll" onClick={roll}>
+                    {rolling ? `STOP ${3 - stoppedSlots}` : "ROLL"}
                 </div>
-            ))}
-            <button id="btn-example10-start" onClick={handleStart}>Start</button>
-            <button id="btn-example10-stop" onClick={handleStop}>Stop</button>
+                <div className="machine-reset" onClick={reset}>
+                    RESET
+                </div>
+            </div>
+            {resultMessage && <div className="slot-result">{resultMessage}</div>}
         </div>
     );
-}
+};
 
 export default SlotMachine;

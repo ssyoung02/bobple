@@ -1,7 +1,7 @@
 // src/components/Recipe/AIRecommendation.jsx
 import React, { useState, useContext } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import '../recipe/css/AIRecommendation.css'; // CSS 파일 import
+import '../../assets/style/recipe/AIRecommendation.css'; // CSS 파일 import
 
 function AIRecommendation() {
     const { recommendRecipes } = useContext(RecipeContext);

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -64,5 +66,18 @@ public class User {
         this.companyId = 0L;
         this.reportCount = 0;
         this.point = 0;
+    }
+
+    public User(String username, int point) {
+        this.username = username;
+        this.point = point;
+        this.email = "";
+        this.name = "";
+        this.nickName = "";
+        this.enabled = true;
+        this.companyId = 0L;
+        this.reportCount = 0;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
