@@ -38,6 +38,19 @@ function RecommendMain() {
     // nearbyPub 상태를 거리순으로 정렬
     const sortedNearbyPub = [...nearbyPub].sort((a, b) => a.distance - b.distance);
 
+    // 각 술집의 북마크 개수를 가져오는 요청
+    const fetchBookmarkCounts = useCallback(async (pubIds) => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/bookmarks/restaurants/count', {
+                params: { restaurantIds: pubIds.join(',') }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('북마크 개수 가져오기 실패:', error);
+            return {};
+        }
+    }, []);
+
     useEffect(() => {
         const fetchUserBookmarks = async () => {
             const userIdx = getUserIdx();
@@ -65,24 +78,40 @@ function RecommendMain() {
             try {
                 const isBookmarked = userBookmarks.includes(pubId);
                 if (isBookmarked) {
-                    const deleteResponse = axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${pubId}`, {
+                    const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${pubId}`, {
                         data: { userIdx }
                     });
 
-                    setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== pubId));
-                    // 북마크 개수 업데이트 (필요에 따라)
-                    setNearbyPub(prevPubs => prevPubs.map(pub =>
-                        pub.id === pubId ? { ...pub, bookmarks_count: (pub.bookmarks_count || 0) - 1 } : pub
-                    ));
+                    if (deleteResponse.status === 204) { // 삭제 성공 시
+                        setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== pubId));
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(nearbyPub.map(pub => pub.id))
+                            .then(bookmarkCounts => {
+                                setNearbyPub(prevPubs => prevPubs.map(pub =>
+                                    pub.id === pubId ? { ...pub, bookmarks_count: bookmarkCounts[pub.id] || 0 } : pub
+                                ));
+                            });
+                    } else {
+                        console.error('북마크 삭제 실패:', deleteResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
                 } else {
                     // 북마크 추가 요청
-                    const addResponse = axios.post('http://localhost:8080/api/bookmarks/restaurants', {userIdx, restaurantId: pubId});
-                    setUserBookmarks(prevBookmarks => [...prevBookmarks, pubId]);
+                    const addResponse = await axios.post('http://localhost:8080/api/bookmarks/restaurants', {userIdx, restaurantId: pubId});
 
-                    // 북마크 개수 업데이트 (필요에 따라)
-                    setNearbyPub(prevPubs => prevPubs.map(pub =>
-                        pub.id === pubId ? { ...pub, bookmarks_count: (pub.bookmarks_count || 0) + 1 } : pub
-                    ));
+                    if (addResponse.status === 200) { // 추가 성공 시
+                        setUserBookmarks(prevBookmarks => [...prevBookmarks, pubId]);
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(nearbyPub.map(pub => pub.id))
+                            .then(bookmarkCounts => {
+                                setNearbyPub(prevPubs => prevPubs.map(pub =>
+                                    pub.id === pubId ? { ...pub, bookmarks_count: bookmarkCounts[pub.id] || 0 } : pub
+                                ));
+                            });
+                    } else {
+                        console.error('북마크 추가 실패:', addResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
                 }
             } catch (error) {
                 console.error('북마크 처리 실패:', error);
@@ -128,7 +157,6 @@ function RecommendMain() {
         }
     };
 
-
     const handleGroupDinnerPickClick = (category) => {
         setSelectedCategory(category);
     };
@@ -162,7 +190,8 @@ function RecommendMain() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const { latitude, longitude } = position.coords;
+                    const
+                        { latitude, longitude } = position.coords;
                     searchPubsByCategory(latitude, longitude, selectedCategory);
                 },
                 (err) => {
@@ -196,18 +225,6 @@ function RecommendMain() {
                     }
 
                     // 각 술집의 북마크 개수를 가져오는 요청
-                    const fetchBookmarkCounts = async (pubIds) => {
-                        try {
-                            const response = await axios.get('http://localhost:8080/api/bookmarks/restaurants/count', {
-                                params: { restaurantIds: pubIds.join(',') }
-                            });
-                            return response.data;
-                        } catch (error) {
-                            console.error('북마크 개수 가져오기 실패:', error);
-                            return {};
-                        }
-                    }
-
                     fetchBookmarkCounts(filteredData.map(pub => pub.id)) // 술집 ID 배열 전달
                         .then(bookmarkCounts => {
                             // 사용자 북마크 정보와 북마크 개수를 이용하여 isBookmarked, bookmarks_count 필드 추가
