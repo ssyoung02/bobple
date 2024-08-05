@@ -33,28 +33,17 @@ public class PointController {
         return ResponseEntity.ok(response);
     }
 
-    // 새로운 트랜잭션 추가하는 엔드포인트
-    @PostMapping("/addTransaction")
-    public ResponseEntity<String> addTransaction(
-            @RequestParam Long userIdx,
-            @RequestParam Long pointValue,
-            @RequestParam Point.PointState pointState,
-            @RequestParam String comment) {
-        pointService.recordTransaction(userIdx, pointValue, pointState, comment);
-        return ResponseEntity.ok("Transaction added successfully");
-    }
-
-    @PostMapping("/purchase")
-    public ResponseEntity<String> purchaseItem(
-            @RequestParam Long userIdx,
-            @RequestParam Long itemCost) {
+    @PostMapping("/purchaseProduct")
+    public ResponseEntity<String> purchaseProduct(@RequestParam Long userIdx, @RequestParam Long productIdx) {
         try {
-            // Deduct points from the user's balance
-            pointService.recordTransaction(userIdx, itemCost, Point.PointState.M, "Item Purchase");
-            return ResponseEntity.ok("Purchase successful");
+            boolean success = pointService.purchaseProduct(userIdx, productIdx);
+            if (success) {
+                return ResponseEntity.ok("Product purchased successfully.");
+            } else {
+                return ResponseEntity.badRequest().body("Purchase failed.");
+            }
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

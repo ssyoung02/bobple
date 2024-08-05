@@ -8,38 +8,34 @@ function MyPointUsage() {
     const userIdx = 9; // 사용자 ID
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/MyPointUsage/pointHistory/${userIdx}`)
-            .then(response => {
-                setNickName(response.data.nickName);
-                setCurrentPoints(response.data.currentPoints);
-                setPointHistory(response.data.history);
-            })
-            .catch(error => {
-                console.error('포인트 이력을 가져오는 데 실패했습니다.', error);
-            });
+        fetchPointHistory(userIdx);
     }, []);
 
-    const handlePurchase = (itemCost) => {
-        axios.post('http://localhost:8080/api/purchase', {
-            userIdx: userIdx,
-            itemCost: itemCost
-        })
-            .then(response => {
-                alert(response.data);
-                // Refresh the point history after purchase
-                axios.get(`http://localhost:8080/api/MyPointUsage/pointHistory/${userIdx}`)
-                    .then(response => {
-                        setNickName(response.data.nickName);
-                        setCurrentPoints(response.data.currentPoints);
-                        setPointHistory(response.data.history);
-                    })
-                    .catch(error => {
-                        console.error('포인트 이력을 가져오는 데 실패했습니다.', error);
-                    });
-            })
-            .catch(error => {
-                alert('구매 실패: ' + error.response.data);
+    const fetchPointHistory = async (userIdx) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/MyPointUsage/pointHistory/${userIdx}`);
+            setNickName(response.data.nickName);
+            setCurrentPoints(response.data.currentPoints);
+            setPointHistory(response.data.history);
+        } catch (error) {
+            console.error('포인트 이력을 가져오는 데 실패했습니다.', error);
+        }
+    };
+
+    const handlePurchase = async (productIdx) => {
+        try {
+            const response = await axios.post('http://localhost:8080/api/purchaseProduct', null, {
+                params: {
+                    userIdx: userIdx,
+                    productIdx: productIdx
+                }
             });
+            alert(response.data);
+            // 구매 후 포인트 이력 새로 고침
+            fetchPointHistory(userIdx);
+        } catch (error) {
+            alert('구매 실패: ' + error.response.data);
+        }
     };
 
     return (
@@ -58,6 +54,7 @@ function MyPointUsage() {
                     </li>
                 ))}
             </ul>
+            <button onClick={() => handlePurchase(1)}>상품 구매하기</button> {/* 예시로 productIdx를 1로 설정 */}
         </div>
     );
 }
