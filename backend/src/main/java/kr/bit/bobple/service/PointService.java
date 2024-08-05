@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Date;
@@ -33,6 +35,28 @@ public class PointService {
     // 포인트 내역 가져오기
     public List<Point> getPointHistory(Long userIdx) {
         return pointRepository.findByUserIdxOrderByCreatedAtDesc(userIdx);
+    }
+
+    // 특정 월의 포인트 내역 가져오기
+    public List<Point> getPointsByMonth(Long userIdx, int month, int year) {
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        Date startDate = Date.from(startOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        return pointRepository.findByUserIdxAndCreatedAtBetweenOrderByCreatedAtDesc(userIdx, startDate, endDate);
+    }
+
+    // 특정 연도의 포인트 내역 가져오기
+    public List<Point> getPointsByYear(Long userIdx, int year) {
+        LocalDate startOfYear = LocalDate.of(year, 1, 1);
+        LocalDate endOfYear = startOfYear.withDayOfYear(startOfYear.lengthOfYear());
+
+        Date startDate = Date.from(startOfYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endOfYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        return pointRepository.findByUserIdxAndCreatedAtBetweenOrderByCreatedAtDesc(userIdx, startDate, endDate);
     }
 
     // 현재 포인트 가져오기
