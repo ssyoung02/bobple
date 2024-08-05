@@ -69,7 +69,7 @@ function MyPageMain() {
     };
 
     const movePointShop = () => {
-        navigate('/point');
+        navigate('/point', { state: { selectedTab: '보관함' } });
     };
 
     const moveMyRecipe = () => {
