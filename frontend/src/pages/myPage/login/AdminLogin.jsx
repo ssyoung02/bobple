@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../../assets/style/myPage/AdminLogin.css';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function AdminLogin() {
     const [username, setUsername] = useState('');
@@ -9,14 +9,19 @@ function AdminLogin() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // 여기에 로그인 로직 추가
-        console.log('Username:', username);
-        console.log('Password:', password);
-    };
 
-    const moveAdmin = () => {
-        navigate('/admin/userInfo');
-    }
+        // Example logic: replace this with real authentication API call
+        const hardcodedUsername = 'admin'; // Replace with real username
+        const hardcodedPassword = 'admin'; // Replace with real password (hashed in production)
+
+        if (username === hardcodedUsername && password === hardcodedPassword) {
+            console.log('Login successful');
+            navigate('/admin/userInfo'); // Redirect to admin/userInfo on successful login
+        } else {
+            console.error('Login failed: Incorrect username or password');
+            alert('관리자 아이디 혹은 비밀번호가 틀렸습니다.');
+        }
+    };
 
     return (
         <div className="admin-form">
@@ -42,7 +47,7 @@ function AdminLogin() {
                         required
                     />
                 </div>
-                <button type="submit" className="admin-button" onClick={moveAdmin}>Login</button>
+                <button type="submit" className="admin-button">Login</button>
             </form>
         </div>
     );

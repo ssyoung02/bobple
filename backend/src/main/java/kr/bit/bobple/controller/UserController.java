@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +21,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
 
     @GetMapping("/{userIdx}")
     public ResponseEntity<User> getUserById(@PathVariable Long userIdx) {
@@ -70,4 +77,13 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUsers(@RequestBody List<Long> userIds) {
+        for (Long userId : userIds) {
+            userRepository.deleteById(userId);
+        }
+        return ResponseEntity.ok().build();
+    }
+
 }

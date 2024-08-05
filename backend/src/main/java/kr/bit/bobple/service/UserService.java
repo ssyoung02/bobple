@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,6 +28,15 @@ public class UserService {
 
     @Value("${ncloud.object-storage.bucket-name}")
     private String bucketName;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
     public String uploadProfileImage(Long userIdx, MultipartFile file) {
         String uniqueFileName = "profile-images/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
