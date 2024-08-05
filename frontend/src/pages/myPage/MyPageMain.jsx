@@ -93,15 +93,13 @@ function MyPageMain() {
     }
 
     const moveUserQnA = () => {
-        navigate('/mypage/serviceCenter/userQnA')
+        navigate('/mypage/serviceCenter/userQnAList')
     }
 
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
     };
-
-
 
     return (
         <div className="my-page-main">

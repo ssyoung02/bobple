@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../../assets/style/myPage/MyPointUsage.css';
 
 function MyPointUsage() {
     const [pointHistory, setPointHistory] = useState([]);
@@ -67,21 +68,37 @@ function MyPointUsage() {
     }
 
     return (
-        <div>
-            <h1>{nickName}의 포인트</h1>
-            <h2>총 포인트: {currentPoints}P</h2>
-            <h3>포인트 사용 내역</h3>
-            <ul>
-                {pointHistory.map((point, index) => (
-                    <li key={index}>
-                        {point.pointComment}: {(point.pointState === 'M' ? '-' : '+') + Math.abs(point.pointValue)}P
-                        <br />
-                        거래 후 잔액: {point.pointBalance}P
-                        <br />
-                        <small>{new Date(point.createdAt).toLocaleString()}</small>
-                    </li>
-                ))}
-            </ul>
+        <div className="my-point-usage-main">
+            <div className="my-point-total">
+                <h3>{nickName}님의 포인트</h3>
+                <h3 className="mypoint">{currentPoints}P</h3>
+            </div>
+
+            <div className="point-usage-box">
+                <h5>포인트 사용 내역</h5>
+                <ul className="point-usage-list">
+                    {pointHistory.map((point, index) => (
+                        <li key={index}>
+                            <div className="point-usage-details">
+                                <p className="point-usage-date">{new Date(point.createdAt).toLocaleString()}</p>
+                                <h6 className="point-usage-title">
+                                    {point.pointComment}
+                                </h6>
+                            </div>
+                            <div className="budget">
+                                <p className=
+                                    {point.pointState === 'M' ? 'point-usage-money deduction' : 'point-usage-money'}
+                                >
+                                    {(point.pointState === 'M' ? '-' : '+') + Math.abs(point.pointValue)}P
+                                </p>
+                                <p className="balance">
+                                    잔액: {point.pointBalance}P
+                                </p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 }

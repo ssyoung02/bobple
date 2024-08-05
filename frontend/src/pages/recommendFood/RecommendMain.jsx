@@ -376,6 +376,7 @@ function RecommendMain() {
                                     <div className="pub-info-container">
                                         <a href={pub.place_url} target="_blank" rel="noreferrer">
                                             <h6 className="pub-name">{pub.place_name}</h6>
+                                            <p className="pub-address">{pub.address_name}</p>
                                         </a>
                                         <span
                                             className="pub-distance"><LocationDot/>{Math.round(pub.distance)}m</span>
@@ -388,7 +389,7 @@ function RecommendMain() {
                                             ) : (
                                                 <Bookmark/>
                                             )}
-                                            북마크 {pub.bookmarks_count || 0}
+                                            {pub.bookmarks_count || 0}
                                         </button>
                                     </div>
                                 </li>

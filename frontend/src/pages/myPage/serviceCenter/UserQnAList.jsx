@@ -112,7 +112,12 @@
 
         return (
             <div className="user-qna-list">
-                <h2>{showUserQuestions ? '내 질문 목록' : '전체 질문 목록'}</h2>
+                <div className="qna-list-item">
+                    <h2>{showUserQuestions ? '내 질문 목록' : '전체 질문 목록'}</h2>
+                </div>
+                <div className="qna-list-item">
+
+                </div>
                 <button onClick={() => setShowUserQuestions(!showUserQuestions)}>
                     {showUserQuestions ? '전체 질문 보기' : '내 질문 보기'}
                 </button>
