@@ -11,6 +11,19 @@
     color: #ff970e;
 }
 
+/*상단 배너*/
+.category-banner{
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.category-banner img{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
 /* 상단 BEST 음식점 컨테이너 스타일 추가 */
 .top-list {
     display: flex;
@@ -88,7 +101,7 @@
     color: #092543;
     width: 100%;
     white-space: nowrap;
-    overflow: hidden; /* 넘치는 부분 숨김 */
+    overflow: hidden;
     text-overflow: ellipsis;
     margin: 0;
 }

@@ -27,7 +27,6 @@ function RecommendMain() {
     const [keyword, setKeyword] = useState("");
 
     const [recommendedFood, setRecommendedFood] = useState(null);
-    const [recommendThemes, setRecommendThemes] = useState([]);
 
     const [page, setPage] = useState(1);
     const observer = useRef();
@@ -257,25 +256,6 @@ function RecommendMain() {
             });
     }, []);
 
-    useEffect(() => {
-        // 서버에서 추천 테마 정보 가져오기
-        axios.get('http://localhost:8080/api/recommendThemes')
-            .then(response => {
-                setRecommendThemes(response.data);
-            })
-            .catch(error => {
-                console.error('추천 테마 정보 가져오기 실패:', error);
-            });
-    }, []);
-
-    const handleThemeClick = (themeIdx) => {
-        // 바로 RecommendFoodCategory 페이지로 이동, 필요한 정보는 이미 recommendThemes에 있음
-        const selectedTheme = recommendThemes.find(theme => theme.themeIdx === themeIdx);
-        if (selectedTheme) {
-            const themeKeyword = selectedTheme.foodNames.join(' ');
-            navigate(`/recommend/recommendFoodCategory?theme=${themeKeyword}&themeName=${selectedTheme.themeName}`);
-        }
-    };
 
     return (
         <div className={"recommend-main"}>
@@ -331,13 +311,7 @@ function RecommendMain() {
             {/* 추천 카테고리 */}
             <div className="recommended-categories">
                 <h5>추천 카테고리</h5>
-                <div className="category-description">
-                    {recommendThemes.map(theme => (
-                        <button key={theme.themeIdx} onClick={() => handleThemeClick(theme.themeIdx)}>
-                            {theme.themeDescription}
-                        </button>
-                    ))}
-                </div>
+                <RecommendedCategories/>
             </div>
 
             <div className={"food-categories"}>

@@ -195,6 +195,9 @@ function RecommendFoodCategory() {
                     <SearchIcon/>
                 </button>
             </div>
+            <div className="category-banner">
+                <img src={""}/>
+            </div>
             <div>
                 <h3 className="category-title">
                     {displayedTitle && `${displayedTitle} `}
