@@ -1,5 +1,8 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.config.JwtTokenProvider;
+import kr.bit.bobple.dto.AuthResponse;
+import kr.bit.bobple.dto.UserDto;
 import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.UserRepository;
 import kr.bit.bobple.service.UserService;
@@ -20,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/{userIdx}")
     public ResponseEntity<User> getUserById(@PathVariable Long userIdx) {
@@ -68,6 +74,18 @@ public class UserController {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // 로그인 엔드포인트 추가
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserDto loginRequest) {
+        User user = userService.authenticate(loginRequest.getUsername());
+        if (user != null) {
+            String token = jwtTokenProvider.createToken(user.getUserIdx(), user.getUsername(), null);
+            return ResponseEntity.ok(new AuthResponse(token));
+        } else {
+            return ResponseEntity.status(401).body("Invalid credentials");
         }
     }
 }

@@ -49,6 +49,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
                                 .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update","/api/users/**").permitAll()
+                                .requestMatchers("/api/**","/api/chatrooms/**","/api/chatrooms/my/**").authenticated()  // /api/chatrooms/** 경로는 인증 필요
                                 .requestMatchers("/api/recipes/recommend").permitAll() // AI 레시피 추천 엔드포인트 허용
                                 .anyRequest().authenticated()
                 )

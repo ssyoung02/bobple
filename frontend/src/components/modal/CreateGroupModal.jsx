@@ -5,7 +5,6 @@ import { useState } from 'react';
 import axios from "axios";
 import { useModal } from "./ModalContext"; // useModal import
 
-// props로 받은 제목, 내용을 출력하는 모달
 const CreateGroupModal = ({ modalState, hideModal }) => {
     const navigate = useNavigate();
     const { showErrorModal } = useModal(); // useModal 훅 사용
@@ -29,11 +28,16 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
         const finalLocation = location.trim() || "미정";
 
         try {
+            const token = localStorage.getItem('token'); // JWT 토큰을 로컬 스토리지에서 가져옴
             const response = await axios.post('http://localhost:8080/api/chatrooms', {
                 chatRoomTitle: title,
                 description: description,
                 location: finalLocation,
                 roomPeople: roomPeople
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (response.status === 201 || response.status === 200) {
@@ -67,7 +71,6 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
     const triggerFileInput = () => {
         document.getElementById('file-input').click();
     };
-
 
     return (
         <div className={`modal ${modalState}`}>

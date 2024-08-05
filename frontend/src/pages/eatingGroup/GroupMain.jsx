@@ -7,7 +7,8 @@ import axios from 'axios';
 const GroupMain = () => {
     const navigate = useNavigate();
     const { showModal, setModalType, setChatRoomData } = useModal();
-    const [chatRooms, setChatRooms] = useState([]);
+    const [myChatRooms, setMyChatRooms] = useState([]);
+    const [allChatRooms, setAllChatRooms] = useState([]);
     const [searchOption, setSearchOption] = useState('all-post');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
@@ -15,9 +16,28 @@ const GroupMain = () => {
     useEffect(() => {
         const fetchChatRooms = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/chatrooms');
-                setChatRooms(response.data);
-                setFilteredChatRooms(response.data);
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('No JWT token found');
+                    return;
+                }
+
+                const [myRoomsResponse, allRoomsResponse] = await Promise.all([
+                    axios.get('http://localhost:8080/api/chatrooms/my', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }),
+                    axios.get('http://localhost:8080/api/chatrooms', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                ]);
+
+                setMyChatRooms(myRoomsResponse.data);
+                setAllChatRooms(allRoomsResponse.data);
+                setFilteredChatRooms(allRoomsResponse.data);
             } catch (error) {
                 console.error('Failed to fetch chat rooms', error);
             }
@@ -42,7 +62,7 @@ const GroupMain = () => {
     }
 
     const handleSearch = () => {
-        let filtered = chatRooms.filter(chatRoom => {
+        let filtered = allChatRooms.filter(chatRoom => {
             const searchValue = searchKeyword.toLowerCase();
             switch (searchOption) {
                 case 'title-post':
@@ -70,7 +90,7 @@ const GroupMain = () => {
             <h2 className="group-title">참여중인 모임</h2>
             <div className="group-header">
                 <div className="scroll-container">
-                    {filteredChatRooms.map(chatRoom => (
+                    {myChatRooms.map(chatRoom => (
                         <button
                             key={chatRoom.chatRoomIdx}
                             className="item"

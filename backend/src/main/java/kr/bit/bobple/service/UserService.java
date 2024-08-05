@@ -63,4 +63,9 @@ public class UserService {
             userRepository.save(user);
         }
     }
+
+    public User authenticate(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        return optionalUser.orElse(null);
+    }
 }

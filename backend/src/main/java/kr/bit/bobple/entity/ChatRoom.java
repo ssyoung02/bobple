@@ -29,6 +29,10 @@ public class ChatRoom {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @ManyToOne
+    @JoinColumn(name = "room_leader", nullable = false)
+    private User roomLeader;
+
     // Getters and Setters
 
     public Long getChatRoomIdx() {
@@ -77,5 +81,13 @@ public class ChatRoom {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public User getRoomLeader() {
+        return roomLeader;
+    }
+
+    public void setRoomLeader(User roomLeader) {
+        this.roomLeader = roomLeader;
     }
 }
