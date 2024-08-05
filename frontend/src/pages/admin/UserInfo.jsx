@@ -186,29 +186,29 @@ const UserInfo = () => {
                         <tbody>
                         {currentItems.map(user => (
                             <>
-                            <tr key={user.id} onClick={() => handleRowClick(user)}
-                                className={`tr-detail ${detailUser?.id === user.id ? 'active' : ''}`}>
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedUsers.includes(user.id)}
-                                        onChange={() => handleSelectUser(user.id)}
-                                        className="select-input"
-                                    />
-                                </td>
-                                <td>{user.userIdx}</td>
-                                <td>{user.name}</td>
-                                <td>{user.nickName}</td>
-                                <td>{user.email}</td>
-                                <td>{user.birthdate}</td>
-                                <td>{user.provider}</td>
-                                <td>{user.reportCount}</td>
-                                <td>{user.createdAt}</td>
-                            </tr>
-                        {detailUser?.id === user.id && (
-                            <tr>
-                            <td colSpan="8">
-                            <UserDetail user={user}/>
+                                <tr key={user.id} onClick={() => handleRowClick(user)}
+                                    className={`tr-detail ${detailUser?.id === user.id ? 'active' : ''}`}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedUsers.includes(user.id)}
+                                            onChange={() => handleSelectUser(user.id)}
+                                            className="select-input"
+                                        />
+                                    </td>
+                                    <td>{user.userIdx}</td>
+                                    <td>{user.name}</td>
+                                    <td>{user.nickName}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.birthdate}</td>
+                                    <td>{user.provider}</td>
+                                    <td>{user.reportCount}</td>
+                                    <td>{user.createdAt}</td>
+                                </tr>
+                                {detailUser?.id === user.id && (
+                                    <tr>
+                                        <td colSpan="8">
+                                        <UserDetail user={user}/>
                     </td>
                 </tr>
                 )}
