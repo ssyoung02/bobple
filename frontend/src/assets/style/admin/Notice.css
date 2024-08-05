@@ -1,0 +1,177 @@
+.admin-form-container-n {
+    display: flex;
+    border: 1px solid #ddd;
+    height: 90vh;
+}
+
+.left-section {
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    margin: 50px auto;
+    flex: 1;
+}
+
+.admin-image {
+    width: 50%;
+    margin: 10px auto;
+}
+
+.nav-button-n {
+    width: 350px;
+    margin: 0 auto;
+    padding: 10px;
+    font-size: 20px;
+    background-color: #f0f0f0;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.nav-button-n.notice {
+    border-color: #ea4197;
+}
+
+.nav-button-n:hover {
+    background-color: #e0e0e0;
+}
+
+.right-section {
+    flex: 2.5;
+    padding: 10px;
+}
+
+.right-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.section-title {
+    font-size: 34px;
+    margin-top: 20px;
+    padding: 20px;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.back-app-btn {
+    font-size: 40px;
+    translate: -30px;
+}
+
+.admin-search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.admin-search-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+}
+
+.refresh-button {
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: #eb517e;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.refresh-button:hover {
+    background-color: #e0e0e0;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.data-table th {
+    background-color: #233B6F;
+    color: white;
+}
+
+.tr-detail:hover {
+    cursor: pointer;
+    background-color: white;
+}
+
+.tr-detail.active {
+    background-color: white;
+}
+
+/* 기존 스타일은 유지하고 아래를 추가합니다 */
+
+.table-wrapper {
+    max-height: 530px;
+    height: 100%;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.select-input {
+    transform: scale(1.5); /* 크기를 1.5배로 키움 */
+    margin: 5px; /* 필요에 따라 여백 조정 */
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.pagination button {
+    margin: 0 2px;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #233B6F;
+    color: white;
+}
+
+.admin-delete-button,
+.admin-write-button {
+    padding: 8px 15px;
+    background-color: #eb517e !important;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.admin-delete-button:hover,
+.admin-write-button:hover {
+    background-color: #ea4197 !important;
+}
+
+

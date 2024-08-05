@@ -1,32 +1,36 @@
-.login-form {
-    width: 400px;
-    margin: 0 auto;
-    padding: 30px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+.admin-form {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    width: 80%;
+    max-width: 440px;
+    padding: 50px 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-
 }
 
-.login-form h3 {
+.admin-form h3 {
     text-align: center;
     margin-bottom: 30px;
 }
 
-.form-group {
-    margin-bottom: 15px;
+.admin-container {
+    margin-bottom: 15px
 }
 
-.form-group label {
+.admin-container label {
     display: block;
-    margin-bottom: 5px;
     font-weight: bold;
 }
 
-.form-group input {
-    width: 100%;
+.admin-container input {
+    width: 350px;
     padding: 8px;
+    margin-bottom: 20px;
     box-sizing: border-box;
     border: 2px solid #ccc;
     border-radius: 4px;
@@ -35,10 +39,10 @@
 .admin-button {
     width: 100%;
     padding: 10px;
-    margin-top: 10px;
+    margin: 0 auto;
     border: none;
     border-radius: 4px;
-    background-color: #007bff;
+    background-color: #eb517e;
     color: #fff;
     font-size: 16px;
     font-weight: bold;
@@ -46,5 +50,5 @@
 }
 
 .admin-button:hover {
-    background-color: #0056b3;
+    background-color: #ea4197;
 }

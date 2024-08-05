@@ -88,6 +88,7 @@
     align-items: center;
     cursor: pointer;
     position: relative;
+    margin: 0 auto;
 }
 
 .group-image-box img {
@@ -128,6 +129,7 @@
 
 .modal-content.join-content {
     height: 50%;
+    justify-content: space-between;
 }
 
 .group-modal-header.join-header {

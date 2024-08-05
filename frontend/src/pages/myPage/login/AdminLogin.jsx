@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import '../../../assets/style/myPage/AdminLogin.css';
+import {useNavigate} from "react-router-dom";
 
 function AdminLogin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -12,11 +14,15 @@ function AdminLogin() {
         console.log('Password:', password);
     };
 
+    const moveAdmin = () => {
+        navigate('/admin/userInfo');
+    }
+
     return (
-        <div className="login-form">
+        <div className="admin-form">
             <h3>관리자 로그인</h3>
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
+                <div className="admin-container">
                     <label htmlFor="username">Username</label>
                     <input
                         type="text"
@@ -26,7 +32,7 @@ function AdminLogin() {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="admin-container">
                     <label htmlFor="password">Password</label>
                     <input
                         type="password"
@@ -36,7 +42,7 @@ function AdminLogin() {
                         required
                     />
                 </div>
-                <button type="submit" className="admin-button">Login</button>
+                <button type="submit" className="admin-button" onClick={moveAdmin}>Login</button>
             </form>
         </div>
     );

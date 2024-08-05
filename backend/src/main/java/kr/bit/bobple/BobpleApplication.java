@@ -6,12 +6,14 @@ package kr.bit.bobple; // 패키지 선언
 //SpringApplication.run() 메서드는 Spring Boot 애플리케이션을 실행하고, 내장된 Tomcat 서버를 시작합니다. (별도의 웹 서버 설정 없이 웹 애플리케이션을 실행할 수 있습니다.)
 import org.springframework.boot.SpringApplication; // Spring Boot 애플리케이션 실행 클래스
 import org.springframework.boot.autoconfigure.SpringBootApplication; // Spring Boot 자동 구성 어노테이션
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /*
  * Bobple 애플리케이션의 메인 클래스
  * Spring Boot 애플리케이션의 시작점입니다.
  */
 @SpringBootApplication // 이 클래스를 Spring Boot 애플리케이션으로 표시하고, 자동 구성을 활성화합니다.
+@EnableScheduling
 public class BobpleApplication {
 
     /*

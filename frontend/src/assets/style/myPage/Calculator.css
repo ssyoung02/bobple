@@ -1,0 +1,152 @@
+/*헤더*/
+.calculator-top {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    width: 100%;
+}
+
+.goto-mypage {
+    justify-self: start;
+}
+
+.calculator-top h2 {
+    margin: 0;
+    justify-self: center;
+    grid-column: 2;
+}
+
+.calculator-top svg {
+    font-size: 1.5em;
+    color: #233B6F;
+}
+
+/*영수증 이미지*/
+.calculator-img{
+    width: 70%;
+    margin: 30px auto;
+    max-height: 300px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.calculator-img img{
+    width: 100%;
+    object-fit: fill;
+}
+
+.upload-recipt-img{
+    height: 300px;
+    object-fit: fill;
+}
+
+/*계산영역*/
+.calculator-receipt{
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+}
+
+.calculator-receipt h5{
+    color: #233B6F;
+    margin-bottom: 20px;
+}
+
+/*인원 입력*/
+.how-many-people{
+    display: flex;
+    align-items: center;
+    color: #EB517E;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.how-many-people *{
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.5em;
+}
+
+.input-people{
+    text-align: center;
+    border: none;
+    border-bottom: 3px solid #EB517E;
+    background: transparent;
+    width: 80%;
+}
+
+
+/*영수증 업로드*/
+.receipt-upload-box{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.receipt-upload-box *{
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.1em;
+}
+
+.upload-recipt{
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+ }
+
+.upload-recipt-money{
+    border: none;
+    width: 85%;
+}
+
+.upload-recipt + svg{
+
+}
+
+/*영수증 금액*/
+.recipt-total{
+    display: flex;
+    justify-content: space-between;
+}
+.recipt-total pre{
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.2em;
+    color: #233B6F;
+}
+
+/*계산결과*/
+.calculator-button{
+    width: 100%;
+    height: 2.5em;
+    border-radius: 10px;
+    background: #EB517E;
+    color: #fff;
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.2em;
+}
+
+.result-money{
+    display: flex;
+    justify-content: space-between;
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.2em;
+    color: #233B6F;
+}
+
+.calculator-reset-button{
+    width: 100%;
+    height: 2.5em;
+    border-radius: 10px;
+    background: #fff;
+    color: #EB517E;
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.2em;
+    margin-top: 1em;
+}

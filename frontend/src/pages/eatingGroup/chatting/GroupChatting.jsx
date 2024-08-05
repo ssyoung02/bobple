@@ -37,6 +37,10 @@ const GroupChatting = () => {
             setMessages(prevMessages => [...prevMessages, newMessage]);
         };
 
+        eventSource.onerror = (error) => {
+            console.error('EventSource failed:', error);
+        };
+
         return () => {
             eventSource.close();
         };

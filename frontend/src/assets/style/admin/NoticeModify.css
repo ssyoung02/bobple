@@ -1,0 +1,19 @@
+.user-detail-container-n {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    height: 400px;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+/* 두께를 늘린 hr 스타일 */
+.hr-style {
+    border: 5px solid deeppink;
+}
+
+.user-detail-n {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}

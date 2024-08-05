@@ -5,6 +5,8 @@ import '../../assets/style/recommendFood/RecommendFoodCategory.css';
 import {Bookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {TopSearch} from "../../components/SliderComponent";
 import theme from "tailwindcss/defaultTheme";
+import axios from "axios";
+
 
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -145,7 +147,19 @@ function RecommendFoodCategory() {
             alert('키워드를 입력해주세요!');
             return;
         }
-
+        try {
+            axios.post('http://localhost:8080/api/search/saveKeyword', trimmedKeyword, {
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                withCredentials: true,
+            });
+            console.log('검색어가 저장되었습니다.');
+            // fetchTopKeywords(setTopKeywords);  // 인기 검색어 업데이트 (필요 없는 경우 주석 처리)
+        } catch (error) {
+            console.error('검색어 저장 실패:', error);
+            // 에러 처리 로직 추가 (필요에 따라)
+        }
         // 검색 키워드를 쿼리 파라미터로 설정하고 페이지 새로고침
         setSearchParams({ keyword: trimmedKeyword });
 
@@ -202,7 +216,6 @@ function RecommendFoodCategory() {
                                     className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                                 <button
                                     className="restaurant-bookmarks"><Bookmark/>{restaurant.bookmarks_count}</button>
-
                             </div>
                         </li>
                     ))}
@@ -218,12 +231,23 @@ function RecommendFoodCategory() {
                                      className="restaurant-list-image"/>
                             </a>
                             <div className="restaurant-info">
-                                <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                                    <h6 className="restaurant-name">{restaurant.place_name}</h6>
-                                    <p className="restaurant-address">{restaurant.address_name}</p>
-                                    <span className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
-                                    <span className="restaurant-category"><CaretRight/>{restaurant.category_name}</span>
-                                </a>
+                                <div className="restaurant-left">
+                                    <a href={restaurant.place_url} target="_blank" rel="noreferrer">
+                                        <h6 className="restaurant-name">{restaurant.place_name}</h6>
+                                        <p className="restaurant-address">{restaurant.address_name}</p>
+                                        <span
+                                            className="restaurant-category"><CaretRight/>{restaurant.category_name.replace('음식점 > ', '')}</span>
+                                    </a>
+                                </div>
+                                <div className="restaurant-right">
+                                    <span className="restaurant-distance">
+                                        <LocationDot/>{Math.round(restaurant.distance)}m
+                                    </span>
+                                    <button className="restaurant-right-bookmarks">
+                                        <div className="bookmark-icon"><Bookmark/></div>
+                                        0{restaurant.bookmarks_count}
+                                    </button>
+                                </div>
                             </div>
                         </li>
                     ))}

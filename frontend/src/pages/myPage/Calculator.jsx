@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft } from "../../components/imgcomponents/ImgComponents";
+import '../../assets/style/myPage/Calculator.css';
 
 const Calculator = () => {
     const [file, setFile] = useState(null);
@@ -8,48 +11,51 @@ const Calculator = () => {
     const [people, setPeople] = useState('');
     const [resultText, setResultText] = useState('');
     const [base64Image, setBase64Image] = useState('');
+    const [reciptImage, setReciptImage] = useState(false);
     const [calculatedAmount, setCalculatedAmount] = useState('');
+    const [showResult, setShowResult] = useState(false);
 
-    const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
-        // 파일이 변경될 때 이전 결과와 이미지 초기화
-        setTotalAmount('');
-        setPeople('');
-        setResultText('');
-        setCalculatedAmount('');
-        setBase64Image('');
+    const handleFileChange = async (e) => {
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append('uploadFile', selectedFile);
+
+            try {
+                const response = await axios.post('http://localhost:8080/api/Calculator', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                if (response.data && response.data.text) {
+                    const ocrData = JSON.parse(response.data.text);
+                    setOcrResponse(ocrData.ocrResponse);
+                    setBase64Image(`data:image/jpeg;base64,${response.data.imageUrl}`);
+                    setReciptImage(true);
+
+                    processOCRResponse(ocrData.ocrResponse);
+                } else {
+                    alert('OCR 처리에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                alert('파일 업로드 중 오류가 발생했습니다.');
+            }
+        }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!file) {
-            alert('영수증 사진을 업로드해주세요');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('uploadFile', file);
-
-        try {
-            const response = await axios.post('http://localhost:8080/api/Calculator', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            if (response.data && response.data.text) {
-                const ocrData = JSON.parse(response.data.text);
-                setOcrResponse(ocrData.ocrResponse);
-                setBase64Image(`data:image/jpeg;base64,${response.data.imageUrl}`);
-
-                processOCRResponse(ocrData.ocrResponse);
-            } else {
-                alert('OCR 처리에 실패했습니다.');
-            }
-        } catch (error) {
-            console.error('Error Response:', error);
-            alert('오류 발생: ' + error.response?.data || '알 수 없는 오류');
+    const handleInputChange = (e) => {
+        const inputValue = e.target.value.replace(/,/g, ''); // Remove existing commas
+        if (!isNaN(inputValue) && inputValue !== '') {
+            const formattedValue = parseInt(inputValue, 10).toLocaleString(); // Add commas
+            setResultText(formattedValue);
+            setTotalAmount(inputValue);
+        } else {
+            setResultText(inputValue);
+            setTotalAmount(inputValue);
         }
     };
 
@@ -104,7 +110,7 @@ const Calculator = () => {
                     // 금액을 식별하기 위한 정규 표현식
                     const amountRegex = /^\d{1,3}(,\d{3})*(\.\d+)?(원)?$/;
                     if (amountRegex.test(nextText)) {
-                        extractedAmount = nextText.replace('원', ''); // '원' 제거
+                        extractedAmount = nextText.replace(/원/g, ''); // '원' 제거
                         foundAmount = true;
                     }
                 }
@@ -114,8 +120,8 @@ const Calculator = () => {
         if (foundAmount) {
             // 점을 쉼표로 변경
             const formattedAmount = extractedAmount.replace(/\.(?=\d)/g, ',');
-            setTotalAmount(formattedAmount); // 포맷을 변경한 금액 저장
-            setResultText(`${formattedAmount}원`); // 금액과 '원'을 붙여서 저장
+            setTotalAmount(formattedAmount.replace(/,/g, '')); // 포맷을 변경한 금액 저장
+            setResultText(formattedAmount); // 금액만 저장 (단위 없음)
         } else {
             setTotalAmount('');
             setResultText('총액을 찾을 수 없습니다.'); // 총액을 찾지 못한 경우 메시지 표시
@@ -130,55 +136,125 @@ const Calculator = () => {
             setCalculatedAmount('올바른 숫자를 입력해주세요.');
         } else {
             const perPerson = totalAmountNum / peopleCount;
-            setCalculatedAmount(`1인당 금액: ${perPerson.toLocaleString()}원`);
+            setCalculatedAmount(`${perPerson.toLocaleString()}원`);
         }
+
+        setShowResult(true); // Show result section and hide calculate button
     };
 
+    const handleReset = () => {
+        setFile(null);
+        setOcrResponse(null);
+        setTotalAmount('');
+        setPeople('');
+        setResultText('');
+        setBase64Image('');
+        setReciptImage(false);
+        setCalculatedAmount('');
+        setShowResult(false);
+    };
+
+    const location = useLocation();
+
+    useEffect(() => {
+        const header = document.querySelector('.header');
+        const main = document.querySelector('main');
+
+        const changeBackgroundColor = () => {
+            if (location.pathname === '/myPage/calculator') {
+                if (header) header.style.backgroundColor = '#AEE2FF';
+                if (main) main.style.backgroundColor = '#AEE2FF';
+            } else {
+                if (header) header.style.backgroundColor = '#fff'; // Default color
+                if (main) main.style.backgroundColor = '#fff'; // Default color
+            }
+        };
+
+        changeBackgroundColor(); // Set the initial background color
+
+        return () => {
+            if (header) header.style.backgroundColor = ''; // Reset on unmount
+            if (main) main.style.backgroundColor = ''; // Reset on unmount
+        };
+    }, [location]);
+
     return (
-        <div>
-            <h3>OCR : 텍스트 추출</h3>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    파일 :
-                    <input type="file" onChange={handleFileChange} />
-                </label>
-                <button type="submit">결과 확인</button>
-            </form>
+        <div className="calculator-main">
+            <div className="bgcolor-area"></div>
+            <div className="calculator-top">
+                <button className="goto-mypage">
+                    <ArrowLeftLong/>
+                </button>
+                <h2>1/N 계산기</h2>
+            </div>
+            <div className="calculator-img">
+                {!reciptImage && (
+                    <ReceiptSettlement/>
+                )}
+                {base64Image && (
+                    <img
+                        className="upload-recipt-img"
+                        src={base64Image}
+                        alt="Uploaded"
+                        id="uploadedImage"
+                    />
+                )}
+            </div>
 
-            <br />
-            <h3>OCR : 텍스트 추출 결과</h3>
-            <pre>총 합계금액 : {resultText}</pre>
-
-            <br />
-            <h3>OCR : 원본 이미지 파일</h3>
-            {base64Image && (
-                <img
-                    src={base64Image}
-                    alt="Uploaded"
-                    id="uploadedImage"
-                    style={{
-                        width: '300px', // 원하는 너비
-                        height: 'auto', // 자동 높이 조정
-                        objectFit: 'contain' // 이미지 비율 유지하며 잘림 방지
-                    }}
-                />
-            )}
-
-            <br /><br />
-            <input
-                type="text"
-                value={totalAmount}
-                onChange={(e) => setTotalAmount(e.target.value)}
-                placeholder="총액"
-            /> {' / '}
-            <input
-                type="number"
-                value={people}
-                onChange={(e) => setPeople(e.target.value)}
-                placeholder="인원 수"
-            />
-            <button onClick={handleCalculate}>계산하기</button>
-            <div id="result">{calculatedAmount}</div>
+            <div className="calculator-receipt">
+                <div className="how-many">
+                    <h5>함께 식사한 인원은</h5>
+                    <div className="how-many-people">
+                        <input
+                            className="input-people"
+                            type="number"
+                            value={people}
+                            onChange={(e) => setPeople(e.target.value)}
+                            placeholder="인원 수"
+                        />
+                        <span>명</span>
+                    </div>
+                </div>
+                <div className="receipt-upload">
+                    <h5>영수증으로 계산</h5>
+                    <div className="receipt-upload-box">
+                        <div className="upload-recipt-text">
+                            <input
+                                className="upload-recipt-money"
+                                type="text"
+                                placeholder="회식 금액입력"
+                                value={resultText}
+                                onChange={handleInputChange}
+                            />
+                            <span>원</span>
+                        </div>
+                        <label>
+                            <input className="upload-recipt" type="file" onChange={handleFileChange} title="영수증 첨부"/>
+                            <Recipt/>
+                        </label>
+                    </div>
+                </div>
+                {/*{reciptImage && (*/}
+                {/*    <div className="recipt-total">*/}
+                {/*        <h5>회식결과</h5>*/}
+                {/*        <pre>{resultText}</pre>*/}
+                {/*    </div>*/}
+                {/*)}*/}
+                <div className="calculator-result">
+                    {!showResult && (
+                        <button className="calculator-button" onClick={handleCalculate}>계산하기</button>
+                    )}
+                    {showResult && (
+                        <>
+                            <div className="result-money">
+                                <span>1인당</span>
+                                {calculatedAmount}
+                            </div>
+                            <button className="calculator-reset-button" onClick={handleReset}>다시 계산하기 <RotateLeft/></button>
+                        </>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

@@ -1,31 +1,56 @@
 import { createContext, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import CreateGroupModal from './CreateGroupModal';
-import JoinGroupModal from "./JoinGroupModal";
+import JoinGroupModal from './JoinGroupModal';
+import ErrorModal from './ErrorModal'; // ErrorModal 추가
 
 // Context 생성
 const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
-    const [modalState, setModalState] = useState("hide");
+    const [modalState, setModalState] = useState('hide');
     const [modalType, setModalType] = useState('');
+    const [errorState, setErrorState] = useState('hide');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [chatRoomData, setChatRoomData] = useState(null);
 
     const showModal = () => {
-        setModalState("show");
+        setModalState('show');
     };
 
     const hideModal = () => {
-        setModalState("hide");
+        setModalState('hide');
+    };
+
+    const showErrorModal = (message) => {
+        setErrorMessage(message);
+        setErrorState('show');
+    };
+
+    const hideErrorModal = () => {
+        setErrorState('hide');
+        setErrorMessage('');
+        showModal(); // 에러 모달을 닫을 때 모임 만들기 모달을 다시 열기
     };
 
     return (
-        <ModalContext.Provider value={{ modalState, showModal, hideModal, setModalType }}>
-            {modalType === 'createGroup' &&
+        <ModalContext.Provider
+            value={{ modalState, showModal, hideModal, setModalType, showErrorModal, hideErrorModal, setChatRoomData }}
+        >
+            {modalType === 'createGroup' && modalState === 'show' && (
                 <CreateGroupModal modalState={modalState} hideModal={hideModal} />
-            }
-            {modalType === 'joinGroup' &&
-                <JoinGroupModal modalState={modalState} hideModal={hideModal} />
-            }
+            )}
+            {modalType === 'joinGroup' && modalState === 'show' && chatRoomData && (
+                <JoinGroupModal
+                    modalState={modalState}
+                    hideModal={hideModal}
+                    chatRoomId={chatRoomData.chatRoomIdx}
+                    chatRoomTitle={chatRoomData.chatRoomTitle}
+                    chatRoomDescription={chatRoomData.description}
+                    chatRoomPeople={chatRoomData.roomPeople}
+                />
+            )}
+            {errorState === 'show' && <ErrorModal message={errorMessage} hideErrorModal={hideErrorModal} />}
             {children}
         </ModalContext.Provider>
     );

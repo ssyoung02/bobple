@@ -1,0 +1,54 @@
+.my-point-usage-main{
+    padding: 1em;
+}
+
+.my-point-total{
+    display: flex;
+    justify-content: space-between;
+}
+
+.mypoint{
+    color: #EB517E;
+}
+
+.point-usage-box{
+    margin-top: 3em;
+}
+
+.point-usage-box h5{
+    padding-bottom: 10px;
+}
+
+.point-usage-list li{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #233B6F;
+    padding: 10px 0;
+}
+.point-usage-date{
+    font-size: 0.9em;
+    color: #898989;
+}
+.point-usage-title{
+    margin: 5px 0 0 0;
+}
+
+/*사용금액*/
+.budget{
+    text-align: right;
+}
+
+.point-usage-money{
+    font-size: 1.2em;
+    font-family: NotoSansKR-Bold, serif;
+    color: #233B6F;
+}
+
+.deduction{
+    color: #e8353b;
+}
+
+.balance{
+    font-size: 0.9em;
+    color: #898989;
+}

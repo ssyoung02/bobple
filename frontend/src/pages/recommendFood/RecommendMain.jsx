@@ -15,7 +15,8 @@ import {
     Trophy
 } from "../../components/imgcomponents/ImgComponents";
 import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
-import { fetchTopKeywords, handleKeyDown, handleSearchClick } from '../../components/Search/SearchAll';
+import { restaurantfetchTopKeywords } from '../../components/Search/RestaurantSearch';
+import {getUserIdx} from "../../utils/auth";
 
 function RecommendMain() {
     const [topKeywords, setTopKeywords] = useState([]);
@@ -32,11 +33,94 @@ function RecommendMain() {
     const observer = useRef();
     const categories = ['전체', '고기', '회', '호프', '이자카야'];
 
+    const [userBookmarks, setUserBookmarks] = useState([]);
+
     // nearbyPub 상태를 거리순으로 정렬
     const sortedNearbyPub = [...nearbyPub].sort((a, b) => a.distance - b.distance);
 
+    // 각 술집의 북마크 개수를 가져오는 요청
+    const fetchBookmarkCounts = useCallback(async (pubIds) => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/bookmarks/restaurants/count', {
+                params: { restaurantIds: pubIds.join(',') }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('북마크 개수 가져오기 실패:', error);
+            return {};
+        }
+    }, []);
+
     useEffect(() => {
-        fetchTopKeywords(setTopKeywords);
+        const fetchUserBookmarks = async () => {
+            const userIdx = getUserIdx();
+            if (userIdx) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/bookmarks/restaurants/${userIdx}`);
+
+                    // response.data가 undefined 또는 null인 경우 빈 배열로 설정
+                    const bookmarksData = response.data || [];
+                    setUserBookmarks(bookmarksData.map(bookmark => bookmark.restaurantId));
+                } catch (error) {
+                    console.error('북마크 정보 가져오기 실패:', error);
+                    // 추가적인 에러 처리 로직 (예: 사용자에게 에러 메시지 표시)
+                }
+            }
+        };
+
+        fetchUserBookmarks();
+    }, []);
+
+
+    const handleBookmarkToggle = async (pubId) => {
+        const userIdx = getUserIdx();
+        if (userIdx) { // 로그인한 경우에만 북마크 정보 가져오기
+            try {
+                const isBookmarked = userBookmarks.includes(pubId);
+                if (isBookmarked) {
+                    const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${pubId}`, {
+                        data: { userIdx }
+                    });
+
+                    if (deleteResponse.status === 204) { // 삭제 성공 시
+                        setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== pubId));
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(nearbyPub.map(pub => pub.id))
+                            .then(bookmarkCounts => {
+                                setNearbyPub(prevPubs => prevPubs.map(pub =>
+                                    pub.id === pubId ? { ...pub, bookmarks_count: bookmarkCounts[pub.id] || 0 } : pub
+                                ));
+                            });
+                    } else {
+                        console.error('북마크 삭제 실패:', deleteResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                } else {
+                    // 북마크 추가 요청
+                    const addResponse = await axios.post('http://localhost:8080/api/bookmarks/restaurants', {userIdx, restaurantId: pubId});
+
+                    if (addResponse.status === 200) { // 추가 성공 시
+                        setUserBookmarks(prevBookmarks => [...prevBookmarks, pubId]);
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(nearbyPub.map(pub => pub.id))
+                            .then(bookmarkCounts => {
+                                setNearbyPub(prevPubs => prevPubs.map(pub =>
+                                    pub.id === pubId ? { ...pub, bookmarks_count: bookmarkCounts[pub.id] || 0 } : pub
+                                ));
+                            });
+                    } else {
+                        console.error('북마크 추가 실패:', addResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                }
+            } catch (error) {
+                console.error('북마크 처리 실패:', error);
+            }
+        }
+    }
+
+    useEffect(() => {
+        restaurantfetchTopKeywords(setTopKeywords);
     }, []);
 
     const moveFoodWorldCup = () => {
@@ -73,7 +157,6 @@ function RecommendMain() {
         }
     };
 
-
     const handleGroupDinnerPickClick = (category) => {
         setSelectedCategory(category);
     };
@@ -83,6 +166,18 @@ function RecommendMain() {
         if (!trimmedKeyword) {
             alert('키워드를 입력해주세요!');
             return;
+        }
+        try {
+            axios.post('http://localhost:8080/api/search/saveKeyword', trimmedKeyword, {
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                withCredentials: true, // 필요에 따라 쿠키 등을 전송할 수 있도록 설정
+            });
+            console.log('검색어가 저장되었습니다.');
+            restaurantfetchTopKeywords(setTopKeywords); // 검색어 저장 후 인기 검색어 업데이트
+        } catch (error) {
+            console.error('검색어 저장 실패:', error);
         }
 
         // 검색 키워드를 쿼리 파라미터로 추가하여 RecommendFoodCategory 페이지로 이동
@@ -95,7 +190,8 @@ function RecommendMain() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const { latitude, longitude } = position.coords;
+                    const
+                        { latitude, longitude } = position.coords;
                     searchPubsByCategory(latitude, longitude, selectedCategory);
                 },
                 (err) => {
@@ -127,19 +223,31 @@ function RecommendMain() {
                             (category === '이자카야' && pub.category_name.includes('일본식주점'))
                         );
                     }
-                    setAllNearbyPub(data); // 원본 데이터를 allNearbyPub에 저장
-                    setNearbyPub(filteredData.slice(0, 15)); // 초기 15개만 표시
+
+                    // 각 술집의 북마크 개수를 가져오는 요청
+                    fetchBookmarkCounts(filteredData.map(pub => pub.id)) // 술집 ID 배열 전달
+                        .then(bookmarkCounts => {
+                            // 사용자 북마크 정보와 북마크 개수를 이용하여 isBookmarked, bookmarks_count 필드 추가
+                            const updatedData = filteredData.map(pub => ({
+                                ...pub,
+                                isBookmarked: userBookmarks.includes(pub.id),
+                                bookmarks_count: bookmarkCounts[pub.id] || 0 // 북마크 개수 설정
+                            }));
+
+                            setAllNearbyPub(updatedData);
+                            setNearbyPub(updatedData.slice(0, 15));
+                        });
                 } else {
                     console.error("술집 검색 실패:", status);
                 }
             }, searchOptions);
         }
-    }, [selectedCategory]);
+    }, [selectedCategory, userBookmarks]);
 
     const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
 
     useEffect(() => {
-        // 서버에서 추천 음식 정보 가져오기 (axios 사용)
+        // 서버에서 추천 음식 정보 가져오기
         axios.get('http://localhost:8080/api/recommendFood')
             .then(response => {
                 setRecommendedFood(response.data); // axios는 자동으로 JSON 변환
@@ -268,11 +376,21 @@ function RecommendMain() {
                                     <div className="pub-info-container">
                                         <a href={pub.place_url} target="_blank" rel="noreferrer">
                                             <h6 className="pub-name">{pub.place_name}</h6>
+                                            <p className="pub-address">{pub.address_name}</p>
                                         </a>
                                         <span
                                             className="pub-distance"><LocationDot/>{Math.round(pub.distance)}m</span>
                                         <button
-                                            className="pub-bookmarks"><Bookmark/>북마크 {pub.bookmarks_count || 0}</button>
+                                            className="pub-bookmarks"
+                                            onClick={() => handleBookmarkToggle(pub.id)} // 클릭 이벤트 추가
+                                        >
+                                            {userBookmarks.includes(pub.id) ? ( // 사용자 북마크에 포함된 경우
+                                                <FillBookmark/>
+                                            ) : (
+                                                <Bookmark/>
+                                            )}
+                                            {pub.bookmarks_count || 0}
+                                        </button>
                                     </div>
                                 </li>
                             ))}

@@ -28,11 +28,21 @@ const AllSearch = () => {
                 </button>
             </div>
 
-            <div>
-                <h2>인기검색어</h2>
-                <ul style={{listStyleType: 'none', padding: 0}}>
+            <div className="search-tagList">
+                <div className="search-tag">#점메추</div>
+                <div className="search-tag">#스트레스</div>
+                <div className="search-tag">#비오는날</div>
+                <div className="search-tag">#해장</div>
+                <div className="search-tag">#야식</div>
+            </div>
+
+            <div className="star-search">
+                <h2 className="all-search-title">인기검색어</h2>
+                <ul className="search-ul">
                     {topKeywords.map((keyword, index) => (
-                        <li key={index}>{index + 1}. {keyword.keyword}</li>
+                        <li key={index} className="search-list">
+                            <span>{index + 1}</span>. {keyword.keyword}
+                        </li>
                     ))}
                 </ul>
             </div>

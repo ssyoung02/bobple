@@ -1,12 +1,89 @@
-.login-btns {
+.login-buttons{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 2em;
+    width: 80%;
+    max-width: 440px;
+    padding: 50px 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.admin-btn {
-    font-size: 20px;
-    text-decoration: underline;
+.user-login-buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    width: 100%;
+}
+
+/*sns 로그인 커스텀*/
+.user-login-buttons a{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    height: 60px;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: NotoSansKR-Bold, serif;
+    font-size: 1.2em;
+    vertical-align: inherit;
+    overflow: hidden;
+}
+
+.user-login-buttons img{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 10px;
+    left: 20px;
+}
+
+.kakaobtn{
+    background: #FDDC3F;
+    color: black;
+}
+
+.googlebtn{
+    color: black;
+    border: 1px solid #898989;
+}
+
+.naverbtn{
+    background: #00C73C;
+    color: white;
+}
+
+/*관리자*/
+.admin-login-button{
+    width: 100%;
+}
+
+.admin-login {
+    width: 100%;
+    font-weight: bold;
+}
+
+.admin-line{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.backline{
+    width: 100%;
+    height: 1px;
+    background: #233B6F;
+}
+
+.admin-line h6{
+    width: 300px;
+    text-align: center;
 }

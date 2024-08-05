@@ -1,9 +1,8 @@
 import React from 'react';
-import kakaoImage from '../../../assets/images/kakao_login_medium_narrow.png';
-import googleImage from '../../../assets/images/google_login.png';
-import naverImage from '../../../assets/images/naver_login.png';
 import {useNavigate} from "react-router-dom";
-import '../../../assets/style/myPage/Login.css'
+import '../../../assets/style/myPage/Login.css';
+import {Google, KLogin, NLogin} from "../../../components/imgcomponents/ImgComponents";
+import {Link} from "react-router-dom";
 
 function Login() {
     const CLIENT_KAKAO_ID = process.env.REACT_APP_KAKAO_REST_API_KEY;
@@ -25,19 +24,32 @@ function Login() {
     }
 
     return (
-        <div className="login-btns">
-            <h3 className="login-title">소셜 로그인</h3>
-            <a href={KAKAO_AUTH_URL} className="kakaobtn">
-                <img src={kakaoImage} alt="Kakao Login"/>
-            </a>
-            <a href={GOOGLE_AUTH_URL} className="googlebtn">
-                <img src={googleImage} alt="Google Login"/>
-            </a>
-            <a href={NAVER_AUTH_URL} className="naverbtn">
-                <img src={naverImage} alt="Naver Login"/>
-            </a>
+        <div className="login-main">
+            <div className="login-buttons">
+                <h2>Login</h2>
+                <div className={"user-login-buttons"}>
+                    <a href={KAKAO_AUTH_URL} className="kakaobtn">
+                        <KLogin/>
+                        Kakao 로그인
+                    </a>
+                    <a href={GOOGLE_AUTH_URL} className="googlebtn">
+                        <Google/>
+                        Google 로그인
+                    </a>
+                    <a href={NAVER_AUTH_URL} className="naverbtn">
+                        <NLogin/>
+                        Naver 로그인
+                    </a>
 
-            <button className="admin-btn" onClick={moveAdmin}>관리자 로그인</button>
+                </div>
+                <div className="admin-login-button">
+                    <div className="admin-line">
+                        <div className="backline"></div>
+                        <button className="admin-login" onClick={moveAdmin}>관리자 로그인</button>
+                        <div className="backline"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
