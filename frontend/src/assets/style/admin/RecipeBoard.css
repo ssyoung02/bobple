@@ -1,4 +1,4 @@
-.admin-form-container {
+.admin-form-container-r {
     display: flex;
     border: 1px solid #ddd;
     height: 90vh;
@@ -19,7 +19,7 @@
     margin: 10px auto;
 }
 
-.nav-button {
+.nav-button-r {
     width: 350px;
     margin: 0 auto;
     padding: 10px;
@@ -30,11 +30,11 @@
     cursor: pointer;
 }
 
-.nav-button:first-child {
+.nav-button-r.recipe {
     border-color: #eb517e;
 }
 
-.nav-button:hover {
+.nav-button-r:hover {
     background-color: #e0e0e0;
 }
 
