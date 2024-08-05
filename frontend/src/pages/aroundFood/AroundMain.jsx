@@ -3,7 +3,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Map, MapMarker, ZoomControl, CustomOverlayMap} from 'react-kakao-maps-sdk';
 import '../../assets/style/aroundFood/AroundMain.css';
 import axios from 'axios';
-import {SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {Bookmark, LocationDot, LocationTarget, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 
 function AroundMain() {
     const [state, setState] = useState({
@@ -245,7 +245,7 @@ function AroundMain() {
 
             <Map
                 center={state.center}
-                style={{width: "100%", height: "500px"}}
+                style={{width: "100%", height: "300px"}}
                 level={3}
                 ref={mapRef}
                 onDragEnd={() => {
@@ -284,20 +284,20 @@ function AroundMain() {
                         <div className="wrap">
                             <div className="info">
                                 <div className="title">
-                                    {selectedMarker.place_name}
+                                    <div>
+                                        <a href={selectedMarker.place_url} target="_blank" className="info-link"
+                                           rel="noreferrer">
+                                            {selectedMarker.place_name}
+                                        </a>
+                                        <button className="around-bookmark">
+                                            <Bookmark/>
+                                        </button>
+                                    </div>
                                     <div className="close" onClick={() => setIsOpen(false)} title="닫기"></div>
                                 </div>
                                 <div className="body">
-                                    <div className="img">
-                                        <img
-                                            src={selectedRestaurantImage || "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005"}
-                                            width="73"
-                                            height="70"
-                                            alt={selectedMarker.place_name}
-                                        />
-                                    </div>
                                     <div className="desc">
-                                        <div
+                                    <div
                                             className="ellipsis">{selectedMarker.road_address_name || selectedMarker.address_name}</div>
                                         {selectedMarker.road_address_name && (
                                             <div className="jibun ellipsis">(지번: {selectedMarker.address_name})</div>
@@ -310,6 +310,14 @@ function AroundMain() {
                                         </div>
                                         <div className="tel">{selectedMarker.phone}</div>
                                     </div>
+                                    <div className="img">
+                                        <img
+                                            src={selectedRestaurantImage || "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005"}
+                                            width="73"
+                                            height="70"
+                                            alt={selectedMarker.place_name}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -318,7 +326,7 @@ function AroundMain() {
 
                 <ZoomControl position={"RIGHT"}/>
                 <button className="current-location-button" onClick={handleCurrentLocationClick}>
-                    현재 위치
+                    <LocationTarget/>
                 </button>
 
                 {/* 현재 위치 표시 (CustomOverlayMap 사용) */}
