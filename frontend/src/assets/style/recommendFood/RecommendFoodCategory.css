@@ -15,13 +15,13 @@
 .top-list {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     width: 100%;
-    gap: 10px;
 }
 
 .top-item {
     position: relative;
-    width: 100%; /* 너비를 33.33%로 설정하고 margin 값을 고려 */
+    width: 8.5em;
     flex-direction: column;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -125,17 +125,30 @@
     border-radius: 10px;
 }
 
-
 .restaurant-details {
     font-size: 12px;
     display: flex;
-    align-items: center; /* 아이콘과 텍스트 세로 정렬 */
-    margin-top: 5px; /* 위쪽 여백 추가 */
+    align-items: center;
+    margin-top: 5px;
 }
 
 .restaurant-info{
     flex: 4;
+    display: flex;
+    justify-content: space-between;
 }
+
+.restaurant-left{
+    width: 270px;
+}
+
+.restaurant-right{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
 .restaurant-info a{
     display: flex;
     flex-direction: row;
@@ -144,6 +157,11 @@
     color: #233B6F;
 }
 
+.restaurant-title .restaurant-name{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .restaurant-info span{
     font-size: 0.8em;
     margin: 0;
@@ -152,8 +170,36 @@
 
 .restaurant-address{
     width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.restaurant-category{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .recommend-category-container svg {
     margin-right: 3px;
+}
+
+.restaurant-right-bookmarks{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.restaurant-right-bookmarks .bookmark-icon{
+    position: relative;
+    width: 15px;
+    height: 15px;
+}
+.bookmark-icon svg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
