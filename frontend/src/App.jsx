@@ -8,16 +8,14 @@ import AdminRouter from "./router/AdminRouter";
 function App() {
     return (
         <BrowserRouter>
-            <div className="App">
-                <Routes>
-                    <Route path="/admin/*" element={<AdminRouter />} />
-                    <Route path="/*" element={
-                        <Layout>
-                            <MainRouter />
-                        </Layout>
-                    } />
-                </Routes>
-            </div>
+            <Routes>
+                <Route path="/admin/*" element={<AdminRouter />} />
+                <Route path="/*" element={
+                    <Layout>
+                        <MainRouter />
+                    </Layout>
+                } />
+            </Routes>
         </BrowserRouter>
     );
 }
