@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import '../../assets/style/recommendFood/RecommendFoodCategory.css';
-import {Bookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {Bookmark,  FillBookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {TopSearch} from "../../components/SliderComponent";
 import theme from "tailwindcss/defaultTheme";
 import axios from "axios";
-
+import {getUserIdx} from "../../utils/auth";
 
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -21,9 +21,74 @@ function RecommendFoodCategory() {
     const [restaurants, setRestaurants] = useState([]);
     const [displayedKeyword, setDisplayedKeyword] = useState(initialKeyword || ''); // 표시될 검색어 상태 추가
     const navigate = useNavigate();
+    const [userBookmarks, setUserBookmarks] = useState([]);
 
     // 주변 음식점 정렬 (거리순)
     const sortedRestaurants = restaurants.slice().sort((a, b) => a.distance - b.distance);
+
+    useEffect(() => {
+        const fetchUserBookmarks = async () => {
+            const userIdx = getUserIdx();
+            if (userIdx) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/bookmarks/restaurants/${userIdx}`);
+                    setUserBookmarks(response.data.map(bookmark => bookmark.restaurantId));
+                } catch (error) {
+                    console.error('북마크 정보 가져오기 실패:', error);
+                }
+            }
+        };
+
+        fetchUserBookmarks();
+    }, []);
+
+    const handleBookmarkToggle = async (restaurant) => { // restaurant 객체를 매개변수로 받습니다.
+        const userIdx = getUserIdx();
+        if (userIdx) { // 로그인한 경우에만 북마크 정보 가져오기
+            try {
+                const isBookmarked = userBookmarks.includes(restaurant.id);
+                if (isBookmarked) {
+                    const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${restaurant.id}`, {
+                        data: { userIdx }
+                    });
+
+                    if (deleteResponse.status === 204) { // 삭제 성공 시
+                        setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== restaurant.id));
+                        // 북마크 개수 업데이트 (필요에 따라)
+                        setRestaurants(prevRestaurants => prevRestaurants.map(r => // r로 변수명 변경
+                            r.id === restaurant.id ? { ...r, bookmarks_count: (r.bookmarks_count || 0) - 1 } : r
+                        ));
+                    } else {
+                        console.error('북마크 삭제 실패:', deleteResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                } else {
+                    // 북마크 추가 요청
+                    const addResponse = await axios.post('http://localhost:8080/api/bookmarks/restaurants', {
+                        userIdx,
+                        restaurantId: restaurant.id,
+                        restaurantName: restaurant.place_name,
+                        addressName: restaurant.address_name,
+                        phone: restaurant.phone
+                    });
+
+                    if (addResponse.status === 200) { // 추가 성공 시
+                        setUserBookmarks(prevBookmarks => [...prevBookmarks, restaurant.id]);
+                        // 북마크 개수 업데이트 (필요에 따라)
+                        setRestaurants(prevRestaurants => prevRestaurants.map(r =>  // r로 변수명 변경
+                            r.id === restaurant.id ? { ...r, bookmarks_count: (r.bookmarks_count || 0) + 1 } : r
+                        ));
+                    } else {
+                        console.error('북마크 추가 실패:', addResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                }
+            } catch (error) {
+                console.error('북마크 처리 실패:', error);
+            }
+        }
+    };
+
 
     useEffect(() => {
         const ps = new kakao.maps.services.Places();
@@ -215,7 +280,16 @@ function RecommendFoodCategory() {
                                 <span
                                     className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                                 <button
-                                    className="restaurant-bookmarks"><Bookmark/>{restaurant.bookmarks_count}</button>
+                                    className="restaurant-bookmarks"
+                                    onClick={() => handleBookmarkToggle(restaurant)}
+                                >
+                                    {userBookmarks.includes(restaurant.id) ? (
+                                        <FillBookmark/>
+                                    ) : (
+                                        <Bookmark/>
+                                    )}
+                                    {restaurant.bookmarks_count || 0}
+                                </button>
                             </div>
                         </li>
                     ))}
@@ -243,9 +317,16 @@ function RecommendFoodCategory() {
                                     <span className="restaurant-distance">
                                         <LocationDot/>{Math.round(restaurant.distance)}m
                                     </span>
-                                    <button className="restaurant-right-bookmarks">
-                                        <div className="bookmark-icon"><Bookmark/></div>
-                                        0{restaurant.bookmarks_count}
+                                    <button
+                                        className="restaurant-bookmarks"
+                                        onClick={() => handleBookmarkToggle(restaurant)}
+                                    >
+                                        {userBookmarks.includes(restaurant.id) ? (
+                                            <FillBookmark/>
+                                        ) : (
+                                            <Bookmark/>
+                                        )}
+                                        {restaurant.bookmarks_count || 0}
                                     </button>
                                 </div>
                             </div>

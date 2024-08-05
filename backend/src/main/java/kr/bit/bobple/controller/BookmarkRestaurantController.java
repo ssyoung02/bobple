@@ -20,16 +20,19 @@ public class BookmarkRestaurantController {
 
     @PostMapping
     public ResponseEntity<Void> addOrRemoveBookmark(@RequestBody BookmarkRestaurant bookmarkRestaurant) {
+        System.out.println("Received addOrRemoveBookmark request: " + bookmarkRestaurant);
 
         if (bookmarkRestaurantRepository.existsByUserIdxAndRestaurantId(
                 bookmarkRestaurant.getUserIdx(), bookmarkRestaurant.getRestaurantId())) {
             // 이미 북마크된 경우 삭제
             bookmarkRestaurantRepository.deleteByUserIdxAndRestaurantId(
                     bookmarkRestaurant.getUserIdx(), bookmarkRestaurant.getRestaurantId());
+            System.out.println("Bookmark removed successfully.");
             return ResponseEntity.noContent().build();
         } else {
             // 북마크되지 않은 경우 추가
             BookmarkRestaurant savedBookmark = bookmarkRestaurantRepository.save(bookmarkRestaurant);
+            System.out.println("Bookmark added successfully: " + savedBookmark);
             return ResponseEntity.ok().build(); // 200 OK 응답만 반환
         }
     }
@@ -37,8 +40,9 @@ public class BookmarkRestaurantController {
 
     @GetMapping("/{userIdx}")
     public ResponseEntity<List<BookmarkRestaurant>> getBookmarks(@PathVariable Long userIdx) {
+        System.out.println("Received getBookmarks request for userIdx: " + userIdx);
         List<BookmarkRestaurant> bookmarks = bookmarkRestaurantRepository.findByUserIdx(userIdx);
-
+        System.out.println("Retrieved bookmarks: " + bookmarks);
         return ResponseEntity.ok(bookmarks);
     }
 

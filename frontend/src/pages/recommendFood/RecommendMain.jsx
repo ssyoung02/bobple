@@ -15,7 +15,7 @@ import {
     Trophy
 } from "../../components/imgcomponents/ImgComponents";
 import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
-import { restaurantfetchTopKeywords } from '../../components/Search/RestaurantSearch';
+import {restaurantfetchTopKeywords } from '../../components/Search/RestaurantSearch';
 import {getUserIdx} from "../../utils/auth";
 
 function RecommendMain() {
@@ -72,23 +72,23 @@ function RecommendMain() {
     }, []);
 
 
-    const handleBookmarkToggle = async (pubId) => {
+    const handleBookmarkToggle = async (pub) => { // pub 객체를 매개변수로 받습니다.
         const userIdx = getUserIdx();
         if (userIdx) { // 로그인한 경우에만 북마크 정보 가져오기
             try {
-                const isBookmarked = userBookmarks.includes(pubId);
+                const isBookmarked = userBookmarks.includes(pub.id);
                 if (isBookmarked) {
-                    const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${pubId}`, {
+                    const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${pub.id}`, {
                         data: { userIdx }
                     });
 
                     if (deleteResponse.status === 204) { // 삭제 성공 시
-                        setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== pubId));
+                        setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== pub.id));
                         // 북마크 개수 업데이트
                         fetchBookmarkCounts(nearbyPub.map(pub => pub.id))
                             .then(bookmarkCounts => {
-                                setNearbyPub(prevPubs => prevPubs.map(pub =>
-                                    pub.id === pubId ? { ...pub, bookmarks_count: bookmarkCounts[pub.id] || 0 } : pub
+                                setNearbyPub(prevPubs => prevPubs.map(p => // p로 변수명 변경
+                                    p.id === pub.id ? { ...p, bookmarks_count: bookmarkCounts[p.id] || 0 } : p
                                 ));
                             });
                     } else {
@@ -97,15 +97,21 @@ function RecommendMain() {
                     }
                 } else {
                     // 북마크 추가 요청
-                    const addResponse = await axios.post('http://localhost:8080/api/bookmarks/restaurants', {userIdx, restaurantId: pubId});
+                    const addResponse = await axios.post('http://localhost:8080/api/bookmarks/restaurants', {
+                        userIdx,
+                        restaurantId: pub.id,
+                        restaurantName: pub.place_name,
+                        addressName: pub.address_name,
+                        phone: pub.phone
+                    });
 
                     if (addResponse.status === 200) { // 추가 성공 시
-                        setUserBookmarks(prevBookmarks => [...prevBookmarks, pubId]);
+                        setUserBookmarks(prevBookmarks => [...prevBookmarks, pub.id]);
                         // 북마크 개수 업데이트
                         fetchBookmarkCounts(nearbyPub.map(pub => pub.id))
                             .then(bookmarkCounts => {
-                                setNearbyPub(prevPubs => prevPubs.map(pub =>
-                                    pub.id === pubId ? { ...pub, bookmarks_count: bookmarkCounts[pub.id] || 0 } : pub
+                                setNearbyPub(prevPubs => prevPubs.map(p => // p로 변수명 변경
+                                    p.id === pub.id ? { ...p, bookmarks_count: bookmarkCounts[p.id] || 0 } : p
                                 ));
                             });
                     } else {
@@ -117,7 +123,7 @@ function RecommendMain() {
                 console.error('북마크 처리 실패:', error);
             }
         }
-    }
+    };
 
     useEffect(() => {
         restaurantfetchTopKeywords(setTopKeywords);
@@ -382,7 +388,7 @@ function RecommendMain() {
                                             className="pub-distance"><LocationDot/>{Math.round(pub.distance)}m</span>
                                         <button
                                             className="pub-bookmarks"
-                                            onClick={() => handleBookmarkToggle(pub.id)} // 클릭 이벤트 추가
+                                            onClick={() => handleBookmarkToggle(pub)} // 클릭 이벤트 추가
                                         >
                                             {userBookmarks.includes(pub.id) ? ( // 사용자 북마크에 포함된 경우
                                                 <FillBookmark/>

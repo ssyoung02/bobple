@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface BookmarkRestaurantRepository  extends JpaRepository<BookmarkRestaurant, Long> {
+
+    @Query("SELECT br FROM BookmarkRestaurant br WHERE br.userIdx = :userIdx")
     List<BookmarkRestaurant> findByUserIdx(Long userIdx);
 
     boolean existsByUserIdxAndRestaurantId(Long userIdx, String restaurantId);
