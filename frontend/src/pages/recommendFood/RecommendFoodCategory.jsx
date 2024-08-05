@@ -5,6 +5,8 @@ import '../../assets/style/recommendFood/RecommendFoodCategory.css';
 import {Bookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {TopSearch} from "../../components/SliderComponent";
 import theme from "tailwindcss/defaultTheme";
+import axios from "axios";
+
 
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -145,7 +147,19 @@ function RecommendFoodCategory() {
             alert('키워드를 입력해주세요!');
             return;
         }
-
+        try {
+            axios.post('http://localhost:8080/api/search/saveKeyword', trimmedKeyword, {
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                withCredentials: true,
+            });
+            console.log('검색어가 저장되었습니다.');
+            // fetchTopKeywords(setTopKeywords);  // 인기 검색어 업데이트 (필요 없는 경우 주석 처리)
+        } catch (error) {
+            console.error('검색어 저장 실패:', error);
+            // 에러 처리 로직 추가 (필요에 따라)
+        }
         // 검색 키워드를 쿼리 파라미터로 설정하고 페이지 새로고침
         setSearchParams({ keyword: trimmedKeyword });
 

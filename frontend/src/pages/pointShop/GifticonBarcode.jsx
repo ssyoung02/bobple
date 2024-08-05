@@ -1,21 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../assets/style/pointShop/PointGifticonDetail.css';
 
 function PointGifticonDetail() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { productIdx } = location.state;
+    const { productIdx } = location.state || {};
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const userIdx = 9; // 여기에 실제 userIdx를 설정하세요
+
+    const userIdx = localStorage.getItem('userIdx');
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            navigate('/login');
+            return;
+        }
+
+        if (!productIdx) {
+            setError('상품 정보가 제공되지 않았습니다.');
+            setLoading(false);
+            return;
+        }
+
         console.log(`Fetching product details for productIdx: ${productIdx}`);
+
         axios.get(`http://localhost:8080/api/GifticonBarcode/${productIdx}`, {
-            params: { userIdx } // Send userIdx as well
+            params: { userIdx },
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: true
         })
             .then(response => {
                 console.log('API Response:', response.data);
@@ -27,19 +46,28 @@ function PointGifticonDetail() {
                 setError('상품 정보를 가져오는 중 오류가 발생했습니다.');
                 setLoading(false);
             });
-    }, [productIdx, userIdx]);
+    }, [productIdx, userIdx, token, navigate]);
 
     const handleUse = () => {
+        if (!product) {
+            alert('상품 정보를 찾을 수 없습니다.');
+            return;
+        }
+
         if (window.confirm(`${product.pointShop.giftDescription} 기프티콘을 사용하시겠습니까?`)) {
             axios.post(`http://localhost:8080/api/GiftUse`, null, {
                 params: {
                     userIdx: userIdx,
                     productIdx: product.pointShop.giftIdx
-                }
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
             })
                 .then(response => {
-                    console.log('Purchase response:', response.data);
-                    if(response.data) {
+                    console.log('Use response:', response.data);
+                    if (response.data) {
                         alert('기프티콘 사용이 완료되었습니다.');
                         navigate('/point', { state: { selectedTab: '보관함' } });
                     } else {
@@ -47,7 +75,7 @@ function PointGifticonDetail() {
                     }
                 })
                 .catch(error => {
-                    console.error('Error during purchase:', error);
+                    console.error('Error during use:', error);
                     alert('사용 중 오류가 발생했습니다.');
                 });
         }

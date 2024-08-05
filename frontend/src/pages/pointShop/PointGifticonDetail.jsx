@@ -1,20 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
-import '../../assets/style/pointShop/PointGifticonDetail.css'
+import { useLocation, useNavigate } from 'react-router-dom';
+import '../../assets/style/pointShop/PointGifticonDetail.css';
 import axios from 'axios';
 
 function PointGifticonDetail() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { productIdx } = location.state;
+    const { productIdx } = location.state || {};
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const userIdx = 9; // 여기에 실제 userIdx를 설정하세요
+
+    const userIdx = localStorage.getItem('userIdx');
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            navigate('/login');
+            return;
+        }
+
+        if (!productIdx) {
+            setError('상품 정보가 제공되지 않았습니다.');
+            setLoading(false);
+            return;
+        }
+
         console.log(`Fetching product details for productIdx: ${productIdx}`);
-        axios.get(`http://localhost:8080/api/PointGifticonDetail/${productIdx}`)
+
+        axios.get(`http://localhost:8080/api/PointGifticonDetail/${productIdx}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: true
+        })
             .then(response => {
                 console.log('API Response:', response.data);
                 setProduct(response.data);
@@ -25,19 +45,28 @@ function PointGifticonDetail() {
                 setError('상품 정보를 가져오는 중 오류가 발생했습니다.');
                 setLoading(false);
             });
-    }, [productIdx]);
+    }, [productIdx, navigate, token]);
 
     const handlePurchase = () => {
+        if (!product) {
+            alert('상품 정보를 찾을 수 없습니다.');
+            return;
+        }
+
         if (window.confirm(`${product.giftDescription} 기프티콘을 구매하시겠습니까?`)) {
             axios.post(`http://localhost:8080/api/GiftPurchase`, null, {
                 params: {
                     userIdx: userIdx,
                     productIdx: product.giftIdx
-                }
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
             })
                 .then(response => {
                     console.log('Purchase response:', response.data);
-                    if(response.data) {
+                    if (response.data) {
                         alert('구매가 완료되었습니다.');
                         navigate('/point', { state: { selectedTab: '보관함' } });
                     } else {
