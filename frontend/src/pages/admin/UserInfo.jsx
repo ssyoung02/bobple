@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../assets/style/admin/UserInfo.css';
-import UserDetail from './UserDetail';
 import axios from 'axios';
+import UserDetail from './UserDetail';
+
 
 import {useNavigate} from "react-router-dom";
 import mascot from '../../assets/images/bobple_mascot.png';
@@ -147,10 +148,10 @@ const UserInfo = () => {
     return (
         <div className="admin-form-container">
             <div className="left-section">
-                <button className="nav-button info" onClick={moveUserInfo}>회원 정보</button>
-                <button className="nav-button recipe" onClick={moveRecipe}>게시글 관리</button>
-                <button className="nav-button notice" onClick={moveNotice}>공지 사항</button>
-                <button className="nav-button qna" onClick={moveQnA}>문의 사항</button>
+                <button className="nav-button" onClick={moveUserInfo}>회원 정보</button>
+                <button className="nav-button" onClick={moveRecipe}>게시글 관리</button>
+                <button className="nav-button" onClick={moveNotice}>공지 사항</button>
+                <button className="nav-button" onClick={moveQnA}>문의 사항</button>
                 <img src={mascot} alt="밥풀이" className="admin-image"/>
             </div>
 
