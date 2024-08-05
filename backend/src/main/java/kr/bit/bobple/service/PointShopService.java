@@ -2,9 +2,11 @@ package kr.bit.bobple.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import jakarta.persistence.NonUniqueResultException;
+import kr.bit.bobple.entity.Point;
 import kr.bit.bobple.entity.PointShop;
 import kr.bit.bobple.entity.PurchasedGift;
 import kr.bit.bobple.entity.User;
+import kr.bit.bobple.repository.PointRepository;
 import kr.bit.bobple.repository.PointShopRepository;
 import kr.bit.bobple.repository.PurchasedGiftRepository;
 import kr.bit.bobple.repository.UserRepository;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +26,15 @@ public class PointShopService {
     private UserRepository userRepository;
     @Autowired
     private PurchasedGiftRepository purchasedGiftRepository;
+    @Autowired
+    private PointRepository pointRepository; // 새로운 리포지토리 추가
 
-    public PointShopService(PointShopRepository pointShopRepository, UserRepository userRepository, PurchasedGiftRepository purchasedGiftRepository) {
+    public PointShopService(PointShopRepository pointShopRepository, UserRepository userRepository, PurchasedGiftRepository purchasedGiftRepository, PointRepository pointRepository) {
         this.pointShopRepository = pointShopRepository;
         this.userRepository = userRepository;
         this.purchasedGiftRepository = purchasedGiftRepository;
+        this.pointRepository = pointRepository;
     }
-
     public List<PointShop> getAllPointShops() {
         return pointShopRepository.findAll();
     }
@@ -49,20 +54,34 @@ public class PointShopService {
             PointShop product = productOpt.get();
 
             if (user.getPoint() >= product.getGiftPoint()) {
-                user.setPoint(user.getPoint() - product.getGiftPoint());
+                // 차감 후의 새로운 잔액 계산
+                int newBalance = user.getPoint() - product.getGiftPoint();
 
-                // Save user info first
+                // 사용자 포인트 차감
+                user.setPoint(newBalance);
                 userRepository.save(user);
 
-                // Save purchase history
+                // 구매 내역 저장
                 PurchasedGift purchasedGift = new PurchasedGift(user, product);
                 purchasedGiftRepository.save(purchasedGift);
+
+                // 포인트 차감 내역 기록
+                Point pointRecord = new Point();
+                pointRecord.setUserIdx(user.getUserIdx());
+                pointRecord.setPointValue((long) product.getGiftPoint());
+                pointRecord.setPointState(Point.PointState.M);
+                pointRecord.setPointComment("기프티콘 구매");
+                pointRecord.setCreatedAt(new Date());
+                pointRecord.setPointBalance(newBalance); // 새로운 잔액 설정
+
+                pointRepository.save(pointRecord);
 
                 return true;
             }
         }
         return false;
     }
+
 
     public List<PurchasedGift> getPurchasedGiftsByUserIdx(Long userIdx, String sort) {
         if ("asc".equalsIgnoreCase(sort)) {

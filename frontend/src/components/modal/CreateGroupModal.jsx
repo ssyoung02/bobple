@@ -3,14 +3,17 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import axios from "axios";
+import { useModal } from "./ModalContext"; // useModal import
 
 // props로 받은 제목, 내용을 출력하는 모달
-const GroupModal = ({ modalState, hideModal }) => {
+const CreateGroupModal = ({ modalState, hideModal }) => {
     const navigate = useNavigate();
+    const { showErrorModal } = useModal(); // useModal 훅 사용
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [location, setLocation] = useState("");
     const [roomPeople, setRoomPeople] = useState(1);
+    const [image, setImage] = useState(null);
 
     const moveChat = (chatRoomId) => {
         console.log(`Navigating to /group/chatting/${chatRoomId}`);
@@ -18,15 +21,22 @@ const GroupModal = ({ modalState, hideModal }) => {
     };
 
     const createChatRoom = async () => {
+        if (!title.trim() || !description.trim()) {
+            showErrorModal("모임제목 및 모임설명을 작성해주세요!");
+            return;
+        }
+
+        const finalLocation = location.trim() || "미정";
+
         try {
             const response = await axios.post('http://localhost:8080/api/chatrooms', {
                 chatRoomTitle: title,
                 description: description,
-                location: location,
+                location: finalLocation,
                 roomPeople: roomPeople
             });
 
-            if (response.status === 201 || response.status === 200 ) {
+            if (response.status === 201 || response.status === 200) {
                 const chatRoomId = response.data.chatRoomIdx; // 생성된 chat_room_idx 받아오기
                 console.log(`Chat room created with ID: ${chatRoomId}`);
                 moveChat(chatRoomId); // 해당 chat_room_idx로 채팅 페이지로 이동
@@ -43,6 +53,22 @@ const GroupModal = ({ modalState, hideModal }) => {
         hideModal();
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const triggerFileInput = () => {
+        document.getElementById('file-input').click();
+    };
+
+
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content">
@@ -52,6 +78,24 @@ const GroupModal = ({ modalState, hideModal }) => {
                     <button className="group-modal-create-btn" onClick={createChatRoom}>생성</button>
                 </div>
                 <div className="modal-body">
+                    <div className="group-image-container">
+                        <div className="group-image-box" onClick={triggerFileInput}>
+                            {image ? (
+                                <img src={image} alt="이미지 미리보기" className="preview-image"/>
+                            ) : (
+                                <div className="placeholder"></div>
+                            )}
+                        </div>
+                        <button className="plus-button" onClick={triggerFileInput}>+</button>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="file-input"
+                            id="file-input"
+                            style={{display: 'none'}} // input을 숨김
+                        />
+                    </div>
                     <div className="form-group">
                         <label>모임제목</label>
                         <input
@@ -96,9 +140,9 @@ const GroupModal = ({ modalState, hideModal }) => {
     );
 };
 
-GroupModal.propTypes = {
+CreateGroupModal.propTypes = {
     modalState: PropTypes.string.isRequired,
     hideModal: PropTypes.func.isRequired,
 };
 
-export default GroupModal;
+export default CreateGroupModal;

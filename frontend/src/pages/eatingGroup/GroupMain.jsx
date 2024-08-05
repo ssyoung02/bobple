@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const GroupMain = () => {
     const navigate = useNavigate();
-    const { showModal } = useModal();
+    const { showModal, setModalType, setChatRoomData } = useModal();
     const [chatRooms, setChatRooms] = useState([]);
 
     useEffect(() => {
@@ -25,6 +25,17 @@ const GroupMain = () => {
     const handleRoomClick = (chatRoomId) => {
         navigate(`/group/chatting/${chatRoomId}`);
     };
+
+    const showCreateModal = () => {
+        setModalType('createGroup');
+        showModal();
+    }
+
+    const showJoinModal = (chatRoom) => {
+        setChatRoomData(chatRoom);
+        setModalType('joinGroup');
+        showModal();
+    }
 
     return (
         <div className="group-main">
@@ -48,7 +59,7 @@ const GroupMain = () => {
                     <button
                         key={chatRoom.chatRoomIdx}
                         className="meeting-item"
-                        onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
+                        onClick={() => showJoinModal(chatRoom)}
                     >
                         <img src="" alt=""/>
                         <div className="meeting-info">
@@ -60,7 +71,9 @@ const GroupMain = () => {
                 ))}
             </div>
 
-            <button className="fab" onClick={showModal}>+</button>
+            <div className="fab-box">
+                <button className="fab" onClick={showCreateModal}>+</button>
+            </div>
         </div>
     );
 };

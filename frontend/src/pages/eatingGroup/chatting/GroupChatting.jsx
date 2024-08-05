@@ -30,14 +30,33 @@ const GroupChatting = () => {
 
         fetchChatRoom();
         fetchMessages();
+
+        const eventSource = new EventSource('http://localhost:3001/events');
+        eventSource.onmessage = (event) => {
+            const newMessage = JSON.parse(event.data);
+            setMessages(prevMessages => [...prevMessages, newMessage]);
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('EventSource failed:', error);
+        };
+
+        return () => {
+            eventSource.close();
+        };
     }, [chatRoomId]);
 
     const handleSendMessage = async () => {
+        if (!newMessage.trim()) {
+            return;
+        }
+
         try {
-            const response = await axios.post(`http://localhost:8080/api/chatrooms/${chatRoomId}/messages`, {
+            const message = {
+                chatRoomId: chatRoomId,
                 content: newMessage
-            });
-            setMessages([...messages, response.data]);
+            };
+            await axios.post('http://localhost:3001/send-message', message);
             setNewMessage("");
         } catch (error) {
             console.error('Failed to send message', error);
@@ -53,8 +72,8 @@ const GroupChatting = () => {
                 </div>
             )}
             <div className="messages">
-                {messages.map(message => (
-                    <div key={message.id} className="message">
+                {messages.map((message, index) => (
+                    <div key={index} className="message">
                         <p>{message.content}</p>
                     </div>
                 ))}

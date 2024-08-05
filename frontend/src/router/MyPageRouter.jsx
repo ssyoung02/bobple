@@ -17,6 +17,7 @@ import UserNoticeDetail from "../pages/myPage/serviceCenter/UserNoticeDetail";
 import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandler";
 import GoogleLoginHandler from "../pages/myPage/login/GoogleLoginHandler";
 import NaverLoginHandler from "../pages/myPage/login/NaverLoginHandler";
+import AdminLogin from "../pages/myPage/login/AdminLogin";
 
 function MyPageRouter(){
         return(
@@ -33,14 +34,16 @@ function MyPageRouter(){
                     <Route path="/login/oauth2/callback/kakao" element={<KakaoLoginHandler/>} />
                     <Route path="/login/oauth2/callback/google" element={<GoogleLoginHandler/>} />
                     <Route path="/login/oauth2/callback/naver" element={<NaverLoginHandler/>} />
+                   <Route path="/login/admin" element={<AdminLogin/>}/>
 
-            <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
-            <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
-            <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
-            <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
-            <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
 
-        </Routes>
+                <Route path="/serviceCenter/userFAQ" element={<UserFAQ/>}/>
+                <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
+                <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
+                <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
+                <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
+
+            </Routes>
     );
 }
 

@@ -12,9 +12,9 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class PointShopController {
-    @Autowired
     private final PointShopService pointShopService;
 
+    @Autowired
     public PointShopController(PointShopService pointShopService) {
         this.pointShopService = pointShopService;
     }
@@ -46,11 +46,6 @@ public class PointShopController {
             return pointShopService.getPurchasedGiftsByUserIdxAndIsUsed(userIdx, isUsed, sort);
         }
     }
-
-//    @GetMapping("/GifticonBarcode/{productIdx}")
-//    public PointShop getBarcodeByProductIdx(@PathVariable Long productIdx) {
-//        return pointShopService.getBarcodeByProductIdx(productIdx);
-//    }
 
     @GetMapping("/GifticonBarcode/{productIdx}")
     public PurchasedGift getBarcodeByProductIdx(@PathVariable Long productIdx, @RequestParam Long userIdx) {

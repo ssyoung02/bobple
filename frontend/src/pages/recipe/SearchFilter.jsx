@@ -47,7 +47,7 @@ function SearchFilter() {
                     ))}
                 </select>
 
-                <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                <select className="category-sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                     {sortOptions.map(option => (
                         <option key={option.key} value={option.value}>{option.text}</option>
                     ))}

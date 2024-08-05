@@ -48,19 +48,19 @@ public class MyPageController {
         }
     }
 
-    @GetMapping("/MyPointUsage/pointHistory/{userIdx}")
-    public ResponseEntity<Map<String, Object>> getPointHistory(@PathVariable Long userIdx) {
-        List<Point> pointHistory = pointService.getPointHistory(userIdx);
-        Integer currentPoints = pointService.getCurrentPoints(userIdx).orElse(0);
-
-        // PointService를 통해 닉네임 가져오기
-        String nickName = pointService.getUserNickName(userIdx).orElse("Unknown");
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("nickName", nickName); // 닉네임 추가
-        response.put("history", pointHistory);
-        response.put("currentPoints", currentPoints);
-
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/MyPointUsage/pointHistory/{userIdx}")
+//    public ResponseEntity<Map<String, Object>> getPointHistory(@PathVariable Long userIdx) {
+//        List<Point> pointHistory = pointService.getPointHistory(userIdx);
+//        Integer currentPoints = pointService.getCurrentPoints(userIdx).orElse(0);
+//
+//        // PointService를 통해 닉네임 가져오기
+//        String nickName = pointService.getUserNickName(userIdx).orElse("Unknown");
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("nickName", nickName); // 닉네임 추가
+//        response.put("history", pointHistory);
+//        response.put("currentPoints", currentPoints);
+//
+//        return ResponseEntity.ok(response);
+//    }
 }

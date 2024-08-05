@@ -1,7 +1,5 @@
 import React from 'react';
-import kakaoImage from '../../../assets/images/kakao_login_medium_narrow.png';
-import googleImage from '../../../assets/images/google_login.png';
-import naverImage from '../../../assets/images/naver_login.png';
+import {useNavigate} from "react-router-dom";
 import '../../../assets/style/myPage/Login.css';
 import {Google, KLogin, NLogin} from "../../../components/imgcomponents/ImgComponents";
 import {Link} from "react-router-dom";
@@ -18,6 +16,12 @@ function Login() {
     const CLIENT_NAVER_ID = process.env.REACT_APP_NAVER_CLIENT_ID;
     const REDIRECT_NAVER_URI = process.env.REACT_APP_NAVER_REDIRECT_URL;
     const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${CLIENT_NAVER_ID}&redirect_uri=${REDIRECT_NAVER_URI}&response_type=code`;
+
+    const navigate = useNavigate();
+
+    const moveAdmin = () => {
+        navigate('/myPage/login/admin');
+    }
 
     return (
         <div className="login-main">
