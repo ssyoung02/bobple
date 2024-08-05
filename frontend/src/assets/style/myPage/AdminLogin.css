@@ -1,12 +1,16 @@
 .admin-form {
-    width: 90%;
-    margin: 0 auto;
-    padding: 30px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    width: 80%;
+    max-width: 440px;
+    padding: 50px 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-
 }
 
 .admin-form h3 {
@@ -24,7 +28,7 @@
 }
 
 .admin-container input {
-    width: 100%;
+    width: 350px;
     padding: 8px;
     margin-bottom: 20px;
     box-sizing: border-box;

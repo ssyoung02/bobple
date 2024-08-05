@@ -62,8 +62,13 @@
 }
 
 /*관리자*/
-.admin-login-buotton{
+.admin-login-button{
     width: 100%;
+}
+
+.admin-login {
+    width: 100%;
+    font-weight: bold;
 }
 
 .admin-line{
