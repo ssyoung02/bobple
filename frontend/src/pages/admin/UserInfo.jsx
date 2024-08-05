@@ -1,39 +1,13 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import '../../assets/style/admin/UserInfo.css';
 import UserDetail from './UserDetail';
+import axios from 'axios';
+
 import {useNavigate} from "react-router-dom";
 import mascot from '../../assets/images/bobple_mascot.png';
 
-const initialData = [
-    { id: 1000, name: '홍길동', nickname: 'Ma', email: 'hong1@naver.com', dob: '1990-01-01', phone: '010-1234-5678', joinDate: '2024-04-08' },
-    { id: 1001, name: '김철수', nickname: 'Me', email: 'kim1@daum.net', dob: '1995-06-01', phone: '010-2345-6789', joinDate: '2024-04-08' },
-    { id: 1002, name: '김영이', nickname: 'Fq', email: 'young1@gmail.com', dob: '1996-10-01', phone: '010-3456-7890', joinDate: '2024-04-08' },
-    { id: 1003, name: '박영수', nickname: 'Mg', email: 'park1@naver.com', dob: '1992-03-12', phone: '010-5678-1234', joinDate: '2024-04-08' },
-    { id: 1004, name: '이영희', nickname: 'Fbh', email: 'lee1@gmail.com', dob: '1991-05-23', phone: '010-6789-1234', joinDate: '2024-04-08' },
-    { id: 1005, name: '최철수', nickname: 'Mwacr', email: 'choi1@daum.net', dob: '1993-07-14', phone: '010-7890-1234', joinDate: '2024-04-08' },
-    { id: 1006, name: '정영수', nickname: 'Masxa', email: 'jung1@naver.com', dob: '1988-09-30', phone: '010-8901-1234', joinDate: '2024-04-08' },
-    { id: 1007, name: '오영희', nickname: 'Fjy', email: 'oh1@gmail.com', dob: '1997-11-21', phone: '010-9012-1234', joinDate: '2024-04-08' },
-    { id: 1008, name: '심철수', nickname: 'Mdfss', email: 'shim1@daum.net', dob: '1994-12-15', phone: '010-0123-1234', joinDate: '2024-04-08' },
-    { id: 1009, name: '유영수', nickname: 'Mbrf', email: 'you1@naver.com', dob: '1989-02-20', phone: '010-1234-2345', joinDate: '2024-04-08' },
-    { id: 1010, name: '문영희', nickname: 'Fer', email: 'moon1@gmail.com', dob: '1990-04-05', phone: '010-2345-3456', joinDate: '2024-04-08' },
-    { id: 1011, name: '장철수', nickname: 'Mju', email: 'jang1@daum.net', dob: '1992-06-17', phone: '010-3456-4567', joinDate: '2024-04-08' },
-    { id: 1012, name: '한영수', nickname: 'Mav', email: 'han1@naver.com', dob: '1987-08-29', phone: '010-4567-5678', joinDate: '2024-04-08' },
-    { id: 1013, name: '강영희', nickname: 'Fubuq', email: 'kang1@gmail.com', dob: '1995-10-10', phone: '010-5678-6789', joinDate: '2024-04-08' },
-    { id: 1014, name: '고철수', nickname: 'Mad', email: 'ko1@daum.net', dob: '1986-12-19', phone: '010-6789-7890', joinDate: '2024-04-08' },
-    { id: 1015, name: '홍영수', nickname: 'Mom', email: 'hong2@naver.com', dob: '1989-03-15', phone: '010-7890-8901', joinDate: '2024-04-08' },
-    { id: 1016, name: '김영희', nickname: 'Fubao', email: 'kim2@gmail.com', dob: '1993-05-22', phone: '010-8901-9012', joinDate: '2024-04-08' },
-    { id: 1017, name: '남철수', nickname: 'Mim', email: 'nam1@daum.net', dob: '1991-07-14', phone: '010-9012-0123', joinDate: '2024-04-08' },
-    { id: 1018, name: '도영수', nickname: 'Mpapap', email: 'do1@naver.com', dob: '1988-09-25', phone: '010-0123-2345', joinDate: '2024-04-08' },
-    { id: 1019, name: '류영희', nickname: 'Fran', email: 'ryu1@gmail.com', dob: '1996-11-05', phone: '010-1234-3456', joinDate: '2024-04-08' },
-    { id: 1020, name: '임철수', nickname: 'nyjyM', email: 'lim1@naver.com', dob: '1990-06-15', phone: '010-3456-7891', joinDate: '2024-04-08' },
-    { id: 1021, name: '윤영희', nickname: 'qwcrqrF', email: 'yoon1@gmail.com', dob: '1992-12-10', phone: '010-2345-6781', joinDate: '2024-04-08' },
-    { id: 1022, name: '신영수', nickname: 'Mbibt', email: 'shin1@daum.net', dob: '1989-01-01', phone: '010-1234-5679', joinDate: '2024-04-08' },
-    { id: 1023, name: '구영희', nickname: 'Fqcweas', email: 'koo1@gmail.com', dob: '1995-03-05', phone: '010-4567-7890', joinDate: '2024-04-08' },
-    { id: 1024, name: '황철수', nickname: 'Mzrce', email: 'hwang1@naver.com', dob: '1994-07-20', phone: '010-5678-9012', joinDate: '2024-04-08' }
-];
-
 const UserInfo = () => {
-    const [data, setData] = useState(initialData);
+    const [data, setData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +15,20 @@ const UserInfo = () => {
     const [detailUser, setDetailUser] = useState(null);
     const itemsPerPage = 20;
     const navigate = useNavigate();
+
+    // Fetch user data from the API
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users');
+                setData(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -63,10 +51,32 @@ const UserInfo = () => {
         );
     };
 
-    const handleDeleteSelected = () => {
-        setData(data.filter(user => !selectedUsers.includes(user.id)));
-        setSelectedUsers([]); // 선택된 회원 초기화
-        setCurrentPage(1); // 삭제 시 페이지를 첫 페이지로 초기화
+    const handleDeleteSelected = async () => {
+        if (!window.confirm("선택된 사용자를 삭제하시겠습니까?")) return;
+
+        try {
+            const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
+
+            if (!token) {
+                alert('로그인이 필요합니다.');
+                return;
+            }
+
+            await axios.delete('http://localhost:8080/api/users', {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Bearer 스키마 사용
+                },
+                data: {userIds: selectedUsers}, // 데이터를 Body로 전송
+            });
+
+            setData(data.filter(user => !selectedUsers.includes(user.userIdx)));
+            setSelectedUsers([]);
+            setCurrentPage(1);
+            alert('Selected users have been deleted.');
+        } catch (error) {
+            console.error('Error deleting selected users:', error);
+            alert('Failed to delete selected users');
+        }
     };
 
     const handleRowClick = (user) => {
@@ -168,55 +178,57 @@ const UserInfo = () => {
                             <th>닉네임</th>
                             <th>이메일</th>
                             <th>생년월일</th>
-                            <th>전화번호</th>
+                            <th>소셜로그인</th>
+                            <th>신고</th>
                             <th>가입일</th>
                         </tr>
                         </thead>
                         <tbody>
                         {currentItems.map(user => (
                             <>
-                                <tr key={user.id} onClick={() => handleRowClick(user)}
-                                    className={`tr-detail ${detailUser?.id === user.id ? 'active' : ''}`}>
-                                    <td>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedUsers.includes(user.id)}
-                                            onChange={() => handleSelectUser(user.id)}
-                                            className="select-input"
-                                            onClick={(e) => e.stopPropagation()} // 체크박스 클릭 시 드롭다운 방지
-                                        />
-                                    </td>
-                                    <td>{user.id}</td>
-                                    <td>{user.name}</td>
-                                    <td>{user.nickname}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.dob}</td>
-                                    <td>{user.phone}</td>
-                                    <td>{user.joinDate}</td>
-                                </tr>
-                                {detailUser?.id === user.id && (
-                                    <tr>
-                                        <td colSpan="8">
-                                            <UserDetail user={user}/>
-                                        </td>
-                                    </tr>
-                                )}
-                            </>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="pagination-container">
-                    <div className="pagination">
-                        {renderPageNumbers()}
-                    </div>
+                            <tr key={user.id} onClick={() => handleRowClick(user)}
+                                className={`tr-detail ${detailUser?.id === user.id ? 'active' : ''}`}>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedUsers.includes(user.id)}
+                                        onChange={() => handleSelectUser(user.id)}
+                                        className="select-input"
+                                    />
+                                </td>
+                                <td>{user.userIdx}</td>
+                                <td>{user.name}</td>
+                                <td>{user.nickName}</td>
+                                <td>{user.email}</td>
+                                <td>{user.birthdate}</td>
+                                <td>{user.provider}</td>
+                                <td>{user.reportCount}</td>
+                                <td>{user.createdAt}</td>
+                            </tr>
+                        {detailUser?.id === user.id && (
+                            <tr>
+                            <td colSpan="8">
+                            <UserDetail user={user}/>
+                    </td>
+                </tr>
+                )}
+            </>
+            ))}
+        </tbody>
+</table>
+</div>
+    <div className="pagination-container">
+        <div className="pagination">
+            {renderPageNumbers()}
+        </div>
                     <button onClick={handleDeleteSelected} disabled={selectedUsers.length === 0}
                             className="admin-delete-button">삭제
                     </button>
-                </div>
-            </div>
-        </div>
-    );
+    </div>
+</div>
+</div>
+)
+    ;
 };
 
 export default UserInfo;

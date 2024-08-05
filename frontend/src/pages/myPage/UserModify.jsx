@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../assets/style/myPage/UserModify.css';
-import {ModifyPen} from "../../components/imgcomponents/ImgComponents";
+import { ModifyPen } from "../../components/imgcomponents/ImgComponents";
 
 function UserModify() {
     const navigate = useNavigate();
@@ -43,7 +43,6 @@ function UserModify() {
 
         fetchUserData();
     }, [navigate]);
-
 
     const handleEditToggle = () => {
         setEditMode(!editMode);
@@ -124,6 +123,12 @@ function UserModify() {
         try {
             const token = localStorage.getItem('token');
             const userIdx = localStorage.getItem('userIdx');
+
+            if (!token || !userIdx) {
+                console.error('Token or UserIdx not found');
+                return;
+            }
+
             await axios.delete(`http://localhost:8080/api/users/${userIdx}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -133,24 +138,27 @@ function UserModify() {
 
             alert('회원탈퇴가 완료되었습니다.');
             localStorage.clear();
-            navigate("/myPage/login/login");
+            // Redirect to the main page after account deletion
+            window.location.href = 'http://localhost:3000/';
         } catch (error) {
             console.error('Error deleting account:', error);
             alert('Failed to delete account');
         }
     };
 
+
+
     return (
         <div className="UserModify-main">
             <div className="profile">
                 {user && user.profileImage && (
-                    <img src={user.profileImage} alt="Profile" className="profile-image"/>
+                    <img src={user.profileImage} alt="Profile" className="profile-image" />
                 )}
                 <input
                     type="file"
                     accept="image/*"
                     onChange={handleProfileImageChange}
-                    style={{display: 'none'}}
+                    style={{ display: 'none' }}
                     id="profileImageInput"
                 />
                 <label htmlFor="profileImageInput" className="upload-btn">
@@ -161,13 +169,13 @@ function UserModify() {
             <form onSubmit={handleSubmit} id="user-modify-form">
                 {editMode ?
                     <input className="nickname" type="text" name="nickName" value={formData.nickName}
-                           onChange={handleChange}/>
+                           onChange={handleChange} />
                     :
                     <div className="nickname-form">
                         <input className="nickname" value={user ? (user.nickName || formData.nickName) : ''}
-                               readOnly="readOnly" title="닉네임"/>
+                               readOnly="readOnly" title="닉네임" />
                         <button type="button" className="edit-btn" onClick={handleEditToggle} aria-label="회원정보 수정">
-                            <ModifyPen/>
+                            <ModifyPen />
                         </button>
                     </div>
                 }
@@ -185,14 +193,14 @@ function UserModify() {
                         <dd>
                             {editMode ?
                                 <input type="date" name="birthdate" value={formData.birthdate} onChange={handleChange}
-                                       title="생년월일"/> :
+                                       title="생년월일" /> :
                                 <>{user ? (user.birthdate || formData.birthdate) : ''}</>
                             }
                         </dd>
                     </li>
                     <li>
                         <dt><label>소속</label></dt>
-                        <dd><input className="affiliation" type="text"/></dd>
+                        <dd><input className="affiliation" type="text" /></dd>
                     </li>
                 </ul>
             </form>
