@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../assets/style/eatingGroup/GroupMain.css';
-import { useNavigate } from "react-router-dom";
-import { useModal } from "../../components/modal/ModalContext";
+import { useNavigate } from 'react-router-dom';
+import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
 
 const GroupMain = () => {
@@ -16,14 +16,24 @@ const GroupMain = () => {
     useEffect(() => {
         const fetchChatRooms = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('token'); // JWT 토큰을 로컬 스토리지에서 가져옴
+                const userIdx = localStorage.getItem('userIdx'); // 유저 ID를 로컬 스토리지에서 가져옴
+
+                console.log('Resolved token:', token);
+                console.log('Resolved user ID:', userIdx);
+
                 if (!token) {
                     console.error('No JWT token found');
                     return;
                 }
 
+                if (!userIdx) {
+                    console.error('No user ID found');
+                    return;
+                }
+
                 const [myRoomsResponse, allRoomsResponse] = await Promise.all([
-                    axios.get('http://localhost:8080/api/chatrooms/my', {
+                    axios.get(`http://localhost:8080/api/chatrooms/my`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -53,16 +63,16 @@ const GroupMain = () => {
     const showCreateModal = () => {
         setModalType('createGroup');
         showModal();
-    }
+    };
 
     const showJoinModal = (chatRoom) => {
         setChatRoomData(chatRoom);
         setModalType('joinGroup');
         showModal();
-    }
+    };
 
     const handleSearch = () => {
-        let filtered = allChatRooms.filter(chatRoom => {
+        let filtered = allChatRooms.filter((chatRoom) => {
             const searchValue = searchKeyword.toLowerCase();
             switch (searchOption) {
                 case 'title-post':
@@ -83,20 +93,21 @@ const GroupMain = () => {
             }
         });
         setFilteredChatRooms(filtered);
-    }
+    };
 
     return (
         <div className="group-main">
             <h2 className="group-title">참여중인 모임</h2>
             <div className="group-header">
                 <div className="scroll-container">
-                    {myChatRooms.map(chatRoom => (
+                    {myChatRooms.map((chatRoom) => (
                         <button
                             key={chatRoom.chatRoomIdx}
                             className="item"
                             onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
                         >
-                            <img src="" alt=""/><span>{chatRoom.chatRoomTitle}</span>
+                            <img src="" alt="" />
+                            <span>{chatRoom.chatRoomTitle}</span>
                         </button>
                     ))}
                 </div>
@@ -104,14 +115,25 @@ const GroupMain = () => {
             <div className="meeting-list">
                 <h2 className="group-title">모집 중인 모임</h2>
                 <fieldset className="search-box flex-row">
-                    <select id="searchOption" name="searchCnd" title="검색 조건 선택" onChange={(e) => setSearchOption(e.target.value)}>
+                    <select
+                        id="searchOption"
+                        name="searchCnd"
+                        title="검색 조건 선택"
+                        onChange={(e) => setSearchOption(e.target.value)}
+                    >
                         <option value="all-post">전체</option>
                         <option value="title-post">제목</option>
                         <option value="title-content">제목+내용</option>
                         <option value="location-post">장소</option>
                     </select>
                     <p className="search-field">
-                        <input id="searchInput" type="text" name="searchWrd" placeholder="검색어를 입력해주세요" onChange={(e) => setSearchKeyword(e.target.value)}/>
+                        <input
+                            id="searchInput"
+                            type="text"
+                            name="searchWrd"
+                            placeholder="검색어를 입력해주세요"
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                        />
                         <button onClick={handleSearch}>
                             <span className="hide">검색</span>
                             <i className="bi bi-search"></i>
@@ -119,13 +141,13 @@ const GroupMain = () => {
                     </p>
                 </fieldset>
                 {filteredChatRooms.length > 0 ? (
-                    filteredChatRooms.map(chatRoom => (
+                    filteredChatRooms.map((chatRoom) => (
                         <button
                             key={chatRoom.chatRoomIdx}
                             className="meeting-item"
                             onClick={() => showJoinModal(chatRoom)}
                         >
-                            <img src="" alt=""/>
+                            <img src="" alt="" />
                             <div className="meeting-info">
                                 <h3>{chatRoom.chatRoomTitle}</h3>
                                 <p>{chatRoom.description}</p>
@@ -140,7 +162,9 @@ const GroupMain = () => {
             </div>
 
             <div className="fab-box">
-                <button className="fab" onClick={showCreateModal}>+</button>
+                <button className="fab" onClick={showCreateModal}>
+                    +
+                </button>
             </div>
         </div>
     );
