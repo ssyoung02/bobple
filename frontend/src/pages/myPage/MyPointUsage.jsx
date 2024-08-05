@@ -5,38 +5,66 @@ function MyPointUsage() {
     const [pointHistory, setPointHistory] = useState([]);
     const [currentPoints, setCurrentPoints] = useState(0);
     const [nickName, setNickName] = useState('');
-    const userIdx = 9; // 사용자 ID
+    const [error, setError] = useState(null);
+
+    const userIdx = localStorage.getItem('userIdx');
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-        fetchPointHistory(userIdx);
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            // Redirect or handle unauthenticated state here
+            return;
+        }
+        fetchPointHistory();
     }, []);
 
-    const fetchPointHistory = async (userIdx) => {
+    const fetchPointHistory = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/MyPointUsage/pointHistory/${userIdx}`);
+            const response = await axios.get(`http://localhost:8080/api/MyPointUsage/pointHistory/${userIdx}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
+            });
             setNickName(response.data.nickName);
             setCurrentPoints(response.data.currentPoints);
             setPointHistory(response.data.history);
         } catch (error) {
             console.error('포인트 이력을 가져오는 데 실패했습니다.', error);
+            setError('포인트 이력을 가져오는 중 오류가 발생했습니다.');
         }
     };
 
     const handlePurchase = async (productIdx) => {
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:8080/api/purchaseProduct', null, {
                 params: {
                     userIdx: userIdx,
                     productIdx: productIdx
-                }
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
             });
-            alert(response.data);
+            alert('구매가 완료되었습니다.');
             // 구매 후 포인트 이력 새로 고침
-            fetchPointHistory(userIdx);
+            fetchPointHistory();
         } catch (error) {
-            alert('구매 실패: ' + error.response.data);
+            console.error('구매 실패:', error);
+            alert('구매 실패: ' + (error.response?.data || '오류가 발생했습니다.'));
         }
     };
+
+    if (error) {
+        return <div>{error}</div>;
+    }
 
     return (
         <div>
@@ -54,7 +82,6 @@ function MyPointUsage() {
                     </li>
                 ))}
             </ul>
-            <button onClick={() => handlePurchase(1)}>상품 구매하기</button> {/* 예시로 productIdx를 1로 설정 */}
         </div>
     );
 }
