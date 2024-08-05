@@ -18,42 +18,69 @@ function PointMain() {
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [unusedGiftCount, setUnusedGiftCount] = useState(0);
     const [sortOrder, setSortOrder] = useState('desc');
-    const userIdx = 9;
+
+    const userIdx = localStorage.getItem('userIdx');
+    const token = localStorage.getItem('token');
 
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
 
     useEffect(() => {
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            navigate('/login'); // Redirect to login if not authenticated
+            return;
+        }
+
         if (selectedTab === '기프티콘') {
-            axios.get('http://localhost:8080/api/PointMain', { withCredentials: true })
+            axios.get('http://localhost:8080/api/PointMain', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
+            })
                 .then(response => {
                     setProducts(response.data);
                 })
                 .catch(error => {
                     console.error('There was an error fetching the products!', error);
+                    alert('상품 정보를 가져오는 데 실패했습니다.');
                 });
         }
 
         if (selectedTab === '보관함') {
             const isUsed = selectedItemTab === '사용완료';
-            axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?sort=${sortOrder}&isUsed=${isUsed}`, { withCredentials: true })
+            axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?sort=${sortOrder}&isUsed=${isUsed}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
+            })
                 .then(response => {
                     setPurchasedProducts(response.data);
                 })
                 .catch(error => {
                     console.error('There was an error fetching the purchased products!', error);
+                    alert('구매한 상품 정보를 가져오는 데 실패했습니다.');
                 });
         }
-    }, [userIdx, selectedTab, selectedItemTab, sortOrder]);
+    }, [userIdx, selectedTab, selectedItemTab, sortOrder, token]);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?isUsed=false`, { withCredentials: true })
+        if (!token) return;
+
+        axios.get(`http://localhost:8080/api/GiftPurchase/${userIdx}?isUsed=false`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: true
+        })
             .then(response => {
                 setUnusedGiftCount(response.data.length);
             })
             .catch(error => {
                 console.error('There was an error fetching the unused gift count!', error);
             });
-    }, [userIdx, selectedTab, selectedItemTab, sortOrder]);
+    }, [userIdx, token]);
 
     const handleTabClick = (tab) => {
         setSelectedTab(tab);
@@ -61,7 +88,7 @@ function PointMain() {
 
     const handleItemTabClick = (tab) => {
         setSelectedItemTab(tab);
-    }
+    };
 
     const moveGacha = () => {
         navigate('/point/pointGame/GachaGame');
@@ -75,9 +102,13 @@ function PointMain() {
         navigate('/point/pointGame/FoodAvoid');
     };
 
-    // const movegiftDetail = (product) => {
-    //     navigate('/point/pointGifticonDetail', { state : {product}});
-    // }
+    const movegiftDetail = (productIdx) => {
+        navigate('/point/pointGifticonDetail', { state: { productIdx } });
+    };
+
+    const moveGifticonBarcode = (productIdx) => {
+        navigate('/point/GifticonBarcode', { state: { productIdx } });
+    };
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
@@ -89,22 +120,6 @@ function PointMain() {
 
     const handleSortOrderChange = (event) => {
         setSortOrder(event.target.value);
-    };
-
-    // const moveGacha = () => {
-    //     navigate('/point/pointGame/GachaGame');
-    // };
-    //
-    // const moveSlot = () => {
-    //     navigate('/point/pointGame/SlotGame');
-    // };
-
-    const movegiftDetail = (productIdx) => {
-        navigate('/point/pointGifticonDetail', { state: { productIdx } });
-    };
-
-    const moveGifticonBarcode = (productIdx) => {
-        navigate('/point/GifticonBarcode', { state: { productIdx } });
     };
 
     const filteredProducts = selectedCategory === '전체'
@@ -133,14 +148,14 @@ function PointMain() {
                     <Carousel fade activeIndex={carouselIndex} onSelect={handleCarouselSelect} className="carousel-container">
                         <Carousel.Item className="carousel-item">
                             <img
-                                style={{height: "200px"}}
+                                style={{ height: "200px" }}
                                 className="d-block w-100"
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzm4YgqWggUVzHi8jNDtIr-i-NxLW-ZtL3tA&s"
                             />
                         </Carousel.Item>
                         <Carousel.Item className="carousel-item">
                             <img
-                                style={{height: "200px", background: "#061A30"}}
+                                style={{ height: "200px", background: "#061A30" }}
                                 className="d-block w-100"
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgiWFkbE8ddrIx5ngWQOG1iqB1H0eRh6w6iw&s"
                             />
@@ -201,20 +216,20 @@ function PointMain() {
                         </div>
                     </div>
                     <div className="sort-select-container">
-                        <h3 className="item-header">사용가능한 선물이<br/>{unusedGiftCount}개 남아있어요.</h3>
+                        <h3 className="item-header">사용가능한 선물이<br />{unusedGiftCount}개 남아있어요.</h3>
                         <select onChange={handleSortOrderChange} value={sortOrder} className="sort-select">
                             <option value="desc" className="item-select">최신순</option>
                             <option value="asc" className="item-select">오래된순</option>
                         </select>
                     </div>
                     <div className="item-tabs-nav">
-                    <div className="point-tab">
+                        <div className="point-tab">
                             <Tab name="보유중" onClick={() => handleItemTabClick('보유중')}
-                                 isActive={selectedItemTab === '보유중'}/>
+                                 isActive={selectedItemTab === '보유중'} />
                         </div>
                         <div className="point-tab">
                             <Tab name="사용완료" onClick={() => handleItemTabClick('사용완료')}
-                                 isActive={selectedItemTab === '사용완료'}/>
+                                 isActive={selectedItemTab === '사용완료'} />
                         </div>
                     </div>
                     {selectedItemTab === '보유중' && (
@@ -224,7 +239,7 @@ function PointMain() {
                                     <button key={product.purchaseIdx} className="product-item"
                                             onClick={() => moveGifticonBarcode(product.pointShop.giftIdx)}>
                                         <img src={product.pointShop.giftImageUrl}
-                                             alt={product.pointShop.giftDescription}/>
+                                             alt={product.pointShop.giftDescription} />
                                         <h3>{product.pointShop.giftBrand}</h3>
                                         <h6>{product.pointShop.giftDescription}</h6>
                                         <p>{product.pointShop.giftPoint}P</p>
@@ -238,9 +253,9 @@ function PointMain() {
                             <div className="product-list list-blur">
                                 {filteredPurchasedProducts.map(product => (
                                     <div key={product.purchaseIdx} className="product-item item-blur">
-                                        <img src={stamp} alt="stamp" className="stamp-image"/>
+                                        <img src={stamp} alt="stamp" className="stamp-image" />
                                         <img src={product.pointShop.giftImageUrl}
-                                             alt={product.pointShop.giftDescription}/>
+                                             alt={product.pointShop.giftDescription} />
                                         <h3>{product.pointShop.giftBrand}</h3>
                                         <h6>{product.pointShop.giftDescription}</h6>
                                         <p>{product.pointShop.giftPoint}P</p>
@@ -254,7 +269,7 @@ function PointMain() {
         </>
     );
 
-    function Tab({name, onClick, isActive}) {
+    function Tab({ name, onClick, isActive }) {
         return (
             <button onClick={onClick} className={isActive ? 'active' : ''}>
                 {name}

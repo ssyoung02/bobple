@@ -118,7 +118,7 @@ function MyPageMain() {
                             </div>
                         </button>
                         <button className="goto-MyPointUsage" onClick={moveMyPointUsage}>
-                            15P
+                            {user.point}P
                         </button>
                     </>
                 ) : (
