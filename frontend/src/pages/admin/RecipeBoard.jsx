@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../assets/style/admin/UserInfo.css';
+import '../../assets/style/admin/RecipeBoard.css';
 import {useNavigate} from "react-router-dom";
 import mascot from '../../assets/images/bobple_mascot.png';
 
@@ -124,19 +124,25 @@ const UserInfo = () => {
     const moveQnA = () => {
         navigate('../qnAList');
     }
+    const moveBackApp = () => {
+        navigate('/mypage/login');
+    }
 
     return (
-        <div className="admin-form-container">
+        <div className="admin-form-container-r">
             <div className="left-section">
-                <button className="nav-button" onClick={moveUserInfo}>회원 정보</button>
-                <button className="nav-button" onClick={moveRecipe}>게시글 관리</button>
-                <button className="nav-button" onClick={moveNotice}>공지 사항</button>
-                <button className="nav-button" onClick={moveQnA}>문의 사항</button>
+                <button className="nav-button-r info" onClick={moveUserInfo}>회원 정보</button>
+                <button className="nav-button-r recipe" onClick={moveRecipe}>게시글 관리</button>
+                <button className="nav-button-r notice" onClick={moveNotice}>공지 사항</button>
+                <button className="nav-button-r qna" onClick={moveQnA}>문의 사항</button>
                 <img src={mascot} alt="밥풀이" className="admin-image"/>
             </div>
 
             <div className="right-section">
-                <h2 className="section-title">게시글 관리</h2>
+                <div className="right-header">
+                    <h2 className="section-title">게시글 관리</h2>
+                    <button onClick={moveBackApp} className="back-app-btn">x</button>
+                </div>
                 <div className="admin-search-bar">
                     <input
                         className="admin-search-input"
@@ -187,7 +193,9 @@ const UserInfo = () => {
                     <div className="pagination">
                         {renderPageNumbers()}
                     </div>
-                    <button onClick={handleDeleteSelected} disabled={selectedUsers.length === 0} className="admin-delete-button">삭제</button>
+                    <button onClick={handleDeleteSelected} disabled={selectedUsers.length === 0}
+                            className="admin-delete-button">삭제
+                    </button>
                 </div>
             </div>
         </div>

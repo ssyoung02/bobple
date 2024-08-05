@@ -62,11 +62,28 @@
 }
 
 /*관리자*/
-.admin-login-buotton{
+.admin-login-button{
     width: 100%;
-    text-align: center;
 }
 
-.admin-login{
-    margin-top: 20px;
+.admin-login {
+    width: 100%;
+    font-weight: bold;
+}
+
+.admin-line{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.backline{
+    width: 100%;
+    height: 1px;
+    background: #233B6F;
+}
+
+.admin-line h6{
+    width: 300px;
+    text-align: center;
 }

@@ -1,4 +1,4 @@
-.admin-form-container {
+.admin-form-container-q {
     display: flex;
     border: 1px solid #ddd;
     height: 90vh;
@@ -19,7 +19,7 @@
     margin: 10px auto;
 }
 
-.nav-button {
+.nav-button-q {
     width: 350px;
     margin: 0 auto;
     padding: 10px;
@@ -30,11 +30,11 @@
     cursor: pointer;
 }
 
-.nav-button:first-child {
-    border-color: #eb517e;
+.nav-button-q.qna {
+    border-color: #ea4197;
 }
 
-.nav-button:hover {
+.nav-button-q:hover {
     background-color: #e0e0e0;
 }
 
@@ -43,11 +43,22 @@
     padding: 10px;
 }
 
+.right-header {
+    display: flex;
+    justify-content: space-between;
+}
+
 .section-title {
     font-size: 34px;
     margin-top: 20px;
     padding: 20px;
     text-align: center;
+    flex-grow: 1;
+}
+
+.back-app-btn {
+    font-size: 40px;
+    translate: -30px;
 }
 
 .admin-search-bar {
@@ -147,7 +158,8 @@
     color: white;
 }
 
-.admin-delete-button {
+.admin-delete-button,
+.admin-write-button {
     padding: 8px 15px;
     background-color: #eb517e !important;
     color: #fff;
@@ -157,7 +169,8 @@
     margin-right: 5px;
 }
 
-.admin-delete-button:hover {
+.admin-delete-button:hover,
+.admin-write-button:hover {
     background-color: #ea4197 !important;
 }
 

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import {useNavigate} from "react-router-dom";
 import '../../../assets/style/myPage/Login.css';
-import { Google, KLogin, NLogin } from "../../../components/imgcomponents/ImgComponents";
-import { Link } from "react-router-dom";
+import {Google, KLogin, NLogin} from "../../../components/imgcomponents/ImgComponents";
+import {Link} from "react-router-dom";
 
 function Login() {
     const CLIENT_KAKAO_ID = process.env.REACT_APP_KAKAO_REST_API_KEY;
@@ -19,9 +19,8 @@ function Login() {
 
     const navigate = useNavigate();
 
-    const moveAdmin = (e) => {
+    const moveAdmin = () => {
         navigate('/myPage/login/admin');
-
     }
 
     return (
@@ -41,11 +40,14 @@ function Login() {
                         <NLogin/>
                         Naver 로그인
                     </a>
+
                 </div>
-                <div className="admin-login-buotton">
-                    <button className="admin-login" onClick={moveAdmin}>
-                        관리자 로그인
-                    </button>
+                <div className="admin-login-button">
+                    <div className="admin-line">
+                        <div className="backline"></div>
+                        <button className="admin-login" onClick={moveAdmin}>관리자 로그인</button>
+                        <div className="backline"></div>
+                    </div>
                 </div>
             </div>
         </div>
