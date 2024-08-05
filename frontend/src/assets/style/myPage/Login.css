@@ -64,22 +64,9 @@
 /*관리자*/
 .admin-login-buotton{
     width: 100%;
-}
-
-.admin-line{
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.backline{
-    width: 100%;
-    height: 1px;
-    background: #233B6F;
-}
-
-.admin-line h6{
-    width: 300px;
     text-align: center;
-    margin: 0;
+}
+
+.admin-login{
+    margin-top: 20px;
 }

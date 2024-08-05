@@ -21,6 +21,27 @@ function MyPageMain() {
         nickName: ''
     });
 
+    const [pointHistory, setPointHistory] = useState([]);
+    const [currentPoints, setCurrentPoints] = useState(0);
+    const [nickName, setNickName] = useState('');
+    const userIdx = 9; // 사용자 ID
+
+    useEffect(() => {
+        fetchPointHistory(userIdx);
+    }, []);
+
+    const fetchPointHistory = async (userIdx) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/MyPointUsage/pointHistory/${userIdx}`);
+            setNickName(response.data.nickName);
+            setCurrentPoints(response.data.currentPoints);
+            setPointHistory(response.data.history);
+        } catch (error) {
+            console.error('포인트 이력을 가져오는 데 실패했습니다.', error);
+        }
+    };
+
+
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem("token");
@@ -93,15 +114,13 @@ function MyPageMain() {
     }
 
     const moveUserQnA = () => {
-        navigate('/mypage/serviceCenter/userQnA')
+        navigate('/mypage/serviceCenter/userQnAList')
     }
 
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
     };
-
-
 
     return (
         <div className="my-page-main">
@@ -118,7 +137,7 @@ function MyPageMain() {
                             </div>
                         </button>
                         <button className="goto-MyPointUsage" onClick={moveMyPointUsage}>
-                            15P
+                            {currentPoints}P
                         </button>
                     </>
                 ) : (
