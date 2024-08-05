@@ -52,6 +52,11 @@ public class ChatRoomController {
         return chatRoomService.getChatRoomsByUser(userIdx);
     }
 
+    @GetMapping("/all")
+    public List<ChatRoom> getAllChatRooms() {
+        return chatRoomService.getAllChatRooms();
+    }
+
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -59,4 +64,6 @@ public class ChatRoomController {
         }
         return null;
     }
+
+
 }

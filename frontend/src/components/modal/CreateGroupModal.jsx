@@ -41,8 +41,19 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
             });
 
             if (response.status === 201 || response.status === 200) {
-                const chatRoomId = response.data.chatRoomIdx; // 생성된 chat_room_idx 받아오기
+                const chatRoom = response.data; // 생성된 채팅방 정보
+                const chatRoomId = chatRoom.chatRoomIdx; // 생성된 chat_room_idx 받아오기
                 console.log(`Chat room created with ID: ${chatRoomId}`);
+
+                // localStorage에 채팅방 정보 저장
+                localStorage.setItem('currentChatRoomId', chatRoomId);
+                localStorage.setItem('currentChatRoomTitle', chatRoom.chatRoomTitle);
+                localStorage.setItem('currentChatRoomDescription', chatRoom.description);
+                localStorage.setItem('currentChatRoomLocation', chatRoom.location);
+                localStorage.setItem('currentChatRoomPeople', chatRoom.roomPeople);
+                localStorage.setItem('currentChatRoomCreatedAt', chatRoom.createdAt);
+                localStorage.setItem('currentChatRoomLeader', chatRoom.roomLeader);
+
                 moveChat(chatRoomId); // 해당 chat_room_idx로 채팅 페이지로 이동
                 hideModal();
             } else {

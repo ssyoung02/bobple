@@ -14,10 +14,10 @@ const GroupMain = () => {
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
 
     useEffect(() => {
-        const fetchChatRooms = async () => {
+        const fetchMyChatRooms = async () => {
             try {
-                const token = localStorage.getItem('token'); // JWT 토큰을 로컬 스토리지에서 가져옴
-                const userIdx = localStorage.getItem('userIdx'); // 유저 ID를 로컬 스토리지에서 가져옴
+                const token = localStorage.getItem('token');
+                const userIdx = localStorage.getItem('userIdx');
 
                 console.log('Resolved token:', token);
                 console.log('Resolved user ID:', userIdx);
@@ -32,28 +32,30 @@ const GroupMain = () => {
                     return;
                 }
 
-                const [myRoomsResponse, allRoomsResponse] = await Promise.all([
-                    axios.get(`http://localhost:8080/api/chatrooms/my`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }),
-                    axios.get('http://localhost:8080/api/chatrooms', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                ]);
+                const myRoomsResponse = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
 
                 setMyChatRooms(myRoomsResponse.data);
-                setAllChatRooms(allRoomsResponse.data);
-                setFilteredChatRooms(allRoomsResponse.data);
             } catch (error) {
-                console.error('Failed to fetch chat rooms', error);
+                console.error('Failed to fetch my chat rooms', error);
             }
         };
 
-        fetchChatRooms();
+        const fetchAllChatRooms = async () => {
+            try {
+                const allRoomsResponse = await axios.get('http://localhost:8080/api/chatrooms/all');
+                setAllChatRooms(allRoomsResponse.data);
+                setFilteredChatRooms(allRoomsResponse.data);
+            } catch (error) {
+                console.error('Failed to fetch all chat rooms', error);
+            }
+        };
+
+        fetchMyChatRooms();
+        fetchAllChatRooms();
     }, []);
 
     const handleRoomClick = (chatRoomId) => {
