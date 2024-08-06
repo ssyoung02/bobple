@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
 import {ArrowLeftLong, Menu} from "../../../components/imgcomponents/ImgComponents";
+import {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
@@ -63,6 +64,8 @@ const GroupChatting = () => {
             console.error('Failed to send message', error);
         }
     };
+
+    useNavigateNone();
 
     return (
         <div className="chatting">
