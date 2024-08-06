@@ -41,8 +41,7 @@ function MyPageRouter(){
                 <Route path="/serviceCenter/userNotice" element={<UserNotice/>}/>
                 <Route path="/serviceCenter/userQnA" element={<UserQnA/>}/>
                 <Route path="/serviceCenter/userQnAList" element={<UserQnAList/>}/>
-                <Route path="/serviceCenter/userNoticeDetail" element={<UserNoticeDetail/>}/>
-
+                <Route path="/serviceCenter/userNoticeDetail/:noticeidx" element={<UserNoticeDetail />} />
             </Routes>
     );
 }
