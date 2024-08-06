@@ -7,12 +7,21 @@ const QnADetail = ({ qna }) => {
     return (
         <div className="qna-detail">
             <h3>문의 상세 정보</h3>
-            <p><strong>번호:</strong> {qna.id}</p>
-            <p><strong>작성자:</strong> {qna.name}</p>
-            <p><strong>제목:</strong> {qna.title}</p>
-            <p><strong>작성일자:</strong> {qna.date}</p>
-            <p><strong>진행상황:</strong> {qna.status}</p>
-            <p><strong>내용:</strong> 여기에 문의 내용이 들어갑니다.</p>
+            <p><strong>번호:</strong> {qna.queIdx}</p>
+            <p><strong>작성자:</strong> {qna.userName}</p>
+            <p><strong>제목:</strong> {qna.queTitle}</p>
+            <p><strong>작성일자:</strong> {new Date(qna.createdAt).toLocaleDateString()}</p>
+            <p><strong>진행상황:</strong> {qna.status ? '완료' : '진행 중'}</p>
+            <p><strong>내용:</strong> {qna.queDescription}</p>
+
+            <div className="qna-message-input">
+                <input
+                    type="text"
+                    placeholder="메시지를 입력하세요"
+                />
+                <button>전송</button>
+            </div>
+
         </div>
     );
 };

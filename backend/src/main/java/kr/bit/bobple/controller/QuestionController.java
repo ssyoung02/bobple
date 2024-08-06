@@ -1,7 +1,9 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.dto.QuestionDTO;
 import kr.bit.bobple.entity.Question;
 import kr.bit.bobple.repository.QuestionRepository;
+import kr.bit.bobple.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,9 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private QuestionService questionService;
+
     @PostMapping("/questions")
     public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
         Question savedQuestion = questionRepository.save(question);
@@ -25,16 +30,28 @@ public class QuestionController {
 
     // 내 질문 목록
     @GetMapping("/users/{userIdx}/questions")
-    public ResponseEntity<List<Question>> getQuestionsByUser(@PathVariable Long userIdx) {
-        List<Question> questions = questionRepository.findByUserIdx(userIdx);
+    public ResponseEntity<List<QuestionDTO>> getQuestionsByUser(@PathVariable Long userIdx) {
+        List<QuestionDTO> questions = questionService.getQuestionsByUser(userIdx);
         return ResponseEntity.ok(questions);
     }
 
-    // 전체 질문 목록
     @GetMapping("/questions")
-    public ResponseEntity<List<Question>> getAllQuestions() {
-        List<Question> questions = questionRepository.findAll();
-        return ResponseEntity.ok(questions);
+    public ResponseEntity<List<QuestionDTO>> getAllQuestions() {
+        List<Question> questions = questionService.getAllQuestionsWithUserDetails();
+
+        // Question 엔티티를 QuestionDTO로 변환
+        List<QuestionDTO> questionDTOs = questions.stream()
+                .map(q -> new QuestionDTO(
+                        q.getQueIdx(),
+                        q.getUser().getName(), // User 엔티티에서 사용자 이름 가져오기
+                        q.getQueTitle(),
+                        q.getQueDescription(),
+                        q.getCreatedAt(),
+                        q.getStatus()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(questionDTOs);
     }
 
     // 질문 수정
