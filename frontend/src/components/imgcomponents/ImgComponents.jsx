@@ -32,7 +32,7 @@ export const KLogin = () => {
 
 // 게임 이미지
 export const Trophy = () => {
-    return (<img src={trophy} alt={"월드컵"} />);
+    return (<img src={trophy} alt={"월드컵"} className="trophy-image"/>);
 }
 
 export const ReceiptSettlement = () => {
