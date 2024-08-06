@@ -6,6 +6,7 @@ import {Bookmark, CaretRight, LocationDot, SearchIcon} from "../../components/im
 import {TopSearch} from "../../components/SliderComponent";
 import theme from "tailwindcss/defaultTheme";
 import axios from "axios";
+import useRecommendThemes from "../../hooks/RecommendFoodHooks"
 
 
 function RecommendFoodCategory() {
@@ -174,6 +175,14 @@ function RecommendFoodCategory() {
     // displayedCategory 또는 displayedKeyword 또는 initialThemeName을 표시
     const displayedTitle = keyword ? displayedKeyword : (category || initialThemeName);
 
+    const { recommendThemes } = useRecommendThemes();
+    const [filteredThemes, setFilteredThemes] = useState([]);
+
+    useEffect(() => {
+        const filtered = recommendThemes.filter(theme => theme.themeName === displayedTitle);
+        setFilteredThemes(filtered);
+    }, [recommendThemes, displayedTitle]);
+
 
     return (
         <div className="recommend-category-container">
@@ -195,9 +204,15 @@ function RecommendFoodCategory() {
                     <SearchIcon/>
                 </button>
             </div>
-            <div className="category-banner">
-                <img src={""}/>
-            </div>
+
+                {filteredThemes.length > 0 && (
+                    filteredThemes.map(theme => (
+                        <div key={theme.themeIdx} className="category-banner"> {/* Add key here */}
+                            <img src={theme.themeBannerUrl} alt={theme.themeDescription}/>
+                        </div>
+                    ))
+                )}
+
             <div>
                 <h3 className="category-title">
                     {displayedTitle && `${displayedTitle} `}

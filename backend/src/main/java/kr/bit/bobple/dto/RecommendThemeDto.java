@@ -10,6 +10,8 @@ public class RecommendThemeDto {
     private String themeName;
     private String themeDescription;
     private List<String> foodNames; // FoodTheme의 foodName만 추출하여 저장
+    private String themeImageUrl;
+    private String themeBannerUrl;
 
     public RecommendThemeDto(RecommendTheme entity) {
         this.themeIdx = entity.getThemeIdx();
@@ -18,6 +20,8 @@ public class RecommendThemeDto {
         this.foodNames = entity.getFoodThemes().stream()
                 .map(FoodTheme::getFoodName)
                 .collect(Collectors.toList());
+        this.themeImageUrl = entity.getThemeImageUrl();
+        this.themeBannerUrl = entity.getThemeBannerUrl();
     }
 
     // Getter 메서드 추가
@@ -36,5 +40,9 @@ public class RecommendThemeDto {
     public List<String> getFoodNames() {
         return foodNames;
     }
+
+    public String getThemeImageUrl() { return themeImageUrl; }
+
+    public String getThemeBannerUrl() { return themeBannerUrl;}
 }
 
