@@ -13,6 +13,15 @@ const QnADetail = ({ qna }) => {
             <p><strong>작성일자:</strong> {new Date(qna.createdAt).toLocaleDateString()}</p>
             <p><strong>진행상황:</strong> {qna.status ? '완료' : '진행 중'}</p>
             <p><strong>내용:</strong> {qna.queDescription}</p>
+
+            <div className="qna-message-input">
+                <input
+                    type="text"
+                    placeholder="메시지를 입력하세요"
+                />
+                <button>전송</button>
+            </div>
+
         </div>
     );
 };

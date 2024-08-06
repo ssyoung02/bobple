@@ -3,10 +3,10 @@ import '../../assets/style/admin/UserInfo.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import mascot from '../../assets/images/bobple_mascot.png';
-import UserDetail from "./UserDetail";
+import UserDetail from './UserDetail';
 
 const UserInfo = () => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([]); // 사용자 데이터를 저장할 배열
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -19,14 +19,29 @@ const UserInfo = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('token');
+                if (!token) {
+                    setErrorMessage('로그인이 필요합니다.');
+                    navigate('/admin/login');
+                    return;
+                }
+
                 const response = await axios.get('http://localhost:8080/api/admin/users', {
                     headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
-                setData(response.data);
+
+                console.log('Fetched Data:', response.data); // 데이터 구조 확인
+
+                if (Array.isArray(response.data)) {
+                    setData(response.data);
+                    console.log('Data set to state:', response.data); // 상태 업데이트 확인
+                } else {
+                    console.warn('API 응답이 배열이 아닙니다:', response.data);
+                    setData([]); // 배열이 아닐 경우 빈 배열로 설정
+                }
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.error('사용자 데이터를 가져오는 중 오류가 발생했습니다:', error);
                 if (error.response && error.response.status === 401) {
                     setErrorMessage('인증에 실패하였습니다. 관리자 권한을 확인하세요.');
                     navigate('/admin/login');
@@ -44,15 +59,13 @@ const UserInfo = () => {
     };
 
     const handleSelectUser = (id) => {
-        setSelectedUsers(prevSelected =>
-            prevSelected.includes(id)
-                ? prevSelected.filter(userId => userId !== id)
-                : [...prevSelected, id]
+        setSelectedUsers((prevSelected) =>
+            prevSelected.includes(id) ? prevSelected.filter((userId) => userId !== id) : [...prevSelected, id]
         );
     };
 
     const handleDeleteSelected = async () => {
-        if (!window.confirm("선택된 사용자를 삭제하시겠습니까?")) return;
+        if (!window.confirm('선택된 사용자를 삭제하시겠습니까?')) return;
 
         console.log('Selected userIdx:', selectedUsers); // 선택된 사용자 ID를 콘솔에 출력
 
@@ -69,18 +82,18 @@ const UserInfo = () => {
                 method: 'delete',
                 url: 'http://localhost:8080/api/admin/users',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                data: JSON.stringify(selectedUsers), // 전송할 사용자 ID 배열
+                data: JSON.stringify(selectedUsers), // 사용자 ID 배열 전송
             });
 
-            setData(data.filter(user => !selectedUsers.includes(user.userIdx)));
+            setData((prevData) => prevData.filter((user) => !selectedUsers.includes(user.userIdx)));
             setSelectedUsers([]);
             setCurrentPage(1);
             alert('선택된 사용자가 삭제되었습니다.');
         } catch (error) {
-            console.error('Error deleting selected users:', error);
+            console.error('선택된 사용자를 삭제하는 중 오류가 발생했습니다:', error);
             if (error.response && error.response.status === 401) {
                 setErrorMessage('선택된 사용자 삭제 중 인증에 실패했습니다. 관리자 권한을 확인하세요.');
             } else {
@@ -90,14 +103,14 @@ const UserInfo = () => {
     };
 
     const handleRowClick = (id) => {
-        setDetailUserId(prevId => (prevId === id ? null : id));
+        setDetailUserId((prevId) => (prevId === id ? null : id));
     };
 
-    const filteredData = data.filter(user =>
-        user.name.includes(searchTerm) || user.email.includes(searchTerm)
-    );
+    const filteredData = Array.isArray(data)
+        ? data.filter((user) => user.name.includes(searchTerm) || user.email.includes(searchTerm))
+        : []; // 데이터가 배열인지 확인하고 필터링
 
-    // Pagination
+    // 페이지네이션
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -123,7 +136,7 @@ const UserInfo = () => {
         return (
             <>
                 <button onClick={handlePrev}>{'<<'}</button>
-                {pageNumbers.slice(startPage, startPage + 5).map(number => (
+                {pageNumbers.slice(startPage, startPage + 5).map((number) => (
                     <button
                         key={number}
                         id={number}
@@ -140,25 +153,33 @@ const UserInfo = () => {
 
     const moveUserInfo = () => {
         navigate('../userInfo');
-    }
+    };
     const moveRecipe = () => {
         navigate('../recipeBoard');
-    }
+    };
     const moveNotice = () => {
         navigate('../notice');
-    }
+    };
     const moveQnA = () => {
         navigate('../qnAList');
-    }
+    };
 
     return (
         <div className="admin-form-container">
             <div className="left-section">
-                <button className="nav-button" onClick={moveUserInfo}>회원 정보</button>
-                <button className="nav-button" onClick={moveRecipe}>게시글 관리</button>
-                <button className="nav-button" onClick={moveNotice}>공지 사항</button>
-                <button className="nav-button" onClick={moveQnA}>문의 사항</button>
-                <img src={mascot} alt="밥풀이" className="admin-image"/>
+                <button className="nav-button" onClick={moveUserInfo}>
+                    회원 정보
+                </button>
+                <button className="nav-button" onClick={moveRecipe}>
+                    게시글 관리
+                </button>
+                <button className="nav-button" onClick={moveNotice}>
+                    공지 사항
+                </button>
+                <button className="nav-button" onClick={moveQnA}>
+                    문의 사항
+                </button>
+                <img src={mascot} alt="밥풀이" className="admin-image" />
             </div>
 
             <div className="right-section">
@@ -189,7 +210,7 @@ const UserInfo = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {currentItems.map(user => (
+                        {currentItems.map((user) => (
                             <React.Fragment key={user.userIdx}>
                                 <tr onClick={() => handleRowClick(user.userIdx)} className="user-row">
                                     <td>
@@ -205,15 +226,15 @@ const UserInfo = () => {
                                     <td>{user.name}</td>
                                     <td>{user.nickName}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.birthdate}</td>
+                                    <td>{user.birthdate || 'N/A'}</td> {/* birthdate가 null일 경우 'N/A' 표시 */}
                                     <td>{user.provider}</td>
                                     <td>{user.reportCount}</td>
-                                    <td>{user.createdAt}</td>
+                                    <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                                 </tr>
                                 {detailUserId === user.userIdx && (
                                     <tr className="user-detail-row">
                                         <td colSpan="9">
-                                            <UserDetail user={user}/>
+                                            <UserDetail user={user} />
                                         </td>
                                     </tr>
                                 )}
@@ -223,10 +244,14 @@ const UserInfo = () => {
                     </table>
                 </div>
                 <div className="pagination-container">
-                    <div className="pagination">
-                        {renderPageNumbers()}
-                    </div>
-                    <button onClick={handleDeleteSelected} disabled={selectedUsers.length === 0} className="admin-delete-button">삭제</button>
+                    <div className="pagination">{renderPageNumbers()}</div>
+                    <button
+                        onClick={handleDeleteSelected}
+                        disabled={selectedUsers.length === 0}
+                        className="admin-delete-button"
+                    >
+                        삭제
+                    </button>
                 </div>
             </div>
         </div>
