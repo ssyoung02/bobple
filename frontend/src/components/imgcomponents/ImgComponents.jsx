@@ -1,10 +1,10 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faChevronRight, faChevronLeft, faLocationDot,
-    faBookmark, faCaretRight, faArrowLeftLong, faRotateLeft, faReceipt,
+    faBookmark, faCaretRight, faArrowLeftLong, faArrowRightLong, faRotateLeft, faReceipt,
     faPen, faUser, faCalculator, faFilePen, faHeart, faQuestion,
     faExclamation, faVolumeOff, faLocationCrosshairs, faAngleDown, faAngleUp,
-    faX} from "@fortawesome/free-solid-svg-icons";
+    faX, faBars} from "@fortawesome/free-solid-svg-icons";
 import MainFoodBanner_jeon from "../../assets/images/banner/MainFoodBanner_jeon.jpg";
 import trophy from "../../assets/images/gameimg/trophy.png";
 import receiptSettlementImg from "../../assets/images/gameimg/receipt_ settlement.png";
@@ -77,6 +77,10 @@ export const ArrowLeftLong = () => {
     return (<FontAwesomeIcon icon={faArrowLeftLong} />);
 }
 
+export const ArrowRightLong = () => {
+    return (<FontAwesomeIcon icon={faArrowRightLong} />);
+}
+
 export const RotateLeft = () => {
     return (<FontAwesomeIcon icon={faRotateLeft} />);
 }
@@ -131,4 +135,8 @@ export const Up = () => {
 
 export const LargeX = () => {
     return (<FontAwesomeIcon icon={faX} />);
+}
+
+export const Menu = () => {
+    return (<FontAwesomeIcon icon={faBars} />);
 }
