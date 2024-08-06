@@ -17,6 +17,7 @@ import {
 import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
 import {restaurantfetchTopKeywords } from '../../components/Search/RestaurantSearch';
 import {getUserIdx} from "../../utils/auth";
+import NaverImageSearch from "../../components/NaverImageSearch";
 
 function RecommendMain() {
     const [topKeywords, setTopKeywords] = useState([]);
@@ -250,8 +251,6 @@ function RecommendMain() {
         }
     }, [selectedCategory, userBookmarks]);
 
-    const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
-
     useEffect(() => {
         // 서버에서 추천 음식 정보 가져오기
         axios.get('http://localhost:8080/api/recommendFood')
@@ -280,6 +279,19 @@ function RecommendMain() {
         if (selectedTheme) {
             const themeKeyword = selectedTheme.foodNames.join(' ');
             navigate(`/recommend/recommendFoodCategory?theme=${themeKeyword}&themeName=${selectedTheme.themeName}`);
+        }
+    };
+
+    const handleImageLoaded = (imageUrl) => {
+        // 이미지 로드 완료 시 호출되는 콜백 함수
+        if (imageUrl) {
+            // 이미지가 성공적으로 로드된 경우
+            console.log("이미지 로드 성공:", imageUrl);
+            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
+        } else {
+            // 이미지를 찾지 못했거나 에러 발생 시
+            console.warn("이미지 로드 실패 또는 이미지 없음");
+            // 필요에 따라 기본 이미지 설정 또는 에러 처리
         }
     };
 
@@ -340,7 +352,7 @@ function RecommendMain() {
                 <div className="category-description">
                     {recommendThemes.map(theme => (
                         <button key={theme.themeIdx} onClick={() => handleThemeClick(theme.themeIdx)}>
-                            {theme.themeDescription}
+                            {theme.themeImageUrl}
                         </button>
                     ))}
                 </div>
@@ -377,7 +389,13 @@ function RecommendMain() {
                                 >
                                     <a className={"restaurant-image-link"} href={pub.place_url} target="_blank"
                                        rel="noreferrer">
-                                        <img src={dummyImage} alt={pub.place_name} className="pub-image"/>
+                                        <div className="restaurant-image-wrapper">
+                                            {/* NaverImageSearch 컴포넌트 사용 */}
+                                            <NaverImageSearch
+                                                restaurantName={pub.place_name}
+                                                onImageLoaded={handleImageLoaded}
+                                            />
+                                        </div>
                                     </a>
                                     <div className="pub-info-container">
                                         <a href={pub.place_url} target="_blank" rel="noreferrer">

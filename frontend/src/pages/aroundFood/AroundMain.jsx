@@ -5,6 +5,7 @@ import '../../assets/style/aroundFood/AroundMain.css';
 import axios from 'axios';
 import {Bookmark, FillBookmark, LocationDot, LocationTarget, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import { getUserIdx } from "../../utils/auth";
+import NaverImageSearch from "../../components/NaverImageSearch";
 
 function AroundMain() {
     const [state, setState] = useState({
@@ -306,6 +307,19 @@ function AroundMain() {
         }
     }, [selectedMarker]);
 
+    const handleImageLoaded = (imageUrl) => {
+        // 이미지 로드 완료 시 호출되는 콜백 함수
+        if (imageUrl) {
+            // 이미지가 성공적으로 로드된 경우
+            console.log("이미지 로드 성공:", imageUrl);
+            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
+        } else {
+            // 이미지를 찾지 못했거나 에러 발생 시
+            console.warn("이미지 로드 실패 또는 이미지 없음");
+            // 필요에 따라 기본 이미지 설정 또는 에러 처리
+        }
+    };
+
     return (
         <div className="map-container">
             {/* 검색창 */}
@@ -398,12 +412,16 @@ function AroundMain() {
                                         </span>
                                     </div>
                                     <div className="img">
-                                        <img
-                                            src={selectedRestaurantImage || "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005"}
-                                            width="73"
-                                            height="70"
-                                            alt={selectedMarker.place_name}
-                                        />
+                                        <div className="restaurant-image-wrapper">
+                                            {/* NaverImageSearch 컴포넌트 사용 */}
+                                            <NaverImageSearch
+                                                restaurantName={selectedMarker.place_name}
+                                                onImageLoaded={handleImageLoaded}
+                                                alt={selectedMarker.place_name}
+                                                width="73"
+                                                height="70"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

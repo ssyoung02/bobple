@@ -7,7 +7,7 @@ import {TopSearch} from "../../components/SliderComponent";
 import theme from "tailwindcss/defaultTheme";
 import axios from "axios";
 import {getUserIdx} from "../../utils/auth";
-
+import NaverImageSearch from "../../components/NaverImageSearch";
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();
     const initialThemeName = searchParams.get('themeName');
@@ -234,11 +234,21 @@ function RecommendFoodCategory() {
         setDisplayedKeyword(trimmedKeyword);
     };
 
-    const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
-
     // displayedCategory 또는 displayedKeyword 또는 initialThemeName을 표시
     const displayedTitle = keyword ? displayedKeyword : (category || initialThemeName);
 
+    const handleImageLoaded = (imageUrl) => {
+        // 이미지 로드 완료 시 호출되는 콜백 함수
+        if (imageUrl) {
+            // 이미지가 성공적으로 로드된 경우
+            console.log("이미지 로드 성공:", imageUrl);
+            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
+        } else {
+            // 이미지를 찾지 못했거나 에러 발생 시
+            console.warn("이미지 로드 실패 또는 이미지 없음");
+            // 필요에 따라 기본 이미지 설정 또는 에러 처리
+        }
+    };
 
     return (
         <div className="recommend-category-container">
@@ -270,7 +280,13 @@ function RecommendFoodCategory() {
                     {restaurants.slice(0, 3).map((restaurant) => (
                         <li key={restaurant.id} className="top-item">
                             <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                                <img src={dummyImage} alt={restaurant.place_name} className="restaurant-image"/>
+                                <div className="restaurant-image-wrapper">
+                                    {/* NaverImageSearch 컴포넌트 사용 */}
+                                    <NaverImageSearch
+                                        restaurantName={restaurant.place_name}
+                                        onImageLoaded={handleImageLoaded}
+                                    />
+                                </div>
                             </a>
                             <div className="top-restaurant-info">
                                 <a className={"restaurant-info-link"} href={restaurant.place_url} target="_blank"
@@ -301,8 +317,13 @@ function RecommendFoodCategory() {
                     {sortedRestaurants.map((restaurant) => (
                         <li key={restaurant.id} className="restaurant-item">
                             <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                                <img src={dummyImage} alt={restaurant.place_name}
-                                     className="restaurant-list-image"/>
+                                <div className="restaurant-image-wrapper">
+                                    {/* NaverImageSearch 컴포넌트 사용 */}
+                                    <NaverImageSearch
+                                        restaurantName={restaurant.place_name}
+                                        onImageLoaded={handleImageLoaded}
+                                    />
+                                </div>
                             </a>
                             <div className="restaurant-info">
                                 <div className="restaurant-left">
