@@ -2,9 +2,11 @@ package kr.bit.bobple.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.bit.bobple.config.JwtTokenProvider;
+import kr.bit.bobple.dto.ChatRoomDTO;
 import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,9 +49,20 @@ public class ChatRoomController {
         return chatRoomService.getAllChatRoomsIncludingOrphaned(userIdx);
     }
 
+//    @GetMapping("/{chatRoomId}")
+//    public ChatRoom getChatRoom(@PathVariable Long chatRoomId) {
+//        return chatRoomService.getChatRoomById(chatRoomId);
+//    }
+
     @GetMapping("/{chatRoomId}")
-    public ChatRoom getChatRoom(@PathVariable Long chatRoomId) {
-        return chatRoomService.getChatRoomById(chatRoomId);
+    public ResponseEntity<ChatRoomDTO> getChatRoom(@PathVariable Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomService.getChatRoomById(chatRoomId);
+        if (chatRoom != null) {
+            ChatRoomDTO chatRoomDTO = ChatRoomDTO.fromEntity(chatRoom);
+            return ResponseEntity.ok(chatRoomDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/my")

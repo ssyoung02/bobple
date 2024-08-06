@@ -58,11 +58,9 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").permitAll() // 레시피 삭제는 인증 필요
 //                                .requestMatchers("/api/recipes/search").permitAll() // 레시피 검색은 인증 없이 허용
                                 .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update", "/api/users/**", "/api/admin/*").permitAll()
+                                .requestMatchers("/api/**","/api/chatrooms/**","/api/chatrooms/my/**").authenticated()  // /api/chatrooms/** 경로는 인증 필요
                                 .requestMatchers("/api/recipes/search","/api/recipes/recommend","/api/recipes/latest").permitAll()// AI 레시피 추천 엔드포인트 허용
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update","/api/users/**").permitAll()
-                                .requestMatchers("/api/**","/api/chatrooms/**","/api/chatrooms/my/**").authenticated()  // /api/chatrooms/** 경로는 인증 필요
-                                .requestMatchers("/api/recipes/recommend").permitAll() // AI 레시피 추천 엔드포인트 허용
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
