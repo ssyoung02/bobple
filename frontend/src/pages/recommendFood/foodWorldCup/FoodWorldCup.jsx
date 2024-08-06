@@ -27,7 +27,7 @@ function FoodWorldCup() {
                 월드컵은 16강으로 진행됩니다.<br/>
                 랜덤으로 음식이 나오니<br/>
                 메뉴가 고민이신 분들은<br/>
-        ㅜ        게임을  통해 정해보세요!</p>
+                게임을 통해 정해보세요!</p>
             <button className="worldCup-btn" onClick={moveWorldCup}>START! ➡️</button>
         </div>
     );
