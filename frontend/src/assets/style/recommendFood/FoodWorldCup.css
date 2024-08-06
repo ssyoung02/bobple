@@ -1,0 +1,47 @@
+.worldCup-container {
+    padding-top: 50px;
+}
+
+.worldCup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.arrow-btn {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.trophy-image {
+    width: 100%;
+    translate: 0 -20px;
+}
+
+.worldCup-title {
+    color: #EB517E;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+    translate: -10px;
+}
+
+.worldCup-text {
+    text-align: center;
+    font-weight: bold;
+}
+
+.worldCup-btn {
+    display: flex;
+    border: none;
+    border-radius: 5px;
+    background-color: #EB517E;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    margin: 30px auto;
+}
+
+.worldCup-btn:hover {
+    background-color: #ea4197;
+}

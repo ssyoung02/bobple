@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function Calculaton() {
+function Calculator() {
     const [file, setFile] = useState(null);
     const [ocrResponse, setOcrResponse] = useState(null);
     const [totalAmount, setTotalAmount] = useState('');
