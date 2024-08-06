@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import '../../assets/style/recommendFood/RecommendFoodCategory.css';
-import {Bookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {Bookmark,  FillBookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {TopSearch} from "../../components/SliderComponent";
 import theme from "tailwindcss/defaultTheme";
 import axios from "axios";
-
-
+import {getUserIdx} from "../../utils/auth";
+import NaverImageSearch from "../../components/NaverImageSearch";
 function RecommendFoodCategory() {
     const [searchParams, setSearchParams] = useSearchParams();
     const initialThemeName = searchParams.get('themeName');
@@ -21,9 +21,74 @@ function RecommendFoodCategory() {
     const [restaurants, setRestaurants] = useState([]);
     const [displayedKeyword, setDisplayedKeyword] = useState(initialKeyword || ''); // 표시될 검색어 상태 추가
     const navigate = useNavigate();
+    const [userBookmarks, setUserBookmarks] = useState([]);
 
     // 주변 음식점 정렬 (거리순)
     const sortedRestaurants = restaurants.slice().sort((a, b) => a.distance - b.distance);
+
+    useEffect(() => {
+        const fetchUserBookmarks = async () => {
+            const userIdx = getUserIdx();
+            if (userIdx) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/bookmarks/restaurants/${userIdx}`);
+                    setUserBookmarks(response.data.map(bookmark => bookmark.restaurantId));
+                } catch (error) {
+                    console.error('북마크 정보 가져오기 실패:', error);
+                }
+            }
+        };
+
+        fetchUserBookmarks();
+    }, []);
+
+    const handleBookmarkToggle = async (restaurant) => { // restaurant 객체를 매개변수로 받습니다.
+        const userIdx = getUserIdx();
+        if (userIdx) { // 로그인한 경우에만 북마크 정보 가져오기
+            try {
+                const isBookmarked = userBookmarks.includes(restaurant.id);
+                if (isBookmarked) {
+                    const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${restaurant.id}`, {
+                        data: { userIdx }
+                    });
+
+                    if (deleteResponse.status === 204) { // 삭제 성공 시
+                        setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== restaurant.id));
+                        // 북마크 개수 업데이트 (필요에 따라)
+                        setRestaurants(prevRestaurants => prevRestaurants.map(r => // r로 변수명 변경
+                            r.id === restaurant.id ? { ...r, bookmarks_count: (r.bookmarks_count || 0) - 1 } : r
+                        ));
+                    } else {
+                        console.error('북마크 삭제 실패:', deleteResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                } else {
+                    // 북마크 추가 요청
+                    const addResponse = await axios.post('http://localhost:8080/api/bookmarks/restaurants', {
+                        userIdx,
+                        restaurantId: restaurant.id,
+                        restaurantName: restaurant.place_name,
+                        addressName: restaurant.address_name,
+                        phone: restaurant.phone
+                    });
+
+                    if (addResponse.status === 200) { // 추가 성공 시
+                        setUserBookmarks(prevBookmarks => [...prevBookmarks, restaurant.id]);
+                        // 북마크 개수 업데이트 (필요에 따라)
+                        setRestaurants(prevRestaurants => prevRestaurants.map(r =>  // r로 변수명 변경
+                            r.id === restaurant.id ? { ...r, bookmarks_count: (r.bookmarks_count || 0) + 1 } : r
+                        ));
+                    } else {
+                        console.error('북마크 추가 실패:', addResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                }
+            } catch (error) {
+                console.error('북마크 처리 실패:', error);
+            }
+        }
+    };
+
 
     useEffect(() => {
         const ps = new kakao.maps.services.Places();
@@ -169,11 +234,21 @@ function RecommendFoodCategory() {
         setDisplayedKeyword(trimmedKeyword);
     };
 
-    const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
-
     // displayedCategory 또는 displayedKeyword 또는 initialThemeName을 표시
     const displayedTitle = keyword ? displayedKeyword : (category || initialThemeName);
 
+    const handleImageLoaded = (imageUrl) => {
+        // 이미지 로드 완료 시 호출되는 콜백 함수
+        if (imageUrl) {
+            // 이미지가 성공적으로 로드된 경우
+            console.log("이미지 로드 성공:", imageUrl);
+            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
+        } else {
+            // 이미지를 찾지 못했거나 에러 발생 시
+            console.warn("이미지 로드 실패 또는 이미지 없음");
+            // 필요에 따라 기본 이미지 설정 또는 에러 처리
+        }
+    };
 
     return (
         <div className="recommend-category-container">
@@ -205,7 +280,13 @@ function RecommendFoodCategory() {
                     {restaurants.slice(0, 3).map((restaurant) => (
                         <li key={restaurant.id} className="top-item">
                             <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                                <img src={dummyImage} alt={restaurant.place_name} className="restaurant-image"/>
+                                <div className="restaurant-image-wrapper">
+                                    {/* NaverImageSearch 컴포넌트 사용 */}
+                                    <NaverImageSearch
+                                        restaurantName={restaurant.place_name}
+                                        onImageLoaded={handleImageLoaded}
+                                    />
+                                </div>
                             </a>
                             <div className="top-restaurant-info">
                                 <a className={"restaurant-info-link"} href={restaurant.place_url} target="_blank"
@@ -215,7 +296,16 @@ function RecommendFoodCategory() {
                                 <span
                                     className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                                 <button
-                                    className="restaurant-bookmarks"><Bookmark/>{restaurant.bookmarks_count}</button>
+                                    className="restaurant-bookmarks"
+                                    onClick={() => handleBookmarkToggle(restaurant)}
+                                >
+                                    {userBookmarks.includes(restaurant.id) ? (
+                                        <FillBookmark/>
+                                    ) : (
+                                        <Bookmark/>
+                                    )}
+                                    {restaurant.bookmarks_count || 0}
+                                </button>
                             </div>
                         </li>
                     ))}
@@ -227,8 +317,13 @@ function RecommendFoodCategory() {
                     {sortedRestaurants.map((restaurant) => (
                         <li key={restaurant.id} className="restaurant-item">
                             <a href={restaurant.place_url} target="_blank" rel="noreferrer">
-                                <img src={dummyImage} alt={restaurant.place_name}
-                                     className="restaurant-list-image"/>
+                                <div className="restaurant-image-wrapper">
+                                    {/* NaverImageSearch 컴포넌트 사용 */}
+                                    <NaverImageSearch
+                                        restaurantName={restaurant.place_name}
+                                        onImageLoaded={handleImageLoaded}
+                                    />
+                                </div>
                             </a>
                             <div className="restaurant-info">
                                 <div className="restaurant-left">
@@ -243,9 +338,16 @@ function RecommendFoodCategory() {
                                     <span className="restaurant-distance">
                                         <LocationDot/>{Math.round(restaurant.distance)}m
                                     </span>
-                                    <button className="restaurant-right-bookmarks">
-                                        <div className="bookmark-icon"><Bookmark/></div>
-                                        0{restaurant.bookmarks_count}
+                                    <button
+                                        className="restaurant-bookmarks"
+                                        onClick={() => handleBookmarkToggle(restaurant)}
+                                    >
+                                        {userBookmarks.includes(restaurant.id) ? (
+                                            <FillBookmark/>
+                                        ) : (
+                                            <Bookmark/>
+                                        )}
+                                        {restaurant.bookmarks_count || 0}
                                     </button>
                                 </div>
                             </div>

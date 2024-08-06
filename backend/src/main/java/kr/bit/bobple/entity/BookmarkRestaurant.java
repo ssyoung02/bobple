@@ -18,4 +18,14 @@ public class BookmarkRestaurant {
     @Column(nullable = false)
     private String restaurantId;
 
+    @Column(nullable = false)
+    private String restaurantName;
+
+    @Column(nullable = false)
+    private String addressName;
+
+    @Column
+    private String phone;
+
+
 }
