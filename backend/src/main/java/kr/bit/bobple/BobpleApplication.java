@@ -6,6 +6,9 @@ package kr.bit.bobple; // 패키지 선언
 //SpringApplication.run() 메서드는 Spring Boot 애플리케이션을 실행하고, 내장된 Tomcat 서버를 시작합니다. (별도의 웹 서버 설정 없이 웹 애플리케이션을 실행할 수 있습니다.)
 import org.springframework.boot.SpringApplication; // Spring Boot 애플리케이션 실행 클래스
 import org.springframework.boot.autoconfigure.SpringBootApplication; // Spring Boot 자동 구성 어노테이션
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /*
@@ -25,5 +28,13 @@ public class BobpleApplication {
         // SpringApplication.run() 메서드를 호출하여 애플리케이션을 실행합니다.
         // 첫 번째 인자로 메인 클래스를, 두 번째 인자로 명령줄 인수를 전달합니다.
         SpringApplication.run(BobpleApplication.class, args);
+    }
+
+    @Bean
+    public FilterRegistrationBean<OpenEntityManagerInViewFilter> openEntityManagerInViewFilter() {
+        FilterRegistrationBean<OpenEntityManagerInViewFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new OpenEntityManagerInViewFilter());
+        registrationBean.setOrder(0);
+        return registrationBean;
     }
 }

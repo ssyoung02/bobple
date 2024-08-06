@@ -81,8 +81,14 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY) // 추가
-    private List<Recipe> recipes = new ArrayList<>(); // 추가
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Recipe> recipes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<RecipeComment> recipeComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<LikeRecipe> likeRecipes = new ArrayList<>();
 
 
     @Override

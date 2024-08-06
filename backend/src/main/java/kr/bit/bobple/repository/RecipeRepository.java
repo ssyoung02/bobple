@@ -29,14 +29,15 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("SELECT r FROM Recipe r JOIN FETCH r.user WHERE r.user = :user")
     List<Recipe> findByUser(@Param("user") User user);
 
-//    // 제목 또는 내용에 특정 키워드가 포함된 레시피 검색 (카테고리 필터링 포함, 페이징 처리)
-//    @EntityGraph(attributePaths = "recipeComments")
-//    @Query("SELECT r FROM Recipe r JOIN FETCH r.user WHERE (r.title LIKE %:keyword% OR r.content LIKE %:keyword%) AND (:category IS NULL OR r.category = :category)")
-//    Page<Recipe> searchRecipes(@Param("keyword") String keyword, @Param("category") String category, Pageable pageable);
-
-    @Query("SELECT r FROM Recipe r WHERE (:keyword IS NULL OR r.title LIKE %:keyword% OR r.content LIKE %:keyword%) AND (:category IS NULL OR r.category = :category)")
+    // 제목 또는 내용에 특정 키워드가 포함된 레시피 검색 (카테고리 필터링 포함, 페이징 처리)
+    @EntityGraph(attributePaths = "recipeComments")
+    @Query("SELECT r FROM Recipe r JOIN FETCH r.user WHERE (:keyword IS NULL OR r.title LIKE %:keyword% OR r.content LIKE %:keyword%) AND (:category IS NULL OR r.category = :category)")
     Page<Recipe> searchRecipes(@Param("keyword") String keyword, @Param("category") String category, Pageable pageable);
 
     // 레시피 ID와 작성자로 레시피 존재 여부 확인
     boolean existsByIdAndUser(Long recipeId, User user);
+
+    @EntityGraph(attributePaths = {"user"})
+    @Query("SELECT r FROM Recipe r WHERE r.id = :recipeId")
+    Optional<Recipe> findRecipeWithUserById(@Param("recipeId") Long recipeId);
 }
