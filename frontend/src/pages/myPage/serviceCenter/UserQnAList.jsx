@@ -171,7 +171,7 @@ function UserQnAList() {
                 <ul>
                     {questions.map((question) => (
                         <li key={question.queIdx}>
-                        {editingQuestion && editingQuestion.queIdx === question.queIdx ? (
+                            {editingQuestion && editingQuestion.queIdx === question.queIdx ? (
                                 <form onSubmit={handleEditSubmit} className="qna-modify-form">
                                     <div className="qna-modify-top">
                                         <input
@@ -194,9 +194,9 @@ function UserQnAList() {
                                         <button className="qna-modify-submit" type="submit">저장</button>
                                     </div>
                                 </form>
-                                ) : (
+                            ) : (
                                 <>
-                                <button className="qna-title" onClick={() => toggleExpand(question.queIdx)}>
+                                    <button className="qna-title" onClick={() => toggleExpand(question.queIdx)}>
                                         <div className="qna-title-left">
                                             <div className="qna-title-top">
                                                 <h6>{question.queTitle}</h6>

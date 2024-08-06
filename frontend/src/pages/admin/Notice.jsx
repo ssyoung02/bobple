@@ -1,24 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../../assets/style/admin/Notice.css';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import mascot from '../../assets/images/bobple_mascot.png';
-import NoticeModify from "./NoticeModify";
-
-const initialData = [
-    { id: 1, author: '관리자', title: '첫 번째 공지사항', date: '2024-01-01', description: '본문1'},
-    { id: 2, author: '관리자', title: '두 번째 공지사항', date: '2024-01-05', description: '본문2' },
-    { id: 3, author: '관리자', title: '세 번째 공지사항', date: '2024-02-10', description: '본문3' },
-    { id: 4, author: '관리자', title: '네 번째 공지사항', date: '2024-03-15', description: '본문4' },
-    { id: 5, author: '관리자', title: '다섯 번째 공지사항', date: '2024-04-20', description: '본문5' },
-    { id: 6, author: '관리자', title: '여섯 번째 공지사항', date: '2024-05-25', description: '본문6' },
-    { id: 7, author: '관리자', title: '일곱 번째 공지사항', date: '2024-06-30', description: '본문7' },
-    { id: 8, author: '관리자', title: '여덟 번째 공지사항', date: '2024-07-05', description: '본문8' },
-    { id: 9, author: '관리자', title: '아홉 번째 공지사항', date: '2024-08-10', description: '본문9' },
-    { id: 10, author: '관리자', title: '열 번째 공지사항', date: '2024-09-15', description: '본문10' }
-];
+import NoticeModify from './NoticeModify';
 
 const Notice = () => {
-    const [data, setData] = useState(initialData);
+    const [data, setData] = useState([]); // 데이터 초기값을 빈 배열로 설정
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedNotices, setSelectedNotices] = useState([]);
@@ -26,52 +14,96 @@ const Notice = () => {
     const itemsPerPage = 20;
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchNotices = async () => {
+            try {
+                // 토큰 가져오기
+                const token = localStorage.getItem('token');
+
+                // 토큰이 없을 경우 경고 표시
+                if (!token) {
+                    alert('로그인이 필요합니다.');
+                    return;
+                }
+
+                const response = await axios.get('http://localhost:8080/api/notices', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // 인증 토큰 포함
+                    },
+                });
+                console.log('Fetched Data:', response.data); // Fetch한 데이터 콘솔에 출력
+                setData(response.data); // 서버에서 받은 데이터로 상태 업데이트
+            } catch (error) {
+                console.error('공지사항을 불러오는 중 오류가 발생했습니다:', error);
+                alert('공지사항을 불러오는 중 오류가 발생했습니다.');
+            }
+        };
+
+        fetchNotices();
+    }, []);
+
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
     };
 
-    const handleDelete = (id) => {
-        setData(data.filter(notice => notice.id !== id));
+    const handleDelete = (noticeIdx) => {
+        setData(data.filter(notice => notice.noticeIdx !== noticeIdx));
         setCurrentPage(1);
     };
 
-    const handleSelectNotice = (id) => {
+    const handleSelectNotice = (noticeIdx) => {
         setSelectedNotices(prevSelected =>
-            prevSelected.includes(id)
-                ? prevSelected.filter(noticeId => noticeId !== id)
-                : [...prevSelected, id]
+            prevSelected.includes(noticeIdx)
+                ? prevSelected.filter(id => id !== noticeIdx)
+                : [...prevSelected, noticeIdx]
         );
     };
 
-    const handleDeleteSelected = () => {
-        setData(data.filter(notice => !selectedNotices.includes(notice.id)));
-        setSelectedNotices([]); // 선택된 공지 초기화
-        setCurrentPage(1); // 삭제 시 페이지를 첫 페이지로 초기화
+    const handleDeleteSelected = async () => {
+        try {
+            // 선택된 공지 삭제
+            const token = localStorage.getItem('token');
+            for (const noticeIdx of selectedNotices) {
+                await axios.delete(`http://localhost:8080/api/notices/${noticeIdx}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+            }
+            // 선택된 공지를 데이터에서 제거
+            setData(data.filter(notice => !selectedNotices.includes(notice.noticeIdx)));
+            setSelectedNotices([]);
+            setCurrentPage(1);
+        } catch (error) {
+            console.error('공지사항 삭제 중 오류가 발생했습니다:', error);
+            alert('공지사항 삭제 중 오류가 발생했습니다.');
+        }
     };
 
     const handleRowClick = (notice) => {
-        setDetailNotice(detailNotice?.id === notice.id ? null : notice);
+        setDetailNotice(detailNotice?.noticeIdx === notice.noticeIdx ? null : notice);
     };
 
     const filteredData = data.filter(notice =>
-        notice.title.includes(searchTerm) || notice.author.includes(searchTerm)
+        (notice.noticeTitle?.includes(searchTerm))
     );
 
     // 페이지네이션
-    const indexOfLastItem = currentPage * itemsPerPage; // 현재 페이지의 마지막 항목 인덱스
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage; // 현재 페이지의 첫 번째 항목 인덱스
-    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem); // 현재 페이지에 해당하는 데이터
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     const handleClick = (event) => {
-        setCurrentPage(Number(event.target.id)); // 페이지 번호 변경
+        setCurrentPage(Number(event.target.id));
     };
 
     const handlePrev = () => {
-        setCurrentPage((prev) => Math.max(prev - 5, 1)); // 5페이지씩 뒤로 이동
+        setCurrentPage((prev) => Math.max(prev - 5, 1));
     };
 
     const handleNext = () => {
-        setCurrentPage((prev) => Math.min(prev + 5, Math.ceil(filteredData.length / itemsPerPage))); // 5페이지씩 앞으로 이동
+        setCurrentPage((prev) => Math.min(prev + 5, Math.ceil(filteredData.length / itemsPerPage)));
     };
 
     const renderPageNumbers = () => {
@@ -147,39 +179,37 @@ const Notice = () => {
                         <tr>
                             <th>선택</th>
                             <th>번호</th>
-                            <th>작성자</th>
                             <th>제목</th>
                             <th>작성일자</th>
                         </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map(notice => (
-                                <>
-                                    <tr key={notice.id} onClick={() => handleRowClick(notice)}
-                                        className={`tr-detail ${detailNotice?.id === notice.id ? 'active' : ''}`}>
-                                        <td>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedNotices.includes(notice.id)}
-                                                onChange={() => handleSelectNotice(notice.id)}
-                                                className="select-input"
-                                                onClick={(e) => e.stopPropagation()} // 체크박스 클릭 시 드롭다운 방지
-                                            />
+                        {currentItems.map(notice => (
+                            <React.Fragment key={notice.noticeIdx}>
+                                <tr onClick={() => handleRowClick(notice)}
+                                    className={`tr-detail ${detailNotice?.noticeIdx === notice.noticeIdx ? 'active' : ''}`}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedNotices.includes(notice.noticeIdx)}
+                                            onChange={() => handleSelectNotice(notice.noticeIdx)}
+                                            className="select-input"
+                                            onClick={(e) => e.stopPropagation()} // 체크박스 클릭 시 드롭다운 방지
+                                        />
+                                    </td>
+                                    <td>{notice.noticeIdx}</td>
+                                    <td>{notice.noticeTitle}</td>
+                                    <td>{new Date(notice.createdAt).toLocaleDateString()}</td>
+                                </tr>
+                                {detailNotice?.noticeIdx === notice.noticeIdx && (
+                                    <tr>
+                                        <td colSpan="4">
+                                            <NoticeModify notice={notice} />
                                         </td>
-                                        <td>{notice.id}</td>
-                                        <td>{notice.author}</td>
-                                        <td>{notice.title}</td>
-                                        <td>{notice.date}</td>
                                     </tr>
-                                    {detailNotice?.id === notice.id && (
-                                        <tr>
-                                            <td colSpan="5">
-                                                <NoticeModify notice={notice} />
-                                            </td>
-                                        </tr>
-                                    )}
-                                </>
-                            ))}
+                                )}
+                            </React.Fragment>
+                        ))}
                         </tbody>
                     </table>
                 </div>

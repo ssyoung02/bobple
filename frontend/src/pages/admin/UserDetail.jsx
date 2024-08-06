@@ -10,11 +10,11 @@ const UserDetail = ({ user }) => {
             <hr/>
             <div className="user-detail">
                 <p><strong>이름:</strong> {user.name}</p>
-                <p><strong>성별:</strong> {user.gender}</p>
+                <p><strong>닉네임:</strong> {user.nickName}</p>
                 <p><strong>이메일:</strong> {user.email}</p>
-                <p><strong>생년월일:</strong> {user.dob}</p>
-                <p><strong>전화번호:</strong> {user.phone}</p>
-                <p><strong>가입일:</strong> {user.joinDate}</p>
+                <p><strong>생년월일:</strong> {user.birthdate}</p>
+                <p><strong>신고:</strong> {user.reportCount}</p>
+                <p><strong>가입일:</strong> {user.createdAt}</p>
             </div>
         </div>
     );
