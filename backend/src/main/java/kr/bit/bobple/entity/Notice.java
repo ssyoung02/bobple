@@ -1,8 +1,16 @@
 package kr.bit.bobple.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "notice")
 public class Notice {
 
@@ -18,43 +26,7 @@ public class Notice {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date createdAt = new java.util.Date();
+    private Date createdAt;
 
-    // Constructors, getters, and setters
-
-    public Notice() {
-    }
-
-    public Notice(String noticeTitle, String noticeDescription) {
-        this.noticeTitle = noticeTitle;
-        this.noticeDescription = noticeDescription;
-    }
-
-    public Long getNoticeIdx() {
-        return noticeIdx;
-    }
-
-    public void setNoticeIdx(Long noticeIdx) {
-        this.noticeIdx = noticeIdx;
-    }
-
-    public String getNoticeTitle() {
-        return noticeTitle;
-    }
-
-    public void setNoticeTitle(String noticeTitle) {
-        this.noticeTitle = noticeTitle;
-    }
-
-    public String getNoticeDescription() {
-        return noticeDescription;
-    }
-
-    public void setNoticeDescription(String noticeDescription) {
-        this.noticeDescription = noticeDescription;
-    }
-
-    public java.util.Date getCreatedAt() {
-        return createdAt;
-    }
+    // 생성자, getter, 및 setter는 Lombok(@Data)로 자동 생성됨
 }

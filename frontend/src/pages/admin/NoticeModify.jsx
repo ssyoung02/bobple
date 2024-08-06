@@ -9,10 +9,9 @@ function NoticeModify({notice}) {
             <h3>공지사항</h3>
             <hr className="hr-style"/>
             <div className="user-detail-n">
-                <p><strong>작성자:</strong> {notice.author}</p>
-                <p><strong>제목:</strong> {notice.title}</p>
-                <p><strong>작성날짜:</strong> {notice.date}</p>
-                <p><strong>본문내용:</strong> {notice.description}</p>
+                <p><strong>제목:</strong> {notice.noticeTitle}</p>
+                <p><strong>작성날짜:</strong> {new Date(notice.createdAt).toLocaleDateString()}</p>
+                <p><strong>본문내용:</strong> {notice.noticeDescription}</p>
             </div>
         </div>
     );
