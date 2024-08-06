@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsernameAndEmail(String username, String email);
 
 
+    Optional<User> findByUsername(String username);
 //    @EntityGraph(attributePaths = {"recipes"})
 //    @Query("SELECT u FROM User u WHERE u.userIdx = :userId")
 //    Optional<User> findUserWithRecipes(@Param("userId") Long userId);
