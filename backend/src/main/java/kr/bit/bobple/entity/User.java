@@ -19,7 +19,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_idx")
-    private Long userIdx;
+    private Long userIdx; // 기본 키
 
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
