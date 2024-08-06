@@ -102,16 +102,20 @@ const GroupMain = () => {
             <h2 className="group-title">참여중인 모임</h2>
             <div className="group-header">
                 <div className="scroll-container">
-                    {myChatRooms.map((chatRoom) => (
-                        <button
-                            key={chatRoom.chatRoomIdx}
-                            className="item"
-                            onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
-                        >
-                            <img src="" alt="" />
-                            <span>{chatRoom.chatRoomTitle}</span>
-                        </button>
-                    ))}
+                    {myChatRooms.length > 0 ? (
+                        myChatRooms.map((chatRoom) => (
+                            <button
+                                key={chatRoom.chatRoomIdx}
+                                className="item"
+                                onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
+                            >
+                                <img src={chatRoom.roomImage} alt="chat room" />
+                                <span>{chatRoom.chatRoomTitle}</span>
+                            </button>
+                        ))
+                    ) : (
+                        <p>참여 중인 모임이 없네요,,ㅠ 모임에 참여해보세요!</p>
+                    )}
                 </div>
             </div>
             <div className="meeting-list">
@@ -149,7 +153,7 @@ const GroupMain = () => {
                             className="meeting-item"
                             onClick={() => showJoinModal(chatRoom)}
                         >
-                            <img src="" alt="" />
+                            <img src={chatRoom.roomImage} alt="chat room" />
                             <div className="meeting-info">
                                 <h3>{chatRoom.chatRoomTitle}</h3>
                                 <p>{chatRoom.description}</p>

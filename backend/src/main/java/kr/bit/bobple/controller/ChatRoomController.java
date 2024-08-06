@@ -6,7 +6,9 @@ import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,15 +22,21 @@ public class ChatRoomController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
-    public ChatRoom createChatRoom(@RequestBody ChatRoom chatRoom, HttpServletRequest request) {
+    public ChatRoom createChatRoom(@RequestParam("chatRoomTitle") String chatRoomTitle,
+                                   @RequestParam("description") String description,
+                                   @RequestParam("location") String location,
+                                   @RequestParam("roomPeople") int roomPeople,
+                                   @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                   HttpServletRequest request) throws IOException {
         String token = resolveToken(request);
         Long userIdx = jwtTokenProvider.getUserIdx(token);
         return chatRoomService.createChatRoom(
-                chatRoom.getChatRoomTitle(),
-                chatRoom.getDescription(),
-                chatRoom.getLocation(),
-                chatRoom.getRoomPeople(),
-                userIdx
+                chatRoomTitle,
+                description,
+                location,
+                roomPeople,
+                userIdx,
+                imageFile
         );
     }
 
@@ -64,6 +72,5 @@ public class ChatRoomController {
         }
         return null;
     }
-
 
 }

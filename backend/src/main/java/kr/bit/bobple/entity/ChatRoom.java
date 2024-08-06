@@ -29,6 +29,9 @@ public class ChatRoom {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = true)
+    private String roomImage;
+
     @ManyToOne
     @JoinColumn(name = "room_leader", nullable = false)
     private User roomLeader;
@@ -81,6 +84,14 @@ public class ChatRoom {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getRoomImage() {
+        return roomImage;
+    }
+
+    public void setRoomImage(String roomImage) {
+        this.roomImage = roomImage;
     }
 
     public User getRoomLeader() {
