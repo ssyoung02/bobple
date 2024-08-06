@@ -48,10 +48,12 @@ public class RecipeService {
 
     @Transactional(readOnly = true)
     public RecipeDto getRecipeById(Long recipeId) {
-        // Optional 처리 추가
-        Optional<Recipe> recipeOptional = recipeRepository.findRecipeWithCommentsById(recipeId);
+//        // Optional 처리 추가
+//        Optional<Recipe> recipeOptional = recipeRepository.findRecipeWithCommentsById(recipeId);
+        Recipe recipe = recipeRepository.findRecipeWithUserById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
-        Recipe recipe = recipeOptional.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
+//        Recipe recipe = recipeOptional.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
         recipe.setViewsCount(recipe.getViewsCount() + 1); // 조회수 증가
         recipeRepository.save(recipe);

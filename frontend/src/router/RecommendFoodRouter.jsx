@@ -3,6 +3,11 @@ import {Route, Routes} from "react-router-dom";
 import RecommendMain from "../pages/recommendFood/RecommendMain";
 import RecommendFoodCategory from "../pages/recommendFood/RecommendFoodCategory"
 import FoodWorldCup from "../pages/recommendFood/foodWorldCup/FoodWorldCup";
+import FoodWorldCupGame from "../pages/recommendFood/foodWorldCup/FoodWorldCupGame";
+
+function FoodWorldCupGane() {
+    return null;
+}
 
 function RecommendFoodRouter(){
     return(
@@ -14,6 +19,7 @@ function RecommendFoodRouter(){
             </Route>
 
             <Route path="/foodWorldCup/foodWorldCup" element={<FoodWorldCup/>}/>
+            <Route path="/foodWorldCup/foodWorldCupGame" element={<FoodWorldCupGame/>}/>
         </Routes>
     );
 }

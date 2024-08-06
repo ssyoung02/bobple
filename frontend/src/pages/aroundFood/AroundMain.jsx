@@ -3,7 +3,9 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Map, MapMarker, ZoomControl, CustomOverlayMap} from 'react-kakao-maps-sdk';
 import '../../assets/style/aroundFood/AroundMain.css';
 import axios from 'axios';
-import {Bookmark, LocationDot, LocationTarget, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {Bookmark, FillBookmark, LocationDot, LocationTarget, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import { getUserIdx } from "../../utils/auth";
+import NaverImageSearch from "../../components/NaverImageSearch";
 
 function AroundMain() {
     const [state, setState] = useState({
@@ -19,6 +21,71 @@ function AroundMain() {
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedRestaurantImage, setSelectedRestaurantImage] = useState(null);
+
+    const [userBookmarks, setUserBookmarks] = useState([]);
+
+    useEffect(() => {
+        const fetchUserBookmarks = async () => {
+            const userIdx = getUserIdx();
+            if (userIdx) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/bookmarks/restaurants/${userIdx}`);
+                    setUserBookmarks(response.data.map(bookmark => bookmark.restaurantId));
+                } catch (error) {
+                    console.error('북마크 정보 가져오기 실패:', error);
+                }
+            }
+        };
+
+        fetchUserBookmarks();
+    }, []);
+
+    const handleBookmarkToggle = async (restaurant) => {
+        const userIdx = getUserIdx();
+        if (userIdx) {
+            try {
+                const isBookmarked = userBookmarks.includes(restaurant.id);
+                if (isBookmarked) {
+                    const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${restaurant.id}`, {
+                        data: { userIdx }
+                    });
+
+                    if (deleteResponse.status === 204) { // 삭제 성공 시
+                        setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== restaurant.id));
+                        // 북마크 상태 업데이트
+                        setRestaurants(prevRestaurants => prevRestaurants.map(r =>
+                            r.id === restaurant.id ? { ...r, isBookmarked: false } : r
+                        ));
+                    } else {
+                        console.error('북마크 삭제 실패:', deleteResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                } else {
+                    // 북마크 추가 요청
+                    const addResponse = await axios.post('http://localhost:8080/api/bookmarks/restaurants', {
+                        userIdx,
+                        restaurantId: restaurant.id,
+                        restaurantName: restaurant.place_name,
+                        addressName: restaurant.address_name,
+                        phone: restaurant.phone
+                    });
+
+                    if (addResponse.status === 200) { // 추가 성공 시
+                        setUserBookmarks(prevBookmarks => [...prevBookmarks, restaurant.id]);
+                        // 북마크 상태 업데이트
+                        setRestaurants(prevRestaurants => prevRestaurants.map(r =>
+                            r.id === restaurant.id ? { ...r, isBookmarked: true } : r
+                        ));
+                    } else {
+                        console.error('북마크 추가 실패:', addResponse);
+                        // 에러 처리 로직 추가 (필요에 따라)
+                    }
+                }
+            } catch (error) {
+                console.error('북마크 처리 실패:', error);
+            }
+        }
+    };
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -173,24 +240,43 @@ function AroundMain() {
 
 
     function onMarkerClick(restaurant) {
-        setSelectedMarker(restaurant); // 선택된 마커 업데이트
+        // 현재 위치와 선택된 마커 사이의 거리 계산
+        const distance = computeDistance(currentLocation, { lat: restaurant.y, lng: restaurant.x });
+
+        setSelectedMarker({ ...restaurant, distance }); // 선택된 마커 업데이트 (distance 추가)
         setIsOpen(true); // CustomOverlayMap 열기
 
-        // 커스텀 오버레이 맵을 지도 중앙으로 이동
         if (mapRef.current) {
             mapRef.current.panTo(new kakao.maps.LatLng(restaurant.y, restaurant.x));
         }
     }
 
     const handleListItemClick = (restaurant) => {
-        setSelectedMarker(restaurant); // 리스트 아이템 클릭 시 해당 마커 선택
+        // 현재 위치와 선택된 리스트 아이템 사이의 거리 계산
+        const distance = computeDistance(currentLocation, { lat: restaurant.y, lng: restaurant.x });
+
+        setSelectedMarker({ ...restaurant, distance }); // 리스트 아이템 클릭 시 해당 마커 선택 (distance 추가)
         setIsOpen(true); // CustomOverlayMap 열기
 
-        // 커스텀 오버레이 맵을 지도 중앙으로 이동
         if (mapRef.current) {
             mapRef.current.panTo(new kakao.maps.LatLng(restaurant.y, restaurant.x));
         }
     };
+
+    // 두 지점 간의 거리 계산 함수 (미터 단위)
+    const computeDistance = (startCoords, destCoords) => {
+        if (!startCoords || !destCoords) return 0;
+
+        const linePath = [
+            new kakao.maps.LatLng(startCoords.lat, startCoords.lng),
+            new kakao.maps.LatLng(destCoords.lat, destCoords.lng)
+        ];
+
+        const polyline = new kakao.maps.Polyline({ path: linePath });
+
+        return polyline.getLength(); // Polyline의 길이를 통해 거리 계산
+    };
+
 
     useEffect(() => {
         // 선택된 마커가 변경될 때마다 음식점 이미지 가져오기
@@ -220,6 +306,19 @@ function AroundMain() {
             setSelectedRestaurantImage(null); // 선택된 마커가 없으면 null 설정
         }
     }, [selectedMarker]);
+
+    const handleImageLoaded = (imageUrl) => {
+        // 이미지 로드 완료 시 호출되는 콜백 함수
+        if (imageUrl) {
+            // 이미지가 성공적으로 로드된 경우
+            console.log("이미지 로드 성공:", imageUrl);
+            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
+        } else {
+            // 이미지를 찾지 못했거나 에러 발생 시
+            console.warn("이미지 로드 실패 또는 이미지 없음");
+            // 필요에 따라 기본 이미지 설정 또는 에러 처리
+        }
+    };
 
     return (
         <div className="map-container">
@@ -289,34 +388,40 @@ function AroundMain() {
                                            rel="noreferrer">
                                             {selectedMarker.place_name}
                                         </a>
-                                        <button className="around-bookmark">
-                                            <Bookmark/>
+                                        <button className="around-bookmark"
+                                                onClick={() => handleBookmarkToggle(selectedMarker)}>
+                                            {userBookmarks.includes(selectedMarker.id) ? (
+                                                <FillBookmark/>
+                                            ) : (
+                                                <Bookmark/>
+                                            )}
                                         </button>
                                     </div>
                                     <div className="close" onClick={() => setIsOpen(false)} title="닫기"></div>
                                 </div>
                                 <div className="body">
                                     <div className="desc">
-                                    <div
+                                        <div
                                             className="ellipsis">{selectedMarker.road_address_name || selectedMarker.address_name}</div>
                                         {selectedMarker.road_address_name && (
                                             <div className="jibun ellipsis">(지번: {selectedMarker.address_name})</div>
                                         )}
-                                        <div>
-                                            <a href={selectedMarker.place_url} target="_blank" className="link"
-                                               rel="noreferrer">
-                                                홈페이지
-                                            </a>
-                                        </div>
                                         <div className="tel">{selectedMarker.phone}</div>
+                                        <span className="distance">
+                                            <LocationDot/>{Math.round(selectedMarker.distance)}m
+                                        </span>
                                     </div>
                                     <div className="img">
-                                        <img
-                                            src={selectedRestaurantImage || "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005"}
-                                            width="73"
-                                            height="70"
-                                            alt={selectedMarker.place_name}
-                                        />
+                                        <div className="restaurant-image-wrapper">
+                                            {/* NaverImageSearch 컴포넌트 사용 */}
+                                            <NaverImageSearch
+                                                restaurantName={selectedMarker.place_name}
+                                                onImageLoaded={handleImageLoaded}
+                                                alt={selectedMarker.place_name}
+                                                width="73"
+                                                height="70"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

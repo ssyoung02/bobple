@@ -40,8 +40,10 @@ public class RecipeController {
             @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 최신 레시피 목록 조회 (페이징 처리)
-        Page<Recipe> recipePage = recipeService.getLatestRecipes(pageable);
-        Page<RecipeDto> recipeDtoPage = recipePage.map(RecipeDto::fromEntity);
+//        Page<Recipe> recipePage = recipeService.getLatestRecipes(pageable);
+//        Page<RecipeDto> recipeDtoPage = recipePage.map(RecipeDto::fromEntity);
+        Page<RecipeDto> recipeDtoPage = recipeService.getLatestRecipes(pageable).map(RecipeDto::fromEntity);
+
         return ResponseEntity.ok(recipeDtoPage); // Page<RecipeDto> 직접 반환
     }
 

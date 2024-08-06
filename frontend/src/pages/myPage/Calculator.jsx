@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft } from "../../components/imgcomponents/ImgComponents";
 import '../../assets/style/myPage/Calculator.css';
@@ -14,6 +14,8 @@ const Calculator = () => {
     const [reciptImage, setReciptImage] = useState(false);
     const [calculatedAmount, setCalculatedAmount] = useState('');
     const [showResult, setShowResult] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
@@ -178,11 +180,15 @@ const Calculator = () => {
         };
     }, [location]);
 
+    const moveMypage = () => {
+        navigate('/mypage');
+    }
+
     return (
         <div className="calculator-main">
             <div className="bgcolor-area"></div>
             <div className="calculator-top">
-                <button className="goto-mypage">
+                <button className="goto-mypage" onClick={moveMypage}>
                     <ArrowLeftLong/>
                 </button>
                 <h2>1/N 계산기</h2>
@@ -230,7 +236,7 @@ const Calculator = () => {
                         </div>
                         <label>
                             <input className="upload-recipt" type="file" onChange={handleFileChange} title="영수증 첨부"/>
-                            <Recipt/>
+                            <Recipt />
                         </label>
                     </div>
                 </div>

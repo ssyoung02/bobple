@@ -1,9 +1,7 @@
-// RecipeComment.java
 package kr.bit.bobple.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 
 import java.time.LocalDateTime;
 
@@ -29,5 +27,6 @@ public class RecipeComment {
     @Column(columnDefinition = "TEXT")
     private String recipeContent;
 
-    private LocalDateTime createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
