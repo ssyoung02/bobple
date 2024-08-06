@@ -144,32 +144,34 @@ function UserQnAList() {
                 </h3>
             </div>
             <div className="user-qna-list">
-                <button
-                    className={showUserQuestions ? "qna-list-item select-qna" : "qna-list-item"}
-                    onClick={() => setShowUserQuestions(true)}
-                >
-                    나의 문의내역
-                </button>
-                <button
-                    className={showUserQuestions ? "qna-list-item" : "qna-list-item select-qna"}
-                    onClick={() => setShowUserQuestions(false)}
-                >
-                    전체 문의내역
-                </button>
+                <div>
+                    <button
+                        className={showUserQuestions ? "qna-list-item select-qna" : "qna-list-item"}
+                        onClick={() => setShowUserQuestions(true)}
+                    >
+                        나의 문의내역
+                    </button>
+                    <button
+                        className={showUserQuestions ? "qna-list-item" : "qna-list-item select-qna"}
+                        onClick={() => setShowUserQuestions(false)}
+                    >
+                        전체 문의내역
+                    </button>
+                </div>
                 <button className="adit-qna" onClick={moveUserQnA}>
                     문의 작성
                 </button>
             </div>
             {questions.length === 0 ? (
                 <div className="no-inquiries">
-                <img src="/bobple_mascot.png" alt="" width={200} />
+                    <img src="/bobple_mascot.png" alt="" width={200}/>
                     <p>아직 문의한 내용이 없습니다</p>
                 </div>
             ) : (
                 <ul>
                     {questions.map((question) => (
                         <li key={question.queIdx}>
-                            {editingQuestion && editingQuestion.queIdx === question.queIdx ? (
+                        {editingQuestion && editingQuestion.queIdx === question.queIdx ? (
                                 <form onSubmit={handleEditSubmit} className="qna-modify-form">
                                     <div className="qna-modify-top">
                                         <input

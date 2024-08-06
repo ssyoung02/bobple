@@ -29,9 +29,11 @@
 /*메뉴*/
 .user-qna-list{
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .qna-list-item{
-    border-bottom: 1px solid #898989;
+    border-bottom: 4px solid #c8c8c8;
     padding: 10px;
     font-size: 1.2em;
 }
@@ -58,9 +60,6 @@
 
 /*문의작성버튼*/
 .adit-qna{
-    position: absolute;
-    top: 140px;
-    right: 100px;
     width: 100px;
     height: 2.5em;
     border-radius: 10px;
