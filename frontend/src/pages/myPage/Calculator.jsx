@@ -157,7 +157,7 @@ const Calculator = () => {
         setShowResult(false);
     };
 
-    useHeaderColorChange('#AEE2FF'); //
+    useHeaderColorChange('#AEE2FF');
 
     const moveMypage = () => {
         navigate('/mypage');

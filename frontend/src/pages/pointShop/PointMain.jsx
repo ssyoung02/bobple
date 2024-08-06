@@ -163,7 +163,7 @@ function PointMain() {
                     </Carousel>
 
                     <div className="category-btn-container">
-                        <div className="category-buttons">
+                        <div className="category-btns">
                             {categories.map(category => (
                                 <button
                                     key={category}
@@ -203,7 +203,7 @@ function PointMain() {
             {selectedTab === '보관함' && (
                 <>
                     <div className="category-btn-container">
-                        <div className="category-buttons">
+                        <div className="category-btns">
                             {categories.map(category => (
                                 <button
                                     key={category}
