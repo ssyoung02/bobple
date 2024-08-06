@@ -3,6 +3,7 @@ import '../../assets/style/eatingGroup/GroupMain.css';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
+import {SearchIcon} from "../../components/imgcomponents/ImgComponents";
 
 const GroupMain = () => {
     const navigate = useNavigate();
@@ -122,6 +123,7 @@ const GroupMain = () => {
                 <h2 className="group-title">모집 중인 모임</h2>
                 <fieldset className="search-box flex-row">
                     <select
+                        className="group-search-select"
                         id="searchOption"
                         name="searchCnd"
                         title="검색 조건 선택"
@@ -132,19 +134,19 @@ const GroupMain = () => {
                         <option value="title-content">제목+내용</option>
                         <option value="location-post">장소</option>
                     </select>
-                    <p className="search-field">
+                    <div className="search-field">
                         <input
+                            className="group-search-box"
                             id="searchInput"
                             type="text"
                             name="searchWrd"
                             placeholder="검색어를 입력해주세요"
                             onChange={(e) => setSearchKeyword(e.target.value)}
                         />
-                        <button onClick={handleSearch}>
-                            <span className="hide">검색</span>
-                            <i className="bi bi-search"></i>
+                        <button className="group-search-btn" onClick={handleSearch}>
+                            <SearchIcon/>
                         </button>
-                    </p>
+                    </div>
                 </fieldset>
                 {filteredChatRooms.length > 0 ? (
                     filteredChatRooms.map((chatRoom) => (
