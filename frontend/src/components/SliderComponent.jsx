@@ -42,12 +42,18 @@ export default function SliderComponent() {
     );
 }
 
-export const TopSearch = () => {
+export const TopSearch = ({ onKeywordClick }) => {
     const [topKeywords, setTopKeywords] = useState([]);
 
     useEffect(() => {
         restaurantfetchTopKeywords(setTopKeywords);
     }, []);
+
+    const handleKeywordClick = (keyword) => {
+        if (onKeywordClick) {
+            onKeywordClick(keyword);
+        }
+    };
 
     const settings = {
         dots: false,
@@ -66,7 +72,9 @@ export const TopSearch = () => {
             <h6>실시간 인기</h6>
             <SlickSlider {...settings}>
                 {topKeywords.map((keyword, index) => (
-                    <div key={index}>{index + 1}. {keyword.keyword}</div>
+                    <span key={index} onClick={() => handleKeywordClick(keyword.keyword)}> {/* keyword.keyword 사용 */}
+                        {index + 1}. {keyword.keyword}
+          </span>
                 ))}
             </SlickSlider>
         </div>
