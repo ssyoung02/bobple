@@ -7,6 +7,8 @@ import MainFoodBanner_jeon from "../assets/images/banner/MainFoodBanner_jeon.jpg
 import {restaurantfetchTopKeywords} from "./Search/RestaurantSearch"
 import {useNavigate} from "react-router-dom";
 import {NextTo, PrevTo} from "./imgcomponents/ImgComponents";
+import axios from "axios";
+import useRecommendThemes from "../hooks/RecommendFoodHooks"
 
 export default function SliderComponent() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -72,40 +74,35 @@ export const TopSearch = () => {
 }
 
 export const RecommendedCategories = () => {
+    const { recommendThemes, handleThemeClick } = useRecommendThemes();
 
-    var recommendedCategoriesSettings = {
+    const recommendedCategoriesSettings = {
         dots: false,
-        centerMode: true,
         infinite: true,
-        slidesToShow: 8,
+        slidesToShow: 3,
         slidesToScroll: 1,
-        arrows: true,
         draggable: true,
         swipeToSlide: true,
+        centerMode: false,
+        arrows: false
     };
 
     return (
-        <div className="category-description">
+        <div className="category-square-banner">
             <SlickSlider {...recommendedCategoriesSettings}>
-                <button className={"category-description-item"}>
-                    <div className={"category-description-img"}>
-                        칼칼
+                {recommendThemes.map(theme => (
+                    <div className="category-square-item" key={theme.themeIdx}>
+                        <button onClick={() => handleThemeClick(theme.themeIdx)}>
+                            <img src={theme.themeImageUrl} alt={theme.themeDescription}/>
+                        </button>
                     </div>
-                </button>
-                <button className={"category-description-item"}>
-                    <div className={"category-description-img"}>
-                        부장님은 느끼한 게 싫다고 하셨어
-                    </div>
-                </button>
-                <button className={"category-description-item"}>
-                    <div className={"category-description-img"}>
-                        부장님은 느끼한 게 싫다고 하셨어
-                    </div>
-                </button>
+                ))}
             </SlickSlider>
         </div>
     );
-}
+};
+
+
 
 export const FoodCategories = () => {
     const [selectedCategory, setSelectedCategory] = useState('전체');

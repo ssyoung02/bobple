@@ -68,12 +68,19 @@
     font-size: 1.5em;
 }
 
-.input-people{
+.input-people {
     text-align: center;
     border: none;
     border-bottom: 3px solid #EB517E;
     background: transparent;
     width: 80%;
+    outline: none; /* 기본 포커스 테두리 제거 */
+}
+
+.input-people:focus {
+    border: none; /* 포커스 시 테두리 제거 */
+    border-bottom: 3px solid #EB517E; /* 포커스 시 하단 테두리 유지 */
+    outline: none; /* 포커스 시 기본 포커스 테두리 제거 */
 }
 
 
@@ -104,6 +111,12 @@
 .upload-recipt-money{
     border: none;
     width: 85%;
+    outline: none;
+}
+
+.upload-recipt-money:focus {
+    border: none; /* 포커스 시 테두리 제거 */
+    outline: none; /* 포커스 시 기본 포커스 테두리 제거 */
 }
 
 .upload-recipt + svg{

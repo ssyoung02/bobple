@@ -7,27 +7,63 @@ function MyPointUsage() {
     const [currentPoints, setCurrentPoints] = useState(0);
     const [nickName, setNickName] = useState('');
     const [error, setError] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
+    const [filter, setFilter] = useState('전체기한');
 
     const userIdx = localStorage.getItem('userIdx');
     const token = localStorage.getItem('token');
 
+    const months = [
+        { value: 1, label: '1월' },
+        { value: 2, label: '2월' },
+        { value: 3, label: '3월' },
+        { value: 4, label: '4월' },
+        { value: 5, label: '5월' },
+        { value: 6, label: '6월' },
+        { value: 7, label: '7월' },
+        { value: 8, label: '8월' },
+        { value: 9, label: '9월' },
+        { value: 10, label: '10월' },
+        { value: 11, label: '11월' },
+        { value: 12, label: '12월' }
+    ];
+
+    const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i); // Last 10 years
+
     useEffect(() => {
         if (!token) {
             alert('로그인이 필요합니다.');
-            // Redirect or handle unauthenticated state here
             return;
         }
         fetchPointHistory();
-    }, []);
+    }, [filter, selectedMonth, selectedYear]);
 
     const fetchPointHistory = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/MyPointUsage/pointHistory/${userIdx}`, {
+            let url = `http://localhost:8080/api/points/${userIdx}/`;
+
+            switch (filter) {
+                case '전체기한':
+                    url += 'all-time';
+                    break;
+                case '달마다':
+                    url += `monthly?month=${selectedMonth}&year=${selectedYear}`;
+                    break;
+                case '1년마다':
+                    url += `yearly?year=${selectedYear}`;
+                    break;
+                default:
+                    url += 'all-time';
+            }
+
+            const response = await axios.get(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
                 withCredentials: true
             });
+
             setNickName(response.data.nickName);
             setCurrentPoints(response.data.currentPoints);
             setPointHistory(response.data.history);
@@ -37,30 +73,8 @@ function MyPointUsage() {
         }
     };
 
-    const handlePurchase = async (productIdx) => {
-        if (!token) {
-            alert('로그인이 필요합니다.');
-            return;
-        }
-
-        try {
-            const response = await axios.post('http://localhost:8080/api/purchaseProduct', null, {
-                params: {
-                    userIdx: userIdx,
-                    productIdx: productIdx
-                },
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                withCredentials: true
-            });
-            alert('구매가 완료되었습니다.');
-            // 구매 후 포인트 이력 새로 고침
-            fetchPointHistory();
-        } catch (error) {
-            console.error('구매 실패:', error);
-            alert('구매 실패: ' + (error.response?.data || '오류가 발생했습니다.'));
-        }
+    const handleFilterChange = (newFilter) => {
+        setFilter(newFilter);
     };
 
     if (error) {
@@ -74,8 +88,60 @@ function MyPointUsage() {
                 <h3 className="mypoint">{currentPoints}P</h3>
             </div>
 
+            <div className="filter-buttons">
+                <button onClick={() => handleFilterChange('전체기한')}>전체기한</button>
+                <button onClick={() => handleFilterChange('달마다')}>달마다</button>
+                <button onClick={() => handleFilterChange('1년마다')}>1년마다</button>
+            </div>
+
+            {filter === '달마다' && (
+                <div className="month-year-select">
+                    <label htmlFor="year">년도: </label>
+                    <select
+                        id="year"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    >
+                        {years.map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                    <label htmlFor="month">월: </label>
+                    <select
+                        id="month"
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                    >
+                        {months.map((month) => (
+                            <option key={month.value} value={month.value}>
+                                {month.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
+            {filter === '1년마다' && (
+                <div className="year-select">
+                    <label htmlFor="year">년도: </label>
+                    <select
+                        id="year"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    >
+                        {years.map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
             <div className="point-usage-box">
-                <h5>포인트 사용 내역</h5>
+                <h5>포인트 사용 내역 ({filter})</h5>
                 <ul className="point-usage-list">
                     {pointHistory.map((point, index) => (
                         <li key={index}>
@@ -86,9 +152,7 @@ function MyPointUsage() {
                                 </h6>
                             </div>
                             <div className="budget">
-                                <p className=
-                                    {point.pointState === 'M' ? 'point-usage-money deduction' : 'point-usage-money'}
-                                >
+                                <p className={point.pointState === 'M' ? 'point-usage-money deduction' : 'point-usage-money'}>
                                     {(point.pointState === 'M' ? '-' : '+') + Math.abs(point.pointValue)}P
                                 </p>
                                 <p className="balance">

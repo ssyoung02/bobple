@@ -1,0 +1,101 @@
+.food-world-cup-game {
+    text-align: center;
+    padding: 50px;
+}
+
+.worldCup-game-title {
+    color: #EB517E;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.round-info {
+    font-size: 24px;
+    margin: 30px;
+}
+
+.round-info span {
+    font-weight: bold;
+}
+
+.items-grid {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
+
+.worldCup-vs {
+    position: absolute;
+    border: 3px solid #EB517E;
+    border-radius: 50%;
+    padding: 0 5px;
+    font-size: 25px;
+    font-weight: bolder;
+    color: #EB517E;
+    z-index: 1;
+    background-color: white;
+}
+
+.food-item {
+    cursor: pointer;
+    border: 3px solid #ddd;
+    padding: 20px;
+    border-radius: 30px;
+    transition: transform 0.2s;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.food-item:hover,
+.food-winner-item:hover {
+    transform: scale(1.05);
+}
+
+.food-item img {
+    width: 140px;
+    border-radius: 8px;
+}
+
+.food-item-name {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.winner-box h2 {
+    padding: 20px;
+}
+
+.food-winner-item {
+    cursor: pointer;
+    border: 3px solid #ddd;
+    padding: 20px;
+    border-radius: 30px;
+    transition: transform 0.2s;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+}
+
+.food-winner-item img {
+    width: 150px;
+    border-radius: 8px;
+    display: flex;
+}
+
+.back-recommend-btn {
+    border: none;
+    border-radius: 8px;
+    background-color: #EB517E;
+    color: white;
+    font-weight: bold;
+    margin: 30px;
+    padding: 10px;
+}

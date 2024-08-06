@@ -26,6 +26,9 @@ public class RecommendTheme {
     @Column(name = "theme_image_url")
     private String themeImageUrl;
 
+    @Column(name = "theme_banner_url")
+    private String themeBannerUrl;
+
     @OneToMany(mappedBy = "recommendTheme", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<FoodTheme> foodThemes = new ArrayList<>();
 }

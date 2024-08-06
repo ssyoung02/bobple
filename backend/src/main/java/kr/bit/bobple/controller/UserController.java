@@ -1,8 +1,10 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.dto.UserDto;
 import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.UserRepository;
 import kr.bit.bobple.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
+@RequiredArgsConstructor
 public class UserController {
 
     @Autowired
@@ -29,12 +32,25 @@ public class UserController {
     }
 
     @GetMapping("/{userIdx}")
-    public ResponseEntity<User> getUserById(@PathVariable Long userIdx) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long userIdx) {
         System.out.println("Fetching user with ID: " + userIdx);
-        Optional<User> optionalUser = userRepository.findById(userIdx);
-        if (optionalUser.isPresent()) {
-            System.out.println("User found: " + optionalUser.toString());
-            return ResponseEntity.ok(optionalUser.get());
+        UserDto userDto = userService.getUserById(userIdx);
+        if (userDto != null) {
+            System.out.println("User found: " + userDto.toString());
+            return ResponseEntity.ok(userDto);
+        } else {
+            System.out.println("User not found");
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/user/{userIdx}")
+    public ResponseEntity<UserDto> getUserWithRecipes(@PathVariable Long userIdx) {
+        System.out.println("Fetching user with ID and recipes: " + userIdx);
+        UserDto userDto = userService.getUserWithRecipes(userIdx);
+        if (userDto != null) {
+            System.out.println("User with recipes found: " + userDto.toString());
+            return ResponseEntity.ok(userDto);
         } else {
             System.out.println("User not found");
             return ResponseEntity.notFound().build();

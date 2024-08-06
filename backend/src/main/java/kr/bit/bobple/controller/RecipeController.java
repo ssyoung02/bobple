@@ -2,11 +2,9 @@
 package kr.bit.bobple.controller;
 
 import kr.bit.bobple.dto.LikeRecipeDto;
-import kr.bit.bobple.dto.RecipeCommentDto;
 import kr.bit.bobple.dto.RecipeDto;
 import kr.bit.bobple.entity.Recipe;
 import kr.bit.bobple.service.LikeRecipeService;
-import kr.bit.bobple.service.RecipeCommentService;
 import kr.bit.bobple.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import kr.bit.bobple.entity.User;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -27,11 +24,35 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final LikeRecipeService likeRecipeService;
-    private final RecipeCommentService recipeCommentService;
+
+
 
     @GetMapping
     public ResponseEntity<Page<RecipeDto>> getAllRecipes(Pageable pageable) {
+        // 모든 레시피 목록 조회 (페이징 처리)
         return ResponseEntity.ok(recipeService.getAllRecipes(pageable));
+    }
+
+
+
+    @GetMapping("/latest")
+    public ResponseEntity<Page<RecipeDto>> getLatestRecipes(
+            @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        // 최신 레시피 목록 조회 (페이징 처리)
+//        Page<Recipe> recipePage = recipeService.getLatestRecipes(pageable);
+//        Page<RecipeDto> recipeDtoPage = recipePage.map(RecipeDto::fromEntity);
+        Page<RecipeDto> recipeDtoPage = recipeService.getLatestRecipes(pageable).map(RecipeDto::fromEntity);
+
+        return ResponseEntity.ok(recipeDtoPage); // Page<RecipeDto> 직접 반환
+    }
+
+    // 유저 추천 레시피 목록 조회 (TODO: 실제 추천 로직 구현 필요)
+    // 유저 추천 레시피 목록 조회
+    @GetMapping("/recommended")
+    public ResponseEntity<List<RecipeDto>> getRecommendedRecipes(@AuthenticationPrincipal User user) {
+        List<RecipeDto> recommendedRecipes = recipeService.getRecommendedRecipes(user);
+        return ResponseEntity.ok(recommendedRecipes);
     }
 
     @GetMapping("/{id}")
@@ -48,7 +69,7 @@ public class RecipeController {
     @PutMapping("/{id}")
     public ResponseEntity<RecipeDto> updateRecipe(@PathVariable Long id, @RequestBody RecipeDto recipeDto, @AuthenticationPrincipal User user) {
         if (!recipeService.isRecipeAuthor(id, user)) {
-            return ResponseEntity.status(403).build(); // 작성자가 아니면 403 Forbidden 반환
+            return ResponseEntity.status(403).build(); // 403 Forbidden 에러 반환
         }
         return ResponseEntity.ok(recipeService.updateRecipe(id, recipeDto));
     }
@@ -56,20 +77,24 @@ public class RecipeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id, @AuthenticationPrincipal User user) {
         if (!recipeService.isRecipeAuthor(id, user)) {
-            return ResponseEntity.status(403).build(); // 작성자가 아니면 403 Forbidden 반환
+            return ResponseEntity.status(403).build(); // 403 Forbidden 에러 반환
         }
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<Page<Recipe>> searchRecipes(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String category,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable // 페이징 및 정렬 정보 받아오기
-    ) {
-        return ResponseEntity.ok(recipeService.searchRecipes(keyword, category, pageable));
-    }
+
+@GetMapping("/search")
+public ResponseEntity<Page<RecipeDto>> searchRecipes(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) String category,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+    Page<RecipeDto> recipes = recipeService.searchRecipes(keyword, category, page, size);
+    return ResponseEntity.ok(recipes);
+}
+
+
 
     @PostMapping("/recommend")
     public ResponseEntity<List<RecipeDto>> recommendRecipes(@RequestBody String ingredients) {
@@ -81,14 +106,5 @@ public class RecipeController {
         return ResponseEntity.ok(likeRecipeService.toggleLike(user.getUserIdx(), recipeId));
     }
 
-    @GetMapping("/{recipeId}/comments")
-    public ResponseEntity<List<RecipeCommentDto>> getCommentsByRecipeId(@PathVariable Long recipeId) {
-        return ResponseEntity.ok(recipeCommentService.getCommentsByRecipeId(recipeId));
-    }
-
-    @PostMapping("/{recipeId}/comments")
-    public ResponseEntity<RecipeCommentDto> createComment(@PathVariable Long recipeId, @RequestBody RecipeCommentDto commentDto, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(recipeCommentService.createComment(recipeId, commentDto.getRecipeContent())); // 수정된 부분
-    }
 
 }

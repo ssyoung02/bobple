@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor // 기본 생성자 추가
 @AllArgsConstructor // 모든 필드를 인자로 받는 생성자 추가
 @Table(name = "recipe")
+@NamedEntityGraph(name = "RecipeWithComments", attributeNodes = @NamedAttributeNode("recipeComments")) // NamedEntityGraph 추가
 public class Recipe {
 
     @Id
@@ -22,9 +23,9 @@ public class Recipe {
     @Column(name = "recipe_idx") // 컬럼 이름 명시적으로 매핑
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
-    private User user;  // 작성자 정보
+    private User user;
 
     private String title;
     @Column(columnDefinition = "TEXT")
@@ -40,8 +41,8 @@ public class Recipe {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecipeComment> recipeComments = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private final List<RecipeComment> recipeComments = new ArrayList<>();
 
     public Long getRecipeIdx() {
         return id;

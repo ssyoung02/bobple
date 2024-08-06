@@ -10,14 +10,15 @@ function SearchFilter() {
     const [sortBy, setSortBy] = useState('latest');
 
     const handleSearch = () => {
-        searchRecipes(keyword, category, page, size, sortBy);
+        searchRecipes(keyword, category, page, size);  //  sortBy 제거
     };
 
     const categoryOptions = [ // 카테고리 옵션 (예시)
         { key: '', text: '전체', value: '' },
-        { key: 'korean', text: '한식', value: 'korean' },
-        { key: 'chinese', text: '중식', value: 'chinese' },
-        { key: 'japanese', text: '일식', value: 'japanese' },
+        { key: 'korean', text: '한식', value: '한식' },
+        { key: 'chinese', text: '중식', value: '중식' },
+        { key: 'japanese', text: '일식', value: '일식' },
+        { key: 'yangsik', text: '양식', value: '양식' }
         // ... 필요한 카테고리 추가
     ];
 

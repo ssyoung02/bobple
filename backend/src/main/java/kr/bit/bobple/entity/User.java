@@ -80,4 +80,34 @@ public class User {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Recipe> recipes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<RecipeComment> recipeComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<LikeRecipe> likeRecipes = new ArrayList<>();
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userIdx=" + userIdx +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", birthdate=" + birthdate +
+                ", nickName='" + nickName + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", enabled=" + enabled +
+                ", provider='" + provider + '\'' +
+                ", companyId=" + companyId +
+                ", reportCount=" + reportCount +
+                ", point=" + point +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

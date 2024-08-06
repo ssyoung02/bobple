@@ -1,0 +1,45 @@
+/*헤더*/
+.user-FAQ-main{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+}
+.user-FAQ-top {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.user-FAQ-top h3 {
+    margin: 0;
+    justify-self: center;
+    grid-column: 2;
+}
+
+.user-FAQ-top button{
+    position: absolute;
+}
+
+.user-FAQ-top svg {
+    font-size: 1.5em;
+    color: #233B6F;
+}
+
+/*내용*/
+.faq-title{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 15px 10px;
+    border-bottom: 1px solid #898989;
+    cursor: pointer;
+}
+
+.qna-content{
+    background: #eeeeee;
+    padding: 15px 10px;
+    word-break: keep-all;
+}

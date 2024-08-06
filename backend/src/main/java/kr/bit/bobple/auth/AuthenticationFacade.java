@@ -10,9 +10,13 @@ import org.springframework.stereotype.Component;
 public class AuthenticationFacade {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return (User) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof User) {
+            return (User) principal;
         }
+//        if (authentication != null && authentication.isAuthenticated()) {
+//            return (User) authentication.getPrincipal();
+//        }
         return null;
     }
 }
