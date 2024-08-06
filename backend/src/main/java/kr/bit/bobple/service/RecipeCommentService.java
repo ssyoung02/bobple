@@ -1,4 +1,3 @@
-// RecipeCommentService.java
 package kr.bit.bobple.service;
 
 import kr.bit.bobple.auth.AuthenticationFacade;
@@ -51,5 +50,22 @@ public class RecipeCommentService {
         return RecipeCommentDto.fromEntity(comment);
     }
 
-    // 필요한 경우 댓글 수정, 삭제 메서드 추가
+    @Transactional
+    public RecipeCommentDto updateComment(Long commentId, String updatedContent) {
+        RecipeComment comment = recipeCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        comment.setRecipeContent(updatedContent);
+        recipeCommentRepository.save(comment);
+        return RecipeCommentDto.fromEntity(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId) {
+        RecipeComment comment = recipeCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        Recipe recipe = comment.getRecipe();
+        recipe.setCommentsCount(recipe.getCommentsCount() - 1);
+        recipeRepository.save(recipe);
+        recipeCommentRepository.delete(comment);
+    }
 }
