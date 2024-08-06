@@ -2,20 +2,19 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: #f0f0f0;
     padding: 10px;
 }
 
 .chat-room-info {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px 30px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
 .chat-room-info h2 {
-    margin: 0;
+    margin: 0 auto;
     font-size: 24px;
     font-weight: bold;
 }
