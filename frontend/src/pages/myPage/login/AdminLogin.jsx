@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
 import '../../../assets/style/myPage/AdminLogin.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function AdminLogin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Example logic: replace this with real authentication API call
-        const hardcodedUsername = 'admin'; // Replace with real username
-        const hardcodedPassword = 'admin'; // Replace with real password (hashed in production)
+        try {
+            const response = await axios.post('http://localhost:8080/api/admin/login', {
+                username: username,
+                email: password
+            });
 
-        if (username === hardcodedUsername && password === hardcodedPassword) {
-            console.log('Login successful');
-            navigate('/admin/userInfo'); // Redirect to admin/userInfo on successful login
-        } else {
-            console.error('Login failed: Incorrect username or password');
+            if (response.status === 200) {
+                console.log('Login successful');
+                localStorage.setItem('token', response.data.token);
+                navigate('/admin/userInfo');
+            }
+        } catch (error) {
+            console.error('Login failed:', error);
             alert('관리자 아이디 혹은 비밀번호가 틀렸습니다.');
         }
     };
