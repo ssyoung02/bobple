@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     // 추가적인 쿼리 메소드가 필요한 경우 정의할 수 있습니다.
     List<Answer> findByQuestion(Question question);
-    Optional<Answer> findByQuestion_QueIdx(Long questionId);
 
+    Optional<Answer> findByQuestion_QueIdx(Long questionId);
 
 
 }

@@ -1,6 +1,7 @@
 package kr.bit.bobple.controller;
 
 import kr.bit.bobple.config.JwtTokenProvider;
+import kr.bit.bobple.dto.AnswerDTO;
 import kr.bit.bobple.dto.QuestionDTO;
 import kr.bit.bobple.entity.Question;
 import kr.bit.bobple.entity.User;
@@ -34,6 +35,7 @@ public class QuestionController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    // 질문 생성
     @PostMapping("/questions")
     public ResponseEntity<Question> createQuestion(@RequestBody QuestionDTO questionDTO) {
         Long userId = questionDTO.getUserIdx();
@@ -54,47 +56,41 @@ public class QuestionController {
         return ResponseEntity.ok(savedQuestion);
     }
 
+    // 특정 사용자 질문 조회
     @GetMapping("/users/{userIdx}/questions")
     public ResponseEntity<List<QuestionDTO>> getQuestionsByUser(@PathVariable Long userIdx) {
-        List<QuestionDTO> questions = questionService.getQuestionsByUser(userIdx);
+        List<QuestionDTO> questions = questionService.getQuestionsByUserWithAnswers(userIdx);
         return ResponseEntity.ok(questions);
     }
 
+    // 모든 질문 조회
     @GetMapping("/questions")
     public ResponseEntity<List<QuestionDTO>> getAllQuestions() {
-        List<Question> questions = questionService.getAllQuestionsWithUserDetails();
-
-        List<QuestionDTO> questionDTOs = questions.stream()
-                .map(q -> new QuestionDTO(
-                        q.getQueIdx(),
-                        q.getUser().getUserIdx(),
-                        q.getUser().getName(),
-                        q.getQueTitle(),
-                        q.getQueDescription(),
-                        q.getCreatedAt(),
-                        q.getStatus()
-                ))
-                .toList();
-
+        List<QuestionDTO> questionDTOs = questionService.getAllQuestionsWithAnswers();
         return ResponseEntity.ok(questionDTOs);
     }
 
+    // 질문 수정
     @PutMapping("/questions/{queIdx}")
     public ResponseEntity<Question> updateQuestion(@PathVariable Long queIdx,
                                                    @RequestBody QuestionDTO updatedQuestionDTO,
                                                    @RequestHeader("Authorization") String authorizationHeader) {
+        // Authorization 헤더에서 토큰 추출
         String token = authorizationHeader.replace("Bearer ", "");
 
+        // 토큰 검증 및 사용자 ID 추출
         if (!jwtTokenProvider.validateToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 토큰 검증 실패
         }
 
         Long userIdFromToken = jwtTokenProvider.getUserIdx(token);
 
+        // 질문을 DB에서 가져오기
         Optional<Question> optionalQuestion = questionRepository.findById(queIdx);
         if (optionalQuestion.isPresent()) {
             Question question = optionalQuestion.get();
             if (!question.getStatus()) { // 질문이 처리되지 않았을 때만 수정 가능
+                // 요청한 사용자의 userIdx와 질문의 userIdx를 비교
                 if (question.getUser().getUserIdx().equals(userIdFromToken)) {
                     question.setQueTitle(updatedQuestionDTO.getQueTitle());
                     question.setQueDescription(updatedQuestionDTO.getQueDescription());
@@ -111,16 +107,15 @@ public class QuestionController {
         }
     }
 
-
+    // 질문 삭제
     @DeleteMapping("/questions/{queIdx}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long queIdx) {
         Optional<Question> optionalQuestion = questionRepository.findById(queIdx);
         if (optionalQuestion.isPresent()) {
             questionRepository.deleteById(queIdx);
-            return ResponseEntity.ok().build(); // Return 200 OK if successful
+            return ResponseEntity.ok().build(); // 성공적으로 삭제
         } else {
-            return ResponseEntity.notFound().build(); // Return 404 Not Found if the question doesn't exist
+            return ResponseEntity.notFound().build(); // 질문이 존재하지 않음
         }
     }
 }
-

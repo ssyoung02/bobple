@@ -220,7 +220,7 @@ function UserQnAList() {
                                     {expandedQuestionIds.includes(question.queIdx) && (
                                         <div className="qna-content">
                                             <p>{question.queDescription}</p>
-                                            <p><strong>답변:</strong> {question.answer ? question.answer : '답변 예정'}</p>
+                                            <p><strong>답변:</strong> {question.answers.length > 0 ? question.answers[0].answer : '답변 예정'}</p>
                                             <div className="qna-modify-buttons">
                                                 {question.userIdx === userIdx && (
                                                     <>

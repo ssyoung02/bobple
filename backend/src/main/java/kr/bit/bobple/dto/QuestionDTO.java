@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class QuestionDTO {
     private String queDescription;
     private LocalDateTime createdAt;
     private Boolean status;
+    private List<AnswerDTO> answers; // 답변 포함
 
 
     public QuestionDTO(Long queIdx, String userName, String queTitle, String queDescription, LocalDateTime createdAt, Boolean status) {
@@ -27,6 +29,7 @@ public class QuestionDTO {
         this.createdAt = createdAt;
         this.status = status;
     }
+
 
     // Getters and Setters
 }
