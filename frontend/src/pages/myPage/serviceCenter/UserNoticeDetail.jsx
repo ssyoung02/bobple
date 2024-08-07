@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../../../assets/style/myPage/serviceCenter/UserNotice.css';
 import { ArrowLeftLong } from "../../../components/imgcomponents/ImgComponents";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,51 +7,57 @@ import { useNavigate, useParams } from "react-router-dom";
 function UserNoticeDetail() {
     const navigate = useNavigate();
     const { noticeidx } = useParams();
+    const [notice, setNotice] = useState(null);
+    const [error, setError] = useState(null);
 
-    const noticelist = [
-        {
-            noticeidx: 1,
-            title: "[공지]포인트 이용 안내",
-            date: "2024. 8. 5.",
-            content: "기프티콘 이용 기한은 구매 후 1년 이내입니다"
-        },
-        {
-            noticeidx: 2,
-            title: "[공지]BOBPLE 서비스 이용 안내",
-            date: "2024. 8. 6.",
-            content: "안녕하세요. 직장인들의 식사를 위한 BOBPLE 서비스입니다"
-        },
-    ];
+    useEffect(() => {
+        const fetchNotice = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/notices/${noticeidx}`);
 
-    const notice = noticelist.find(n => n.noticeidx === parseInt(noticeidx));
+                if (response.status === 200) {
+                    setNotice(response.data);
+                } else {
+                    setError('공지사항을 가져오는 데 실패했습니다.');
+                }
+            } catch (error) {
+                setError('공지사항을 가져오는 데 실패했습니다.');
+                console.error('공지사항 가져오기 오류:', error);
+            }
+        };
+
+        fetchNotice();
+    }, [noticeidx]);
 
     const moveNotice = () => {
         navigate('/mypage/serviceCenter/userNotice');
+    };
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    if (!notice) {
+        return <div>Loading...</div>;
     }
 
     return (
         <div className="notice-main">
             <div className="notice-top">
-                <button aria-label="내정보로 돌아가기" onClick={moveNotice}>
+                <button aria-label="공지사항 목록으로 돌아가기" onClick={moveNotice}>
                     <ArrowLeftLong />
                 </button>
                 <h3>공지사항</h3>
             </div>
-            {notice ? (
-                <>
-                    <div key={notice.noticeidx} className="faq-title">
-                        <div className="faq-title-left">
-                            <h6>{notice.title}</h6>
-                            <p className="qna-date">{notice.date}</p>
-                        </div>
-                    </div>
-                    <div className="notice-content">
-                        <p>{notice.content}</p>
-                    </div>
-                </>
-            ) : (
-                <p>해당 공지사항을 찾을 수 없습니다.</p>
-            )}
+            <div className="faq-title">
+                <div className="faq-title-left">
+                    <h6>{notice.noticeTitle}</h6>
+                    <p className="qna-date">{new Date(notice.createdAt).toLocaleDateString()}</p>
+                </div>
+            </div>
+            <div className="notice-content">
+                <p>{notice.noticeDescription}</p>
+            </div>
         </div>
     );
 }
