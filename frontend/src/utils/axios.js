@@ -13,38 +13,23 @@ const instance = axios.create({
 instance.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
     if (token) {
+        console.log('Token:', token);  // 콘솔에 토큰 출력
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
+},error => {
+    return Promise.reject(error);
 });
-
-// TODO: 실제 백엔드 API 엔드포인트에 맞게 수정
-const refreshToken = async () => {
-    try {
-        const response = await axios.post('/auth/refresh');
-        return response.data.token;
-    } catch (error) {
-        localStorage.removeItem('token');
-        window.location.href = '/myPage/login';
-        throw error;
-    }
-};
 
 instance.interceptors.response.use(
     response => response,
     async error => {
         if (error.response && error.response.status === 401) {
-            try {
-                const newToken = await refreshToken();
-                localStorage.setItem('token', newToken);
-
-                error.config.headers.Authorization = `Bearer ${newToken}`;
-                return axios(error.config);
-            } catch (refreshError) {
-                console.error('토큰 갱신 실패:', refreshError);
-                localStorage.removeItem('token');
-                return Promise.reject({ ...error, redirectTo: '/myPage/login' });
-            }
+            localStorage.removeItem('token');
+            localStorage.removeItem('userNickname');
+            localStorage.removeItem('userId');
+            window.location.href = '/myPage/login';
+            return Promise.reject({ ...error, redirectTo: '/myPage/login' });
         } else if (error.response) {
             // 서버 응답 에러 (4xx, 5xx) 처리
             const errorMessage = getErrorMessage(error.response);
@@ -78,28 +63,5 @@ const getErrorMessage = (errorResponse) => {
         }
     }
 };
-
-// // 요청 인터셉터 (토큰 설정)
-// instance.interceptors.request.use(config => {
-//     const token = localStorage.getItem('token');
-//     console.log(token);
-//     // if (token && !config.url.includes('/api/recipes/search')) { // 인증이 필요 없는 엔드포인트를 제외합니다.
-//     //     config.headers.Authorization = `Bearer ${token}`;
-//     // }
-//     return config;
-// });
-//
-// // 응답 인터셉터
-// instance.interceptors.response.use(
-//     response => response,
-//     error => {
-//         if (error.response && error.response.status === 401) {
-//             // 401 에러 처리 (예: 로그아웃 처리)
-//             localStorage.removeItem('token');
-//             window.location.href = '/myPage/login/login'; // 로그인 페이지로 리디렉션
-//         }
-//         return Promise.reject(error);
-//     }
-// );
 
 export default instance;
