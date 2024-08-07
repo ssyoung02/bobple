@@ -98,17 +98,8 @@ public class ChatRoomService {
     }
 
     public List<ChatRoom> getChatRoomsByUser(Long userId) {
-        System.out.println("Fetching chat rooms for user ID: " + userId); // 로그 추가
-
-        List<ChatRoom> chatRooms = chatRoomRepository.findByRoomLeaderUserIdx(userId);
-
-        if (chatRooms.isEmpty()) {
-            System.out.println("No chat rooms found for user ID: " + userId); // 로그 추가
-        } else {
-            System.out.println("Found " + chatRooms.size() + " chat rooms for user ID: " + userId); // 로그 추가
-        }
-
-        return chatRooms;
+        List<Long> chatRoomIds = chatMemberRepository.findChatRoomIdsByUserIdx(userId);
+        return chatRoomRepository.findAllById(chatRoomIds);
     }
 
     public List<ChatRoom> getAllChatRooms() {
@@ -137,6 +128,4 @@ public class ChatRoomService {
 
         return chatRoom;
     }
-
-
 }

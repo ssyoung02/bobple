@@ -19,9 +19,6 @@ const GroupMain = () => {
                 const token = localStorage.getItem('token');
                 const userIdx = localStorage.getItem('userIdx');
 
-                console.log('Resolved token:', token);
-                console.log('Resolved user ID:', userIdx);
-
                 if (!token) {
                     console.error('No JWT token found');
                     return;
@@ -57,6 +54,14 @@ const GroupMain = () => {
         fetchMyChatRooms();
         fetchAllChatRooms();
     }, []);
+
+    useEffect(() => {
+        // 현재 유저가 참여하고 있는 모임을 제외한 모임을 필터링
+        const excludeMyChatRooms = allChatRooms.filter(
+            (chatRoom) => !myChatRooms.some(myRoom => myRoom.chatRoomIdx === chatRoom.chatRoomIdx)
+        );
+        setFilteredChatRooms(excludeMyChatRooms);
+    }, [allChatRooms, myChatRooms]);
 
     const handleRoomClick = (chatRoomId) => {
         navigate(`/group/chatting/${chatRoomId}`);

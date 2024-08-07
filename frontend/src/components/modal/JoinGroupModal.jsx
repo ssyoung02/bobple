@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import bobple from '../../assets/images/bobple_mascot.png';
 import axios from 'axios';
 
-const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomDescription, chatRoomPeople, chatRoomImage }) => {
+const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomDescription, chatRoomPeople, chatRoomImage, currentParticipants }) => {
     const navigate = useNavigate();
     const [image, setImage] = useState(bobple);
 
@@ -61,7 +61,7 @@ const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chat
                     </div>
                     <div className="group-text-container">
                         <h3>{chatRoomTitle}</h3>
-                        <h5>{chatRoomPeople}명 참여중</h5>
+                        <h5>{currentParticipants}명 참여 중 ({chatRoomPeople}명 모집)</h5>
                         <p>{chatRoomDescription}</p>
                     </div>
                 </div>
@@ -78,7 +78,8 @@ JoinGroupModal.propTypes = {
     chatRoomTitle: PropTypes.string.isRequired,
     chatRoomDescription: PropTypes.string.isRequired,
     chatRoomPeople: PropTypes.number.isRequired,
-    chatRoomImage: PropTypes.string // 추가된 프로퍼티
+    chatRoomImage: PropTypes.string, // 추가된 프로퍼티
+    currentParticipants: PropTypes.number.isRequired // 현재 참여 중인 인원 프로퍼티 추가
 };
 
 export default JoinGroupModal;
