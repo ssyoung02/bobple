@@ -275,6 +275,10 @@ function RecommendMain() {
         }
     };
 
+    const handleTopKeywordClick = (keyword) => {
+        navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`); // 검색어 정보 전달
+    };
+
     return (
         <div className={"recommend-main"}>
             <div className={"recommend-search"}>
@@ -295,7 +299,7 @@ function RecommendMain() {
                     <button className="AllSearchButton" onClick={handleSearch} aria-label={"검색"}>
                         <SearchIcon/>
                     </button>
-                    <TopSearch/>
+                    <TopSearch onKeywordClick={handleTopKeywordClick} />
                 </div>
             </div>
 
