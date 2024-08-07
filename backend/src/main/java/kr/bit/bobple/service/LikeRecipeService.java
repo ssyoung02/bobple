@@ -30,21 +30,20 @@ public class LikeRecipeService {
         Recipe recipe = recipeRepository.findById(recipeIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
-        // 이미 좋아요를 눌렀는지 확인
         Optional<LikeRecipe> existingLike = likeRecipeRepository.findByUserAndRecipe(user, recipe);
 
-        if (existingLike.isPresent()) { // 이미 좋아요를 눌렀다면
-            likeRecipeRepository.delete(existingLike.get()); // 좋아요 취소
+        if (existingLike.isPresent()) {
+            likeRecipeRepository.delete(existingLike.get());
             recipe.setLikesCount(recipe.getLikesCount() - 1);
-            return LikeRecipeDto.fromEntity(existingLike.get(), false); // 좋아요 취소 상태로 반환
-        } else { // 좋아요를 누르지 않았다면
+            return LikeRecipeDto.fromEntity(existingLike.get(), false);
+        } else {
             LikeRecipe likeRecipe = LikeRecipe.builder()
                     .user(user)
                     .recipe(recipe)
                     .build();
-            likeRecipeRepository.save(likeRecipe); // 좋아요 추가
+            likeRecipeRepository.save(likeRecipe);
             recipe.setLikesCount(recipe.getLikesCount() + 1);
-            return LikeRecipeDto.fromEntity(likeRecipe, true); // 좋아요 상태로 반환
+            return LikeRecipeDto.fromEntity(likeRecipe, true);
         }
     }
 }
