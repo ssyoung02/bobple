@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
-import { ArrowLeftLong, Menu } from "../../../components/imgcomponents/ImgComponents";
+import {ArrowLeftLong, Menu, SendMessage} from "../../../components/imgcomponents/ImgComponents";
+import {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
@@ -69,6 +70,8 @@ const GroupChatting = () => {
         navigate('/group'); // GroupMain 화면으로 이동
     };
 
+    useNavigateNone();
+
     return (
         <div className="chatting">
             {chatRoom && (
@@ -80,7 +83,7 @@ const GroupChatting = () => {
                 </div>
             )}
             <div className="messages">
-                {messages.map((message, index) => (
+            {messages.map((message, index) => (
                     <div key={index} className="message">
                         <p>{message.content}</p>
                     </div>
