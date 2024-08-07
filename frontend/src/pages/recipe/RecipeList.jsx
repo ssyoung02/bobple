@@ -2,7 +2,7 @@
 import React, { useContext, useEffect } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import RecipeCard from './RecipeCard';
-import '../../assets/style/recipe/RecipeList.css'; // CSS 파일 import
+import '../../assets/style/recipe/RecipeList.css';
 
 function RecipeList() {
     const { recipes, loading, error, searchRecipes, getRecipeById, totalPages, page, changePage } = useContext(RecipeContext);
@@ -36,7 +36,6 @@ function RecipeList() {
                         )}
                     </div>
 
-                    {/* 페이지네이션 추가 */}
                     {totalPages > 1 && (
                         <div className="pagination">
                             <button onClick={() => changePage(page - 1)} disabled={page === 0}>이전</button>

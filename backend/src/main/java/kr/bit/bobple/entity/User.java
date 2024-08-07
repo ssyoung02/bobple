@@ -84,15 +84,15 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonManagedReference // 순환 참조 방지를 위해 직렬화 제외
+    @JsonBackReference
     private List<Recipe> recipes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonBackReference
     private List<RecipeComment> recipeComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonBackReference
     private List<LikeRecipe> likeRecipes = new ArrayList<>();
 
 
