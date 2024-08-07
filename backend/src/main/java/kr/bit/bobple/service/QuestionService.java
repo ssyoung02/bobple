@@ -42,10 +42,12 @@ public class QuestionService {
 
     public List<QuestionDTO> getQuestionsByUser(Long userIdx) {
         List<Question> questions = questionRepository.findByUser_UserIdx(userIdx);
+
         return questions.stream()
                 .map(q -> new QuestionDTO(
                         q.getQueIdx(),
-                        q.getUser().getName(), // User 엔티티에서 사용자 이름 가져오기
+                        q.getUser().getUserIdx(),
+                        q.getUser().getName(),
                         q.getQueTitle(),
                         q.getQueDescription(),
                         q.getCreatedAt(),

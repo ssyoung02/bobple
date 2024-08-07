@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../../../assets/style/myPage/serviceCenter/UserQnA.css';
-import {ArrowLeftLong, LargeX} from "../../../components/imgcomponents/ImgComponents";
-import {useNavigate} from "react-router-dom";
+import { ArrowLeftLong, LargeX } from "../../../components/imgcomponents/ImgComponents";
+import { useNavigate } from "react-router-dom";
 
 function UserQnA() {
     const [formData, setFormData] = useState({
@@ -30,23 +30,24 @@ function UserQnA() {
             }
 
             const question = {
-                userIdx: userIdx,
+                userIdx: parseInt(userIdx, 10), // `userIdx`가 숫자로 변환되는지 확인
                 queTitle: formData.title,
                 queDescription: formData.content
             };
 
             const response = await axios.post('http://localhost:8080/api/questions', question, {
                 headers: {
-                    'Authorization': `Bearer ${token}` // 인증 헤더 추가
+                    'Authorization': `Bearer ${token}`, // 인증 헤더 추가
+                    'Content-Type': 'application/json' // 올바른 Content-Type 설정
                 }
             });
 
             console.log('질문 제출:', response.data);
             setFormData({ title: '', content: '' });
             alert('질문이 제출되었습니다!');
-            navigate('/mypage/serviceCenter/userQnAList')
+            navigate('/mypage/serviceCenter/userQnAList');
         } catch (error) {
-            console.error('질문 제출 오류:', error);
+            console.error('질문 제출 오류:', error.response || error.message); // 수정된 부분
             alert('질문 제출에 실패했습니다.');
         }
     };
@@ -54,15 +55,15 @@ function UserQnA() {
     const navigate = useNavigate();
 
     const moveUserQnAList = () => {
-        navigate('/mypage/serviceCenter/userQnAList')
-    }
+        navigate('/mypage/serviceCenter/userQnAList');
+    };
 
     return (
         <div className="user-qna">
             <div className="qna-adit-top">
                 <h3>문의하기</h3>
                 <button aria-label="문의하기 닫기" onClick={moveUserQnAList}>
-                    <LargeX/>
+                    <LargeX />
                 </button>
             </div>
             <form onSubmit={handleSubmit} className="qna-form">
@@ -93,7 +94,7 @@ function UserQnA() {
                     <h5>문의 시 유의사항</h5>
                     <ul>
                         <li>
-                            - 문의 내용에 개인정보가 포함되지 않도록 주의해주세요<br/>(예: 전화번호, 이메일, 환불계좌번호 등)
+                            - 문의 내용에 개인정보가 포함되지 않도록 주의해주세요<br /> (예: 전화번호, 이메일, 환불계좌번호 등)
                         </li>
                         <li>
                             - 부적절한 게시물 등록 시 ID이용 제한 및 게시물이 삭제될 수 있습니다

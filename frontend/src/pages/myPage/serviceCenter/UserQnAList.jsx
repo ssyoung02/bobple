@@ -39,10 +39,6 @@ function UserQnAList() {
 
             console.log('API Response:', response.data); // Log API response for debugging
 
-            if (response.data.length > 0) {
-                console.log('Sample question object:', response.data[0]); // Log a sample question object
-            }
-
             setQuestions(response.data);
         } catch (error) {
             console.error('질문 목록 불러오기 오류:', error);
@@ -67,7 +63,7 @@ function UserQnAList() {
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        console.log('토큰:', token);
+        const userIdx = localStorage.getItem('userIdx');
 
         if (!token) {
             alert('로그인 후 다시 시도해 주세요.');
@@ -75,11 +71,12 @@ function UserQnAList() {
         }
 
         try {
-            const response = await axios.put(
+            await axios.put(
                 `http://localhost:8080/api/questions/${editingQuestion.queIdx}`,
                 {
                     queTitle: editingQuestion.queTitle,
                     queDescription: editingQuestion.queDescription,
+                    userIdx: parseInt(userIdx, 10)  // userIdx 추가
                 },
                 {
                     headers: {
@@ -89,9 +86,8 @@ function UserQnAList() {
                 }
             );
 
-            setQuestions(prevQuestions => prevQuestions.map(q =>
-                q.queIdx === response.data.queIdx ? response.data : q
-            ));
+            // 최신 데이터 가져오기
+            fetchQuestions(); // 수정 후 최신 데이터로 업데이트
             setEditingQuestion(null);
             alert('질문이 수정되었습니다!');
         } catch (error) {
@@ -99,7 +95,6 @@ function UserQnAList() {
             alert('질문 수정에 실패했습니다.');
         }
     };
-
 
     const handleDeleteClick = async (queIdx) => {
         if (!window.confirm('정말로 이 질문을 삭제하시겠습니까?')) return;
@@ -225,16 +220,16 @@ function UserQnAList() {
                                     {expandedQuestionIds.includes(question.queIdx) && (
                                         <div className="qna-content">
                                             <p>{question.queDescription}</p>
+                                            <p><strong>답변:</strong> {question.answer ? question.answer : '답변 예정'}</p>
                                             <div className="qna-modify-buttons">
-                                                {/* Log userIdx and question userIdx for debugging */}
-                                                {console.log('User ID:', userIdx)}
-                                                {console.log('Question User ID:', question.userIdx)}
-
-                                                {/* Conditional rendering based on userIdx */}
                                                 {question.userIdx === userIdx && (
                                                     <>
+                                                        {/* 삭제 버튼은 항상 표시됨 */}
                                                         <button className="qna-delete" onClick={() => handleDeleteClick(question.queIdx)}>삭제</button>
-                                                        <button className="qna-modify" onClick={() => handleEditClick(question)}>수정</button>
+                                                        {/* 수정 버튼은 status가 false일 때만 표시됨 */}
+                                                        {!question.status && (
+                                                            <button className="qna-modify" onClick={() => handleEditClick(question)}>수정</button>
+                                                        )}
                                                     </>
                                                 )}
                                             </div>

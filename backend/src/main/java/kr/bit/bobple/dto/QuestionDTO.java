@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class QuestionDTO {
     private Long queIdx;
     private Long userIdx; // Add userId here
@@ -16,6 +17,7 @@ public class QuestionDTO {
     private String queDescription;
     private LocalDateTime createdAt;
     private Boolean status;
+
 
     public QuestionDTO(Long queIdx, String userName, String queTitle, String queDescription, LocalDateTime createdAt, Boolean status) {
         this.queIdx = queIdx;
@@ -28,4 +30,5 @@ public class QuestionDTO {
 
     // Getters and Setters
 }
+
 

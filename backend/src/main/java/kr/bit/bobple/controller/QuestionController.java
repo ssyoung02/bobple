@@ -1,13 +1,19 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.config.JwtTokenProvider;
 import kr.bit.bobple.dto.QuestionDTO;
 import kr.bit.bobple.entity.Question;
+import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.QuestionRepository;
+import kr.bit.bobple.repository.UserRepository;
 import kr.bit.bobple.service.QuestionService;
+import kr.bit.bobple.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +28,28 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @PostMapping("/questions")
-    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
+    public ResponseEntity<Question> createQuestion(@RequestBody QuestionDTO questionDTO) {
+        Long userId = questionDTO.getUserIdx();
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        User user = optionalUser.get();
+
+        Question question = new Question();
+        question.setUser(user);
+        question.setQueTitle(questionDTO.getQueTitle());
+        question.setQueDescription(questionDTO.getQueDescription());
+        question.setCreatedAt(LocalDateTime.now());
+        question.setStatus(false); // 기본값 설정
+
         Question savedQuestion = questionRepository.save(question);
         return ResponseEntity.ok(savedQuestion);
     }
@@ -41,7 +67,7 @@ public class QuestionController {
         List<QuestionDTO> questionDTOs = questions.stream()
                 .map(q -> new QuestionDTO(
                         q.getQueIdx(),
-                        q.getUser().getUserIdx(), // Add userId here
+                        q.getUser().getUserIdx(),
                         q.getUser().getName(),
                         q.getQueTitle(),
                         q.getQueDescription(),
@@ -54,24 +80,37 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{queIdx}")
-    public ResponseEntity<Question> updateQuestion(@PathVariable Long queIdx, @RequestBody Question updatedQuestion, @RequestHeader("Authorization") String authorizationHeader) {
-        System.out.println("헤더 Authorization: " + authorizationHeader); // Authorization 헤더를 로그에 출력
+    public ResponseEntity<Question> updateQuestion(@PathVariable Long queIdx,
+                                                   @RequestBody QuestionDTO updatedQuestionDTO,
+                                                   @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Long userIdFromToken = jwtTokenProvider.getUserIdx(token);
 
         Optional<Question> optionalQuestion = questionRepository.findById(queIdx);
         if (optionalQuestion.isPresent()) {
             Question question = optionalQuestion.get();
             if (!question.getStatus()) { // 질문이 처리되지 않았을 때만 수정 가능
-                question.setQueTitle(updatedQuestion.getQueTitle());
-                question.setQueDescription(updatedQuestion.getQueDescription());
-                questionRepository.save(question);
-                return ResponseEntity.ok(question);
+                if (question.getUser().getUserIdx().equals(userIdFromToken)) {
+                    question.setQueTitle(updatedQuestionDTO.getQueTitle());
+                    question.setQueDescription(updatedQuestionDTO.getQueDescription());
+                    questionRepository.save(question);
+                    return ResponseEntity.ok(question);
+                } else {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한 없음
+                }
             } else {
-                return ResponseEntity.status(403).build(); // Forbidden
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 질문이 처리된 경우
             }
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 질문 없음
         }
     }
+
 
     @DeleteMapping("/questions/{queIdx}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long queIdx) {
@@ -84,3 +123,4 @@ public class QuestionController {
         }
     }
 }
+
