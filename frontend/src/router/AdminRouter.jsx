@@ -7,11 +7,13 @@ import QnADetail from "../pages/admin/QnADetail";
 import QnAList from "../pages/admin/QnAList";
 import RecipeBoard from "../pages/admin/RecipeBoard";
 import UserInfo from "../pages/admin/UserInfo";
+import UserDetail from "../pages/admin/UserDetail";
 
 function AdminRouter(){
     return(
         <Routes>
             <Route path="/userInfo" element={<UserInfo/>}/> {/* 유저정보 */}
+            <Route path="/userInfo" element={<UserDetail/>}/> {/* 유저정보 */}
             <Route path="/recipeBoard" element={<RecipeBoard/>}/> {/* 레세피 관리 */}
 
             <Route path="/notice" element={<Notice/>}/> {/* 공지사항 */}

@@ -13,13 +13,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "question")
 public class Question {
+
     @Id
-    @Column(name = "que_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "que_idx")
     private Long queIdx;
 
-    @Column(name = "user_idx", nullable = false)
-    private Long userIdx;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user; // User 엔티티와의 관계 설정
 
     @Column(name = "que_title", length = 25, nullable = false)
     private String queTitle;
@@ -32,6 +34,4 @@ public class Question {
 
     @Column(name = "status")
     private Boolean status = false;
-
 }
-

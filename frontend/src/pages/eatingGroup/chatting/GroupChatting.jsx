@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
+import {ArrowLeftLong, Menu} from "../../../components/imgcomponents/ImgComponents";
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
@@ -67,8 +68,10 @@ const GroupChatting = () => {
         <div className="chatting">
             {chatRoom && (
                 <div className="chat-room-info">
+                    <button><ArrowLeftLong/></button>
                     <h2>{chatRoom.chatRoomTitle}</h2>
-                    <p>{chatRoom.description}</p>
+                    <h3>{chatRoom.chatRoomPeople}</h3>
+                    <button><Menu/></button>
                 </div>
             )}
             <div className="messages">

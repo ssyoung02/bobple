@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
 import '../../../assets/style/myPage/AdminLogin.css';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function AdminLogin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // 여기에 로그인 로직 추가
-        console.log('Username:', username);
-        console.log('Password:', password);
-    };
 
-    const moveAdmin = () => {
-        navigate('/admin/userInfo');
-    }
+        try {
+            const response = await axios.post('http://localhost:8080/api/admin/login', {
+                username: username,
+                email: password
+            });
+
+            if (response.status === 200) {
+                console.log('Login successful');
+                localStorage.setItem('token', response.data.token);
+                navigate('/admin/userInfo');
+            }
+        } catch (error) {
+            console.error('Login failed:', error);
+            alert('관리자 아이디 혹은 비밀번호가 틀렸습니다.');
+        }
+    };
 
     return (
         <div className="admin-form">
@@ -42,7 +52,7 @@ function AdminLogin() {
                         required
                     />
                 </div>
-                <button type="submit" className="admin-button" onClick={moveAdmin}>Login</button>
+                <button type="submit" className="admin-button">Login</button>
             </form>
         </div>
     );

@@ -15,7 +15,7 @@ body {
 }
 
 main{
-  padding: 0 1.25rem 1em 1.25rem;
+  padding: 10px 1.25rem 1em 1.25rem;
 }
 
 @font-face {
@@ -43,6 +43,13 @@ main{
   font-weight: 400;
   src: url("./assets/font/Acme-Regular.ttf") format("truetype");
 }
+
+@font-face {
+  font-family: "LuckiestGuy-Regular";
+  font-weight: 400;
+  src: url("./assets/font/LuckiestGuy-Regular.ttf") format("truetype");
+}
+
 
 button{
   background: transparent;

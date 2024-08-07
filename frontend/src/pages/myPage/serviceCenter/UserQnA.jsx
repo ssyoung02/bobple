@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../../../assets/style/myPage/serviceCenter/UserQnA.css';
+import {ArrowLeftLong, LargeX} from "../../../components/imgcomponents/ImgComponents";
+import {useNavigate} from "react-router-dom";
 
 function UserQnA() {
     const [formData, setFormData] = useState({
@@ -42,38 +44,63 @@ function UserQnA() {
             console.log('질문 제출:', response.data);
             setFormData({ title: '', content: '' });
             alert('질문이 제출되었습니다!');
+            navigate('/mypage/serviceCenter/userQnAList')
         } catch (error) {
             console.error('질문 제출 오류:', error);
             alert('질문 제출에 실패했습니다.');
         }
     };
 
+    const navigate = useNavigate();
+
+    const moveUserQnAList = () => {
+        navigate('/mypage/serviceCenter/userQnAList')
+    }
+
     return (
         <div className="user-qna">
-            <h2>질문하기</h2>
+            <div className="qna-adit-top">
+                <h3>문의하기</h3>
+                <button aria-label="문의하기 닫기" onClick={moveUserQnAList}>
+                    <LargeX/>
+                </button>
+            </div>
             <form onSubmit={handleSubmit} className="qna-form">
                 <div>
-                    <label htmlFor="title">제목:</label>
+                    <label htmlFor="qna-form-title">문의 제목</label>
                     <input
                         type="text"
-                        id="title"
+                        id="qna-form-title"
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
+                        placeholder="문의 제목을 작성해주세요"
                         required
                     />
                 </div>
                 <div>
-                    <label htmlFor="content">내용:</label>
+                    <label htmlFor="qna-form-content">문의 내용</label>
                     <textarea
-                        id="content"
+                        id="qna-form-content"
                         name="content"
                         value={formData.content}
                         onChange={handleChange}
+                        placeholder="문의 내용을 작성해주세요"
                         required
                     ></textarea>
                 </div>
-                <button type="submit">제출</button>
+                <div className="qna-caution">
+                    <h5>문의 시 유의사항</h5>
+                    <ul>
+                        <li>
+                            - 문의 내용에 개인정보가 포함되지 않도록 주의해주세요<br/>(예: 전화번호, 이메일, 환불계좌번호 등)
+                        </li>
+                        <li>
+                            - 부적절한 게시물 등록 시 ID이용 제한 및 게시물이 삭제될 수 있습니다
+                        </li>
+                    </ul>
+                </div>
+                <button className="qna-adit-submit" type="submit">제출</button>
             </form>
         </div>
     );

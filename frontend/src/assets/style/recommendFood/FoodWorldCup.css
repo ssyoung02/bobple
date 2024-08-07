@@ -24,6 +24,8 @@
     text-align: center;
     flex-grow: 1;
     translate: -10px;
+    font-family: LuckiestGuy-Regular, serif;
+    letter-spacing:2px;
 }
 
 .worldCup-text {
@@ -33,15 +35,19 @@
 
 .worldCup-btn {
     display: flex;
+    align-items: center;
+    gap: 5px;
     border: none;
     border-radius: 5px;
     background-color: #EB517E;
     color: white;
-    font-weight: bold;
     padding: 10px 15px;
     margin: 30px auto;
+    font-family: LuckiestGuy-Regular, serif;
+    font-size: 1.2em;
+    letter-spacing:2px;
 }
 
 .worldCup-btn:hover {
-    background-color: #ea4197;
+    background-color: #d63561;
 }

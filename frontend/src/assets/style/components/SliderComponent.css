@@ -33,24 +33,15 @@
     border-radius: 5px;
 }
 
+
+
 /*맛집추천 추천카테고리 슬라이더*/
-.category-description{
-    width: 100vh;
-}
-.category-description-item{
-    position: relative;
-    height: 6em;
-    border-radius: 10px;
-    background: #e288bb;
-}
-.category-description .slick-track{
-    display: flex;
-    gap: 10px;
+.category-square-banner .slick-slide{
+    width: 165px !important;
 }
 
-.category-description-img{
-    position: absolute;
-    overflow: hidden;
+.category-square-banner {
+    height: 150px ;
 }
 
 /*카테고리별 맛집 추천*/
@@ -67,11 +58,6 @@
     height: 5em;
     font-size: 0.8em;
 }
-
-/*.recommend-category-button.active {*/
-/*    background-color: #007bff;*/
-/*    color: white;*/
-/*}*/
 
 .category-icon{
     width: 100%;
