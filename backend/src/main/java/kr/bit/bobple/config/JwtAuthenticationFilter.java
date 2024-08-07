@@ -22,9 +22,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         String token = resolveToken(request);
+        System.out.println("Resolved token: " + token);
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsername(token);
-            JwtAuthenticationToken authentication = new JwtAuthenticationToken(username, null, null);
+            Long userIdx = jwtTokenProvider.getUserIdx(token); // user_idx 추출
+            System.out.println("Extracted userIdx from token: " + userIdx); // 로그 추가
+            JwtAuthenticationToken authentication = new JwtAuthenticationToken(username, userIdx, null);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

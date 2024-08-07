@@ -47,6 +47,11 @@ public class JwtTokenProvider {
         return getClaims(token).getSubject();
     }
 
+    // 토큰에서 user_idx 추출
+    public Long getUserIdx(String token) {
+        return getClaims(token).get("user_idx", Long.class);
+    }
+
     // 토큰 유효성 검사
     public boolean validateToken(String token) {
         try {

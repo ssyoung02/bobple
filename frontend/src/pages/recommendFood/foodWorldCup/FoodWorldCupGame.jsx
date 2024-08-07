@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../../assets/style/recommendFood/FoodWorldCupGame.css';
 import {useNavigate} from "react-router-dom";
+import useHeaderColorChange, {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
 import axios from "axios";
 
 function shuffle(array) {
@@ -58,11 +59,17 @@ const FoodWorldCupGame = () => {
         navigate('/recommend');
     }
 
+    // 게이지 바의 진행 상황을 계산합니다.
+    const progress = ((pairIndex - 1) / (round / 2)) * 100;
+
+    useHeaderColorChange('#F5A8BE');
+    useNavigateNone();
+
     if (winner) {
         return (
             <div className="food-world-cup-game">
                 <div className="worldCup-header">
-                    <h2 className="worldCup-game-title">Food World Cup</h2>
+                    <h1 className="worldCup-game-title">Food World Cup</h1>
                 </div>
                 <div className="winner-box">
                     <br/>
@@ -81,14 +88,17 @@ const FoodWorldCupGame = () => {
     return (
         <div className="food-world-cup-game">
             <div className="worldCup-header">
-                <h2 className="worldCup-game-title">Food World Cup</h2>
+                <h1 className="worldCup-game-title">Food World Cup</h1>
             </div>
             <div className="round-info">
+                <div className="progress-bar">
+                    <div className="progress" style={{width: `${progress}%`}}></div>
+                </div>
                 <span>Round of {round}</span><br/>
                 ({pairIndex}/{round / 2})
             </div>
             <div className="items-grid">
-                <div className="worldCup-vs">VS</div>
+                <h3 className="worldCup-vs">VS</h3>
                 {currentPair.map((item, index) => (
                     <div key={item.foodIdx} className="food-item" onClick={() => handleSelect(item)}>
                         <img src={item.foodImageUrl} />

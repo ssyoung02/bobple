@@ -78,6 +78,11 @@ public class UserService {
         }
     }
 
+    public User authenticate(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        return optionalUser.orElse(null);
+    }
+
 //    @Transactional(readOnly = true)
 //    public Optional<User> getUserWithRecipes(Long userId) {
 //        return userRepository.findUserWithRecipes(userId);

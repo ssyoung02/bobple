@@ -13,8 +13,27 @@
 }
 
 .round-info {
-    font-size: 24px;
+    font-family: Acme-Reqular, serif;
+    color: #EB517E;
+    font-size: 25px;
+    font-weight: bold;
     margin: 30px;
+}
+
+/* 게이지 바 스타일을 추가합니다. */
+.progress-bar {
+    width: 100%;
+    background-color: #eee;
+    border-radius: 25px;
+    overflow: hidden;
+    height: 20px;
+    margin-bottom: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #EB517E;
+    transition: width 0.3s;
 }
 
 .round-info span {
@@ -32,9 +51,9 @@
     position: absolute;
     border: 3px solid #EB517E;
     border-radius: 50%;
-    padding: 0 5px;
+    padding: 5px;
     font-size: 25px;
-    font-weight: bolder;
+    font-weight: bold;
     color: #EB517E;
     z-index: 1;
     background-color: white;

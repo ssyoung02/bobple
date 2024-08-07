@@ -18,7 +18,7 @@ const useHeaderColorChange = (changeColor) => {
 
         return () => {
             if (header) header.style.backgroundColor = ''; // 언마운트 시 초기화
-            if (navBar) navBar.style.backgroundColor = ''; // 언마운트 시 초기화
+            if (main) main.style.backgroundColor = ''; // 언마운트 시 초기화
         };
     }, [changeColor]);
 };
