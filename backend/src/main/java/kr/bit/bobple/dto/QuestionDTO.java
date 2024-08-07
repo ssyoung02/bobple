@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 public class QuestionDTO {
     private Long queIdx;
+    private Long userIdx; // Add userId here
     private String userName;
     private String queTitle;
     private String queDescription;

@@ -28,7 +28,6 @@ public class QuestionController {
         return ResponseEntity.ok(savedQuestion);
     }
 
-    // 내 질문 목록
     @GetMapping("/users/{userIdx}/questions")
     public ResponseEntity<List<QuestionDTO>> getQuestionsByUser(@PathVariable Long userIdx) {
         List<QuestionDTO> questions = questionService.getQuestionsByUser(userIdx);
@@ -39,11 +38,11 @@ public class QuestionController {
     public ResponseEntity<List<QuestionDTO>> getAllQuestions() {
         List<Question> questions = questionService.getAllQuestionsWithUserDetails();
 
-        // Question 엔티티를 QuestionDTO로 변환
         List<QuestionDTO> questionDTOs = questions.stream()
                 .map(q -> new QuestionDTO(
                         q.getQueIdx(),
-                        q.getUser().getName(), // User 엔티티에서 사용자 이름 가져오기
+                        q.getUser().getUserIdx(), // Add userId here
+                        q.getUser().getName(),
                         q.getQueTitle(),
                         q.getQueDescription(),
                         q.getCreatedAt(),
@@ -54,9 +53,10 @@ public class QuestionController {
         return ResponseEntity.ok(questionDTOs);
     }
 
-    // 질문 수정
     @PutMapping("/questions/{queIdx}")
-    public ResponseEntity<Question> updateQuestion(@PathVariable Long queIdx, @RequestBody Question updatedQuestion) {
+    public ResponseEntity<Question> updateQuestion(@PathVariable Long queIdx, @RequestBody Question updatedQuestion, @RequestHeader("Authorization") String authorizationHeader) {
+        System.out.println("헤더 Authorization: " + authorizationHeader); // Authorization 헤더를 로그에 출력
+
         Optional<Question> optionalQuestion = questionRepository.findById(queIdx);
         if (optionalQuestion.isPresent()) {
             Question question = optionalQuestion.get();
@@ -73,7 +73,6 @@ public class QuestionController {
         }
     }
 
-    // 질문 삭제
     @DeleteMapping("/questions/{queIdx}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long queIdx) {
         Optional<Question> optionalQuestion = questionRepository.findById(queIdx);
