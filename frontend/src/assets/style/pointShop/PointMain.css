@@ -143,10 +143,14 @@
     text-align: center;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #F7CCD4;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .game-button:hover {
     border: none;
+    background-color: #EB517E;
 }
 
 .item-header {

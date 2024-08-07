@@ -1,32 +1,36 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const header = document.querySelector('.header');
-const main = document.querySelector('main');
-const navBar = document.querySelector('.navBar');
-
-const useHeaderColorChange = (changeColor) => {
-
+export const useHeaderColorChange = (location, changeColor) => {
     useEffect(() => {
+        const header = document.querySelector('.header');
+        const main = document.querySelector('main');
 
         const changeBackgroundColor = () => {
+            if (location === '/myPage/calculator' || '/recommend/foodWorldCup/foodWorldCupGame') {
                 if (header) header.style.backgroundColor = changeColor;
                 if (main) main.style.backgroundColor = changeColor;
+            } else {
+                if (header) header.style.backgroundColor = '#fff'; // Default color
+                if (main) main.style.backgroundColor = '#fff'; // Default color
+            }
         };
 
         changeBackgroundColor(); // 초기 배경 색상을 설정
 
         return () => {
-            if (header) header.style.backgroundColor = ''; // 언마운트 시 초기화
-            if (main) main.style.backgroundColor = ''; // 언마운트 시 초기화
+            if (header) header.style.backgroundColor = ''; // Reset on unmount
+            if (main) main.style.backgroundColor = ''; // Reset on unmount
         };
-    }, [changeColor]);
-};
 
-export default useHeaderColorChange;
+    }, [location, changeColor]); // location.pathname을 의존성 배열에 추가
+};
 
 export const useNavigateNone = () => {
     useEffect(() => {
+        const header = document.querySelector('.header');
+        const main = document.querySelector('main');
+        const navBar = document.querySelector('.navBar');
 
         const changeDisplay = () => {
             if (header) header.style.display = 'none';
