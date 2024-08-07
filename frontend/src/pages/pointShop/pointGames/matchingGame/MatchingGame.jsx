@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../../../../assets/style/pointGame/MatchingGame.css'
+import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
+import {useLocation} from "react-router-dom";
 
 function MatchingGame() {
     const [matchingGames, setMatchingGames] = useState([]);
@@ -10,6 +13,7 @@ function MatchingGame() {
     const [answerResult, setAnswerResult] = useState('');
     const [randomGames, setRandomGames] = useState([]);
     const [showResult, setShowResult] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/matching-game/foods')
@@ -63,12 +67,17 @@ function MatchingGame() {
         }
     };
 
+    useHeaderColorChange(location.pathname,'#FFE68B'); //
+    useNavigateNone();
+
     return (
-        <div>
-            <p>현재 라운드: {currentGameIndex + 1}/{randomGames.length}</p>
+        <div className="point-game-container">
+
+            <h1 className="point-game-title">FOOD MATCHING</h1>
+            <p className="point-game-round">Round {currentGameIndex + 1}/{randomGames.length}</p>
 
             {showResult ? ( // 결과 화면 조건
-                <div>
+                <div className="matching-result">
                     <h2>게임 종료!</h2>
                     <p>총 {score}개 맞췄습니다!</p>
                 </div>
@@ -76,26 +85,27 @@ function MatchingGame() {
                 currentGameIndex < randomGames.length && ( // 문제 화면 조건
                     <div>
                         {showAnswer ? (
-                            <div>
+                            <div className="matching-box">
                                 <img
                                     src={randomGames[currentGameIndex].defaultImageUrl}
                                     alt="음식 원본 사진"
                                     style={{ width: '200px', height: '200px' }}
                                 />
-                                <p>{answerResult}</p>
-                                <button onClick={handleNext}>
+                                <h5>{answerResult}</h5>
+                                <button onClick={handleNext} className="matching-btn">
                                     {currentGameIndex === randomGames.length - 1 ? '결과 확인' : '다음 문제'}
                                 </button>
                             </div>
                         ) : (
-                            <div>
+                            <div className="matching-box">
                                 <img src={randomGames[currentGameIndex].largeImageUrl}
                                      alt="음식 확대 사진"
-                                     style={{ width: '200px', height: '200px' }}
+                                     style={{width: '200px', height: '200px'}}
                                 />
+                                <h5>이 사진의 음식은 무엇일까요?</h5>
                                 <form onSubmit={handleSubmit}>
-                                    <input type="text" value={userInput} onChange={handleInputChange} />
-                                    <button type="submit">제출</button>
+                                    <input className="matching-input" type="text" value={userInput} onChange={handleInputChange}/>
+                                    <button className="matching-btn" type="submit">제출</button>
                                 </form>
                             </div>
                         )}

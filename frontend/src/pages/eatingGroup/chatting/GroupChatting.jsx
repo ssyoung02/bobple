@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
 import {ArrowLeftLong, Menu, SendMessage} from "../../../components/imgcomponents/ImgComponents";
 import {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
+import {useModal} from "../../../components/modal/ModalContext";
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
@@ -11,6 +12,7 @@ const GroupChatting = () => {
     const [chatRoom, setChatRoom] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
+    const { showModal, setModalType, setChatRoomData } = useModal();
 
     useEffect(() => {
         const fetchChatRoom = async () => {
@@ -70,6 +72,12 @@ const GroupChatting = () => {
         navigate('/group'); // GroupMain 화면으로 이동
     };
 
+    const showChatttingModal = (chatRoom) => {
+        setChatRoomData(chatRoom);
+        setModalType('chatting');
+        showModal();
+    };
+
     useNavigateNone();
 
     return (
@@ -79,7 +87,7 @@ const GroupChatting = () => {
                     <button onClick={handleGoBack}><ArrowLeftLong/></button>
                     <h2>{chatRoom.chatRoomTitle}</h2>
                     <h3>{chatRoom.chatRoomPeople}</h3>
-                    <button><Menu/></button>
+                    <button onClick={showChatttingModal}><Menu/></button>
                 </div>
             )}
             <div className="messages">
