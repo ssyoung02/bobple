@@ -21,6 +21,10 @@ function RecipeDetail() {
     const [newComment, setNewComment] = useState('');
     const navigate = useNavigate();
 
+    // 사용자 닉네임 가져오기 (예시)
+    const userNickname = localStorage.getItem('userNickname'); // 실제 구현에서는 백엔드에서 유저 정보를 가져와야 합니다.
+    // const userId = localStorage.getItem('userIdx'); // 실제 구현에서는 백엔드에서 유저 정보를 가져와야 합니다.
+
     const fetchRecipeAndComments = useCallback(async () => {
         try {
             await getRecipeById(recipeIdx);
@@ -29,6 +33,8 @@ function RecipeDetail() {
                 ...prevRecipe,
                 comments: response.data
             }));
+            // Increment views count
+            await axios.post(`/api/recipes/${recipeIdx}/increment-views`);
         } catch (error) {
             setError(error.message || '데이터를 불러오는 중 오류가 발생했습니다.');
         }
@@ -63,8 +69,20 @@ function RecipeDetail() {
         </div>
     );
 
-    const handleLikeClick = () => {
-        likeRecipe(recipeIdx);
+    const handleLikeClick = async () => {
+        try {
+            // await axios.post(`/api/recipes/${recipeIdx}/like`, { userId: userId }); // 사용자 ID를 요청에 포함
+            await axios.post(`/api/recipes/${recipeIdx}/like`); // 사용자 ID를 요청에 포함하지 않음
+
+            // 좋아요 상태와 좋아요 수 업데이트
+            setSelectedRecipe(prevRecipe => ({
+                ...prevRecipe,
+                liked: !prevRecipe.liked,
+                likesCount: prevRecipe.liked ? prevRecipe.likesCount - 1 : prevRecipe.likesCount + 1
+            }));
+        } catch (error) {
+            setError(error.message || '좋아요 처리 중 오류가 발생했습니다.');
+        }
     };
 
     const handleDeleteClick = async () => {
@@ -79,9 +97,6 @@ function RecipeDetail() {
             }
         }
     };
-
-    // 사용자 닉네임 가져오기 (예시)
-    const userNickname = localStorage.getItem('userNickname'); // 실제 구현에서는 백엔드에서 유저 정보를 가져와야 합니다.
 
     // 재료와 조리 방법 분리 로직
     let ingredients = '';
