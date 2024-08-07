@@ -106,13 +106,53 @@ public class RecipeService {
 //                .map(this::convertToDto);
 //    }
 
-    @Transactional(readOnly = true)
-    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("likesCount"), Sort.Order.desc("viewsCount")));
-        Page<Recipe> recipes = recipeRepository.searchRecipes(keyword, category, pageable);
+//    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
+//        if (sort.equals("viewsCount,desc")) {
+//            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
+//        }
+//        if (keyword == null && category == null) {
+//            return recipeRepository.findAll(pageable).map(RecipeDto::fromEntity);
+//        } else if (keyword != null && category == null) {
+//            return recipeRepository.findByKeyword(keyword, pageable).map(RecipeDto::fromEntity);
+//        } else if (keyword == null && category != null) {
+//            return recipeRepository.findByCategory(category, pageable).map(RecipeDto::fromEntity);
+//        } else {
+//            return recipeRepository.findByKeywordAndCategory(keyword, category, pageable).map(RecipeDto::fromEntity);
+//        }
+//    }
 
-        return recipes.map(this::convertToDto);    }
+//    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
+//        if (sort.equals("viewsCount,desc")) {
+//            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
+//        }
+//        return recipeRepository.searchRecipes(keyword, category, pageable).map(RecipeDto::fromEntity);
+//    }
 
+    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
+        if (sort.equals("viewsCount,desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
+        }
+
+        // If keyword and category are null or empty, find all recipes
+        if ((keyword == null || keyword.isEmpty()) && (category == null || category.isEmpty())) {
+            return recipeRepository.findAll(pageable).map(RecipeDto::fromEntity);
+        }
+        // If keyword is not null or empty and category is null or empty, find by keyword
+        else if (keyword != null && !keyword.isEmpty() && (category == null || category.isEmpty())) {
+            return recipeRepository.findByKeyword(keyword, pageable).map(RecipeDto::fromEntity);
+        }
+        // If keyword is null or empty and category is not null or empty, find by category
+        else if ((keyword == null || keyword.isEmpty()) && category != null && !category.isEmpty()) {
+            return recipeRepository.findByCategory(category, pageable).map(RecipeDto::fromEntity);
+        }
+        // If both keyword and category are not null or empty, find by both keyword and category
+        else {
+            return recipeRepository.findByKeywordAndCategory(keyword, category, pageable).map(RecipeDto::fromEntity);
+        }
+    }
 
     @Transactional(readOnly = true)
     public Page<Recipe> getLatestRecipes(Pageable pageable) {

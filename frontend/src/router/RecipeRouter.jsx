@@ -16,7 +16,7 @@ function RecipeRouter() {
         <RecipeProvider>
             <Routes>
                 <Route path="/" element={<RecipeMain />} /> {/* RecipeMain 컴포넌트 추가 */}
-                <Route path="/search/results" element={<RecipeSearchResults />} /> {/* 추가 */}
+                <Route path="/search" element={<RecipeSearchResults />} /> {/* 추가 */}
                 <Route path="/:recipeIdx" element={<RecipeDetail />} />
                 <Route path="/create" element={<RecipeForm />} />
                 <Route path="/modify/:recipeIdx" element={<RecipeModify />} />
