@@ -1,25 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../../../assets/style/recommendFood/FoodWorldCupGame.css';
 import {useNavigate} from "react-router-dom";
-
-const items = [
-    { id: 1, name: 'Pizza', img: 'https://via.placeholder.com/150?text=Pizza' },
-    { id: 2, name: 'Burger', img: 'https://via.placeholder.com/150?text=Burger' },
-    { id: 3, name: 'Sushi', img: 'https://via.placeholder.com/150?text=Sushi' },
-    { id: 4, name: 'Pasta', img: 'https://via.placeholder.com/150?text=Pasta' },
-    { id: 5, name: 'Salad', img: 'https://via.placeholder.com/150?text=Salad' },
-    { id: 6, name: 'Tacos', img: 'https://via.placeholder.com/150?text=Tacos' },
-    { id: 7, name: 'Ramen', img: 'https://via.placeholder.com/150?text=Ramen' },
-    { id: 8, name: 'Steak', img: 'https://via.placeholder.com/150?text=Steak' },
-    { id: 9, name: 'Ice Cream', img: 'https://via.placeholder.com/150?text=Ice+Cream' },
-    { id: 10, name: 'Donuts', img: 'https://via.placeholder.com/150?text=Donuts' },
-    { id: 11, name: 'Fries', img: 'https://via.placeholder.com/150?text=Fries' },
-    { id: 12, name: 'Hot Dog', img: 'https://via.placeholder.com/150?text=Hot+Dog' },
-    { id: 13, name: 'Sandwich', img: 'https://via.placeholder.com/150?text=Sandwich' },
-    { id: 14, name: 'Pancakes', img: 'https://via.placeholder.com/150?text=Pancakes' },
-    { id: 15, name: 'Cookies', img: 'https://via.placeholder.com/150?text=Cookies' },
-    { id: 16, name: 'Chocolate', img: 'https://via.placeholder.com/150?text=Chocolate' },
-];
+import useHeaderColorChange, {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
+import axios from "axios";
 
 function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
@@ -35,11 +18,20 @@ const FoodWorldCupGame = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const shuffledItems = shuffle([...items]);
-        setCurrentItems(shuffledItems.slice(0, round));
+        (async () => { // 즉시 실행되는 비동기 함수
+            try {
+                const response = await axios.get('http://localhost:8080/api/foodWorldcup/foods');
+                const shuffledItems = shuffle(response.data);
+                setCurrentItems(shuffledItems.slice(0, round));
+            } catch (error) {
+                console.error('음식 정보 가져오기 실패:', error);
+            }
+        })();
     }, []);
 
     useEffect(() => {
+        console.log('currentItems 업데이트:', currentItems);
+
         if (currentItems.length >= 2) {
             setCurrentPair(currentItems.slice(0, 2));
         } else if (currentItems.length === 1) {
@@ -48,6 +40,7 @@ const FoodWorldCupGame = () => {
     }, [currentItems]);
 
     const handleSelect = (selectedItem) => {
+        console.log('선택된 아이템:', selectedItem);
         setNextRoundItems((prev) => [...prev, selectedItem]);
 
         if (currentItems.length > 2) {
@@ -66,19 +59,25 @@ const FoodWorldCupGame = () => {
         navigate('/recommend');
     }
 
+    // 게이지 바의 진행 상황을 계산합니다.
+    const progress = ((pairIndex - 1) / (round / 2)) * 100;
+
+    useHeaderColorChange('#F5A8BE');
+    useNavigateNone();
+
     if (winner) {
         return (
             <div className="food-world-cup-game">
                 <div className="worldCup-header">
-                    <h2 className="worldCup-game-title">Food World Cup</h2>
+                    <h1 className="worldCup-game-title">Food World Cup</h1>
                 </div>
                 <div className="winner-box">
                     <br/>
                     <h2>Winner!</h2>
                     <div className="food-winner-item">
                         <h3 className="food-winner-title">오늘 메뉴는</h3>
-                        <img src={winner.img} alt={winner.name}/>
-                        <div className="food-item-name">{winner.name}</div>
+                        <img src={winner.foodImageUrl} /> {/* winner.img -> winner.foodImageUrl */}
+                        <div className="food-item-name">{winner.foodName}</div>
                     </div>
                     <button className="back-recommend-btn" onClick={moveRecommend}>돌아가기➡️</button>
                 </div>
@@ -89,18 +88,21 @@ const FoodWorldCupGame = () => {
     return (
         <div className="food-world-cup-game">
             <div className="worldCup-header">
-                <h2 className="worldCup-game-title">Food World Cup</h2>
+                <h1 className="worldCup-game-title">Food World Cup</h1>
             </div>
             <div className="round-info">
+                <div className="progress-bar">
+                    <div className="progress" style={{width: `${progress}%`}}></div>
+                </div>
                 <span>Round of {round}</span><br/>
                 ({pairIndex}/{round / 2})
             </div>
             <div className="items-grid">
-                <div className="worldCup-vs">VS</div>
+                <h3 className="worldCup-vs">VS</h3>
                 {currentPair.map((item, index) => (
-                    <div key={index} className="food-item" onClick={() => handleSelect(item)}>
-                        <img src={item.img} alt={item.name}/>
-                        <div className="food-item-name">{item.name}</div>
+                    <div key={item.foodIdx} className="food-item" onClick={() => handleSelect(item)}>
+                        <img src={item.foodImageUrl} />
+                        <div className="food-item-name">{item.foodName}</div>
                     </div>
                 ))}
             </div>

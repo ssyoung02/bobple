@@ -29,7 +29,7 @@
 }
 
 
-.category-buttons {
+.category-btns {
     display: flex;
     justify-content: center;
     margin-bottom: 30px;
@@ -38,7 +38,7 @@
     width: max-content;
 }
 
-.category-buttons button {
+.category-btns button {
     margin: 5px;
     padding: 10px 20px;
     border: none;
@@ -48,7 +48,7 @@
     white-space: nowrap;
 }
 
-.category-buttons .active {
+.category-btns .active {
     background-color: #ea4197;
     color: white;
 }

@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FillBookmark } from "../../components/imgcomponents/ImgComponents";
 import { getUserIdx } from "../../utils/auth";
-import '../../assets/style/myPage/Bookmark.css'; // 스타일 파일 추가 (필요에 따라)
+import '../../assets/style/myPage/Bookmark.css';
+import NaverImageSearch from "../../components/NaverImageSearch";
 
 function BookMark() {
     const navigate = useNavigate();
     const [bookmarkedRestaurants, setBookmarkedRestaurants] = useState([]);
-    const dummyImage = "https://t1.daumcdn.net/thumb/C84x76/?fname=http://t1.daumcdn.net/cfile/2170353A51B82DE005";
 
     useEffect(() => {
         const fetchBookmarkedRestaurants = async () => {
@@ -54,6 +54,19 @@ function BookMark() {
         }
     };
 
+    const handleImageLoaded = (imageUrl) => {
+        // 이미지 로드 완료 시 호출되는 콜백 함수
+        if (imageUrl) {
+            // 이미지가 성공적으로 로드된 경우
+            console.log("이미지 로드 성공:", imageUrl);
+            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
+        } else {
+            // 이미지를 찾지 못했거나 에러 발생 시
+            console.warn("이미지 로드 실패 또는 이미지 없음");
+            // 필요에 따라 기본 이미지 설정 또는 에러 처리
+        }
+    };
+
     return (
         <div className="bookmark-container">
             <h2>북마크 음식점</h2>
@@ -61,7 +74,13 @@ function BookMark() {
                 {bookmarkedRestaurants.map(restaurant => (
                     <li key={restaurant.bookmarkIdx} className="restaurant-item">
                         <div className="restaurant-content" onClick={() => handleRestaurantClick(restaurant)}>
-                            <img src={dummyImage} alt={restaurant.restaurantName} className="restaurant-image" />
+                            <div className="restaurant-image-wrapper">
+                                {/* NaverImageSearch 컴포넌트 사용 */}
+                                <NaverImageSearch
+                                    restaurantName={restaurant.restaurantName}
+                                    onImageLoaded={handleImageLoaded}
+                                />
+                            </div>
                             <div className="restaurant-details">
                                 <h3 className="restaurant-name">{restaurant.restaurantName}</h3> {/* restaurantName 사용 */}
                                 <p className="restaurant-address">{restaurant.addressName}</p> {/* addressName 사용 */}
@@ -69,7 +88,7 @@ function BookMark() {
                             </div>
                         </div>
                         <div className="bookmark-icon" onClick={() => handleBookmarkDelete(restaurant.restaurantId)}>
-                            <FillBookmark />
+                            <FillBookmark/>
                         </div>
                     </li>
                 ))}

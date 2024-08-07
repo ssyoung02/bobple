@@ -44,6 +44,13 @@ main{
   src: url("./assets/font/Acme-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "LuckiestGuy-Regular";
+  font-weight: 400;
+  src: url("./assets/font/LuckiestGuy-Regular.ttf") format("truetype");
+}
+
+
 button{
   background: transparent;
   border: none;

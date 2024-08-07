@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft } from "../../components/imgcomponents/ImgComponents";
 import '../../assets/style/myPage/Calculator.css';
+import useHeaderColorChange from '../../hooks/NavigateComponentHooks';
 
 const Calculator = () => {
     const [file, setFile] = useState(null);
@@ -156,29 +157,7 @@ const Calculator = () => {
         setShowResult(false);
     };
 
-    const location = useLocation();
-
-    useEffect(() => {
-        const header = document.querySelector('.header');
-        const main = document.querySelector('main');
-
-        const changeBackgroundColor = () => {
-            if (location.pathname === '/myPage/calculator') {
-                if (header) header.style.backgroundColor = '#AEE2FF';
-                if (main) main.style.backgroundColor = '#AEE2FF';
-            } else {
-                if (header) header.style.backgroundColor = '#fff'; // Default color
-                if (main) main.style.backgroundColor = '#fff'; // Default color
-            }
-        };
-
-        changeBackgroundColor(); // Set the initial background color
-
-        return () => {
-            if (header) header.style.backgroundColor = ''; // Reset on unmount
-            if (main) main.style.backgroundColor = ''; // Reset on unmount
-        };
-    }, [location]);
+    useHeaderColorChange('#AEE2FF');
 
     const moveMypage = () => {
         navigate('/mypage');
