@@ -3,7 +3,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft } from "../../components/imgcomponents/ImgComponents";
 import '../../assets/style/myPage/Calculator.css';
-import {useHeaderColorChange} from '../../hooks/NavigateComponentHooks';
+import {useHeaderColorChange, useNavigateNone} from '../../hooks/NavigateComponentHooks';
 
 const Calculator = () => {
     const [file, setFile] = useState(null);
@@ -231,6 +231,7 @@ const Calculator = () => {
                     {!showResult && (
                         <button className="calculator-button" onClick={handleCalculate}>계산하기</button>
                     )}
+
                     {showResult && (
                         <>
                             <div className="result-money">

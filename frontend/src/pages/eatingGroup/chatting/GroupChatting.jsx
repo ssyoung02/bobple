@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
-import {ArrowLeftLong, Menu} from "../../../components/imgcomponents/ImgComponents";
+import {ArrowLeftLong, Menu, SendMessage} from "../../../components/imgcomponents/ImgComponents";
 import {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
 
 const GroupChatting = () => {
@@ -91,7 +91,9 @@ const GroupChatting = () => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="메시지를 입력하세요"
                 />
-                <button onClick={handleSendMessage}>전송</button>
+                <button onClick={handleSendMessage}>
+                    <span><SendMessage/></span>
+                </button>
             </div>
         </div>
     );
