@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft } from "../../components/imgcomponents/ImgComponents";
 import '../../assets/style/myPage/Calculator.css';
-import useHeaderColorChange from '../../hooks/NavigateComponentHooks';
+import {useHeaderColorChange} from '../../hooks/NavigateComponentHooks';
 
 const Calculator = () => {
     const [file, setFile] = useState(null);
@@ -17,6 +17,10 @@ const Calculator = () => {
     const [showResult, setShowResult] = useState(false);
 
     const navigate = useNavigate();
+
+    const location = useLocation();
+
+    useHeaderColorChange(location.pathname,'#AEE2FF'); //
 
     const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
@@ -156,8 +160,6 @@ const Calculator = () => {
         setCalculatedAmount('');
         setShowResult(false);
     };
-
-    useHeaderColorChange('#AEE2FF'); //
 
     const moveMypage = () => {
         navigate('/mypage');

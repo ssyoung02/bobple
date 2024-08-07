@@ -4,7 +4,7 @@ import axios from 'axios';
 function NaverImageSearch({restaurantName, onImageLoaded}) {
     const [imageUrl, setImageUrl] = useState(null);
     // 기본 이미지 경로 설정
-    const defaultImageUrl = '/bobple_mascot.png';
+    const defaultImageUrl = '/bobple_mascot_icon.png';
 
     useEffect(() => {
         const fetchImage = async () => {
