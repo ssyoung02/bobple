@@ -3,6 +3,7 @@ package kr.bit.bobple.controller;
 import kr.bit.bobple.config.JwtTokenProvider;
 import kr.bit.bobple.dto.AdminLoginRequest;
 import kr.bit.bobple.dto.QuestionDTO;
+import kr.bit.bobple.dto.UserDto;
 import kr.bit.bobple.entity.Question;
 import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.QuestionRepository;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -62,9 +64,12 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return ResponseEntity.ok(users);
+        List<UserDto> userDtos = users.stream()
+                .map(UserDto::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userDtos);
     }
 
     @DeleteMapping("/users")

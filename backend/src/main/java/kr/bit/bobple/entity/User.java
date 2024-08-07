@@ -1,5 +1,7 @@
 package kr.bit.bobple.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +21,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_idx")
-    private Long userIdx; // 기본 키
+    private Long userIdx;
 
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
@@ -82,12 +84,15 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference // 순환 참조 방지를 위해 직렬화 제외
     private List<Recipe> recipes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<RecipeComment> recipeComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<LikeRecipe> likeRecipes = new ArrayList<>();
 
 

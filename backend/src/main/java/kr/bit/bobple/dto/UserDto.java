@@ -48,6 +48,7 @@ public class UserDto {
         userDto.setCreatedAt(user.getCreatedAt());
         userDto.setUpdatedAt(user.getUpdatedAt());
 
+        // Recipes와 같은 관련 엔티티를 DTO에 포함하지 않음으로써 순환 참조 방지
         return userDto;
     }
 
