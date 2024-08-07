@@ -4,6 +4,7 @@
     grid-template-columns: auto 1fr;
     align-items: center;
     width: 100%;
+    padding-top: 20px;
 }
 
 .goto-mypage {
@@ -11,7 +12,7 @@
 }
 
 .calculator-top h2 {
-    margin: 0;
+    margin-right: 20px;
     justify-self: center;
     grid-column: 2;
 }
@@ -23,8 +24,8 @@
 
 /*영수증 이미지*/
 .calculator-img{
-    width: 70%;
-    margin: 30px auto;
+    width: 60%;
+    margin: 20px auto;
     max-height: 300px;
     overflow: hidden;
     text-align: center;
@@ -33,6 +34,10 @@
 .calculator-img img{
     width: 100%;
     object-fit: fill;
+}
+
+.upload-recipt:hover {
+    background-color: #ddd;
 }
 
 .upload-recipt-img{
@@ -63,6 +68,11 @@
     justify-content: space-around;
 }
 
+.how-many h5,
+.receipt-upload h5 {
+    padding-left: 5px;
+}
+
 .how-many-people *{
     font-family: NotoSansKR-Bold, serif;
     font-size: 1.5em;
@@ -83,6 +93,10 @@
     outline: none; /* 포커스 시 기본 포커스 테두리 제거 */
 }
 
+.receipt-upload {
+    margin-top: 20px;
+}
+
 
 /*영수증 업로드*/
 .receipt-upload-box{
@@ -97,6 +111,17 @@
 .receipt-upload-box *{
     font-family: NotoSansKR-Bold, serif;
     font-size: 1.1em;
+}
+
+.receipt-upload-box label {
+    padding: 0 5px;
+    translate: 0 1px;
+}
+
+.receipt-upload-box label:hover,
+.receipt-upload-box label:active {
+    cursor: pointer;
+    background-color: #ddd;
 }
 
 .upload-recipt{
