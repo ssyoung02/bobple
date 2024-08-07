@@ -48,20 +48,22 @@ public class RecipeService {
 
     @Transactional(readOnly = true)
     public RecipeDto getRecipeById(Long recipeId) {
-//        // Optional 처리 추가
-//        Optional<Recipe> recipeOptional = recipeRepository.findRecipeWithCommentsById(recipeId);
         Recipe recipe = recipeRepository.findRecipeWithUserById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
-//        Recipe recipe = recipeOptional.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
-
-        recipe.setViewsCount(recipe.getViewsCount() + 1); // 조회수 증가
-        recipeRepository.save(recipe);
+        // Increase views count outside of read-only transaction
+        incrementViewsCount(recipe);
 
         // 강제로 초기화
         Hibernate.initialize(recipe.getUser());
 
         return convertToDto(recipe); // 댓글 목록 포함하여 DTO 변환
+    }
+
+    @Transactional
+    protected void incrementViewsCount(Recipe recipe) {
+        recipe.setViewsCount(recipe.getViewsCount() + 1);
+        recipeRepository.save(recipe);
     }
 
     @Transactional
@@ -99,36 +101,6 @@ public class RecipeService {
         }
         recipeRepository.deleteById(recipeId);
     }
-
-//    @Transactional(readOnly = true)
-//    public Page<RecipeDto> searchRecipes(String keyword, String category, Pageable pageable) {
-//        return recipeRepository.searchRecipes(keyword, category, pageable)
-//                .map(this::convertToDto);
-//    }
-
-//    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
-//        if (sort.equals("viewsCount,desc")) {
-//            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
-//        }
-//        if (keyword == null && category == null) {
-//            return recipeRepository.findAll(pageable).map(RecipeDto::fromEntity);
-//        } else if (keyword != null && category == null) {
-//            return recipeRepository.findByKeyword(keyword, pageable).map(RecipeDto::fromEntity);
-//        } else if (keyword == null && category != null) {
-//            return recipeRepository.findByCategory(category, pageable).map(RecipeDto::fromEntity);
-//        } else {
-//            return recipeRepository.findByKeywordAndCategory(keyword, category, pageable).map(RecipeDto::fromEntity);
-//        }
-//    }
-
-//    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
-//        if (sort.equals("viewsCount,desc")) {
-//            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
-//        }
-//        return recipeRepository.searchRecipes(keyword, category, pageable).map(RecipeDto::fromEntity);
-//    }
 
     public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
@@ -191,7 +163,6 @@ public class RecipeService {
             recipeDtos.add(recipeDto);
         }
 
-
         return recipeDtos;
     }
 
@@ -215,8 +186,5 @@ public class RecipeService {
         }
         return recipeDto;
     }
-
-
-
-
 }
+
