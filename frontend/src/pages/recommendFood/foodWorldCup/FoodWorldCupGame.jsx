@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import '../../../assets/style/recommendFood/FoodWorldCupGame.css';
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import { useNavigateNone, useHeaderColorChange } from "../../../hooks/NavigateComponentHooks";
 import axios from "axios";
+import {Trophy} from "../../../components/imgcomponents/ImgComponents";
 
 function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
@@ -14,7 +16,9 @@ const FoodWorldCupGame = () => {
     const [currentPair, setCurrentPair] = useState([]);
     const [pairIndex, setPairIndex] = useState(1);
     const [winner, setWinner] = useState(null);
+
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         (async () => { // 즉시 실행되는 비동기 함수
@@ -58,41 +62,51 @@ const FoodWorldCupGame = () => {
         navigate('/recommend');
     }
 
+    // 게이지 바의 진행 상황을 계산합니다.
+    const progress = ((pairIndex - 1) / (round / 2)) * 100;
+
+    useHeaderColorChange(location.pathname,'#F5A8BE'); //
+    useNavigateNone();
+
     if (winner) {
         return (
-            <div className="food-world-cup-game">
-                <div className="worldCup-header">
-                    <h2 className="worldCup-game-title">Food World Cup</h2>
-                </div>
+            <div className="worldCup-container game-container">
+                <h1 className="worldCup-title game-title">Food World Cup</h1>
                 <div className="winner-box">
-                    <br/>
-                    <h2>Winner!</h2>
-                    <div className="food-winner-item">
-                        <h3 className="food-winner-title">오늘 메뉴는</h3>
-                        <img src={winner.foodImageUrl} /> {/* winner.img -> winner.foodImageUrl */}
-                        <div className="food-item-name">{winner.foodName}</div>
+                    <div className="round-info">
+                        <div className="progress-bar">
+                            <div className="progress" style={{width: `100}%`}}></div>
+                        </div>
+                        <span>Winner!</span><br/>
                     </div>
-                    <button className="back-recommend-btn" onClick={moveRecommend}>돌아가기➡️</button>
+                    <div className="food-winner-item">
+                        <span><Trophy/></span>
+                        <h3 className="food-winner-title">오늘 메뉴는</h3>
+                        <img src={winner.foodImageUrl}/> {/* winner.img -> winner.foodImageUrl */}
+                        <h3 className="food-item-name">{winner.foodName}</h3>
+                    </div>
+                    <button className="back-recommend-btn" onClick={moveRecommend}>돌아가기 ➡️</button>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="food-world-cup-game">
-            <div className="worldCup-header">
-                <h2 className="worldCup-game-title">Food World Cup</h2>
-            </div>
+        <div className="worldCup-container game-container">
+            <h1 className="worldCup-title game-title">Food World Cup</h1>
             <div className="round-info">
+                <div className="progress-bar">
+                    <div className="progress" style={{width: `${progress}%`}}></div>
+                </div>
                 <span>Round of {round}</span><br/>
                 ({pairIndex}/{round / 2})
             </div>
             <div className="items-grid">
-                <div className="worldCup-vs">VS</div>
+                <h3 className="worldCup-vs">VS</h3>
                 {currentPair.map((item, index) => (
                     <div key={item.foodIdx} className="food-item" onClick={() => handleSelect(item)}>
                         <img src={item.foodImageUrl} />
-                        <div className="food-item-name">{item.foodName}</div>
+                        <h3 className="food-item-name">{item.foodName}</h3>
                     </div>
                 ))}
             </div>

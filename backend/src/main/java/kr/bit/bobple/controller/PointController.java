@@ -1,6 +1,6 @@
 package kr.bit.bobple.controller;
 
-import kr.bit.bobple.entity.Point;
+import kr.bit.bobple.dto.PointDto;
 import kr.bit.bobple.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -21,7 +22,10 @@ public class PointController {
     // 전체 기간 포인트 내역 가져오기
     @GetMapping("/points/{userIdx}/all-time")
     public ResponseEntity<Map<String, Object>> getAllTimePoints(@PathVariable Long userIdx) {
-        List<Point> pointHistory = pointService.getPointHistory(userIdx);
+        List<PointDto> pointHistory = pointService.getPointHistory(userIdx).stream()
+                .map(PointDto::fromEntity)
+                .collect(Collectors.toList());
+
         Integer currentPoints = pointService.getCurrentPoints(userIdx).orElse(0);
         String nickName = pointService.getUserNickName(userIdx).orElse("Unknown");
 
@@ -36,7 +40,10 @@ public class PointController {
     // 월별 포인트 내역 가져오기
     @GetMapping("/points/{userIdx}/monthly")
     public ResponseEntity<Map<String, Object>> getMonthlyPoints(@PathVariable Long userIdx, @RequestParam int month, @RequestParam int year) {
-        List<Point> pointHistory = pointService.getPointsByMonth(userIdx, month, year);
+        List<PointDto> pointHistory = pointService.getPointsByMonth(userIdx, month, year).stream()
+                .map(PointDto::fromEntity)
+                .collect(Collectors.toList());
+
         Integer currentPoints = pointService.getCurrentPoints(userIdx).orElse(0);
         String nickName = pointService.getUserNickName(userIdx).orElse("Unknown");
 
@@ -51,7 +58,10 @@ public class PointController {
     // 연도별 포인트 내역 가져오기
     @GetMapping("/points/{userIdx}/yearly")
     public ResponseEntity<Map<String, Object>> getYearlyPoints(@PathVariable Long userIdx, @RequestParam int year) {
-        List<Point> pointHistory = pointService.getPointsByYear(userIdx, year);
+        List<PointDto> pointHistory = pointService.getPointsByYear(userIdx, year).stream()
+                .map(PointDto::fromEntity)
+                .collect(Collectors.toList());
+
         Integer currentPoints = pointService.getCurrentPoints(userIdx).orElse(0);
         String nickName = pointService.getUserNickName(userIdx).orElse("Unknown");
 

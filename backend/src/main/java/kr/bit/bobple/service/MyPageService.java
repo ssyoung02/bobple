@@ -16,7 +16,8 @@ public class MyPageService {
     @Value("${ocr.api.url}")
     private String apiURL;
 
-    @Value("${ocr.api.secret}")
+    @Value("${ocr.api." +
+            "secret}")
     private String secretKey;
 
     public String clovaOCRService(InputStream imageInputStream) {

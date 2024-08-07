@@ -1,31 +1,30 @@
 // src/components/Recipe/SearchFilter.jsx
-import React, { useState, useContext } from 'react';
-import RecipeContext from '../../pages/recipe/RecipeContext';
-import '../../assets/style/recipe/SearchFilter.css'; // CSS 파일 import
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../../assets/style/recipe/SearchFilter.css';
 
 function SearchFilter() {
-    const { searchRecipes, page, size } = useContext(RecipeContext);
     const [keyword, setKeyword] = useState('');
     const [category, setCategory] = useState('');
     const [sortBy, setSortBy] = useState('latest');
+    const navigate = useNavigate();
 
     const handleSearch = () => {
-        searchRecipes(keyword, category, page, size);  //  sortBy 제거
+        navigate(`/recipe/search?keyword=${keyword}&category=${category}&sort=${sortBy}`);
     };
 
-    const categoryOptions = [ // 카테고리 옵션 (예시)
-        { key: '', text: '전체', value: '' },
+    const categoryOptions = [
+        { key: null, text: '전체', value: ''  },
         { key: 'korean', text: '한식', value: '한식' },
         { key: 'chinese', text: '중식', value: '중식' },
         { key: 'japanese', text: '일식', value: '일식' },
         { key: 'yangsik', text: '양식', value: '양식' }
-        // ... 필요한 카테고리 추가
     ];
 
     const sortOptions = [
-        { key: 'latest', text: '최신순', value: 'latest' },
-        { key: 'popularity', text: '인기순', value: 'popularity' },
-        // ... 필요한 정렬 옵션 추가
+        { key: 'latest', text: '최신순', value: 'createdAt,desc' },
+        { key: 'popularity', text: '인기순', value: 'likesCount,desc' },
+        { key: 'views', text: '조회수순', value: 'viewsCount,desc' }
     ];
 
     return (

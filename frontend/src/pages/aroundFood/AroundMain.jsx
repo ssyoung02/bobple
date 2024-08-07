@@ -237,20 +237,6 @@ function AroundMain() {
         });
     };
 
-
-
-    function onMarkerClick(restaurant) {
-        // 현재 위치와 선택된 마커 사이의 거리 계산
-        const distance = computeDistance(currentLocation, { lat: restaurant.y, lng: restaurant.x });
-
-        setSelectedMarker({ ...restaurant, distance }); // 선택된 마커 업데이트 (distance 추가)
-        setIsOpen(true); // CustomOverlayMap 열기
-
-        if (mapRef.current) {
-            mapRef.current.panTo(new kakao.maps.LatLng(restaurant.y, restaurant.x));
-        }
-    }
-
     const handleListItemClick = (restaurant) => {
         // 현재 위치와 선택된 리스트 아이템 사이의 거리 계산
         const distance = computeDistance(currentLocation, { lat: restaurant.y, lng: restaurant.x });
@@ -362,7 +348,7 @@ function AroundMain() {
                     <MapMarker
                         key={restaurant.id}
                         position={{lat: restaurant.y, lng: restaurant.x}}
-                        onClick={() => onMarkerClick(restaurant)}
+                        onClick={() => handleListItemClick(restaurant)}
                         image={{
                             src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
                             size: {

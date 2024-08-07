@@ -1,9 +1,12 @@
 import React from 'react';
 import '../../assets/style/recipe/UserRecommendedRecipeCard.css';
+import { Link } from 'react-router-dom';
 import errorImage from '../../assets/images/error_image.jpg';
 
 function UserRecommendedRecipeCard({ recipe }) {
     return (
+        <div>
+        <Link to={`/recipe/${recipe.recipeIdx}`}>
         <div className="user-recommended-recipe-card">
             <div className="user-recommended-recipe-card-image">
                 <img src={recipe.picture || '/images/default_recipe_image.jpg'} alt={recipe.title} onError={(e) => {
@@ -23,6 +26,8 @@ function UserRecommendedRecipeCard({ recipe }) {
                     <span>{recipe.likesCount}</span>
                 </div>
             </div>
+        </div>
+        </Link>
         </div>
     );
 }

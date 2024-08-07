@@ -12,6 +12,37 @@
     margin-bottom: 10px;
 }
 
+.search-box {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.search-field {
+    position: relative;
+}
+
+.group-search-box {
+    width: 180px;
+}
+
+.group-search-box::placeholder,
+.group-search-select {
+    font-size: 15px;
+}
+
+.group-search-select:focus,
+.group-search-box:focus {
+    outline: none;
+    border-color: #233B6F;
+}
+
+.group-search-btn {
+    position: absolute;
+    top: 1px;
+    right: 5px;
+}
+
 .scroll-container {
     display: flex;
     gap: 5px;

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../../assets/style/admin/NoticeContext.css'
+import mascot from "../../assets/images/bobple_mascot.png";
+import {useNavigate} from "react-router-dom";
 
 function NoticeContext() {
     // 공지사항 제목과 내용을 저장하는 상태
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const navigate = useNavigate();
 
     // 폼 제출을 처리하는 함수
     const handleSubmit = async (e) => {
@@ -58,31 +62,61 @@ function NoticeContext() {
         setContent('');
     };
 
+    const moveUserInfo = () => {
+        navigate('../userInfo');
+    };
+    const moveRecipe = () => {
+        navigate('../recipeBoard');
+    };
+    const moveNotice = () => {
+        navigate('../notice');
+    };
+    const moveQnA = () => {
+        navigate('../qnAList');
+    };
+    const moveBackApp = () => {
+        navigate('/mypage/login');
+    }
+
     return (
-        <div>
-            <h2>공지사항 작성</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="title">제목:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
+        <div className="admin-form-container">
+            <div className="left-section">
+                <button className="nav-button-n info" onClick={moveUserInfo}>회원 정보</button>
+                <button className="nav-button-n recipe" onClick={moveRecipe}>게시글 관리</button>
+                <button className="nav-button-n notice" onClick={moveNotice}>공지 사항</button>
+                <button className="nav-button-n qna" onClick={moveQnA}>문의 사항</button>
+                <img src={mascot} alt="밥풀이" className="admin-image"/>
+            </div>
+            <div className="right-section">
+                <div className="right-header">
+                    <h2 className="section-title">공지사항 작성</h2>
+                    <button onClick={moveBackApp} className="back-app-btn">x</button>
                 </div>
-                <div>
-                    <label htmlFor="content">내용:</label>
-                    <textarea
-                        id="content"
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        required
-                    ></textarea>
-                </div>
-                <button type="submit">공지사항 제출</button>
-            </form>
+                <form onSubmit={handleSubmit} className="notice-form">
+                    <div className="notice-form-group">
+                        <label htmlFor="title" className="notice-form-label">제목:</label>
+                        <input
+                            type="text"
+                            id="title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                            className="notice-form-input"
+                        />
+                    </div>
+                    <div className="notice-form-group">
+                        <label htmlFor="content" className="notice-form-label">내용:</label>
+                        <textarea
+                            id="content"
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            required
+                            className="notice-form-textarea"
+                        ></textarea>
+                    </div>
+                    <button type="submit" className="notice-form-submit">제출</button>
+                </form>
+            </div>
         </div>
     );
 }

@@ -7,7 +7,7 @@ export const useHeaderColorChange = (location, changeColor) => {
         const main = document.querySelector('main');
 
         const changeBackgroundColor = () => {
-            if (location === '/myPage/calculator') {
+            if (location === '/myPage/calculator' || '/recommend/foodWorldCup/foodWorldCupGame') {
                 if (header) header.style.backgroundColor = changeColor;
                 if (main) main.style.backgroundColor = changeColor;
             } else {

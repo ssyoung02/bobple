@@ -17,7 +17,6 @@ const Calculator = () => {
     const [showResult, setShowResult] = useState(false);
 
     const navigate = useNavigate();
-
     const location = useLocation();
 
     useHeaderColorChange(location.pathname,'#AEE2FF'); //

@@ -1,29 +1,25 @@
 .worldCup-container {
-    padding-top: 50px;
-}
-
-.worldCup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding-top: 40px;
+    text-align: center;
 }
 
 .arrow-btn {
-    font-size: 20px;
+    font-size: 25px;
     cursor: pointer;
+    margin-bottom: 22px;
+    display: flex;
 }
 
 .trophy-image {
     width: 100%;
-    translate: 0 -20px;
+    translate: 0 -30px;
 }
 
 .worldCup-title {
     color: #EB517E;
     font-weight: bold;
+    font-size: 30px;
     text-align: center;
-    flex-grow: 1;
-    translate: -10px;
     font-family: LuckiestGuy-Regular, serif;
     letter-spacing:2px;
 }
@@ -31,6 +27,8 @@
 .worldCup-text {
     text-align: center;
     font-weight: bold;
+    font-size: 18px;
+    padding: 20px;
 }
 
 .worldCup-btn {
@@ -42,7 +40,7 @@
     background-color: #EB517E;
     color: white;
     padding: 10px 15px;
-    margin: 30px auto;
+    margin: 50px auto;
     font-family: LuckiestGuy-Regular, serif;
     font-size: 1.2em;
     letter-spacing:2px;
@@ -50,4 +48,8 @@
 
 .worldCup-btn:hover {
     background-color: #d63561;
+}
+
+.worldCup-btn span {
+    translate: 0 3px;
 }

@@ -29,7 +29,7 @@
 }
 
 
-.category-buttons {
+.category-btns {
     display: flex;
     justify-content: center;
     margin-bottom: 30px;
@@ -38,7 +38,7 @@
     width: max-content;
 }
 
-.category-buttons button {
+.category-btns button {
     margin: 5px;
     padding: 10px 20px;
     border: none;
@@ -48,7 +48,7 @@
     white-space: nowrap;
 }
 
-.category-buttons .active {
+.category-btns .active {
     background-color: #ea4197;
     color: white;
 }
@@ -143,10 +143,14 @@
     text-align: center;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #F7CCD4;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .game-button:hover {
     border: none;
+    background-color: #EB517E;
 }
 
 .item-header {

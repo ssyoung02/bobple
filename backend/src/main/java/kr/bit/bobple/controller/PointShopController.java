@@ -1,12 +1,14 @@
 package kr.bit.bobple.controller;
 
-import kr.bit.bobple.entity.PointShop;
-import kr.bit.bobple.entity.PurchasedGift;
+import kr.bit.bobple.dto.PointShopDto;
+import kr.bit.bobple.dto.PurchasedGiftDto;
 import kr.bit.bobple.service.PointShopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -20,40 +22,53 @@ public class PointShopController {
     }
 
     @GetMapping("/PointMain")
-    public List<PointShop> getAllPointShops() {
-        return pointShopService.getAllPointShops();
+    public ResponseEntity<List<PointShopDto>> getAllPointShops() {
+        List<PointShopDto> pointShopDtos = pointShopService.getAllPointShops().stream()
+                .map(PointShopDto::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(pointShopDtos);
     }
 
     @GetMapping("/PointGifticonDetail/{productIdx}")
-    public PointShop getPointShopByProductIdx(@PathVariable Long productIdx) {
-        return pointShopService.getPointShopByProductIdx(productIdx);
+    public ResponseEntity<PointShopDto> getPointShopByProductIdx(@PathVariable Long productIdx) {
+        PointShopDto pointShopDto = PointShopDto.fromEntity(pointShopService.getPointShopByProductIdx(productIdx));
+        return ResponseEntity.ok(pointShopDto);
     }
 
     @PostMapping("/GiftPurchase")
-    public boolean purchaseProduct(@RequestParam Long userIdx, @RequestParam Long productIdx) {
-        return pointShopService.purchaseProduct(userIdx, productIdx);
+    public ResponseEntity<Boolean> purchaseProduct(@RequestParam Long userIdx, @RequestParam Long productIdx) {
+        boolean result = pointShopService.purchaseProduct(userIdx, productIdx);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/GiftPurchase/{userIdx}")
-    public List<PurchasedGift> getPurchasedGiftsByUserIdx(
+    public ResponseEntity<List<PurchasedGiftDto>> getPurchasedGiftsByUserIdx(
             @PathVariable Long userIdx,
             @RequestParam(defaultValue = "desc") String sort,
             @RequestParam(required = false) Boolean isUsed
     ) {
+        List<PurchasedGiftDto> purchasedGifts;
         if (isUsed == null) {
-            return pointShopService.getPurchasedGiftsByUserIdx(userIdx, sort);
+            purchasedGifts = pointShopService.getPurchasedGiftsByUserIdx(userIdx, sort).stream()
+                    .map(PurchasedGiftDto::fromEntity)
+                    .collect(Collectors.toList());
         } else {
-            return pointShopService.getPurchasedGiftsByUserIdxAndIsUsed(userIdx, isUsed, sort);
+            purchasedGifts = pointShopService.getPurchasedGiftsByUserIdxAndIsUsed(userIdx, isUsed, sort).stream()
+                    .map(PurchasedGiftDto::fromEntity)
+                    .collect(Collectors.toList());
         }
+        return ResponseEntity.ok(purchasedGifts);
     }
 
     @GetMapping("/GifticonBarcode/{productIdx}")
-    public PurchasedGift getBarcodeByProductIdx(@PathVariable Long productIdx, @RequestParam Long userIdx) {
-        return pointShopService.getPurchasedGiftByProductIdxAndUserIdx(productIdx, userIdx);
+    public ResponseEntity<PurchasedGiftDto> getBarcodeByProductIdx(@PathVariable Long productIdx, @RequestParam Long userIdx) {
+        PurchasedGiftDto purchasedGiftDto = PurchasedGiftDto.fromEntity(pointShopService.getPurchasedGiftByProductIdxAndUserIdx(productIdx, userIdx));
+        return ResponseEntity.ok(purchasedGiftDto);
     }
 
     @PostMapping("/GiftUse")
-    public boolean useGift(@RequestParam Long userIdx, @RequestParam Long productIdx) {
-        return pointShopService.useGift(userIdx, productIdx);
+    public ResponseEntity<Boolean> useGift(@RequestParam Long userIdx, @RequestParam Long productIdx) {
+        boolean result = pointShopService.useGift(userIdx, productIdx);
+        return ResponseEntity.ok(result);
     }
 }
