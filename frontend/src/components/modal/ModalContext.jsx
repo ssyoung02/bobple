@@ -48,6 +48,8 @@ export const ModalProvider = ({ children }) => {
                     chatRoomTitle={chatRoomData.chatRoomTitle}
                     chatRoomDescription={chatRoomData.description}
                     chatRoomPeople={chatRoomData.roomPeople}
+                    chatRoomImage={chatRoomData.roomImage} // 이미지 URL 추가
+                    currentParticipants={chatRoomData.currentParticipants} // 현재 참여 중인 인원 추가
                 />
             )}
             {errorState === 'show' && <ErrorModal message={errorMessage} hideErrorModal={hideErrorModal} />}

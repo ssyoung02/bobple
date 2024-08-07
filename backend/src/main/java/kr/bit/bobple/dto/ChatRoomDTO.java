@@ -13,9 +13,11 @@ public class ChatRoomDTO {
     private String chatRoomTitle;
     private String description;
     private String location;
-    private int roomPeople;
     private LocalDateTime createdAt;
+    private int roomPeople;
+    private int currentParticipants;
     private String roomImage;
+    private ChatRoom.Status status;
     private Long roomLeaderId;
 
     // 생성자, getter, setter
@@ -25,9 +27,11 @@ public class ChatRoomDTO {
         dto.setChatRoomTitle(chatRoom.getChatRoomTitle());
         dto.setDescription(chatRoom.getDescription());
         dto.setLocation(chatRoom.getLocation());
-        dto.setRoomPeople(chatRoom.getRoomPeople());
         dto.setCreatedAt(chatRoom.getCreatedAt());
+        dto.setRoomPeople(chatRoom.getRoomPeople());
+        dto.setCurrentParticipants(chatRoom.getCurrentParticipants());
         dto.setRoomImage(chatRoom.getRoomImage());
+        dto.setStatus(chatRoom.getStatus());
         dto.setRoomLeaderId(chatRoom.getRoomLeader().getUserIdx());
         return dto;
     }

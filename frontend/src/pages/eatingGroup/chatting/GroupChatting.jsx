@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import axios from 'axios';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
-import {ArrowLeftLong, Menu, SendMessage} from "../../../components/imgcomponents/ImgComponents";
-import {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
+import { ArrowLeftLong, Menu } from "../../../components/imgcomponents/ImgComponents";
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
+    const navigate = useNavigate(); // useNavigate 훅 사용
     const [chatRoom, setChatRoom] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -65,13 +65,15 @@ const GroupChatting = () => {
         }
     };
 
-    useNavigateNone();
+    const handleGoBack = () => {
+        navigate('/group'); // GroupMain 화면으로 이동
+    };
 
     return (
         <div className="chatting">
             {chatRoom && (
                 <div className="chat-room-info">
-                    <button><ArrowLeftLong/></button>
+                    <button onClick={handleGoBack}><ArrowLeftLong/></button>
                     <h2>{chatRoom.chatRoomTitle}</h2>
                     <h3>{chatRoom.chatRoomPeople}</h3>
                     <button><Menu/></button>

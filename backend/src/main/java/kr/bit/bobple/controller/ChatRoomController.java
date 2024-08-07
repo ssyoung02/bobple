@@ -49,11 +49,6 @@ public class ChatRoomController {
         return chatRoomService.getAllChatRoomsIncludingOrphaned(userIdx);
     }
 
-//    @GetMapping("/{chatRoomId}")
-//    public ChatRoom getChatRoom(@PathVariable Long chatRoomId) {
-//        return chatRoomService.getChatRoomById(chatRoomId);
-//    }
-
     @GetMapping("/{chatRoomId}")
     public ResponseEntity<ChatRoomDTO> getChatRoom(@PathVariable Long chatRoomId) {
         ChatRoom chatRoom = chatRoomService.getChatRoomById(chatRoomId);
@@ -78,6 +73,15 @@ public class ChatRoomController {
         return chatRoomService.getAllChatRooms();
     }
 
+    @PostMapping("/join/{chatRoomId}")
+    public ResponseEntity<ChatRoomDTO> joinChatRoom(@PathVariable Long chatRoomId, HttpServletRequest request) {
+        String token = resolveToken(request);
+        Long userIdx = jwtTokenProvider.getUserIdx(token);
+        ChatRoom chatRoom = chatRoomService.joinChatRoom(chatRoomId, userIdx);
+        ChatRoomDTO chatRoomDTO = ChatRoomDTO.fromEntity(chatRoom);
+        return ResponseEntity.ok(chatRoomDTO);
+    }
+
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -85,5 +89,4 @@ public class ChatRoomController {
         }
         return null;
     }
-
 }
