@@ -25,6 +25,9 @@ public class Message {
     @Column(nullable = false)
     private String content;
 
+//    @Column(nullable = false)
+//    private ZonedDateTime createdAt;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

@@ -79,5 +79,29 @@
     opacity: 0.5;
 }
 
+/* 추가된 CSS */
+.message-left {
+    align-self: flex-start; /* 왼쪽 정렬 */
+    background-color: #f1f0f0; /* 왼쪽 메시지 배경색 */
+}
 
+.message-right {
+    align-self: flex-end; /* 오른쪽 정렬 */
+    background-color: #d1ffd1; /* 오른쪽 메시지 배경색 */
+}
 
+.message-left .profile-image {
+    margin-right: 10px; /* 왼쪽 메시지의 프로필 이미지 간격 */
+}
+
+.message-right .profile-image {
+    margin-left: 10px; /* 오른쪽 메시지의 프로필 이미지 간격 */
+}
+
+.message-left .message-content {
+    text-align: left;
+}
+
+.message-right .message-content {
+    text-align: right;
+}

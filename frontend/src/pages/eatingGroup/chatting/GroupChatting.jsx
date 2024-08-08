@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
 import moment from 'moment-timezone';
+import 'moment/locale/ko'; // 한국어 로케일 추가
 import '../../../assets/style/eatingGroup/GroupChatting.css';
 import { ArrowLeftLong, Menu, SendMessage } from "../../../components/imgcomponents/ImgComponents";
 import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
@@ -19,6 +20,8 @@ const GroupChatting = () => {
     const socket = io('http://localhost:3001');
 
     useEffect(() => {
+        moment.locale('ko'); // 한국어 로케일 설정
+
         const fetchChatRoom = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}`);
@@ -31,12 +34,11 @@ const GroupChatting = () => {
         const fetchMessages = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/messages`);
-                // 메시지를 불러올 때 +9시간을 더해서 표시
-                const updatedMessages = response.data.map(message => ({
+                const messagesWithFormattedTime = response.data.map(message => ({
                     ...message,
-                    createdAt: moment.utc(message.createdAt).add(9, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                    createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
                 }));
-                setMessages(updatedMessages);
+                setMessages(messagesWithFormattedTime);
             } catch (error) {
                 console.error('Failed to fetch messages', error);
             }
@@ -81,9 +83,12 @@ const GroupChatting = () => {
         socket.emit('joinRoom', chatRoomId);
 
         socket.on('newMessage', (message) => {
-            // 새로운 메시지를 받을 때도 +9시간을 더해서 표시
-            message.createdAt = moment.utc(message.createdAt).add(9, 'hours').format('YYYY-MM-DD HH:mm:ss');
-            setMessages((prevMessages) => [...prevMessages, message]);
+            console.log("New message received at: ", moment().format('YYYY-MM-DD HH:mm:ss'));
+            const formattedMessage = {
+                ...message,
+                createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
+            };
+            setMessages((prevMessages) => [...prevMessages, formattedMessage]);
         });
 
         return () => {
@@ -103,7 +108,7 @@ const GroupChatting = () => {
                 userId: user.userIdx,
                 name: user.name,
                 profileImage: user.profileImage,
-                createdAt: moment.utc().add(9, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                createdAt: moment().format('YYYY-MM-DD HH:mm:ss') // 현재 시간 추가
             };
 
             console.log("Sending message:", message);
@@ -112,6 +117,13 @@ const GroupChatting = () => {
             setNewMessage("");
         } catch (error) {
             console.error('Failed to send message', error);
+        }
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
         }
     };
 
@@ -139,10 +151,12 @@ const GroupChatting = () => {
             )}
             <div className="messages">
                 {messages.map((message, index) => (
-                    <div key={index} className="message">
+                    <div key={index} className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
                         <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
-                        <p><strong>{message.name}</strong>: {message.content}</p>
-                        <p>{message.createdAt}</p>
+                        <div className="message-content">
+                            <p><strong>{message.name}</strong>: {message.content}</p>
+                            <p>{moment(message.createdAt).format('a h:mm')}</p> {/* 시간 표시 */}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -151,6 +165,7 @@ const GroupChatting = () => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     placeholder="메시지를 입력하세요"
                 />
                 <button onClick={handleSendMessage}>
