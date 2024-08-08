@@ -7,6 +7,7 @@ const mysql = require('mysql2');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const path = require('path');
+const moment = require('moment-timezone');
 
 const app = express();
 const server = http.createServer(app);
@@ -31,7 +32,7 @@ const db = mysql.createConnection({
     host: dbConfig.url.split('/')[2].split(':')[0],
     user: dbConfig.username,
     password: dbConfig.password,
-    database: dbConfig.url.split('/')[3]
+    database: dbConfig.url.split('/')[3].split('?')[0] // serverTimezone=UTC 제거
 });
 
 db.connect((err) => {
@@ -51,7 +52,7 @@ app.post('/send-message', (req, res) => {
         return;
     }
 
-    const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const createdAt = moment().tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss'); // 서울 시간대로 설정
 
     // 데이터베이스에 메시지 저장
     const query = 'INSERT INTO messages (chat_room_id, content, created_at, user_id, name, profile_image) VALUES (?, ?, ?, ?, ?, ?)';

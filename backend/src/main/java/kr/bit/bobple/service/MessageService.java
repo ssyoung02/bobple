@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -25,8 +26,8 @@ public class MessageService {
         Message message = new Message();
         message.setChatRoomId(chatRoomId);
         message.setContent(content);
-        // 현재 시간에 +9 시간을 더해서 저장
-        message.setCreatedAt(LocalDateTime.now(ZoneOffset.UTC).plusHours(9));
+//        message.setCreatedAt(ZonedDateTime.now(ZoneOffset.UTC));  // 현재 시간을 UTC로 저장
+        message.setCreatedAt(LocalDateTime.now());
         message.setUserId(user.getUserIdx());
         message.setName(user.getName());
         message.setProfileImage(user.getProfileImage());
