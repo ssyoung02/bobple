@@ -75,9 +75,10 @@ function MatchingGame() {
             setEarnedPoint(calculatedPoint);
             const token = localStorage.getItem('token');
 
-            axios.post('http://localhost:8080/api/matchingGame/result', {
+            axios.post('http://localhost:8080/api/point/result', {
                 userIdx: parseInt(userIdx, 10),
-                point: calculatedPoint // 계산된 포인트 전달
+                point: calculatedPoint, // 계산된 포인트 전달
+                pointComment: "음식 확대사진 맞추기 게임"
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -109,8 +110,6 @@ function MatchingGame() {
         // 게임별 포인트 계산 로직 구현
         if (correctAnswers == 5) {
             return 5;
-        } else if (correctAnswers == 4) {
-            return 3;
         } else {
             return 0;
         }
