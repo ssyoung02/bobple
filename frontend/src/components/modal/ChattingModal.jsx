@@ -5,13 +5,15 @@ import React from "react";
 const ChattingModal = ({ modalState, hideModal, chatRoomTitle }) => {
 
     const closeModal = () => {
-        hideModal();
+        setTimeout(() => {
+            hideModal();
+        }, 500);
     };
 
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content chatting">
-                <button onClick={hideModal}>X</button>
+                <button onClick={closeModal}>X</button>
                 <h3>{chatRoomTitle}</h3>
             </div>
         </div>
