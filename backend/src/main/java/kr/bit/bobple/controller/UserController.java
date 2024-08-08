@@ -63,18 +63,22 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
-        Optional<User> optionalUser = userRepository.findById(updatedUser.getUserIdx());
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto updatedUserDto) {
+        Optional<User> optionalUser = userRepository.findById(updatedUserDto.getUserIdx());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setNickName(updatedUser.getNickName());
-            user.setBirthdate(updatedUser.getBirthdate());
+            user.setNickName(updatedUserDto.getNickName());
+            user.setBirthdate(updatedUserDto.getBirthdate());
             userRepository.save(user);
-            return ResponseEntity.ok(user);
+
+            // 엔티티를 DTO로 변환하여 반환
+            UserDto updatedUser = UserDto.fromEntity(user);
+            return ResponseEntity.ok(updatedUser);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @PutMapping("/{userIdx}/profile-image")
     public ResponseEntity<User> updateProfileImage(@PathVariable Long userIdx, @RequestParam("profileImage") MultipartFile file) {

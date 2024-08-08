@@ -2,6 +2,7 @@ package kr.bit.bobple.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -84,15 +85,15 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Recipe> recipes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference
     private List<RecipeComment> recipeComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference
     private List<LikeRecipe> likeRecipes = new ArrayList<>();
 
 
