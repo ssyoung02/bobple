@@ -1,10 +1,13 @@
 package kr.bit.bobple.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter

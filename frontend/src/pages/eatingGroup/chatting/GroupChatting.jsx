@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
+import moment from 'moment-timezone';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
 import { ArrowLeftLong, Menu, SendMessage } from "../../../components/imgcomponents/ImgComponents";
 import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
@@ -30,7 +31,12 @@ const GroupChatting = () => {
         const fetchMessages = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/messages`);
-                setMessages(response.data);
+                // 메시지를 불러올 때 +9시간을 더해서 표시
+                const updatedMessages = response.data.map(message => ({
+                    ...message,
+                    createdAt: moment.utc(message.createdAt).add(9, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                }));
+                setMessages(updatedMessages);
             } catch (error) {
                 console.error('Failed to fetch messages', error);
             }
@@ -75,6 +81,8 @@ const GroupChatting = () => {
         socket.emit('joinRoom', chatRoomId);
 
         socket.on('newMessage', (message) => {
+            // 새로운 메시지를 받을 때도 +9시간을 더해서 표시
+            message.createdAt = moment.utc(message.createdAt).add(9, 'hours').format('YYYY-MM-DD HH:mm:ss');
             setMessages((prevMessages) => [...prevMessages, message]);
         });
 
@@ -94,7 +102,8 @@ const GroupChatting = () => {
                 content: newMessage,
                 userId: user.userIdx,
                 name: user.name,
-                profileImage: user.profileImage
+                profileImage: user.profileImage,
+                createdAt: moment.utc().add(9, 'hours').format('YYYY-MM-DD HH:mm:ss')
             };
 
             console.log("Sending message:", message);
@@ -133,6 +142,7 @@ const GroupChatting = () => {
                     <div key={index} className="message">
                         <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
                         <p><strong>{message.name}</strong>: {message.content}</p>
+                        <p>{message.createdAt}</p>
                     </div>
                 ))}
             </div>

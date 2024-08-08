@@ -1,5 +1,6 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.auth.AuthenticationFacade;
 import kr.bit.bobple.config.JwtTokenProvider;
 import kr.bit.bobple.dto.AuthResponse;
 import kr.bit.bobple.dto.UserDto;
@@ -30,6 +31,9 @@ public class UserController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private AuthenticationFacade authenticationFacade; // AuthenticationFacade 주입
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -121,9 +125,13 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
-        String name = authentication.getName();
-        UserDto userDto = userService.getUserByUsername(name);
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<UserDto> getCurrentUser() {
+        User currentUser = authenticationFacade.getCurrentUser();
+        if (currentUser != null) {
+            UserDto userDto = UserDto.fromEntity(currentUser);
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.status(401).body(null);
+        }
     }
 }
