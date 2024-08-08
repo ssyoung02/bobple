@@ -34,8 +34,8 @@ public class UserController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private AuthenticationFacade authenticationFacade; // AuthenticationFacade 주입
+//    @Autowired
+//    private AuthenticationFacade authenticationFacade; // AuthenticationFacade 주입
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -135,14 +135,14 @@ public class UserController {
         }
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<UserDto> getCurrentUser() {
-        User currentUser = authenticationFacade.getCurrentUser();
-        if (currentUser != null) {
-            UserDto userDto = UserDto.fromEntity(currentUser);
-            return ResponseEntity.ok(userDto);
-        } else {
-            return ResponseEntity.status(401).body(null);
-        }
-    }
+//    @GetMapping("/me")
+//    public ResponseEntity<UserDto> getCurrentUser() {
+//        User currentUser = authenticationFacade.getCurrentUser();
+//        if (currentUser != null) {
+//            UserDto userDto = UserDto.fromEntity(currentUser);
+//            return ResponseEntity.ok(userDto);
+//        } else {
+//            return ResponseEntity.status(401).body(null);
+//        }
+//    }
 }
