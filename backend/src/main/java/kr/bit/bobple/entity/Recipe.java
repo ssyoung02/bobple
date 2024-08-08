@@ -40,6 +40,12 @@ public class Recipe {
     private String tag; // 'tags' -> 'tag' 로 수정
     private int reportCount;
 
+    @Column
+    private int cookTime; // 조리 시간 (분 단위)
+
+    @Column
+    private int calories; // 총 칼로리
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -55,7 +61,9 @@ public class Recipe {
         this.content = recipeDto.getContent();
         this.category = recipeDto.getCategory();
         this.picture = recipeDto.getPicture();
-        this.tag = recipeDto.getTags();
+        this.tag = recipeDto.getTag();
+        this.cookTime = recipeDto.getCookTime(); // 추가
+        this.calories = recipeDto.getCalories(); // 추가
         this.updatedAt = LocalDateTime.now();
     }
 }

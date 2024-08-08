@@ -1,15 +1,7 @@
-/* RecipeForm.css */
 .recipe-form-container {
-    width: 80%;
-    margin: 20px auto;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.recipe-form-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .form-field {
@@ -22,34 +14,33 @@
     font-weight: bold;
 }
 
-.form-field input[type="text"],
+.form-field input,
 .form-field textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 .recipe-image {
-    max-width: 100%;
-    height: auto;
     margin-top: 10px;
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
 }
 
 .submit-button {
+    width: 100%;
+    padding: 10px;
     background-color: #007bff;
     color: white;
-    padding: 10px 20px;
     border: none;
-    border-radius: 3px;
+    border-radius: 5px;
     cursor: pointer;
-}
-
-.submit-button:hover {
-    background-color: #0069d9;
+    font-size: 16px;
 }
 
 .error-message {
     color: red;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }

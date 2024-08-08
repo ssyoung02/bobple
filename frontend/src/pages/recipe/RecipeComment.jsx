@@ -1,12 +1,28 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect  } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import '../../assets/style/recipe/RecipeComment.css';
 import dayjs from 'dayjs'; // 날짜 포맷팅을 위한 라이브러리
+import axios from '../../utils/axios';
 
 function RecipeComment({ comment , recipeId }) {
     const { updateComment, deleteComment } = useContext(RecipeContext);
     const [isEditing, setIsEditing] = useState(false);
     const [editedContent, setEditedContent] = useState(comment.recipeContent);
+    const [currentUserNickname, setCurrentUserNickname] = useState('');
+
+    useEffect(() => {
+        // 로그인한 사용자의 닉네임을 Principal에서 가져오기
+        const fetchCurrentUserNickname = async () => {
+            try {
+                const response = await axios.get('/api/users/me');
+                setCurrentUserNickname(response.data.nickName);
+            } catch (error) {
+                console.error('로그인한 사용자 정보를 가져오는 중 오류 발생:', error);
+            }
+        };
+        fetchCurrentUserNickname();
+    }, []);
+
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -47,14 +63,16 @@ function RecipeComment({ comment , recipeId }) {
                     <span className="nickname">{comment.nickname}</span>
                     <span className="created-at">{dayjs(comment.createdAt).format('YYYY-MM-DD HH:mm')}</span>
                 </div>
-                <div className="comment-actions">
-                    {!isEditing && (
-                        <>
-                            <button onClick={handleEditClick}>수정</button>
-                            <button onClick={handleDeleteClick}>삭제</button>
-                        </>
-                    )}
-                </div>
+                {currentUserNickname === comment.nickname && (
+                    <div className="comment-actions">
+                        {!isEditing && (
+                            <>
+                                <button onClick={handleEditClick}>수정</button>
+                                <button onClick={handleDeleteClick}>삭제</button>
+                            </>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="comment-content">

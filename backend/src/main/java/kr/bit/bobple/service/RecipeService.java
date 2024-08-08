@@ -191,26 +191,6 @@ public class RecipeService {
         return recipeDto;
     }
 
-//    // 좋아요 토글 메서드
-//    @Transactional
-//    public void toggleLike(Long recipeId) {
-//        User user = authenticationFacade.getCurrentUser();
-//        Recipe recipe = recipeRepository.findById(recipeId)
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
-//
-//        Optional<LikeRecipe> likeRecipe = likeRecipeRepository.findByUserAndRecipe(user, recipe);
-//
-//        if (likeRecipe.isPresent()) {
-//            likeRecipeRepository.delete(likeRecipe.get());
-//            recipe.setLikesCount(recipe.getLikesCount() - 1);
-//        } else {
-//            LikeRecipe newLikeRecipe = new LikeRecipe();
-//            newLikeRecipe.setUser(user);
-//            newLikeRecipe.setRecipe(recipe);
-//            likeRecipeRepository.save(newLikeRecipe);
-//            recipe.setLikesCount(recipe.getLikesCount() + 1);
-//        }
-//    }
 
     // 좋아요한 레시피 목록 조회 메서드
     @Transactional(readOnly = true)
