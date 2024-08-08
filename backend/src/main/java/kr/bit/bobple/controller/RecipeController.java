@@ -1,6 +1,7 @@
 // src/main/java/kr/bit/bobple/controller/RecipeController.java
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.auth.AuthenticationFacade;
 import kr.bit.bobple.dto.LikeRecipeDto;
 import kr.bit.bobple.dto.RecipeDto;
 import kr.bit.bobple.entity.Recipe;
@@ -24,6 +25,7 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final LikeRecipeService likeRecipeService;
+    private final AuthenticationFacade authenticationFacade;
 
 
 
@@ -39,9 +41,7 @@ public class RecipeController {
     public ResponseEntity<Page<RecipeDto>> getLatestRecipes(
             @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        // 최신 레시피 목록 조회 (페이징 처리)
-//        Page<Recipe> recipePage = recipeService.getLatestRecipes(pageable);
-//        Page<RecipeDto> recipeDtoPage = recipePage.map(RecipeDto::fromEntity);
+
         Page<RecipeDto> recipeDtoPage = recipeService.getLatestRecipes(pageable).map(RecipeDto::fromEntity);
 
         return ResponseEntity.ok(recipeDtoPage); // Page<RecipeDto> 직접 반환
@@ -57,7 +57,14 @@ public class RecipeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDto> getRecipeById(@PathVariable Long id) {
-        return ResponseEntity.ok(recipeService.getRecipeById(id));
+        RecipeDto recipeDto = recipeService.getRecipeById(id);
+        return ResponseEntity.ok(recipeDto);
+    }
+
+    @PostMapping("/{id}/increment-views")
+    public ResponseEntity<Void> incrementViews(@PathVariable Long id) {
+        recipeService.incrementViewsCount(id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping
@@ -84,16 +91,27 @@ public class RecipeController {
     }
 
 
-@GetMapping("/search")
-public ResponseEntity<Page<RecipeDto>> searchRecipes(
-        @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) String category,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
-    Page<RecipeDto> recipes = recipeService.searchRecipes(keyword, category, page, size);
-    return ResponseEntity.ok(recipes);
-}
+//@GetMapping("/search")
+//public ResponseEntity<Page<RecipeDto>> searchRecipes(
+//        @RequestParam(required = false) String keyword,
+//        @RequestParam(required = false) String category,
+//        @RequestParam(defaultValue = "0") int page,
+//        @RequestParam(defaultValue = "10") int size) {
+//    Page<RecipeDto> recipes = recipeService.searchRecipes(keyword, category, page, size);
+//    return ResponseEntity.ok(recipes);
+//}
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<RecipeDto>> searchRecipes(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "viewsCount,desc") String sort
+    ) {
+        Page<RecipeDto> recipes = recipeService.searchRecipes(keyword, category, page, size, sort);
+        return ResponseEntity.ok(recipes);
+    }
 
 
     @PostMapping("/recommend")
@@ -101,10 +119,38 @@ public ResponseEntity<Page<RecipeDto>> searchRecipes(
         return ResponseEntity.ok(recipeService.recommendRecipesByAI(ingredients));
     }
 
-    @PostMapping("/{recipeId}/likes")
-    public ResponseEntity<LikeRecipeDto> toggleLike(@PathVariable Long recipeId, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(likeRecipeService.toggleLike(user.getUserIdx(), recipeId));
+    @PostMapping("/{recipeId}/like")
+    public ResponseEntity<Void> toggleLike(@PathVariable Long recipeId) {
+        User currentUser = authenticationFacade.getCurrentUser();
+        System.out.println(currentUser);
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build(); // 인증되지 않은 사용자는 401 응답
+        }
+        likeRecipeService.toggleLike(currentUser.getUserIdx(), recipeId);
+        return ResponseEntity.ok().build();
     }
+
+//    // 좋아요한 레시피 목록 조회 엔드포인트 추가
+//    @GetMapping("/liked")
+//    public ResponseEntity<List<RecipeDto>> getLikedRecipes() {
+//        List<RecipeDto> likedRecipes = recipeService.getLikedRecipes();
+//        return ResponseEntity.ok(likedRecipes);
+//    }
+// 좋아요한 레시피 목록 조회 엔드포인트 추가
+@GetMapping("/liked")
+public ResponseEntity<List<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal User currentUser) {
+    if (currentUser == null) {
+        return ResponseEntity.status(401).build(); // 인증되지 않은 사용자는 401 응답
+    }
+    List<RecipeDto> likedRecipes = recipeService.getLikedRecipes(currentUser.getUserIdx());
+    return ResponseEntity.ok(likedRecipes);
+}
+
+//    @PostMapping("/{recipeId}/like")
+//    public ResponseEntity<LikeRecipeDto> likeRecipe(@PathVariable Long recipeId, @RequestBody Long userId) {
+//        LikeRecipeDto likeRecipeDto = likeRecipeService.toggleLike(userId, recipeId);
+//        return ResponseEntity.ok(likeRecipeDto);
+//    }
 
 
 }

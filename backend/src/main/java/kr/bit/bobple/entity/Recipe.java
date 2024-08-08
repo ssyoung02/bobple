@@ -1,6 +1,6 @@
 package kr.bit.bobple.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import kr.bit.bobple.dto.RecipeDto;
 import lombok.*;
@@ -25,8 +25,8 @@ public class Recipe {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "user_idx")
-    @JsonManagedReference
     private User user;
 
     private String title;

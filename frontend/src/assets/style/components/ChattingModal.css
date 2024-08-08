@@ -1,0 +1,27 @@
+/* 기본 모달 스타일 */
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+
+/* 모달이 표시될 때 적용될 스타일 */
+.modal.show {
+    display: flex;
+}
+.modal.hide {
+    display: none;
+}
+
+.modal-content.chatting {
+    left: 90px;
+    max-width: 310px;
+    height: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}

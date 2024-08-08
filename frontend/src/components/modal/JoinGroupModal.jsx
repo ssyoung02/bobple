@@ -1,17 +1,47 @@
 import '../../assets/style/components/GroupModal.css';
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import bobple from '../../assets/images/bobple_mascot.png';
+import axios from 'axios';
 
-const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomDescription, chatRoomPeople }) => {
+const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomDescription, chatRoomPeople, chatRoomImage, currentParticipants }) => {
     const navigate = useNavigate();
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState(bobple);
 
-    const moveChat = (chatRoomId) => {
-        console.log(`Navigating to /group/chatting/${chatRoomId}`);
-        navigate(`/group/chatting/${chatRoomId}`);
-        hideModal();
+    useEffect(() => {
+        // 서버에서 이미지 URL을 가져와 설정하는 로직
+        if (chatRoomImage) {
+            setImage(chatRoomImage);
+        } else {
+            setImage(bobple);
+        }
+    }, [chatRoomImage]);
+
+    const moveChat = async (chatRoomId) => {
+        try {
+            const token = localStorage.getItem('token'); // JWT 토큰을 로컬 스토리지에서 가져옴
+            if (!token) {
+                console.error('No JWT token found');
+                return;
+            }
+
+            const response = await axios.post(`http://localhost:8080/api/chatrooms/join/${chatRoomId}`, null, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 200) {
+                console.log('Successfully joined the chat room');
+                navigate(`/group/chatting/${chatRoomId}`);
+                hideModal();
+            } else {
+                console.error('Failed to join the chat room');
+            }
+        } catch (error) {
+            console.error('Error joining the chat room', error);
+        }
     };
 
     const closeModal = () => {
@@ -27,17 +57,11 @@ const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chat
                 </div>
                 <div className="group-room-container">
                     <div className="group-image-box">
-                        {image ? (
-                            <img src={image} alt="이미지 미리보기" className="preview-image"/>
-                        ) : (
-                            <div className="placeholder default-image">
-                                <img src={bobple} alt="기본 이미지" />
-                            </div>
-                        )}
+                        <img src={image} alt="이미지 미리보기" className="preview-image"/>
                     </div>
                     <div className="group-text-container">
                         <h3>{chatRoomTitle}</h3>
-                        <h5>{chatRoomPeople}명 참여중</h5>
+                        <h5>{currentParticipants}명 참여 중 ({chatRoomPeople}명 모집)</h5>
                         <p>{chatRoomDescription}</p>
                     </div>
                 </div>
@@ -54,6 +78,8 @@ JoinGroupModal.propTypes = {
     chatRoomTitle: PropTypes.string.isRequired,
     chatRoomDescription: PropTypes.string.isRequired,
     chatRoomPeople: PropTypes.number.isRequired,
+    chatRoomImage: PropTypes.string, // 추가된 프로퍼티
+    currentParticipants: PropTypes.number.isRequired // 현재 참여 중인 인원 프로퍼티 추가
 };
 
 export default JoinGroupModal;

@@ -266,13 +266,15 @@ function RecommendMain() {
         // 이미지 로드 완료 시 호출되는 콜백 함수
         if (imageUrl) {
             // 이미지가 성공적으로 로드된 경우
-            console.log("이미지 로드 성공:", imageUrl);
-            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
         } else {
             // 이미지를 찾지 못했거나 에러 발생 시
             console.warn("이미지 로드 실패 또는 이미지 없음");
             // 필요에 따라 기본 이미지 설정 또는 에러 처리
         }
+    };
+
+    const handleTopKeywordClick = (keyword) => {
+        navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`); // 검색어 정보 전달
     };
 
     return (
@@ -295,7 +297,7 @@ function RecommendMain() {
                     <button className="AllSearchButton" onClick={handleSearch} aria-label={"검색"}>
                         <SearchIcon/>
                     </button>
-                    <TopSearch/>
+                    <TopSearch onKeywordClick={handleTopKeywordClick} />
                 </div>
             </div>
 

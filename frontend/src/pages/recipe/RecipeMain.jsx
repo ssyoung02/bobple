@@ -41,19 +41,11 @@ function RecipeMain() {
     };
 
     const handleSearchClick = () => {
-        navigate(`/recipe/search?keyword=${searchKeyword}`);
+        navigate(`/recipe/search?keyword=${searchKeyword}&category=&sort=viewsCount,desc`);
     };
 
-    // const handleSearchClick = () => {
-    //     searchRecipes(searchKeyword, '', 0, 10, 'createdAt,desc');
-    // };
-
-    // const handleCategoryClick = (category) => {
-    //     searchRecipes('', category, 0, 10, 'createdAt,desc'); // 해당 카테고리 레시피 검색
-    // };
-
     const handleCategoryClick = (category) => {
-        navigate(`/recipe/search?category=${category}`);
+        navigate(`/recipe/search?category=${category}&sort=viewsCount,desc`);
     };
 
     const getRecipesByCategory = async (category) => {
@@ -123,7 +115,7 @@ function RecipeMain() {
             <div className="user-recommended-recipes">
                 <div className="header">
                     <h3>유저 추천 레시피</h3>
-                    <Link to="/recipes/search?category=" className="more-button">더보기</Link>
+                    <Link to="/recipe/search?category=&sort=viewsCount,desc,likesCount,desc" className="more-button">더보기</Link>
                 </div>
                 <div className="recipe-list">
                     {userRecommendedRecipes.length > 0 ? (

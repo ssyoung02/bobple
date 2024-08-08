@@ -3,6 +3,7 @@ package kr.bit.bobple.service;
 import kr.bit.bobple.auth.AuthenticationFacade;
 import kr.bit.bobple.dto.RecipeCommentDto;
 import kr.bit.bobple.dto.RecipeDto;
+import kr.bit.bobple.entity.LikeRecipe;
 import kr.bit.bobple.entity.Recipe;
 import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.LikeRecipeRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -48,20 +50,24 @@ public class RecipeService {
 
     @Transactional(readOnly = true)
     public RecipeDto getRecipeById(Long recipeId) {
-//        // Optional 처리 추가
-//        Optional<Recipe> recipeOptional = recipeRepository.findRecipeWithCommentsById(recipeId);
         Recipe recipe = recipeRepository.findRecipeWithUserById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
-//        Recipe recipe = recipeOptional.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
-
-        recipe.setViewsCount(recipe.getViewsCount() + 1); // 조회수 증가
-        recipeRepository.save(recipe);
+        // Increase views count outside of read-only transaction
+        incrementViewsCount(recipe.getId());
 
         // 강제로 초기화
         Hibernate.initialize(recipe.getUser());
 
         return convertToDto(recipe); // 댓글 목록 포함하여 DTO 변환
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void incrementViewsCount(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
+        recipe.setViewsCount(recipe.getViewsCount() + 1);
+        recipeRepository.save(recipe);
     }
 
     @Transactional
@@ -100,19 +106,29 @@ public class RecipeService {
         recipeRepository.deleteById(recipeId);
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<RecipeDto> searchRecipes(String keyword, String category, Pageable pageable) {
-//        return recipeRepository.searchRecipes(keyword, category, pageable)
-//                .map(this::convertToDto);
-//    }
+    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
+        if (sort.equals("viewsCount,desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
+        }
 
-    @Transactional(readOnly = true)
-    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("likesCount"), Sort.Order.desc("viewsCount")));
-        Page<Recipe> recipes = recipeRepository.searchRecipes(keyword, category, pageable);
-
-        return recipes.map(this::convertToDto);    }
-
+        // If keyword and category are null or empty, find all recipes
+        if ((keyword == null || keyword.isEmpty()) && (category == null || category.isEmpty())) {
+            return recipeRepository.findAll(pageable).map(RecipeDto::fromEntity);
+        }
+        // If keyword is not null or empty and category is null or empty, find by keyword
+        else if (keyword != null && !keyword.isEmpty() && (category == null || category.isEmpty())) {
+            return recipeRepository.findByKeyword(keyword, pageable).map(RecipeDto::fromEntity);
+        }
+        // If keyword is null or empty and category is not null or empty, find by category
+        else if ((keyword == null || keyword.isEmpty()) && category != null && !category.isEmpty()) {
+            return recipeRepository.findByCategory(category, pageable).map(RecipeDto::fromEntity);
+        }
+        // If both keyword and category are not null or empty, find by both keyword and category
+        else {
+            return recipeRepository.findByKeywordAndCategory(keyword, category, pageable).map(RecipeDto::fromEntity);
+        }
+    }
 
     @Transactional(readOnly = true)
     public Page<Recipe> getLatestRecipes(Pageable pageable) {
@@ -151,7 +167,6 @@ public class RecipeService {
             recipeDtos.add(recipeDto);
         }
 
-
         return recipeDtos;
     }
 
@@ -176,7 +191,35 @@ public class RecipeService {
         return recipeDto;
     }
 
+//    // 좋아요 토글 메서드
+//    @Transactional
+//    public void toggleLike(Long recipeId) {
+//        User user = authenticationFacade.getCurrentUser();
+//        Recipe recipe = recipeRepository.findById(recipeId)
+//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
+//
+//        Optional<LikeRecipe> likeRecipe = likeRecipeRepository.findByUserAndRecipe(user, recipe);
+//
+//        if (likeRecipe.isPresent()) {
+//            likeRecipeRepository.delete(likeRecipe.get());
+//            recipe.setLikesCount(recipe.getLikesCount() - 1);
+//        } else {
+//            LikeRecipe newLikeRecipe = new LikeRecipe();
+//            newLikeRecipe.setUser(user);
+//            newLikeRecipe.setRecipe(recipe);
+//            likeRecipeRepository.save(newLikeRecipe);
+//            recipe.setLikesCount(recipe.getLikesCount() + 1);
+//        }
+//    }
 
-
-
+    // 좋아요한 레시피 목록 조회 메서드
+    @Transactional(readOnly = true)
+    public List<RecipeDto> getLikedRecipes(Long userIdx) {
+        User user = authenticationFacade.getCurrentUser();
+        List<LikeRecipe> likedRecipes = likeRecipeRepository.findByUser(user);
+        return likedRecipes.stream()
+                .map(like -> RecipeDto.fromEntity(like.getRecipe()))
+                .collect(Collectors.toList());
+    }
 }
+

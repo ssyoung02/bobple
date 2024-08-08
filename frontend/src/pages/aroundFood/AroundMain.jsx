@@ -237,20 +237,6 @@ function AroundMain() {
         });
     };
 
-
-
-    function onMarkerClick(restaurant) {
-        // 현재 위치와 선택된 마커 사이의 거리 계산
-        const distance = computeDistance(currentLocation, { lat: restaurant.y, lng: restaurant.x });
-
-        setSelectedMarker({ ...restaurant, distance }); // 선택된 마커 업데이트 (distance 추가)
-        setIsOpen(true); // CustomOverlayMap 열기
-
-        if (mapRef.current) {
-            mapRef.current.panTo(new kakao.maps.LatLng(restaurant.y, restaurant.x));
-        }
-    }
-
     const handleListItemClick = (restaurant) => {
         // 현재 위치와 선택된 리스트 아이템 사이의 거리 계산
         const distance = computeDistance(currentLocation, { lat: restaurant.y, lng: restaurant.x });
@@ -293,7 +279,6 @@ function AroundMain() {
                 },
             })
                 .then(response => {
-                    console.log("음식점 검색 API 전체 응답:", response.data); // 전체 응답 출력
                     const place = response.data.documents[0]; // 검색 결과에서 첫 번째 장소 정보 가져오기
                     if (place && place.id === placeId) { // 장소 ID 일치 여부만 확인
                         //추후 네이버 서치 이용해서 썸네일 사진 구현 예정
@@ -311,8 +296,6 @@ function AroundMain() {
         // 이미지 로드 완료 시 호출되는 콜백 함수
         if (imageUrl) {
             // 이미지가 성공적으로 로드된 경우
-            console.log("이미지 로드 성공:", imageUrl);
-            // 필요에 따라 추가적인 작업 수행 (예: 이미지 캐싱)
         } else {
             // 이미지를 찾지 못했거나 에러 발생 시
             console.warn("이미지 로드 실패 또는 이미지 없음");
@@ -362,7 +345,7 @@ function AroundMain() {
                     <MapMarker
                         key={restaurant.id}
                         position={{lat: restaurant.y, lng: restaurant.x}}
-                        onClick={() => onMarkerClick(restaurant)}
+                        onClick={() => handleListItemClick(restaurant)}
                         image={{
                             src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
                             size: {

@@ -11,8 +11,17 @@ import axios from "axios";
 import useRecommendThemes from "../hooks/RecommendFoodHooks"
 
 export default function SliderComponent() {
+    const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(0);
     const totalSlides = 2;
+    const { recommendThemes } = useRecommendThemes();
+
+    const handleThemeClick = (theme) => {
+        const themeKeyword = theme.foodNames.join(' ');
+        navigate(
+            `/recommend/recommendFoodCategory?theme=${themeKeyword}&themeName=${theme.themeName}`
+        );
+    };
 
     var settings = {
         dots: true,
@@ -23,31 +32,43 @@ export default function SliderComponent() {
         slidesToScroll: 1,
         afterChange: (current) => setCurrentSlide(current)
     };
+
     return (
-        <div className={"MainSlide"}>
+        <div className="main-slide"> {/* 클래스 이름 변경 */}
             <SlickSlider {...settings}>
-                <div className={"MainslideItem"}>
-                    <img className={"MainslideItemImg"} src={MainFoodBanner_jeon} alt={"비오는 날엔 전이지"}/>
-                    <h3 className={"MainslideItemTitle"}>비오는 날엔 전이지</h3>
-                </div>
-                <div className={"MainslideItem"}>
-                    <img className={"MainslideItemImg"} src={MainFoodBanner_jeon} alt={"비오는 날엔 전이지"}/>
-                    <span className={"MainslideItemTitle"}>비오는 날엔 전이지</span>
-                </div>
+                {recommendThemes.map((theme) => (
+                    <div
+                        className="main-slide-item"
+                        key={theme.themeIdx}
+                        onClick={() => handleThemeClick(theme)}
+                    >
+                        <img
+                            className="main-slide-item-img"
+                            src={theme.themeBannerUrl}
+                            alt={theme.themeDescription}
+                        />
+                    </div>
+                ))}
             </SlickSlider>
             <div className="slider-counter">
-                {currentSlide + 1} / {totalSlides}
+                {currentSlide + 1} / {recommendThemes.length}
             </div>
         </div>
     );
 }
 
-export const TopSearch = () => {
+export const TopSearch = ({ onKeywordClick }) => {
     const [topKeywords, setTopKeywords] = useState([]);
 
     useEffect(() => {
         restaurantfetchTopKeywords(setTopKeywords);
     }, []);
+
+    const handleKeywordClick = (keyword) => {
+        if (onKeywordClick) {
+            onKeywordClick(keyword);
+        }
+    };
 
     const settings = {
         dots: false,
@@ -66,7 +87,9 @@ export const TopSearch = () => {
             <h6>실시간 인기</h6>
             <SlickSlider {...settings}>
                 {topKeywords.map((keyword, index) => (
-                    <div key={index}>{index + 1}. {keyword.keyword}</div>
+                    <span key={index} onClick={() => handleKeywordClick(keyword.keyword)}> {/* keyword.keyword 사용 */}
+                        {index + 1}. {keyword.keyword}
+          </span>
                 ))}
             </SlickSlider>
         </div>
