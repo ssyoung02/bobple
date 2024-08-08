@@ -41,6 +41,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } else {
             System.out.println("Invalid token or token not found");
         }
+        else {
+            System.out.println("Token is null or invalid");
+        }
         chain.doFilter(request, response);
     }
     private String resolveToken(HttpServletRequest request) {

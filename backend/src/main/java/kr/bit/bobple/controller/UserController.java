@@ -9,6 +9,7 @@ import kr.bit.bobple.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -117,5 +118,12 @@ public class UserController {
         } else {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
+        String name = authentication.getName();
+        UserDto userDto = userService.getUserByUsername(name);
+        return ResponseEntity.ok(userDto);
     }
 }

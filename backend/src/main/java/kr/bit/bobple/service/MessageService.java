@@ -14,11 +14,14 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
-    public Message createMessage(Long chatRoomId, String content) {
+    public Message createMessage(Long chatRoomId, String content, Long userId, String name, String profileImage) {
         Message message = new Message();
         message.setChatRoomId(chatRoomId);
         message.setContent(content);
         message.setCreatedAt(LocalDateTime.now());
+        message.setUserId(userId);
+        message.setName(name);
+        message.setProfileImage(profileImage);
         return messageRepository.save(message);
     }
 
