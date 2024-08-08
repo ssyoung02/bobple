@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FillBookmark } from "../../components/imgcomponents/ImgComponents";
 import { getUserIdx } from "../../utils/auth";
 import '../../assets/style/myPage/Bookmark.css';
 import NaverImageSearch from "../../components/NaverImageSearch";
+import PageHeader from "../../components/layout/PageHeader";
 
 function BookMark() {
-    const navigate = useNavigate();
     const [bookmarkedRestaurants, setBookmarkedRestaurants] = useState([]);
 
     useEffect(() => {
@@ -69,11 +68,11 @@ function BookMark() {
 
     return (
         <div className="bookmark-container">
-            <h2>북마크 음식점</h2>
+            <PageHeader title="북마크 음식점" />
             <ul className="restaurant-list">
                 {bookmarkedRestaurants.map(restaurant => (
-                    <li key={restaurant.bookmarkIdx} className="restaurant-item">
-                        <div className="restaurant-content" onClick={() => handleRestaurantClick(restaurant)}>
+                    <li key={restaurant.bookmarkIdx} className="bookmark-restaurant-item">
+                        <div className="bookmark-restaurant-content" onClick={() => handleRestaurantClick(restaurant)}>
                             <div className="restaurant-image-wrapper">
                                 {/* NaverImageSearch 컴포넌트 사용 */}
                                 <NaverImageSearch
@@ -81,7 +80,7 @@ function BookMark() {
                                     onImageLoaded={handleImageLoaded}
                                 />
                             </div>
-                            <div className="restaurant-details">
+                            <div className="bookmark-restaurant-details">
                                 <h3 className="restaurant-name">{restaurant.restaurantName}</h3> {/* restaurantName 사용 */}
                                 <p className="restaurant-address">{restaurant.addressName}</p> {/* addressName 사용 */}
                                 <p className="restaurant-phone">{restaurant.phone}</p> {/* phone 사용 */}

@@ -1,14 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import SlickSlider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import '../assets/style/components/SliderComponent.css';
 import MainFoodBanner_jeon from "../assets/images/banner/MainFoodBanner_jeon.jpg"
 import {restaurantfetchTopKeywords} from "./Search/RestaurantSearch"
-import {useNavigate} from "react-router-dom";
-import {NextTo, PrevTo} from "./imgcomponents/ImgComponents";
+import {Link, useNavigate} from "react-router-dom";
+import {Heart, NextTo, PrevTo, View} from "./imgcomponents/ImgComponents";
 import axios from "axios";
 import useRecommendThemes from "../hooks/RecommendFoodHooks"
+import RecipeContext from "../pages/recipe/RecipeContext";
+import errorImage from "../assets/images/error_image.jpg";
 
 export default function SliderComponent() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -175,3 +177,68 @@ export const FoodCategories = () => {
         </div>
     );
 }
+
+export const UserRecommendedRecipes = () => {
+
+    const {userRecommendedRecipes} = useContext(RecipeContext);
+
+
+    const RecipeSettings = {
+        dots: false,
+        infinite: true,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        draggable: true,
+        swipeToSlide: true,
+        centerMode: true,
+        arrows: false
+    };
+
+    return (
+        <>
+            <SlickSlider {...RecipeSettings}>
+
+
+            {userRecommendedRecipes.length > 0 ? (
+                userRecommendedRecipes.map(recipe => (
+                    <div key={recipe.recipeIdx} recipe={recipe} className="recipe-card-item">
+                        <Link className="user-recommended-recipe-link" to={`/recipe/${recipe.recipeIdx}`}>
+                            <div className="user-recommended-recipe-card">
+                                <div className="user-recipe-card-user">
+                                    <div className="user-recipe-card-user-left">
+                                        <div className="recipe-user-profile">
+                                            <img src={recipe.profileImage || '/images/default_avatar.jpg'}
+                                                 alt={recipe.author}/>
+                                        </div>
+                                        <p className="author">{recipe.nickname}</p>
+                                    </div>
+                                    <button className={`recipe-like-button ${recipe.liked ? 'liked' : ''}`}>
+                                        <Heart/>
+                                    </button>
+                                </div>
+                                <div className="user-recommended-recipe-card-image">
+                                <img src={recipe.picture || '/images/default_recipe_image.jpg'} alt={recipe.title}
+                                         onError={(e) => {
+                                             e.target.onerror = null;
+                                             e.target.src = errorImage;
+                                         }}/>
+                                    <span className="recipe-view">
+                                        <View/>
+                                        {recipe.likesCount}
+                                    </span>
+                                </div>
+                                <div className="user-recommended-recipe-card-content">
+                                    <h6>{recipe.title}</h6>
+                                    <p className="description">{recipe.description}</p>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
+                ))
+            ) : (
+                <div className="no-recipes-message">조회된 레시피가 없습니다.</div>
+            )}
+            </SlickSlider>
+        </>
+    );
+};

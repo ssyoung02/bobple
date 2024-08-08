@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../../assets/style/myPage/serviceCenter/UserNotice.css';
 import { ArrowLeftLong } from "../../../components/imgcomponents/ImgComponents";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import PageHeader from "../../../components/layout/PageHeader";
 
 function UserNoticeDetail() {
-    const navigate = useNavigate();
     const { noticeidx } = useParams();
     const [notice, setNotice] = useState(null);
     const [error, setError] = useState(null);
@@ -29,9 +29,6 @@ function UserNoticeDetail() {
         fetchNotice();
     }, [noticeidx]);
 
-    const moveNotice = () => {
-        navigate('/mypage/serviceCenter/userNotice');
-    };
 
     if (error) {
         return <div>{error}</div>;
@@ -43,12 +40,7 @@ function UserNoticeDetail() {
 
     return (
         <div className="notice-main">
-            <div className="notice-top">
-                <button aria-label="공지사항 목록으로 돌아가기" onClick={moveNotice}>
-                    <ArrowLeftLong />
-                </button>
-                <h3>공지사항</h3>
-            </div>
+            <PageHeader title="공지사항 상세" />
             <div className="faq-title">
                 <div className="faq-title-left">
                     <h6>{notice.noticeTitle}</h6>

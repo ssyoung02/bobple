@@ -1,16 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import RecipeCard from './RecipeCard';
-import UserRecommendedRecipeCard from './UserRecommendedRecipeCard';
 import LatestRecipeCard from './LatestRecipeCard';
 import axios from "../../utils/axios";
 import "../../assets/style/recipe/RecipeMain.css";
+import {ArrowRightLong, NextTo, PrevTo, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {UserRecommendedRecipes} from "../../components/SliderComponent";
 
 function RecipeMain() {
     const {
-        recipes, loading, searchRecipes, getRecipeById, totalPages, page, changePage,
-        setRecipes, setError, categoryRecipes, latestRecipes, setCategoryRecipes, setLatestRecipes,userRecommendedRecipes
+         getRecipeById, totalPages, page, changePage,
+        setError, latestRecipes, setCategoryRecipes, setLatestRecipes,userRecommendedRecipes
         // 필요한 값 가져오기
     } = useContext(RecipeContext);
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -18,10 +18,10 @@ function RecipeMain() {
 
 
     const categoryButtons = [
-        { name: '한식', image: '/images/korean.jpg', category: '한식' },
-        { name: '양식', image: '/images/western.jpg', category: '양식' },
-        { name: '일식', image: '/images/japanese.jpg', category: '일식' },
-        { name: '중식', image: '/images/chinese.jpg', category: '중식' },
+        { name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식' },
+        { name: '양식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-japanese-food.jpg', category: '양식' },
+        { name: '일식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-western-food.jpg', category: '일식' },
+        { name: '중식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-chinese-food.jpg', category: '중식' },
     ];
 
     useEffect(() => {
@@ -70,42 +70,43 @@ function RecipeMain() {
         }
     };
 
+    const moveAIRecommendation = () => {
+        navigate('/recipe/ai-recommendation');
+    }
+
     return (
         <div className="recipe-main-container">
-            {/* 상단 부분 */}
-            <div className="top-section">
-                <div className="search-area">
-                    <input
-                        type="text"
-                        className="search-input"
-                        placeholder="검색 키워드를 입력해주세요"
-                        value={searchKeyword}
-                        onChange={handleSearchInputChange}
-                    />
-                    <button className="search-button" onClick={handleSearchClick}>
-                        검색
-                    </button>
-                </div>
+            {/* 검색 영역 */}
+            <div className="recipe-search-area">
+                <input
+                    type="text"
+                    className="recipe-search-input"
+                    placeholder="검색 키워드를 입력해주세요"
+                    value={searchKeyword}
+                    onChange={handleSearchInputChange}
+                />
+                <button className="recipe-search-button" onClick={handleSearchClick} aria-label="검색">
+                    <SearchIcon/>
+                </button>
             </div>
 
-            <div className="ai-recommendation">
-                <h3>AI 레시피 추천</h3>
-                <Link to="/recipe/ai-recommendation">
-                    <button className="ai-button">
-                        지금 냉장고에 있는 재료로 만들어봐!
-                    </button>
-                </Link>
-            </div>
+            <button className="AIRecipe" onClick={moveAIRecommendation} >
+                <div className="AIRecipeTitle">
+                    <p>지금 냉장고에 있는 재료로 뭐 만들어 먹지?</p>
+                    <h3>AI 레시피 추천</h3>
+                </div>
+                <ArrowRightLong/>
+            </button>
 
             {/* 도시락 레시피 추천 섹션 */}
             <div className="lunchbox-recipes">
-                <h3>도시락 레시피 추천</h3>
+                <h4>도시락 레시피 추천</h4>
                 <div className="category-buttons"> {/* 카테고리 버튼 섹션 추가 */}
                     {categoryButtons.map(button => (
                         <button key={button.name} onClick={() => handleCategoryClick(button.category)}
                                 className="category-button">
                             <img src={button.image} alt={button.name}/>
-                            <span>{button.name}</span>
+                            <span>#{button.name}</span>
                         </button>
                     ))}
                 </div>
@@ -113,23 +114,20 @@ function RecipeMain() {
 
             {/* 유저 추천 레시피 섹션 */}
             <div className="user-recommended-recipes">
-                <div className="header">
-                    <h3>유저 추천 레시피</h3>
-                    <Link to="/recipe/search?category=&sort=viewsCount,desc,likesCount,desc" className="more-button">더보기</Link>
+                <div className="user-recommended-recipes-title">
+                    <h4>유저 추천 레시피</h4>
+                    <Link to="/recipe/search?category=&sort=viewsCount,desc,likesCount,desc" className="more-button">
+                        더보기
+                        <NextTo/>
+                    </Link>
                 </div>
-                <div className="recipe-list">
-                    {userRecommendedRecipes.length > 0 ? (
-                        userRecommendedRecipes.map(recipe => (
-                            <UserRecommendedRecipeCard key={recipe.recipeIdx} recipe={recipe}/>
-                        ))
-                    ) : (
-                        <div className="no-recipes-message">조회된 레시피가 없습니다.</div>
-                    )}
+                <div className="recipe-slide-banner">
+                    <UserRecommendedRecipes/>
                 </div>
             </div>
 
             <div className="latest-recipes">
-                <h3>최신 레시피</h3>
+                <h4>최신 레시피</h4>
                 <div className="latest-recipe-list">
                     {latestRecipes.length > 0 ? (
                         latestRecipes.map(recipe => (
@@ -142,21 +140,27 @@ function RecipeMain() {
                         <div className="no-recipes-message">조회된 레시피가 없습니다.</div>
                     )}
                 </div>
+                {/* 페이지네이션 추가 */}
+                <div className="recipe-pagination">
+                    <button onClick={() => changePage(page - 1)} disabled={page === 0} aria-label="이전">
+                        <PrevTo/>
+                    </button>
+                    <span>{page + 1} / {totalPages}</span>
+                    <button onClick={() => changePage(page + 1)} disabled={page === totalPages - 1} aria-label="다음">
+                        <NextTo/>
+                    </button>
+                </div>
+
             </div>
 
-
-            {/* 페이지네이션 추가 */}
-            <div className="pagination">
-                <button onClick={() => changePage(page - 1)} disabled={page === 0}>이전</button>
-                <span>{page + 1} / {totalPages}</span>
-                <button onClick={() => changePage(page + 1)} disabled={page === totalPages - 1}>다음</button>
-            </div>
 
 
             {/* 레시피 작성 버튼 (플로팅 버튼) */}
-            <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
-                +
-            </button>
+            <div className="create-recipe-button-box">
+                <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
+                    +
+                </button>
+            </div>
         </div>
     );
 }

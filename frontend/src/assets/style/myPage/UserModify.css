@@ -4,14 +4,15 @@
 }
 
 .profile {
+    margin-top: 20px;
     text-align: center;
     position: relative; /* 부모 요소에 상대 위치 설정 */
 }
 
 .profile-image {
     border-radius: 50%;
-    width: 30%;
-    height: 30%;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     margin-bottom: 20px;
     border: 1px solid #233B6F;
@@ -20,14 +21,14 @@
 /* 프로필 사진 변경+ 버튼 스타일 */
 .upload-btn {
     position: absolute;
-    top: 100px; /* 이미지의 위쪽에 배치 */
-    right: calc(50% - 75px + 0px); /* 이미지의 오른쪽에 배치 */
+    top: 100px;
+    right: calc(50% - 75px + 0px);
     background-color: #233B6F;
     color: white;
     border: none;
-    padding: 0 10px;
+    padding: 0px 12px;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: 25px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;

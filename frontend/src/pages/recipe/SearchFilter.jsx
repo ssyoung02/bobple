@@ -1,7 +1,6 @@
 // src/components/Recipe/SearchFilter.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../assets/style/recipe/SearchFilter.css';
 
 function SearchFilter() {
     const [keyword, setKeyword] = useState('');

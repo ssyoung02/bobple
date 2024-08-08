@@ -23,7 +23,7 @@ const AllSearch = () => {
                     placeholder="검색 키워드를 입력해주세요"
                 />
 
-                <button className="AllSearchButton" onClick={handleSearchClick(keyword, setTopKeywords)}>
+                <button className="AllSearchButton" onClick={handleSearchClick(keyword, setTopKeywords)} aria-label="검색">
                     <SearchIcon/>
                 </button>
             </div>

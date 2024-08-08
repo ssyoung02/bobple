@@ -1,26 +1,3 @@
-/*헤더*/
-.calculator-top {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    width: 100%;
-}
-
-.goto-mypage {
-    justify-self: start;
-}
-
-.calculator-top h2 {
-    margin: 0;
-    justify-self: center;
-    grid-column: 2;
-}
-
-.calculator-top svg {
-    font-size: 1.5em;
-    color: #233B6F;
-}
-
 /*영수증 이미지*/
 .calculator-img{
     width: 70%;
@@ -38,6 +15,7 @@
 .upload-recipt-img{
     height: 300px;
     object-fit: fill;
+    cursor: pointer;
 }
 
 /*계산영역*/
@@ -120,7 +98,7 @@
 }
 
 .upload-recipt + svg{
-
+    cursor: pointer;
 }
 
 /*영수증 금액*/
@@ -162,4 +140,46 @@
     font-family: NotoSansKR-Bold, serif;
     font-size: 1.2em;
     margin-top: 1em;
+}
+
+/* 팝업 관련 스타일 */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    position: relative;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
 }

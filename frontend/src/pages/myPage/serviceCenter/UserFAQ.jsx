@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import '../../../assets/style/myPage/serviceCenter/UserFAQ.css';
 import { ArrowLeftLong, Down, Up } from "../../../components/imgcomponents/ImgComponents";
-import {useNavigate} from "react-router-dom";
+import PageHeader from "../../../components/layout/PageHeader";
 
 function UserFAQ() {
-    const navigate = useNavigate();
     const [expandedQuestionIds, setExpandedQuestionIds] = useState([]);
 
     const questions = [
@@ -22,9 +21,6 @@ function UserFAQ() {
         },
     ];
 
-    const moveMyPage = () => {
-        navigate('/mypage')
-    }
 
     const toggleExpand = (queIdx) => {
         setExpandedQuestionIds((prev) =>
@@ -34,12 +30,7 @@ function UserFAQ() {
 
     return (
         <div className="user-FAQ-main">
-            <div className="user-FAQ-top">
-                <button aria-label="내정보로 돌아가기" onClick={moveMyPage}>
-                    <ArrowLeftLong />
-                </button>
-                <h3>자주 묻는 질문</h3>
-            </div>
+            <PageHeader title="자주 묻는 질문" />
             <div className="faq-box">
                 <ul>
                     {questions.map((question) => (

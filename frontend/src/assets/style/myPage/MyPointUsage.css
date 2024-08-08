@@ -1,5 +1,6 @@
 .my-point-usage-main{
-    padding: 1em;
+    display: grid;
+    gap: 1.5em;
 }
 
 .my-point-total{
@@ -9,12 +10,72 @@
 
 .mypoint{
     color: #EB517E;
+    width: 150px;
 }
 
-.point-usage-box{
-    margin-top: 3em;
+/*탭목록*/
+.myPoint-filter-box{
+    display: flex;
+    align-items: center;
 }
 
+.myPint-Filter{
+    border-bottom: 4px solid #c8c8c8;
+    padding: 10px;
+    font-size: 1.2em;
+    width: 100%;
+}
+
+.filter-select{
+    font-family: NotoSansKR-Bold, serif;
+    border-bottom: 4px solid #233B6F;
+}
+
+/*날짜 선택 영역*/
+.point-date-select-box{
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+}
+
+.point-cutom-select{
+    position: relative;
+    display: inline-block;
+    padding: 3px;
+    border-radius: 10px;
+    border: 1px solid #003366;
+    margin-right: 10px;
+}
+
+.point-cutom-select + label{
+    font-size: 20px;
+}
+
+.point-date-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 20px 3px 10px;
+    cursor: pointer;
+    outline: none;
+}
+
+.point-date-select:focus{
+    background: rgba(204, 204, 204, 0.3);
+}
+
+.point-cutom-select svg{
+    position: absolute;
+    top: 13px;
+    right: 6px;
+    color: #999999;
+    font-size: 10px;
+    margin: auto 0;
+}
+
+/*포인트 상세 내역*/
 .point-usage-box h5{
     padding-bottom: 10px;
 }
