@@ -18,8 +18,8 @@ public class MessageController {
     private MessageService messageService;
 
     @PostMapping
-    public Message createMessage(@PathVariable Long chatRoomId, @RequestBody String content) {
-        Message message = messageService.createMessage(chatRoomId, content);
+    public Message createMessage(@PathVariable Long chatRoomId, @RequestBody String content, @RequestParam Long userId, @RequestParam String name, @RequestParam String profileImage) {
+        Message message = messageService.createMessage(chatRoomId, content, userId, name, profileImage);
         try {
             // Node.js 서버에 메시지 푸시
             URL url = new URL("http://localhost:3001/send-message");
@@ -27,7 +27,7 @@ public class MessageController {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
-            String jsonInputString = String.format("{\"chatRoomId\": \"%d\", \"content\": \"%s\"}", chatRoomId, content);
+            String jsonInputString = String.format("{\"chatRoomId\": \"%d\", \"content\": \"%s\", \"userId\": \"%d\", \"name\": \"%s\", \"profileImage\": \"%s\"}", chatRoomId, content, userId, name, profileImage);
             try (OutputStream os = conn.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
                 os.write(input, 0, input.length);
@@ -38,6 +38,7 @@ public class MessageController {
         }
         return message;
     }
+
 
     @GetMapping
     public List<Message> getMessages(@PathVariable Long chatRoomId) {

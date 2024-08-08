@@ -106,4 +106,9 @@ public class UserService {
                 .map(UserDto::fromEntityWithRecipes)
                 .orElse(null);
     }
+
+    public UserDto getUserByUsername(String name) {
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found"));
+        return UserDto.fromEntity(user);
+    }
 }

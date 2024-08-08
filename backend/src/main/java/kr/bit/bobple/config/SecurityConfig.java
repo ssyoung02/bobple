@@ -59,6 +59,8 @@ public class SecurityConfig {
 //                                .requestMatchers("/api/recipes/search").permitAll() // 레시피 검색은 인증 없이 허용
                                 .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update", "/api/users/**", "/api/admin/*").permitAll()
                                 .requestMatchers("/api/**","/api/chatrooms/**","/api/chatrooms/my/**").authenticated()  // /api/chatrooms/** 경로는 인증 필요
+                                .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated() // /api/user/me 경로는 인증 필요
+                                .requestMatchers("/api/**","/api/chatrooms/{chatRoomId}/messages").authenticated()
                                 .requestMatchers("/api/recipes/search","/api/recipes/recommend","/api/recipes/latest").permitAll()// AI 레시피 추천 엔드포인트 허용
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .anyRequest().authenticated()
