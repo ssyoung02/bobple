@@ -248,7 +248,7 @@ export const start = async ($handle, $machine, $title, $pointer, prize) => {
             ease: 'power1.in',
             duration: 0.1,
             onComplete: () => {
-                prizeBall.dom.style.zIndex = '10';
+                prizeBall.dom.style.zIndex = '1000000';
                 resolve();
             }
         });
@@ -381,7 +381,7 @@ const pickup = () => {
             // 애니메이션이 끝난 후에 z-index를 변경
             const prizeRewardContainer = document.querySelector('.prize-reward-container');
             if (prizeRewardContainer) {
-                prizeRewardContainer.style.zIndex = '20'; // 필요한 z-index 값으로 변경
+                prizeRewardContainer.style.zIndex = '200000'; // 필요한 z-index 값으로 변경
             }
         }
     });

@@ -2,24 +2,29 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-    margin: 0;
+
 }
 
 .avoid-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+    position: relative;
+    height: 80vh;
+
 }
 
 .avoid-canvas {
+    width: 350px;
+    height: 350px;
     border: 2px solid #000;
-    background-color: #fff;
+    background-color: #000; /* 캔버스 배경색을 검은색으로 변경 */
+
 }
 
 .avoid-button {
-    margin: 10px;
+    margin: 20px;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -30,13 +35,16 @@
     transition: background-color 0.3s ease;
 }
 
-.avoid-button:hover {
-    background-color: #0056b3;
+
+.avoid-button:disabled {
+    background-color: grey; /* 비활성화 상태일 때 색상 변경 */
+    cursor: not-allowed;
 }
 
 .avoid-score {
-    font-size: 24px;
+    font-size: 34px;
     margin: 10px 0;
+    color: black; /* 점수 색상을 흰색으로 변경 */
 }
 
 .avoid-dialog {
@@ -44,4 +52,24 @@
     color: red;
     font-weight: bold;
     margin-top: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* 버튼 컨테이너의 너비를 캔버스에 맞춰 조정 */
+    padding: 0 20px; /* 버튼 사이의 여백 조정 */
+}
+
+.center-button {
+    padding: 10px 20px;
+    position: absolute;
+    top: 50%;
+    left: 47%;
+    transform: translate(-60%, -370%);
+}
+
+.center-button:hover,
+.center-button:active {
+    background-color: #233B6F;
 }

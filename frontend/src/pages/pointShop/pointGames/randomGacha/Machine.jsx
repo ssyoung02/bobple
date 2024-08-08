@@ -1,5 +1,7 @@
 import React from 'react';
 import '../../../../assets/style/pointGame/gacha/Machine.scss';
+import GachaMachine from "../../../../assets/images/white-gotcha.svg";
+import GachaHandle from "../../../../assets/images/handle.svg";
 
 const Machine = () => {
     return (
@@ -7,13 +9,11 @@ const Machine = () => {
             <div className="machine-container">
                 <div className="backboard"></div>
                 <div className="balls"></div>
-                <img className="machine" src="https://assets.codepen.io/2509128/gotcha.svg" alt="Machine" />
+                <img className="machine" src={GachaMachine} alt="Machine" />
                 <div className="title"></div>
                 <div className="price"></div>
-                <img className="handle" src="https://assets.codepen.io/2509128/handle.svg" alt="Handle" />
-                <div className="pointer">
-                    <img src="https://assets.codepen.io/2509128/point.png" alt="Pointer" />
-                </div>
+                <img className="handle" src={GachaHandle} alt="Handle" />
+                <div className="pointer"></div>
             </div>
         </div>
     );
