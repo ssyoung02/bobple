@@ -228,8 +228,8 @@ function PointMain() {
                             <option value="asc" className="item-select">오래된순</option>
                         </select>
                     </div>
-                    <div className="item-container">
-                        <div className="item-list">
+                    <div className="category-container">
+                        <div className="product-list">
                             {filteredPurchasedProducts.map(product => (
                                 <button key={product.purchaseIdx} className="product-item" onClick={() => moveGifticonBarcode(product.pointShop?.giftIdx)}>
                                     <img src={product.pointShop?.giftImageUrl || 'default_image_url'}
