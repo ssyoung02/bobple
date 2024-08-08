@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom'; // React Router useHistory import
+import { useNavigate } from 'react-router-dom'; // React Router useNavigate import
 import '../../../../assets/style/pointGame/avoid/FoodAvoid.css';
 import bobpleMascot from '../../../../assets/images/bobple_mascot.png'; // 이미지 import
 
 const CANVAS_WIDTH = 800; // 캔버스 너비 설정
 const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
-const CHAR_SIZE = 50; // 캐릭터 크기
+const CHAR_SIZE = 60; // 캐릭터 크기
 const BALL_RADIUS = 10; // 공의 반지름
-
-const CHAR_SPEED = 15; // 캐릭터 이동 속도(ms)
-const CREATE_BALL_INTERVAL = 150; // 공 생성 주기(ms)
-
+const CHAR_SPEED = 10; // 캐릭터 이동 속도(ms)
+const CREATE_BALL_INTERVAL = 200; // 공 생성 주기(ms)
 const MOBILE_CHAR_MOVE = 15; // 모바일 캐릭터 이동 거리
 const USER = bobpleMascot; // 캐릭터 이미지의 경로
 
@@ -31,7 +29,8 @@ const FoodAvoid = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const canvasRef = useRef(null);
     const charRef = useRef(new Image());
-    const navigate = useNavigate(); // useHistory 훅 사용
+    const navigate = useNavigate(); // useNavigate 훅 사용
+    const moveRef = useRef(); // moveChar 함수 참조를 위해 useRef 사용
 
     useEffect(() => {
         if (gameStart) {
@@ -40,7 +39,7 @@ const FoodAvoid = () => {
                     id: Date.now() + Math.random(),
                     x: Math.random() * CANVAS_WIDTH,
                     y: -BALL_RADIUS,
-                    speed: (Math.floor(Math.random() * 5) + 1) * 2
+                    speed: (Math.floor(Math.random() * 5) + 1) * 2 // 공의 속도 (마지막 숫자만 변경)
                 }));
                 setBalls((prevBalls) => [...prevBalls, ...newBalls]);
             };
@@ -91,51 +90,67 @@ const FoodAvoid = () => {
         }
     }, [balls, position, imageLoaded]);
 
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (gameStart) {
-                switch (e.key) {
-                    case "ArrowLeft":
-                        e.preventDefault();
-                        setDirection(DIRECTIONS.LEFT);
-                        break;
-                    case "ArrowRight":
-                        e.preventDefault();
-                        setDirection(DIRECTIONS.RIGHT);
-                        break;
-                    default:
-                        setDirection(DIRECTIONS.STOP);
-                        break;
-                }
+    const handleKeyDown = (e) => {
+        if (gameStart) {
+            switch (e.key) {
+                case "ArrowLeft":
+                    e.preventDefault();
+                    setDirection(DIRECTIONS.LEFT);
+                    break;
+                case "ArrowRight":
+                    e.preventDefault();
+                    setDirection(DIRECTIONS.RIGHT);
+                    break;
+                default:
+                    break;
             }
-        };
+        }
+    };
 
+    const handleKeyUp = (e) => {
+        if (gameStart) {
+            switch (e.key) {
+                case "ArrowLeft":
+                case "ArrowRight":
+                    setDirection(DIRECTIONS.STOP);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
         };
     }, [gameStart]);
 
     useEffect(() => {
         const moveChar = () => {
-            if (gameStart) {
-                let newX = position.x;
-                switch (direction) {
-                    case DIRECTIONS.LEFT:
-                        newX = Math.max(newX - 5, 0);
-                        break;
-                    case DIRECTIONS.RIGHT:
-                        newX = Math.min(newX + 5, CANVAS_WIDTH - CHAR_SIZE);
-                        break;
-                    default:
-                        break;
-                }
-                setPosition({ x: newX, y: position.y });
+            let newX = position.x;
+            switch (direction) {
+                case DIRECTIONS.LEFT:
+                    newX = Math.max(newX - CHAR_SPEED, 0);
+                    break;
+                case DIRECTIONS.RIGHT:
+                    newX = Math.min(newX + CHAR_SPEED, CANVAS_WIDTH - CHAR_SIZE);
+                    break;
+                default:
+                    break;
             }
+            setPosition({ x: newX, y: position.y });
+            moveRef.current = requestAnimationFrame(moveChar);
         };
 
-        const intervalId = setInterval(moveChar, CHAR_SPEED);
-        return () => clearInterval(intervalId);
+        if (gameStart && direction !== DIRECTIONS.STOP) {
+            moveRef.current = requestAnimationFrame(moveChar);
+        }
+
+        return () => cancelAnimationFrame(moveRef.current);
     }, [direction, position, gameStart]);
 
     useEffect(() => {
@@ -173,7 +188,7 @@ const FoodAvoid = () => {
 
         for (let ball of balls) {
             const distance = calculateDistance(ball.x, ball.y, charCenterX, charCenterY);
-            if (distance < BALL_RADIUS + CHAR_SIZE / 2) {
+            if (distance < BALL_RADIUS + CHAR_SIZE / 2 - 1) {
                 setOpenDialog(true);
                 setGameStart(false);
                 setScoreOn(false);
@@ -197,7 +212,7 @@ const FoodAvoid = () => {
     };
 
     const handleExit = () => {
-        navigate('/point'); // 이전 페이지로 이동
+        navigate('/point/pointGame'); // 이전 페이지로 이동
     };
 
     const moveCharRight = () => {

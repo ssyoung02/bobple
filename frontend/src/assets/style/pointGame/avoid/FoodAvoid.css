@@ -16,8 +16,8 @@
 }
 
 .avoid-canvas {
-    width: 350px;
-    height: 350px;
+    width: 390px;
+    height: 450px;
     border: 2px solid #000;
     background-color: #000; /* 캔버스 배경색을 검은색으로 변경 */
 
