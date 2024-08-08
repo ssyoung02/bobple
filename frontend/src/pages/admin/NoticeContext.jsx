@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../../assets/style/admin/NoticeContext.css'
+import '../../assets/style/admin/NoticeContext.css';
 import mascot from "../../assets/images/bobple_mascot.png";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function NoticeContext() {
     // 공지사항 제목과 내용을 저장하는 상태
@@ -43,6 +43,9 @@ function NoticeContext() {
                 // 성공적으로 공지사항 저장
                 console.log('공지사항 제출:', response.data);
                 alert('공지사항이 성공적으로 저장되었습니다.');
+
+                // 성공 시 페이지 이동
+                navigate('/admin/notice');
             } else {
                 // 오류 처리
                 console.error('오류 응답:', response.data);
@@ -76,7 +79,7 @@ function NoticeContext() {
     };
     const moveBackApp = () => {
         navigate('/mypage/login');
-    }
+    };
 
     return (
         <div className="admin-form-container">

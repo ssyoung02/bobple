@@ -1,6 +1,7 @@
 package kr.bit.bobple.config;
 
 import jakarta.servlet.http.HttpServletResponse;
+import kr.bit.bobple.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -29,9 +30,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository; // 추가
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository; // 추가
     }
 
     @Bean
@@ -48,23 +52,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll() // 레시피 조회는 인증 없이 허용
-//                                .requestMatchers("/api/recipes/{recipeId}/comments").permitAll() // 댓글 조회도 인증 없이 허용
-////                                .requestMatchers("/api/recipes", "/api/recipes/*/comments").authenticated() // 레시피 생성, 댓글 작성 등은 인증 필요
-//                                .requestMatchers("/api/recipes", "/api/recipes/*/comments").permitAll() // 레시피 생성, 댓글 작성 등은 인증 필요
-////                                .requestMatchers(HttpMethod.PUT, "/api/recipes/**").authenticated() // 레시피 수정은 인증 필요
-//                                .requestMatchers(HttpMethod.PUT, "/api/recipes/**").permitAll()// 레시피 수정은 인증 필요
-////                                .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").authenticated() // 레시피 삭제는 인증 필요    .requestMatchers(HttpMethod.PUT, "/api/recipes/**").authenticated() // 레시피 수정은 인증 필요
-//                                .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").permitAll() // 레시피 삭제는 인증 필요
-//                                .requestMatchers("/api/recipes/search").permitAll() // 레시피 검색은 인증 없이 허용
-                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update", "/api/users/**", "/api/admin/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/recipes/**").authenticated()
+                                .requestMatchers(HttpMethod.PUT, "/api/recipes/**").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").authenticated()
+//                                .requestMatchers(HttpMethod.POST, "/api/recipes/{recipeId}/like").authenticated() // 좋아요는 인증 필요
+                                .requestMatchers("/api/recipes/{recipeId}/comments").permitAll() // 댓글 조회도 인증 없이 허용
+                                .requestMatchers("/api/recipes/{recipeId}/comments/{commentId}").authenticated() // 레시피 생성, 댓글 작성 등은 인증 필요
+                                .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update", "/api/users/**", "/api/admin/*", "api/questions/**").permitAll()
                                 .requestMatchers("/api/**","/api/chatrooms/**","/api/chatrooms/my/**").authenticated()  // /api/chatrooms/** 경로는 인증 필요
-                                .requestMatchers("/api/recipes/search","/api/recipes/recommend","/api/recipes/latest").permitAll()// AI 레시피 추천 엔드포인트 허용
+                                .requestMatchers("/api/recipes/search","/api/recipes/recommend","/api/recipes/latest","/api/recipes/{id}/increment-views").permitAll()// AI 레시피 추천 엔드포인트 허용
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                         .accessDeniedHandler((request, response, accessDeniedException) -> response.sendError(HttpServletResponse.SC_FORBIDDEN))

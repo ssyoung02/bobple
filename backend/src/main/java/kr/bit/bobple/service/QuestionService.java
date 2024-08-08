@@ -1,7 +1,10 @@
 package kr.bit.bobple.service;
 
+import kr.bit.bobple.dto.AnswerDTO;
 import kr.bit.bobple.dto.QuestionDTO;
+import kr.bit.bobple.entity.Answer;
 import kr.bit.bobple.entity.Question;
+import kr.bit.bobple.repository.AnswerRepository;
 import kr.bit.bobple.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
@@ -52,5 +58,33 @@ public class QuestionService {
                         q.getStatus()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    // 모든 질문과 답변을 반환
+    public List<QuestionDTO> getAllQuestionsWithAnswers() {
+        List<Question> questions = questionRepository.findAll();
+        return questions.stream().map(this::convertToDTOWithAnswers).collect(Collectors.toList());
+    }
+
+    // 사용자별 질문과 답변을 반환
+    public List<QuestionDTO> getQuestionsByUserWithAnswers(Long userId) {
+        List<Question> questions = questionRepository.findByUser_UserIdx(userId);
+        return questions.stream().map(this::convertToDTOWithAnswers).collect(Collectors.toList());
+    }
+
+    private QuestionDTO convertToDTOWithAnswers(Question question) {
+        Optional<Answer> answers = answerRepository.findByQuestion_QueIdx(question.getQueIdx());
+        List<AnswerDTO> answerDTOs = answers.stream().map(AnswerDTO::fromEntity).collect(Collectors.toList());
+
+        return new QuestionDTO(
+                question.getQueIdx(),
+                question.getUser().getUserIdx(),
+                question.getUser().getName(),
+                question.getQueTitle(),
+                question.getQueDescription(),
+                question.getCreatedAt(),
+                question.getStatus(),
+                answerDTOs // 답변 포함
+        );
     }
 }

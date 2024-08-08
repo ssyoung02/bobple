@@ -2,6 +2,7 @@ import { createContext, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import CreateGroupModal from './CreateGroupModal';
 import JoinGroupModal from './JoinGroupModal';
+import ChattingModal from './ChattingModal';
 import ErrorModal from './ErrorModal'; // ErrorModal 추가
 
 // Context 생성
@@ -48,6 +49,15 @@ export const ModalProvider = ({ children }) => {
                     chatRoomTitle={chatRoomData.chatRoomTitle}
                     chatRoomDescription={chatRoomData.description}
                     chatRoomPeople={chatRoomData.roomPeople}
+                    chatRoomImage={chatRoomData.roomImage} // 이미지 URL 추가
+                    currentParticipants={chatRoomData.currentParticipants} // 현재 참여 중인 인원 추가
+                />
+            )}
+            {modalType === 'chatting' && modalState === 'show' && (
+                <ChattingModal
+                    modalState={modalState}
+                    hideModal={hideModal}
+                    chatRoomTitle={chatRoomData.chatRoomTitle}
                 />
             )}
             {errorState === 'show' && <ErrorModal message={errorMessage} hideErrorModal={hideErrorModal} />}

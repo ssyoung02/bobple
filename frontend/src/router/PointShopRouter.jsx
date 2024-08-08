@@ -7,6 +7,7 @@ import MyPointPurchase from "../pages/pointShop/MyPointPurchase";
 import GifticonBarcode from "../pages/pointShop/GifticonBarcode";
 import GachaGame from "../pages/pointShop/pointGames/randomGacha/GachaGame";
 import SlotMachine from "../pages/pointShop/pointGames/slotMachine/SlotMachine";
+import MatchingGame from "../pages/pointShop/pointGames/matchingGame/MatchingGame";
 // import PointShopForm from "../pages/pointShop/PointShopForm";
 // import PointShopList from "../pages/pointShop/PointShopList";
 import FoodAvoid from "../pages/pointShop/pointGames/foodAvoid/FoodAvoid";
@@ -36,6 +37,7 @@ function PointShopRouter() {
             <Route path="/myPointPurchase" element={<MyPointPurchase/>}/>
             <Route path="/gifticonBarcode" element={<GifticonBarcode/>}/>
             <Route path="/pointGame/GachaGame" element={<GachaGame/>}/>
+            <Route path="/pointGame/MatchingGame" element={<MatchingGame/>}/>
             <Route path="/pointGame/SlotGame" element={<SlotMachine/>}/>
             <Route path="/pointGame/FoodAvoid" element={<FoodAvoid/>}/>
 

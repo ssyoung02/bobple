@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft } from "../../components/imgcomponents/ImgComponents";
 import '../../assets/style/myPage/Calculator.css';
-import useHeaderColorChange from '../../hooks/NavigateComponentHooks';
+import {useHeaderColorChange, useNavigateNone} from '../../hooks/NavigateComponentHooks';
 
 const Calculator = () => {
     const [file, setFile] = useState(null);
@@ -16,7 +16,9 @@ const Calculator = () => {
     const [calculatedAmount, setCalculatedAmount] = useState('');
     const [showResult, setShowResult] = useState(false);
 
+    const location = useLocation();
     const navigate = useNavigate();
+
 
     const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
@@ -157,11 +159,11 @@ const Calculator = () => {
         setShowResult(false);
     };
 
-    useHeaderColorChange('#AEE2FF');
-
     const moveMypage = () => {
         navigate('/mypage');
     }
+
+    useHeaderColorChange(location.pathname,'#AEE2FF'); //
 
     return (
         <div className="calculator-main">
@@ -229,6 +231,7 @@ const Calculator = () => {
                     {!showResult && (
                         <button className="calculator-button" onClick={handleCalculate}>계산하기</button>
                     )}
+
                     {showResult && (
                         <>
                             <div className="result-money">

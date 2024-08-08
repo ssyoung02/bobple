@@ -30,6 +30,12 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
 
         try {
             const token = localStorage.getItem('token'); // JWT 토큰을 로컬 스토리지에서 가져옴
+
+            if (!token) {
+                showErrorModal("로그인이 필요합니다.");
+                return;
+            }
+
             const formData = new FormData();
             formData.append('chatRoomTitle', title);
             formData.append('description', description);
