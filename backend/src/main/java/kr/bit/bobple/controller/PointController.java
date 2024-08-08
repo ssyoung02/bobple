@@ -86,4 +86,17 @@ public class PointController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/matchingGame/result")
+    public ResponseEntity<PointDto> saveMatchingGameResult(@RequestBody Map<String, Object> requestData) {
+        Long userIdx = ((Number) requestData.get("userIdx")).longValue(); // userIdx 추출 및 변환
+        int point = ((Number) requestData.get("point")).intValue();
+
+        System.out.println("Received userIdx: " + userIdx);
+        System.out.println("Received point: " + point);
+
+        PointDto savedPoint = pointService.savePoint(userIdx, point, "음식 확대사진 맞추기 게임");
+        return ResponseEntity.ok(savedPoint);
+    }
+
 }
