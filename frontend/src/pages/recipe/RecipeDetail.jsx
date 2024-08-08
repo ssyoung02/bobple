@@ -4,6 +4,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import RecipeComment from './RecipeComment';
 import axios from "../../utils/axios";
 import '../../assets/style/recipe/RecipeDetail.css';
+import dayjs from 'dayjs'; // 날짜 포맷팅을 위한 라이브러리
+
 
 function RecipeDetail() {
     const { recipeIdx } = useParams();
@@ -12,7 +14,6 @@ function RecipeDetail() {
         selectedRecipe,
         loading,
         error,
-        likeRecipe,
         deleteRecipe,
         setSelectedRecipe,
         setError,
@@ -119,8 +120,10 @@ function RecipeDetail() {
                 <>
                     <h2>{selectedRecipe.title}</h2>
                     <div className="recipe-info">
-                        <p>작성자: {selectedRecipe.nickname}</p>
-                        <p>작성 시간: {selectedRecipe.createdAt}</p>
+                        <p>작성자: {selectedRecipe.nickname} </p>
+                        <p>작성 시간: {dayjs(selectedRecipe.createdAt).format('YYYY-MM-DD HH:mm')} </p>
+                        <p>조리 시간: {selectedRecipe.cookTime} 분 </p> {/* 조리 시간 추가 */}
+                        <p>칼로리: {selectedRecipe.calories} kcal</p> {/* 칼로리 추가 */}
                     </div>
                     <img src={selectedRecipe.picture || '/images/default_recipe_image.jpg'} alt={selectedRecipe.title}
                          className="recipe-image"/>

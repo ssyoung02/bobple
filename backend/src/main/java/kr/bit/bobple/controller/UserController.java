@@ -26,6 +26,8 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private final AuthenticationFacade authenticationFacade;
+
     @Autowired
     private UserService userService;
 
@@ -65,6 +67,15 @@ public class UserController {
             System.out.println("User not found");
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser() {
+        User currentUser = authenticationFacade.getCurrentUser();
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(currentUser);
     }
 
     @PutMapping("/update")

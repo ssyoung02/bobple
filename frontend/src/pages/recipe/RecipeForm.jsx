@@ -1,9 +1,8 @@
-// src/components/Recipe/RecipeForm.jsx
 import React, { useState, useContext, useEffect } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../assets/style/recipe/RecipeForm.css';
-import axios from "axios"; // CSS 파일 import
+import axios from "../../utils/axios";
 
 function RecipeForm() {
     const { createRecipe, updateRecipe, selectedRecipe, setSelectedRecipe } = useContext(RecipeContext);
@@ -11,6 +10,8 @@ function RecipeForm() {
     const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
+    const [cookTime, setCookTime] = useState('');
+    const [calories, setCalories] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
     const [imageUrl, setImageUrl] = useState('');
@@ -24,13 +25,15 @@ function RecipeForm() {
         } else {
             // 레시피 작성 모드일 때 초기화
             setTitle('');
+            setCookTime('');
+            setCalories('');
             setIngredients('');
             setInstructions('');
             setImageUrl('');
             setIsEditing(false);
             setError(null);
         }
-    }, [recipeIdx, getRecipeById]);
+    }, [recipeIdx]);
 
     const getRecipeById = async (id) => {
         try {
@@ -39,7 +42,9 @@ function RecipeForm() {
 
             // 폼 필드 초기값 설정
             setTitle(response.data.title);
-            setIngredients(response.data.content.split('\n\n만드는 법:\n')[0]);
+            setCookTime(response.data.cookTime);
+            setCalories(response.data.calories);
+            setIngredients(response.data.content.split('\n\n만드는 법:\n')[0].replace('재료:', '').trim());
             setInstructions(response.data.content.split('\n\n만드는 법:\n')[1]);
             setImageUrl(response.data.picture);
         } catch (error) {
@@ -51,18 +56,26 @@ function RecipeForm() {
         event.preventDefault();
 
         // 입력값 유효성 검사
-        if (!title || !ingredients || !instructions) {
+        if (!title || !cookTime || !calories || !ingredients || !instructions) {
             alert('모든 필드를 입력해주세요.');
             return;
         }
 
         try {
+            const newRecipe = {
+                title,
+                cookTime: parseInt(cookTime),
+                calories: parseInt(calories),
+                content: `재료: ${ingredients}\n\n만드는 법:\n${instructions}`,
+                picture: imageUrl
+            };
+
             if (isEditing) {
-                await updateRecipe(recipeIdx, { title, ingredients, instructions, picture: imageUrl });
+                await updateRecipe(recipeIdx, newRecipe);
                 alert('레시피가 성공적으로 수정되었습니다.');
                 navigate(`/recipe/${recipeIdx}`); // 수정 후 상세 페이지로 이동
             } else {
-                await createRecipe({ title, ingredients, instructions, picture: imageUrl });
+                await createRecipe(newRecipe);
                 alert('레시피가 성공적으로 등록되었습니다.');
                 navigate('/recipe'); // 등록 후 목록 페이지로 이동
             }
@@ -82,8 +95,16 @@ function RecipeForm() {
                     <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
                 <div className="form-field">
+                    <label htmlFor="cookTime">조리 시간 (분)</label>
+                    <input type="number" id="cookTime" value={cookTime} onChange={(e) => setCookTime(e.target.value)} />
+                </div>
+                <div className="form-field">
+                    <label htmlFor="calories">칼로리 (kcal)</label>
+                    <input type="number" id="calories" value={calories} onChange={(e) => setCalories(e.target.value)} />
+                </div>
+                <div className="form-field">
                     <label htmlFor="ingredients">재료 (쉼표로 구분)</label>
-                    <input type="text" id="ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
+                    <textarea id="ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
                 </div>
                 <div className="form-field">
                     <label htmlFor="instructions">조리 방법</label>
