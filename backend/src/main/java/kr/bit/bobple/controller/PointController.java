@@ -87,15 +87,17 @@ public class PointController {
         }
     }
 
-    @PostMapping("/matchingGame/result")
+    @PostMapping("/point/result")
     public ResponseEntity<PointDto> saveMatchingGameResult(@RequestBody Map<String, Object> requestData) {
         Long userIdx = ((Number) requestData.get("userIdx")).longValue(); // userIdx 추출 및 변환
         int point = ((Number) requestData.get("point")).intValue();
+        String pointComment = (String) requestData.get("pointComment");
 
         System.out.println("Received userIdx: " + userIdx);
         System.out.println("Received point: " + point);
+        System.out.println("Received pointComment: " + pointComment);
 
-        PointDto savedPoint = pointService.savePoint(userIdx, point, "음식 확대사진 맞추기 게임");
+        PointDto savedPoint = pointService.savePoint(userIdx, point, pointComment);
         return ResponseEntity.ok(savedPoint);
     }
 

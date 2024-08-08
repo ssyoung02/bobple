@@ -37,7 +37,7 @@ const Slot = forwardRef(({ fruits }, ref) => {
                     }
                     return newPos;
                 });
-            }, 20); // Increase speed by decreasing the interval time
+            }, 150); // Increase speed by decreasing the interval time
             setIntervalId(id);
         } else {
             clearInterval(intervalId);
