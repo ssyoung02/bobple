@@ -77,9 +77,7 @@ export const RecipeProvider = ({ children }) => {
         }
     }, [navigate]);
 
-    // useEffect(() => {
-    //     searchRecipes('', '', page, size);
-    // }, [page, size, searchRecipes]);
+
     useEffect(() => {
         searchRecipes('', '', page, size); // 토큰 확인 없이 레시피 목록 요청
         getRecipesByCategory('');
@@ -88,15 +86,6 @@ export const RecipeProvider = ({ children }) => {
 
     }, [page, size, searchRecipes]);
 
-    // useEffect(() => {
-    //     const storedToken = localStorage.getItem('token');
-    //     if (storedToken) {
-    //         axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-    //     }
-    //
-    //     // getUserRecommendedRecipes(); // 초기에는 유저 추천 레시피만 로드
-    //
-    // }, []);
 
     const getLatestRecipes = async () => {
         try {
@@ -154,7 +143,6 @@ export const RecipeProvider = ({ children }) => {
         try {
             const response = await axios.get('/api/recipes/recommended');
             setUserRecommendedRecipes(response.data); // 유저 추천 레시피를 userRecommendedRecipes에 저장
-            // setRecipes(response.data);
         } catch (error) {
             setError(error.message || '유저 추천 레시피를 불러오는 중 오류가 발생했습니다.');
             console.error(error);
@@ -235,9 +223,9 @@ export const RecipeProvider = ({ children }) => {
     };
 
     // 댓글 수정 함수
-    const updateComment = async (commentId, updatedContent) => {
+    const updateComment = async (recipeId, commentId, updatedContent) => {
         try {
-            const response = await axios.patch(`/api/recipes/comments/${commentId}`, { recipeContent: updatedContent });
+            const response = await axios.put(`/api/recipes/${recipeId}/comments/${commentId}`, { recipeContent: updatedContent });
             setSelectedRecipe(prevRecipe => {
                 const updatedComments = prevRecipe.comments.map(comment =>
                     comment.recipeCommentIdx === commentId ? response.data : comment
@@ -250,9 +238,9 @@ export const RecipeProvider = ({ children }) => {
     };
 
     // 댓글 삭제 함수
-    const deleteComment = async (commentId) => {
+    const deleteComment = async (recipeId, commentId) => {
         try {
-            await axios.delete(`/api/recipes/comments/${commentId}`);
+            await axios.delete(`/api/recipes/${recipeId}/comments/${commentId}`);
             setSelectedRecipe(prevRecipe => {
                 const updatedComments = prevRecipe.comments.filter(comment => comment.recipeCommentIdx !== commentId);
                 return { ...prevRecipe, comments: updatedComments };
@@ -267,23 +255,22 @@ export const RecipeProvider = ({ children }) => {
         <RecipeContext.Provider value={{
             recipes, selectedRecipe, loading, error,
             searchRecipes, getRecipeById,
-            // recommendRecipes,
             createRecipe, updateRecipe, deleteRecipe, likeRecipe,
             totalElements, totalPages, page, size, changePage,
             createComment, updateComment, deleteComment,
-            setSelectedRecipe, setError, latestRecipes, // latestRecipes 추가
-            setLatestRecipes, // setLatestRecipes 추가
-            getRecipesByCategory, // getRecipesByCategory 추가
-            getUserRecommendedRecipes, // getUserRecommendedRecipes 추가
-            aiRecommendRecipes, // aiRecommendRecipes 추가
-            navigate, // navigate 추가
+            setSelectedRecipe, setError, latestRecipes,
+            setLatestRecipes,
+            getRecipesByCategory,
+            getUserRecommendedRecipes,
+            aiRecommendRecipes,
+            navigate,
             setLoading,
             categoryRecipes,
             setCategoryRecipes,
             userRecommendedRecipes,
             searchedRecipes,
-            setUserRecommendedRecipes, // 추가
-            setSearchedRecipes, // 추가
+            setUserRecommendedRecipes,
+            setSearchedRecipes,
         }}>
             {children}
         </RecipeContext.Provider>
