@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
@@ -18,6 +18,8 @@ const GroupChatting = () => {
     const [user, setUser] = useState(null);
     const { showModal, setModalType, setChatRoomData } = useModal();
     const socket = io('http://localhost:3001');
+
+    const messagesEndRef = useRef(null); // 스크롤 하단으로 이동하기 위한 ref
 
     useEffect(() => {
         moment.locale('ko'); // 한국어 로케일 설정
@@ -61,15 +63,12 @@ const GroupChatting = () => {
                 setUser(response.data);
             } catch (error) {
                 if (error.response) {
-                    // Request made and server responded
                     console.error('Error response:', error.response.data);
                     console.error('Error status:', error.response.status);
                     console.error('Error headers:', error.response.headers);
                 } else if (error.request) {
-                    // Request made but no response received
                     console.error('Error request:', error.request);
                 } else {
-                    // Something happened in setting up the request
                     console.error('Error message:', error.message);
                 }
                 console.error('Failed to fetch user', error);
@@ -89,12 +88,26 @@ const GroupChatting = () => {
                 createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
             };
             setMessages((prevMessages) => [...prevMessages, formattedMessage]);
+            scrollToBottom(); // 새로운 메시지 추가 시 스크롤 하단으로 이동
         });
 
         return () => {
             socket.disconnect();
         };
     }, [chatRoomId, navigate]);
+
+    useEffect(() => {
+        // 메시지 로딩이 완료된 후 스크롤 하단으로 이동
+        if (messages.length > 0) {
+            scrollToBottom();
+        }
+    }, [messages]);
+
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     const handleSendMessage = async () => {
         if (!newMessage.trim() || !user) {
@@ -115,6 +128,7 @@ const GroupChatting = () => {
 
             await axios.post('http://localhost:3001/send-message', message);
             setNewMessage("");
+            scrollToBottom(); // 메시지 전송 후 스크롤 하단으로 이동
         } catch (error) {
             console.error('Failed to send message', error);
         }
@@ -159,6 +173,7 @@ const GroupChatting = () => {
                         </div>
                     </div>
                 ))}
+                <div ref={messagesEndRef} /> {/* 스크롤 하단을 참조하는 div */}
             </div>
             <div className="message-input">
                 <input
