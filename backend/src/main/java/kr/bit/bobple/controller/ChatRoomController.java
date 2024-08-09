@@ -2,6 +2,7 @@ package kr.bit.bobple.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.bit.bobple.config.JwtTokenProvider;
+import kr.bit.bobple.dto.ChatMemberDTO;
 import kr.bit.bobple.dto.ChatRoomDTO;
 import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.service.ChatRoomService;
@@ -88,5 +89,11 @@ public class ChatRoomController {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    @GetMapping("/{chatRoomId}/participants")
+    public ResponseEntity<List<ChatMemberDTO>> getChatRoomParticipants(@PathVariable Long chatRoomId) {
+        List<ChatMemberDTO> participants = chatRoomService.getChatRoomParticipants(chatRoomId);
+        return ResponseEntity.ok(participants);
     }
 }

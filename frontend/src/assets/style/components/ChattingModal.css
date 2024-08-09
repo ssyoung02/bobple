@@ -1,4 +1,4 @@
-/* 기본 모달 스타일 */
+/* 기존 스타일 유지 */
 .modal {
     display: none; /* 기본적으로 보이지 않도록 설정 */
     justify-content: center;
@@ -57,4 +57,44 @@
 @keyframes fadeOut {
     from {opacity: 1;}
     to {opacity: 0;}
+}
+
+/* 추가된 스타일 */
+
+/* 참여자 리스트 스타일링 */
+.participants-list {
+    margin-top: 20px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* 참여자 아이템 스타일링 */
+.participant-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.participant-item:hover {
+    background-color: #e0e0e0;
+}
+
+/* 프로필 이미지 스타일링 */
+.participant-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover; /* 이미지가 영역에 맞게 조정됨 */
+}
+
+/* 참여자 이름 스타일링 */
+.participant-item span {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
 }

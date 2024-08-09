@@ -58,7 +58,7 @@ public class ChatRoom {
     }
 
     public void updateStatus() {
-        if (this.currentParticipants == this.roomPeople) {
+        if (this.currentParticipants >= this.roomPeople) {
             this.status = Status.CLOSED;
         } else {
             this.status = Status.RECRUITING;
