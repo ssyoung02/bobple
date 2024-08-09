@@ -1,17 +1,25 @@
 /* 기본 모달 스타일 */
 .modal {
-    display: flex;
+    display: none; /* 기본적으로 보이지 않도록 설정 */
     justify-content: center;
     align-items: center;
     overflow: auto;
+    animation: fadeIn 0.5s; /* 모달 등장 애니메이션 */
 }
 
 /* 모달이 표시될 때 적용될 스타일 */
 .modal.show {
     display: flex;
+    opacity: 1;
 }
+
 .modal.hide {
-    display: none;
+    opacity: 0;
+    animation: fadeOut 0.5s forwards;
+}
+
+.modal.hide .modal-content.chatting {
+    animation: slideOutToRight 0.5s forwards;
 }
 
 .modal-content.chatting {
@@ -24,4 +32,29 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    animation: slideInFromRight 0.5s; /* 모달 컨텐츠 애니메이션 */
+}
+
+/* fadeIn 애니메이션 */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* slideIn 애니메이션 */
+@keyframes slideInFromRight {
+    from {transform: translateX(100%);}
+    to {transform: translateX(0);}
+}
+
+/* slideOutToRight 애니메이션 */
+@keyframes slideOutToRight {
+    from {transform: translateX(0);}
+    to {transform: translateX(100%);}
+}
+
+/* fadeOut 애니메이션 */
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
 }

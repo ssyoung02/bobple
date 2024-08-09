@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import io from 'socket.io-client';
+import moment from 'moment-timezone';
+import 'moment/locale/ko'; // 한국어 로케일 추가
 import '../../../assets/style/eatingGroup/GroupChatting.css';
-import {ArrowLeftLong, Menu, SendMessage} from "../../../components/imgcomponents/ImgComponents";
-import {useNavigateNone} from "../../../hooks/NavigateComponentHooks";
-import {useModal} from "../../../components/modal/ModalContext";
+import { ArrowLeftLong, Menu, SendMessage } from "../../../components/imgcomponents/ImgComponents";
+import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
+import { useModal } from "../../../components/modal/ModalContext";
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
-    const navigate = useNavigate(); // useNavigate 훅 사용
+    const navigate = useNavigate();
     const [chatRoom, setChatRoom] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
+    const [user, setUser] = useState(null);
     const { showModal, setModalType, setChatRoomData } = useModal();
+    const socket = io('http://localhost:3001');
 
     useEffect(() => {
+        moment.locale('ko'); // 한국어 로케일 설정
+
         const fetchChatRoom = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}`);
@@ -27,40 +34,85 @@ const GroupChatting = () => {
         const fetchMessages = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/messages`);
-                setMessages(response.data);
+                const messagesWithFormattedTime = response.data.map(message => ({
+                    ...message,
+                    createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
+                }));
+                setMessages(messagesWithFormattedTime);
             } catch (error) {
                 console.error('Failed to fetch messages', error);
             }
         };
 
+        const fetchUser = async () => {
+            const token = localStorage.getItem("token");
+            console.log("Token from localStorage: ", token); // 추가 로그
+            if (!token) {
+                console.error('No token found. Please log in.');
+                return;
+            }
+
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setUser(response.data);
+            } catch (error) {
+                if (error.response) {
+                    // Request made and server responded
+                    console.error('Error response:', error.response.data);
+                    console.error('Error status:', error.response.status);
+                    console.error('Error headers:', error.response.headers);
+                } else if (error.request) {
+                    // Request made but no response received
+                    console.error('Error request:', error.request);
+                } else {
+                    // Something happened in setting up the request
+                    console.error('Error message:', error.message);
+                }
+                console.error('Failed to fetch user', error);
+            }
+        };
+
         fetchChatRoom();
         fetchMessages();
+        fetchUser();
 
-        const eventSource = new EventSource('http://localhost:3001/events');
-        eventSource.onmessage = (event) => {
-            const newMessage = JSON.parse(event.data);
-            setMessages(prevMessages => [...prevMessages, newMessage]);
-        };
+        socket.emit('joinRoom', chatRoomId);
 
-        eventSource.onerror = (error) => {
-            console.error('EventSource failed:', error);
-        };
+        socket.on('newMessage', (message) => {
+            console.log("New message received at: ", moment().format('YYYY-MM-DD HH:mm:ss'));
+            const formattedMessage = {
+                ...message,
+                createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
+            };
+            setMessages((prevMessages) => [...prevMessages, formattedMessage]);
+        });
 
         return () => {
-            eventSource.close();
+            socket.disconnect();
         };
-    }, [chatRoomId]);
+    }, [chatRoomId, navigate]);
 
     const handleSendMessage = async () => {
-        if (!newMessage.trim()) {
+        if (!newMessage.trim() || !user) {
             return;
         }
 
         try {
             const message = {
                 chatRoomId: chatRoomId,
-                content: newMessage
+                content: newMessage,
+                userId: user.userIdx,
+                name: user.name,
+                profileImage: user.profileImage,
+                createdAt: moment().format('YYYY-MM-DD HH:mm:ss') // 현재 시간 추가
             };
+
+            console.log("Sending message:", message);
+
             await axios.post('http://localhost:3001/send-message', message);
             setNewMessage("");
         } catch (error) {
@@ -68,11 +120,18 @@ const GroupChatting = () => {
         }
     };
 
-    const handleGoBack = () => {
-        navigate('/group'); // GroupMain 화면으로 이동
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
     };
 
-    const showChatttingModal = (chatRoom) => {
+    const handleGoBack = () => {
+        navigate('/group');
+    };
+
+    const showChattingModal = (chatRoom) => {
         setChatRoomData(chatRoom);
         setModalType('chatting');
         showModal();
@@ -84,16 +143,20 @@ const GroupChatting = () => {
         <div className="chatting">
             {chatRoom && (
                 <div className="chat-room-info">
-                    <button onClick={handleGoBack}><ArrowLeftLong/></button>
+                    <button onClick={handleGoBack}><ArrowLeftLong /></button>
                     <h2>{chatRoom.chatRoomTitle}</h2>
                     <h3>{chatRoom.chatRoomPeople}</h3>
-                    <button onClick={showChatttingModal}><Menu/></button>
+                    <button onClick={() => showChattingModal(chatRoom)}><Menu /></button>
                 </div>
             )}
             <div className="messages">
-            {messages.map((message, index) => (
-                    <div key={index} className="message">
-                        <p>{message.content}</p>
+                {messages.map((message, index) => (
+                    <div key={index} className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
+                        <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
+                        <div className="message-content">
+                            <p><strong>{message.name}</strong>: {message.content}</p>
+                            <p>{moment(message.createdAt).format('a h:mm')}</p> {/* 시간 표시 */}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -102,10 +165,11 @@ const GroupChatting = () => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     placeholder="메시지를 입력하세요"
                 />
                 <button onClick={handleSendMessage}>
-                    <span><SendMessage/></span>
+                    <span><SendMessage /></span>
                 </button>
             </div>
         </div>

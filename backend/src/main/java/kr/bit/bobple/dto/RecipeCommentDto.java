@@ -1,31 +1,3 @@
-//// RecipeCommentDto.java
-//package kr.bit.bobple.dto;
-//
-//import kr.bit.bobple.entity.RecipeComment;
-//import lombok.Getter;
-//import lombok.Setter;
-//
-//import java.time.LocalDateTime;
-//
-//@Getter
-//@Setter
-//public class RecipeCommentDto {
-//    private Long recipeCommentIdx;
-//    private String nickname; // 댓글 작성자 닉네임 (User 엔티티에서 가져옴)
-//    private Long recipeIdx;
-//    private String recipeContent;
-//    private LocalDateTime createdAt;
-//
-//    public static RecipeCommentDto fromEntity(RecipeComment recipeComment) {
-//        RecipeCommentDto recipeCommentDto = new RecipeCommentDto();
-//        recipeCommentDto.setRecipeCommentIdx(recipeComment.getRecipeCommentIdx());
-//        recipeCommentDto.setNickname(recipeComment.getUser().getNickName()); // 닉네임 추가
-//        recipeCommentDto.setRecipeIdx(recipeComment.getRecipe().getRecipeIdx());
-//        recipeCommentDto.setRecipeContent(recipeComment.getRecipeContent());
-//        recipeCommentDto.setCreatedAt(recipeComment.getCreatedAt());
-//        return recipeCommentDto;
-//    }
-//}
 package kr.bit.bobple.dto;
 
 import kr.bit.bobple.entity.RecipeComment;
@@ -39,6 +11,7 @@ import java.time.LocalDateTime;
 public class RecipeCommentDto {
     private Long recipeCommentIdx;
     private String nickname; // 댓글 작성자 닉네임
+    private String profileImage; // 프로필 이미지 추가
     private Long recipeIdx;
     private String recipeContent;
     private LocalDateTime createdAt;
@@ -47,6 +20,7 @@ public class RecipeCommentDto {
         RecipeCommentDto recipeCommentDto = new RecipeCommentDto();
         recipeCommentDto.setRecipeCommentIdx(recipeComment.getRecipeCommentIdx());
         recipeCommentDto.setNickname(recipeComment.getUser().getNickName());
+        recipeCommentDto.setProfileImage(recipeComment.getUser().getProfileImage()); // 프로필 이미지 설정
         recipeCommentDto.setRecipeIdx(recipeComment.getRecipe().getRecipeIdx());
         recipeCommentDto.setRecipeContent(recipeComment.getRecipeContent());
         recipeCommentDto.setCreatedAt(recipeComment.getCreatedAt());

@@ -4,6 +4,7 @@
     justify-content: center;
     align-items: center;
     overflow: auto;
+    animation: fadeIn 0.5s; /* 모달 등장 애니메이션 */
 }
 
 /* 모달이 표시될 때 적용될 스타일 */
@@ -12,20 +13,31 @@
 }
 .modal.hide {
     display: none;
+    animation: fadeOut 0.5s forwards;
+}
+
+.modal.hide .modal-content {
+    animation: slideOut 0.5s forwards;
 }
 
 /* 모달 컨텐츠 스타일 */
 .modal-content {
-    max-width: 380px;
-    height: 70%;
+    max-width: 350px;
+    height: 75%;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 10px;
-    animation: fadeIn 0.3s ease-in-out;
     font-weight: bold;
     display: flex;
     flex-direction: column;
     align-items: center;
+    animation: slideIn 0.5s; /* 모달 컨텐츠 애니메이션 */
+    overflow: auto;
+}
+
+
+.modal-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .group-modal-header {
@@ -123,12 +135,36 @@
     width: 100%;
 }
 
+/* fadeIn 애니메이션 */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* slideIn 애니메이션 */
+@keyframes slideIn {
+    from {transform: translateY(-100%);}
+    to {transform: translateY(0);}
+}
+
+/* slideOutToRight 애니메이션 */
+@keyframes slideOut {
+    from {transform: translateY(0);}
+    to {transform: translateY(-100%);}
+}
+
+/* fadeOut 애니메이션 */
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
 /*------------------------------------------------------------*/
 
 /*JoinGroupModal.jsx*/
 
 .modal-content.join-content {
-    height: 50%;
+    height: 55%;
     justify-content: space-between;
 }
 

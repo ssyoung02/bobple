@@ -41,8 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } else {
             System.out.println("Invalid token or token not found");
         }
+
         chain.doFilter(request, response);
     }
+
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization"); // 요청 헤더에서 Authorization 헤더 추출
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
