@@ -3,6 +3,7 @@ package kr.bit.bobple.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import kr.bit.bobple.dto.ChatMemberDTO;
 import kr.bit.bobple.entity.ChatMember;
 import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.entity.User;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatRoomService {
@@ -107,8 +109,10 @@ public class ChatRoomService {
     }
 
     public ChatRoom joinChatRoom(Long chatRoomId, Long userId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("Chat room not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         // 이미 해당 채팅방에 참가하고 있는지 확인
         boolean isMember = chatMemberRepository.existsById(new ChatMember.ChatMemberId(chatRoomId, userId));
@@ -127,5 +131,13 @@ public class ChatRoomService {
         }
 
         return chatRoom;
+    }
+
+    // 채팅 참여자 목록
+    public List<ChatMemberDTO> getChatRoomParticipants(Long chatRoomId) {
+        List<ChatMember> members = chatMemberRepository.findByChatRoomChatRoomIdx(chatRoomId);
+        return members.stream()
+                .map(member -> new ChatMemberDTO(member.getUser().getUserIdx(), member.getUser().getName(), member.getUser().getProfileImage()))
+                .collect(Collectors.toList());
     }
 }

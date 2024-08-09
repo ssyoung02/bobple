@@ -7,16 +7,17 @@ import 'moment/locale/ko'; // 한국어 로케일 추가
 import '../../../assets/style/eatingGroup/GroupChatting.css';
 import { ArrowLeftLong, Menu, SendMessage } from "../../../components/imgcomponents/ImgComponents";
 import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
-import { useModal } from "../../../components/modal/ModalContext";
+import ChattingModal from '../../../components/modal/ChattingModal'; // 정확한 경로로 import
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
+    const numericChatRoomId = Number(chatRoomId); // 문자열을 숫자로 변환 (필요 시)
     const navigate = useNavigate();
     const [chatRoom, setChatRoom] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [user, setUser] = useState(null);
-    const { showModal, setModalType, setChatRoomData } = useModal();
+    const [isChattingModalOpen, setIsChattingModalOpen] = useState(false);
     const socket = io('http://localhost:3001');
 
     const messagesEndRef = useRef(null); // 스크롤 하단으로 이동하기 위한 ref
@@ -26,7 +27,7 @@ const GroupChatting = () => {
 
         const fetchChatRoom = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}`);
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/${numericChatRoomId}`);
                 setChatRoom(response.data);
             } catch (error) {
                 console.error('Failed to fetch chat room', error);
@@ -35,7 +36,7 @@ const GroupChatting = () => {
 
         const fetchMessages = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/messages`);
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/${numericChatRoomId}/messages`);
                 const messagesWithFormattedTime = response.data.map(message => ({
                     ...message,
                     createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
@@ -48,7 +49,6 @@ const GroupChatting = () => {
 
         const fetchUser = async () => {
             const token = localStorage.getItem("token");
-            console.log("Token from localStorage: ", token); // 추가 로그
             if (!token) {
                 console.error('No token found. Please log in.');
                 return;
@@ -62,15 +62,6 @@ const GroupChatting = () => {
                 });
                 setUser(response.data);
             } catch (error) {
-                if (error.response) {
-                    console.error('Error response:', error.response.data);
-                    console.error('Error status:', error.response.status);
-                    console.error('Error headers:', error.response.headers);
-                } else if (error.request) {
-                    console.error('Error request:', error.request);
-                } else {
-                    console.error('Error message:', error.message);
-                }
                 console.error('Failed to fetch user', error);
             }
         };
@@ -79,22 +70,21 @@ const GroupChatting = () => {
         fetchMessages();
         fetchUser();
 
-        socket.emit('joinRoom', chatRoomId);
+        socket.emit('joinRoom', numericChatRoomId);
 
         socket.on('newMessage', (message) => {
-            console.log("New message received at: ", moment().format('YYYY-MM-DD HH:mm:ss'));
             const formattedMessage = {
                 ...message,
                 createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
             };
-            setMessages((prevMessages) => [...prevMessages, formattedMessage]);
+            setMessages(prevMessages => [...prevMessages, formattedMessage]);
             scrollToBottom(); // 새로운 메시지 추가 시 스크롤 하단으로 이동
         });
 
         return () => {
             socket.disconnect();
         };
-    }, [chatRoomId, navigate]);
+    }, [numericChatRoomId, navigate]);
 
     useEffect(() => {
         // 메시지 로딩이 완료된 후 스크롤 하단으로 이동
@@ -116,15 +106,13 @@ const GroupChatting = () => {
 
         try {
             const message = {
-                chatRoomId: chatRoomId,
+                chatRoomId: numericChatRoomId,
                 content: newMessage,
                 userId: user.userIdx,
                 name: user.name,
                 profileImage: user.profileImage,
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss') // 현재 시간 추가
             };
-
-            console.log("Sending message:", message);
 
             await axios.post('http://localhost:3001/send-message', message);
             setNewMessage("");
@@ -145,10 +133,12 @@ const GroupChatting = () => {
         navigate('/group');
     };
 
-    const showChattingModal = (chatRoom) => {
-        setChatRoomData(chatRoom);
-        setModalType('chatting');
-        showModal();
+    const openChattingModal = () => {
+        setIsChattingModalOpen(true);
+    };
+
+    const closeChattingModal = () => {
+        setIsChattingModalOpen(false);
     };
 
     useNavigateNone();
@@ -160,7 +150,7 @@ const GroupChatting = () => {
                     <button onClick={handleGoBack}><ArrowLeftLong /></button>
                     <h2>{chatRoom.chatRoomTitle}</h2>
                     <h3>{chatRoom.chatRoomPeople}</h3>
-                    <button onClick={() => showChattingModal(chatRoom)}><Menu /></button>
+                    <button onClick={openChattingModal}><Menu /></button>
                 </div>
             )}
             <div className="messages">
@@ -187,6 +177,16 @@ const GroupChatting = () => {
                     <span><SendMessage /></span>
                 </button>
             </div>
+
+            {/* ChattingModal 추가 */}
+            {isChattingModalOpen && (
+                <ChattingModal
+                    modalState="show"
+                    hideModal={closeChattingModal}
+                    chatRoomId={numericChatRoomId}  // 숫자로 변환된 chatRoomId 전달
+                    chatRoomTitle={chatRoom?.chatRoomTitle || ''}
+                />
+            )}
         </div>
     );
 };

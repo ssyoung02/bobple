@@ -12,4 +12,7 @@ import java.util.List;
 public interface ChatMemberRepository extends JpaRepository<ChatMember, ChatMember.ChatMemberId> {
     @Query("SELECT cm.chatRoom.chatRoomIdx FROM ChatMember cm WHERE cm.user.userIdx = :userIdx")
     List<Long> findChatRoomIdsByUserIdx(Long userIdx);
+
+    // 특정 채팅방에 참여한 모든 멤버를 찾는 메서드
+    List<ChatMember> findByChatRoomChatRoomIdx(Long chatRoomIdx);
 }
