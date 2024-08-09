@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class    UserService {
 
     @Autowired
     private UserRepository userRepository;

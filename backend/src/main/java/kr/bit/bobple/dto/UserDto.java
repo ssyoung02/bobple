@@ -48,8 +48,34 @@ public class UserDto {
         userDto.setCreatedAt(user.getCreatedAt());
         userDto.setUpdatedAt(user.getUpdatedAt());
 
+        if (user.getRecipes() != null) {
+            userDto.setRecipes(user.getRecipes().stream()
+                    .map(RecipeDto::fromEntity)
+                    .collect(Collectors.toList()));
+        }
+
         // Recipes와 같은 관련 엔티티를 DTO에 포함하지 않음으로써 순환 참조 방지
         return userDto;
+    }
+
+    public static User toEntity(UserDto userDto) {
+        User user = new User();
+        user.setUserIdx(userDto.getUserIdx());
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setName(userDto.getName());
+        user.setBirthdate(userDto.getBirthdate());
+        user.setNickName(userDto.getNickName());
+        user.setProfileImage(userDto.getProfileImage());
+        user.setEnabled(userDto.getEnabled());
+        user.setProvider(userDto.getProvider());
+        user.setCompanyId(userDto.getCompanyId());
+        user.setReportCount(userDto.getReportCount());
+        user.setPoint(userDto.getPoint());
+        user.setCreatedAt(userDto.getCreatedAt());
+        user.setUpdatedAt(userDto.getUpdatedAt());
+
+        return user;
     }
 
     // 레시피를 포함한 변환 메서드
@@ -62,4 +88,6 @@ public class UserDto {
         }
         return userDto;
     }
+
+
 }

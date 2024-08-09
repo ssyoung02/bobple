@@ -1,7 +1,9 @@
 package kr.bit.bobple.controller;
 
 import kr.bit.bobple.config.JwtTokenProvider;
+import kr.bit.bobple.entity.LoginHistory;
 import kr.bit.bobple.entity.User;
+import kr.bit.bobple.repository.LoginHistoryRepository;
 import kr.bit.bobple.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +38,9 @@ public class GoogleController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private LoginHistoryRepository loginHistoryRepository;
 
     @GetMapping("/login/oauth2/callback/google")
     public ResponseEntity<?> googleCallback(@RequestParam String code) {
@@ -110,6 +117,8 @@ public class GoogleController {
         claims.put("reportCount", user.getReportCount());
         claims.put("point", user.getPoint());
 
+        handleDailyPoint(user.getUserIdx());
+
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.createToken(user.getUserIdx(), email, claims);
         System.out.println("Generated JWT Token: " + jwtToken);
@@ -121,5 +130,31 @@ public class GoogleController {
         result.put("token", jwtToken);
 
         return ResponseEntity.ok(result);
+    }
+
+    private void handleDailyPoint(Long userIdx) {
+        // Check today's date
+        Date today = java.sql.Date.valueOf(LocalDate.now());
+
+        // Check if the user has logged in today
+        Optional<LoginHistory> loginHistoryOptional = loginHistoryRepository.findByUserIdxAndLoginTime(userIdx, today);
+
+        if (!loginHistoryOptional.isPresent()) {
+            // Allocate points
+            User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException("User not found"));
+            int currentPoints = user.getPoint() != null ? user.getPoint() : 0;
+            int updatedPoints = currentPoints ;
+
+            // Save point record
+            user.setPoint(updatedPoints);
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(user);
+
+            // Save login history
+            LoginHistory loginHistory = new LoginHistory();
+            loginHistory.setUserIdx(userIdx);
+            loginHistory.setLoginTime(today);
+            loginHistoryRepository.save(loginHistory);
+        }
     }
 }

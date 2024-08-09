@@ -25,7 +25,7 @@ public class Recipe {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+//    @JsonBackReference
     @JoinColumn(name = "user_idx")
     private User user;
 

@@ -37,5 +37,5 @@ public class Point {
 
         // 새로운 컬럼 추가
         @Column(name = "point_balance")
-        private int pointBalance;
+        private Integer pointBalance;
 }
