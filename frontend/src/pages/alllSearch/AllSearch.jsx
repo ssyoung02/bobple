@@ -34,6 +34,11 @@ const AllSearch = () => {
         }
     }, [isSearching]);
 
+    // 인기 검색어 클릭 시 이동 함수
+    const handleTopKeywordClick = (keyword) => {
+        navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`);
+    };
+
     return (
         <div className="SearchBox">
             <div className="SearchInput">
@@ -64,7 +69,9 @@ const AllSearch = () => {
                 <h2 className="all-search-title">인기검색어</h2>
                 <ul className="search-ul">
                     {topKeywords.map((keyword, index) => (
-                        <li key={index} className="search-list">
+                        <li key={index} className="search-list"
+                            onClick={() => handleTopKeywordClick(keyword.keyword)}
+                        >
                             <span>{index + 1}</span>. {keyword.keyword}
                         </li>
                     ))}

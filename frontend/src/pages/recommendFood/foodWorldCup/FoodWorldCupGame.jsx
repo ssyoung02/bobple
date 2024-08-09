@@ -68,6 +68,10 @@ const FoodWorldCupGame = () => {
     useHeaderColorChange(location.pathname,'#F5A8BE'); //
     useNavigateNone();
 
+    const handleWinnerClick = (winner) => {
+        navigate(`/recommend/recommendFoodCategory?keyword=${winner.foodName}`); // 검색어 정보 전달
+    };
+
     if (winner) {
         return (
             <div className="worldCup-container game-container">
@@ -79,7 +83,10 @@ const FoodWorldCupGame = () => {
                         </div>
                         <span>Winner!</span><br/>
                     </div>
-                    <div className="food-winner-item">
+                    <div
+                        className="food-winner-item"
+                        onClick={() => handleWinnerClick(winner)} // 클릭 이벤트 추가
+                    >
                         <span><Trophy/></span>
                         <h3 className="food-winner-title">오늘 메뉴는</h3>
                         <img src={winner.foodImageUrl}/> {/* winner.img -> winner.foodImageUrl */}
