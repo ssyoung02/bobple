@@ -6,6 +6,7 @@ import kr.bit.bobple.dto.LikeRecipeDto;
 import kr.bit.bobple.dto.RecipeDto;
 import kr.bit.bobple.entity.Recipe;
 import kr.bit.bobple.service.LikeRecipeService;
+import kr.bit.bobple.service.RecipeImageService;
 import kr.bit.bobple.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import kr.bit.bobple.entity.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RestController
@@ -26,6 +29,7 @@ public class RecipeController {
     private final RecipeService recipeService;
     private final LikeRecipeService likeRecipeService;
     private final AuthenticationFacade authenticationFacade;
+    private final RecipeImageService recipeImageService;
 
 
 
@@ -67,18 +71,41 @@ public class RecipeController {
         return ResponseEntity.ok().build();
     }
 
+//    @PostMapping
+//    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto, @AuthenticationPrincipal User user, @RequestParam("image") MultipartFile image) {
+//
+//        recipeDto.setUser(user); // 작성자 설정
+//        RecipeDto createdRecipe = recipeService.createRecipe(recipeDto);
+//        if (createdRecipe != null && image != null) {
+//            recipeImageService.uploadRecipeImage(createdRecipe.getRecipeIdx(), image);
+//        }
+//        return ResponseEntity.ok(createdRecipe);
+//    }
+
     @PostMapping
-    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto, @AuthenticationPrincipal User user) {
-        recipeDto.setUser(user); // 작성자 설정
-        return ResponseEntity.ok(recipeService.createRecipe(recipeDto));
+    public ResponseEntity<RecipeDto> createRecipe(
+            @ModelAttribute RecipeDto recipeDto,
+            @RequestParam("image") MultipartFile imageFile) {
+        return ResponseEntity.ok(recipeService.createRecipe(recipeDto, imageFile));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RecipeDto> updateRecipe(@PathVariable Long id, @RequestBody RecipeDto recipeDto, @AuthenticationPrincipal User user) {
-        if (!recipeService.isRecipeAuthor(id, user)) {
-            return ResponseEntity.status(403).build(); // 403 Forbidden 에러 반환
-        }
-        return ResponseEntity.ok(recipeService.updateRecipe(id, recipeDto));
+
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<RecipeDto> updateRecipe(@PathVariable Long id, @RequestBody RecipeDto recipeDto, @AuthenticationPrincipal User user) {
+//        if (!recipeService.isRecipeAuthor(id, user)) {
+//            return ResponseEntity.status(403).build(); // 403 Forbidden 에러 반환
+//        }
+//        return ResponseEntity.ok(recipeService.updateRecipe(id, recipeDto));
+//    }
+
+
+    @PutMapping("/{recipeId}")
+    public ResponseEntity<RecipeDto> updateRecipe(
+            @PathVariable Long recipeId,
+            @ModelAttribute RecipeDto recipeDto,
+            @RequestParam("image") MultipartFile imageFile) {
+        return ResponseEntity.ok(recipeService.updateRecipe(recipeId, recipeDto, imageFile));
     }
 
     @DeleteMapping("/{id}")

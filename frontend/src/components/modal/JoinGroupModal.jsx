@@ -10,7 +10,6 @@ const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chat
     const [image, setImage] = useState(bobple);
 
     useEffect(() => {
-        // 서버에서 이미지 URL을 가져와 설정하는 로직
         if (chatRoomImage) {
             setImage(chatRoomImage);
         } else {
@@ -20,7 +19,7 @@ const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chat
 
     const moveChat = async (chatRoomId) => {
         try {
-            const token = localStorage.getItem('token'); // JWT 토큰을 로컬 스토리지에서 가져옴
+            const token = localStorage.getItem('token');
             if (!token) {
                 console.error('No JWT token found');
                 return;
@@ -65,7 +64,11 @@ const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chat
                         <p>{chatRoomDescription}</p>
                     </div>
                 </div>
-                <button className="group-modal-create-btn join-btn" onClick={() => moveChat(chatRoomId)}>나도 함께하기</button>
+                {currentParticipants >= chatRoomPeople ? (
+                    <p className="group-modal-closed-msg">모집이 마감되었습니다</p>
+                ) : (
+                    <button className="group-modal-create-btn join-btn" onClick={() => moveChat(chatRoomId)}>나도 함께하기</button>
+                )}
             </div>
         </div>
     );
@@ -78,8 +81,8 @@ JoinGroupModal.propTypes = {
     chatRoomTitle: PropTypes.string.isRequired,
     chatRoomDescription: PropTypes.string.isRequired,
     chatRoomPeople: PropTypes.number.isRequired,
-    chatRoomImage: PropTypes.string, // 추가된 프로퍼티
-    currentParticipants: PropTypes.number.isRequired // 현재 참여 중인 인원 프로퍼티 추가
+    chatRoomImage: PropTypes.string,
+    currentParticipants: PropTypes.number.isRequired
 };
 
 export default JoinGroupModal;
