@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom'; // React Router useNavigate import
 import '../../../../assets/style/pointGame/avoid/FoodAvoid.css';
-import bobpleMascot from '../../../../assets/images/bobple_mascot.png'; // 이미지 import
+import bobpleMascot from '../../../../assets/images/bobple_mascot.png';
+import {getUserIdx} from "../../../../utils/auth"; // 이미지 import
+import axios from 'axios';
 
 const CANVAS_WIDTH = 800; // 캔버스 너비 설정
 const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
@@ -31,6 +33,8 @@ const FoodAvoid = () => {
     const charRef = useRef(new Image());
     const navigate = useNavigate(); // useNavigate 훅 사용
     const moveRef = useRef(); // moveChar 함수 참조를 위해 useRef 사용
+    const userIdx=getUserIdx();
+    const [earnedPoint, setEarnedPoint] = useState(0);
 
     useEffect(() => {
         if (gameStart) {
@@ -212,7 +216,7 @@ const FoodAvoid = () => {
     };
 
     const handleExit = () => {
-        navigate('/point/pointGame'); // 이전 페이지로 이동
+        navigate('/point'); // 이전 페이지로 이동
     };
 
     const moveCharRight = () => {
@@ -230,6 +234,47 @@ const FoodAvoid = () => {
             setPosition({ x: newX, y: position.y });
         }
     };
+
+    useEffect(() => {
+        if (openDialog) { // 게임 오버 시 포인트 계산 및 전송
+            const finalPoint = Math.floor(score / 100); // 100점당 1 포인트 계산
+            setEarnedPoint(finalPoint);
+            if (finalPoint > 0) {
+                const token = localStorage.getItem('token');
+
+                axios.post('http://localhost:8080/api/point/result', { // 백엔드 엔드포인트 확인
+                    userIdx: parseInt(userIdx, 10),
+                    point: finalPoint,
+                    pointComment: "음식 피하기 게임"
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    withCredentials: true
+                })
+                    .then(response => {
+                        console.log("포인트 저장 성공:", response.data);
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            // 서버에서 에러 응답을 받은 경우
+                            if (error.response.status === 401) {
+                                console.error("Unauthorized: ", error.response.data);
+                                // 사용자에게 로그인 필요 알림 등 추가 처리
+                            } else {
+                                console.error("Error saving matching game result:", error.response.data); // 에러 메시지 출력
+                            }
+                        } else if (error.request) {
+                            // 요청을 보냈지만 응답을 받지 못한 경우
+                            console.error("No response received from server:", error.request);
+                        } else {
+                            // 요청 설정 중에 에러가 발생한 경우
+                            console.error("Error setting up the request:", error.message);
+                        }
+                    });
+            }
+        }
+    }, [openDialog, score, userIdx]);
 
     return (
         <div className="avoid-body">
@@ -251,6 +296,15 @@ const FoodAvoid = () => {
                 </div>
                 {openDialog && <div className="avoid-dialog">Game Over!</div>}
                 <div className="avoid-score">Score: {score}</div>
+                {openDialog && ( // openDialog가 true일 때만 포인트 획득 실패 메시지 표시
+                    <div>
+                        {earnedPoint > 0 ? (
+                            <p>{earnedPoint} 포인트 획득!</p>
+                        ) : (
+                            <p>포인트 획득 실패!</p>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
