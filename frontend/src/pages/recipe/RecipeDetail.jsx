@@ -24,9 +24,6 @@ function RecipeDetail() {
     const [newComment, setNewComment] = useState('');
     const navigate = useNavigate();
 
-    // 사용자 닉네임 가져오기
-    const userNickname = localStorage.getItem('userNickname'); // 실제 구현에서는 백엔드에서 유저 정보를 가져와야 합니다.
-
     const fetchRecipeAndComments = useCallback(async () => {
         try {
             await getRecipeById(recipeIdx);
@@ -99,6 +96,10 @@ function RecipeDetail() {
         }
     };
 
+    const handleEditClick = () => {
+        navigate(`/recipe/modify/${recipeIdx}`);
+    };
+
     // 재료와 조리 방법 분리 로직
     let ingredients = '';
     let instructions = '';
@@ -126,6 +127,7 @@ function RecipeDetail() {
                         <p>작성 시간: {dayjs(selectedRecipe.createdAt).format('YYYY-MM-DD HH:mm')} </p>
                         <p>조리 시간: {selectedRecipe.cookTime} 분 </p> {/* 조리 시간 추가 */}
                         <p>칼로리: {selectedRecipe.calories} kcal</p> {/* 칼로리 추가 */}
+                        <p>조회수: {selectedRecipe.viewsCount} 회</p> {/* 조회수 추가 */}
                     </div>
                     <img src={selectedRecipe.picture || '/images/default_recipe_image.jpg'} alt={selectedRecipe.title}
                          className="recipe-image"/>
@@ -149,14 +151,12 @@ function RecipeDetail() {
                     </button>
 
                     {/* 수정 버튼 (작성자만 보이도록 조건 추가) */}
-                    {userNickname === selectedRecipe.nickname && (
-                        <Link to={`/recipe/edit/${recipeIdx}`}>
-                            <button className="edit-button">수정</button>
-                        </Link>
+                    {localStorage.getItem('userIdx') == selectedRecipe.userIdx && (
+                        <button className="edit-button" onClick={handleEditClick}>수정</button>
                     )}
 
                     {/* 삭제 버튼 (작성자만 보이도록 조건 추가) */}
-                    {userNickname === selectedRecipe.nickname && (
+                    {localStorage.getItem('userIdx') == selectedRecipe.userIdx && (
                         <button className="delete-button" onClick={handleDeleteClick}>삭제</button>
                     )}
 

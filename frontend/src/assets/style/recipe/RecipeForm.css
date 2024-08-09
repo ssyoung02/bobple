@@ -20,6 +20,14 @@
     background: rgba(165, 165, 165, 0.5);
 }
 
+.recipe-header-exImg {
+    width: 100%; /* 부모 요소에 맞게 이미지 너비를 100%로 설정 */
+    margin-top: 4em;
+    height: 90%; /* 부모 요소에 맞게 이미지 높이를 100%로 설정 */
+    object-fit: cover; /* 이미지의 비율을 유지하면서 영역에 맞게 크기 조절 */
+    border-radius: 0 0 30px 30px;
+}
+
 .recipe-header-img svg{
     position: absolute;
     top: 50%;

@@ -85,7 +85,7 @@ function RecipeForm() {
 
         try {
             const formData = new FormData();
-            formData.append("recipe-title", title);
+            formData.append("title", title);
             formData.append("cookTime", cookTime);
             formData.append("calories", calories);
             formData.append("ingredients", ingredients);
@@ -122,16 +122,22 @@ function RecipeForm() {
             <form onSubmit={handleSubmit} id="recipe-form">
                 <div className="form-field">
                     <label htmlFor="imageUpload" className="recipe-header-img">
-                        <p className="blind">이미지 업로드</p>
-                        <ImageIcon/>
+                        {!imageUrl ? (
+                            <>
+                                <p className="blind">이미지 업로드</p>
+                                <ImageIcon />
+                            </>
+                        ) : (
+                            <img className="recipe-header-exImg" src={imageUrl || '/images/default_recipe_image.jpg'} alt={title} />
+                        )}
                     </label>
-                    <input type="file" id="imageUpload" onChange={handleImageChange} className="blind"/>
+                    <input type="file" id="imageUpload" onChange={handleImageChange} className="blind" />
                 </div>
                 <div className="recipe-title-box">
-                    <label htmlFor="recipe-title" className="blind">제목</label>
+                    <label htmlFor="title" className="blind">제목</label>
                     <input
                         type="text"
-                        id="recipe-title"
+                        id="title"
                         className="recipe-title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -221,7 +227,7 @@ function RecipeForm() {
                             <label htmlFor="western">양식</label>
                         </div>
                         <div>
-                            <input type="radio" id="undefined" value="미지정" checked={category === '미지정'}
+                            <input type="radio" id="undefined" value="미지정" checked={category === ' '}
                                    onChange={(e) => setCategory(e.target.value)}/>
                             <label htmlFor="undefined">미지정</label>
                         </div>
