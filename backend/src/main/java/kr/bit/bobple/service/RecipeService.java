@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -37,6 +38,7 @@ public class RecipeService {
     private final LikeRecipeRepository likeRecipeRepository;
     private final AuthenticationFacade authenticationFacade;
     private final RecipeCommentRepository recipeCommentRepository; // 추가: 댓글 레포지토리 의존성 주입
+    private final RecipeImageService recipeImageService; // Inject the new service
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithRecipes(Long userId) {
@@ -71,12 +73,14 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeDto createRecipe(RecipeDto recipeDto) {
+    public RecipeDto createRecipe(RecipeDto recipeDto, MultipartFile imageFile) {
         User user = authenticationFacade.getCurrentUser(); // 현재 로그인된 사용자 정보 가져오기
         if (user == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
         }
+        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
         Recipe recipe = recipeDto.toEntity(user);
+        recipe.setPicture(imageUrl);
 
         // 좋아요 수, 조회수, 댓글 수 초기화
         recipe.setLikesCount(0);
@@ -87,14 +91,17 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeDto updateRecipe(Long recipeId, RecipeDto recipeDto) {
+    public RecipeDto updateRecipe(Long recipeId, RecipeDto recipeDto, MultipartFile imageFile) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
         if (!isRecipeAuthor(recipeId, authenticationFacade.getCurrentUser())) {
             throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         }
+        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
         recipe.updateRecipe(recipeDto);
+        recipe.setPicture(imageUrl);
+
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }
 
