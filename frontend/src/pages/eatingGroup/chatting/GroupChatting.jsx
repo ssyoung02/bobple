@@ -7,7 +7,7 @@ import 'moment/locale/ko'; // 한국어 로케일 추가
 import '../../../assets/style/eatingGroup/GroupChatting.css';
 import { ArrowLeftLong, Menu, SendMessage } from "../../../components/imgcomponents/ImgComponents";
 import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
-import ChattingModal from '../../../components/modal/ChattingModal'; // 정확한 경로로 import
+import ChattingModal from '../../../components/modal/ChattingModal';
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
@@ -61,6 +61,12 @@ const GroupChatting = () => {
                     }
                 });
                 setUser(response.data);
+
+                // 유저 정보와 함께 채팅방에 입장
+                socket.emit('joinRoom', {
+                    chatRoomId: numericChatRoomId,
+                    userName: response.data.name,
+                });
             } catch (error) {
                 console.error('Failed to fetch user', error);
             }
@@ -69,8 +75,6 @@ const GroupChatting = () => {
         fetchChatRoom();
         fetchMessages();
         fetchUser();
-
-        socket.emit('joinRoom', numericChatRoomId);
 
         socket.on('newMessage', (message) => {
             const formattedMessage = {
