@@ -1,0 +1,81 @@
+.point-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.point-game-title {
+    color: #FFE609;
+    font-weight: bold;
+    font-size: 60px;
+    text-align: center;
+    font-family: LuckiestGuy-Regular, serif;
+    letter-spacing: 1px;
+    -webkit-text-stroke-width: 0.1px;
+    -webkit-text-stroke-color: black;
+    padding: 30px;
+}
+
+.point-game-round {
+    font-size: 25px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.matching-result {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.matching-box {
+    border: none;
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    width: 40vh;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.matching-box img {
+    border-radius: 8px;
+}
+
+.matching-box h5 {
+    padding-top: 20px;
+}
+
+.matching-box form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.matching-input {
+    padding: 5px 35px;
+    text-align: center;
+    border: 3px solid #ddd;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.matching-input:focus {
+    outline: white;
+    border-color: #FDDC3F;
+}
+
+.matching-btn {
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    background-color: #FFA800;
+    padding: 5px;
+    width: 50%;
+}

@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class    UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -105,5 +105,18 @@ public class UserService {
         return userRepository.findUserWithRecipes(userIdx)
                 .map(UserDto::fromEntityWithRecipes)
                 .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDto getUserByUsername(String name) {
+        Optional<User> userOptional = userRepository.findByUsername(name);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            System.out.println("User found: " + user); // 사용자 찾았는지 확인하는 로그
+            return UserDto.fromEntity(user);
+        } else {
+            System.out.println("User not found with username: " + name); // 사용자 못 찾았는지 확인하는 로그
+            throw new RuntimeException("User not found");
+        }
     }
 }

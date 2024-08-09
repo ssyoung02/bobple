@@ -1,5 +1,6 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.auth.AuthenticationFacade;
 import kr.bit.bobple.config.JwtTokenProvider;
 import kr.bit.bobple.dto.AuthResponse;
 import kr.bit.bobple.dto.UserDto;
@@ -9,6 +10,7 @@ import kr.bit.bobple.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,11 +26,16 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private final AuthenticationFacade authenticationFacade;
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+//    @Autowired
+//    private AuthenticationFacade authenticationFacade; // AuthenticationFacade 주입
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -62,19 +69,32 @@ public class UserController {
         }
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser() {
+        User currentUser = authenticationFacade.getCurrentUser();
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(currentUser);
+    }
+
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
-        Optional<User> optionalUser = userRepository.findById(updatedUser.getUserIdx());
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto updatedUserDto) {
+        Optional<User> optionalUser = userRepository.findById(updatedUserDto.getUserIdx());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setNickName(updatedUser.getNickName());
-            user.setBirthdate(updatedUser.getBirthdate());
+            user.setNickName(updatedUserDto.getNickName());
+            user.setBirthdate(updatedUserDto.getBirthdate());
             userRepository.save(user);
-            return ResponseEntity.ok(user);
+
+            // 엔티티를 DTO로 변환하여 반환
+            UserDto updatedUser = UserDto.fromEntity(user);
+            return ResponseEntity.ok(updatedUser);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @PutMapping("/{userIdx}/profile-image")
     public ResponseEntity<User> updateProfileImage(@PathVariable Long userIdx, @RequestParam("profileImage") MultipartFile file) {
@@ -118,4 +138,15 @@ public class UserController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
     }
+
+//    @GetMapping("/me")
+//    public ResponseEntity<UserDto> getCurrentUser() {
+//        User currentUser = authenticationFacade.getCurrentUser();
+//        if (currentUser != null) {
+//            UserDto userDto = UserDto.fromEntity(currentUser);
+//            return ResponseEntity.ok(userDto);
+//        } else {
+//            return ResponseEntity.status(401).body(null);
+//        }
+//    }
 }

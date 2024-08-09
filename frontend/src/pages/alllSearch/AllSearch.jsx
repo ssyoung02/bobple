@@ -1,15 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTopKeywords, handleKeyDown, handleSearchClick } from '../../components/Search/SearchAll';
+import { useNavigate } from 'react-router-dom';
 import '../../assets/style/allSearch/AllSearch.css';
 import { SearchIcon } from "../../components/imgcomponents/ImgComponents";
 
 const AllSearch = () => {
     const [keyword, setKeyword] = useState('');
     const [topKeywords, setTopKeywords] = useState([]);
+    const navigate = useNavigate();
+    const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
         fetchTopKeywords(setTopKeywords);
     }, []);
+
+
+    const handleSearchClick = () => {
+        if (keyword.trim() !== '') {
+            navigate(`/search/SearchKeyword/${encodeURIComponent(keyword)}`); // AllSearchRouter 참고
+            setKeyword('');
+        }
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearchClick();
+        }
+    };
+
+    useEffect(() => {
+        if (isSearching) {
+            setIsSearching(false);
+        }
+    }, [isSearching]);
 
     return (
         <div className="SearchBox">
@@ -19,11 +42,12 @@ const AllSearch = () => {
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    onKeyDown={handleKeyDown(keyword, setTopKeywords)}
+                    onKeyDown={handleKeyDown}
                     placeholder="검색 키워드를 입력해주세요"
                 />
 
-                <button className="AllSearchButton" onClick={handleSearchClick(keyword, setTopKeywords)} aria-label="검색">
+                {/* handleSearchClick 함수 자체를 전달 */}
+                <button className="AllSearchButton" onClick={handleSearchClick}>
                     <SearchIcon/>
                 </button>
             </div>

@@ -3,8 +3,11 @@ package kr.bit.bobple.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import kr.bit.bobple.dto.ChatMemberDTO;
+import kr.bit.bobple.entity.ChatMember;
 import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.entity.User;
+import kr.bit.bobple.repository.ChatMemberRepository;
 import kr.bit.bobple.repository.ChatRoomRepository;
 import kr.bit.bobple.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +20,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatRoomService {
@@ -28,6 +31,9 @@ public class ChatRoomService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ChatMemberRepository chatMemberRepository;
 
     @Autowired
     private AmazonS3 amazonS3;
@@ -43,8 +49,10 @@ public class ChatRoomService {
         chatRoom.setDescription(description);
         chatRoom.setLocation(location);
         chatRoom.setRoomPeople(people);
+        chatRoom.setCurrentParticipants(1); // 방장 포함 초기 참가자 1명
         chatRoom.setCreatedAt(LocalDateTime.now());
         chatRoom.setRoomLeader(user);
+        chatRoom.setStatus(ChatRoom.Status.RECRUITING); // 상태 초기화
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageName = "chatroom/" + UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
@@ -54,7 +62,17 @@ public class ChatRoomService {
             chatRoom.setRoomImage("bobple_mascot.png"); // 기본 이미지 URL로 설정
         }
 
-        return chatRoomRepository.save(chatRoom);
+        chatRoom = chatRoomRepository.save(chatRoom);
+
+        ChatMember chatMember = new ChatMember();
+        ChatMember.ChatMemberId chatMemberId = new ChatMember.ChatMemberId(chatRoom.getChatRoomIdx(), user.getUserIdx());
+        chatMember.setId(chatMemberId);
+        chatMember.setChatRoom(chatRoom);
+        chatMember.setUser(user);
+        chatMember.setRole(ChatMember.Role.LEADER);
+        chatMemberRepository.save(chatMember);
+
+        return chatRoom;
     }
 
     private String uploadFileToS3(String fileName, MultipartFile file) throws IOException {
@@ -82,20 +100,44 @@ public class ChatRoomService {
     }
 
     public List<ChatRoom> getChatRoomsByUser(Long userId) {
-        System.out.println("Fetching chat rooms for user ID: " + userId); // 로그 추가
-
-        List<ChatRoom> chatRooms = chatRoomRepository.findByRoomLeaderUserIdx(userId);
-
-        if (chatRooms.isEmpty()) {
-            System.out.println("No chat rooms found for user ID: " + userId); // 로그 추가
-        } else {
-            System.out.println("Found " + chatRooms.size() + " chat rooms for user ID: " + userId); // 로그 추가
-        }
-
-        return chatRooms;
+        List<Long> chatRoomIds = chatMemberRepository.findChatRoomIdsByUserIdx(userId);
+        return chatRoomRepository.findAllById(chatRoomIds);
     }
 
     public List<ChatRoom> getAllChatRooms() {
         return chatRoomRepository.findAll();
+    }
+
+    public ChatRoom joinChatRoom(Long chatRoomId, Long userId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 이미 해당 채팅방에 참가하고 있는지 확인
+        boolean isMember = chatMemberRepository.existsById(new ChatMember.ChatMemberId(chatRoomId, userId));
+        if (!isMember) {
+            ChatMember chatMember = new ChatMember();
+            ChatMember.ChatMemberId chatMemberId = new ChatMember.ChatMemberId(chatRoomId, userId);
+            chatMember.setId(chatMemberId);
+            chatMember.setChatRoom(chatRoom);
+            chatMember.setUser(user);
+            chatMember.setRole(ChatMember.Role.MEMBER);
+            chatMemberRepository.save(chatMember);
+
+            chatRoom.setCurrentParticipants(chatRoom.getCurrentParticipants() + 1);
+            chatRoom.updateStatus(); // 참가자 수 변경 후 상태 업데이트
+            chatRoomRepository.save(chatRoom);
+        }
+
+        return chatRoom;
+    }
+
+    // 채팅 참여자 목록
+    public List<ChatMemberDTO> getChatRoomParticipants(Long chatRoomId) {
+        List<ChatMember> members = chatMemberRepository.findByChatRoomChatRoomIdx(chatRoomId);
+        return members.stream()
+                .map(member -> new ChatMemberDTO(member.getUser().getUserIdx(), member.getUser().getName(), member.getUser().getProfileImage()))
+                .collect(Collectors.toList());
     }
 }

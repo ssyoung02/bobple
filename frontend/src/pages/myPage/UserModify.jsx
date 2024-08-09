@@ -89,14 +89,18 @@ function UserModify() {
         try {
             const token = localStorage.getItem('token');
             const userIdx = localStorage.getItem('userIdx');
-            const response = await axios.put('http://localhost:8080/api/users/update', {
+
+            if (!token || !userIdx) {
+                throw new Error('Token or UserIdx not found');
+            }
+
+            const response = await axios.put(`http://localhost:8080/api/users/update`, {
                 userIdx: userIdx,
                 nickName: formData.nickName,
                 birthdate: formData.birthdate
             }, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Authorization': `Bearer ${token}`
                 },
                 withCredentials: true
             });
@@ -200,10 +204,10 @@ function UserModify() {
                             }
                         </dd>
                     </li>
-                    <li>
-                        <dt><label>소속</label></dt>
-                        <dd><input className="affiliation" type="text" /></dd>
-                    </li>
+                    {/*<li>*/}
+                    {/*    <dt><label>소속</label></dt>*/}
+                    {/*    <dd><input className="affiliation" type="text" /></dd>*/}
+                    {/*</li>*/}
                 </ul>
             </form>
             <div className="user-modify-buttons">

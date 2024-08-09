@@ -1,0 +1,100 @@
+/* 기존 스타일 유지 */
+.modal {
+    display: none; /* 기본적으로 보이지 않도록 설정 */
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    animation: fadeIn 0.5s; /* 모달 등장 애니메이션 */
+}
+
+/* 모달이 표시될 때 적용될 스타일 */
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal.hide {
+    opacity: 0;
+    animation: fadeOut 0.5s forwards;
+}
+
+.modal.hide .modal-content.chatting {
+    animation: slideOutToRight 0.5s forwards;
+}
+
+.modal-content.chatting {
+    left: 90px;
+    max-width: 310px;
+    height: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    animation: slideInFromRight 0.5s; /* 모달 컨텐츠 애니메이션 */
+}
+
+/* fadeIn 애니메이션 */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* slideIn 애니메이션 */
+@keyframes slideInFromRight {
+    from {transform: translateX(100%);}
+    to {transform: translateX(0);}
+}
+
+/* slideOutToRight 애니메이션 */
+@keyframes slideOutToRight {
+    from {transform: translateX(0);}
+    to {transform: translateX(100%);}
+}
+
+/* fadeOut 애니메이션 */
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
+/* 추가된 스타일 */
+
+/* 참여자 리스트 스타일링 */
+.participants-list {
+    margin-top: 20px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* 참여자 아이템 스타일링 */
+.participant-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.participant-item:hover {
+    background-color: #e0e0e0;
+}
+
+/* 프로필 이미지 스타일링 */
+.participant-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover; /* 이미지가 영역에 맞게 조정됨 */
+}
+
+/* 참여자 이름 스타일링 */
+.participant-item span {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}

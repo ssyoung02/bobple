@@ -1,12 +1,16 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.config.JwtTokenProvider;
+import kr.bit.bobple.dto.NoticeDTO;
 import kr.bit.bobple.entity.Notice;
+import kr.bit.bobple.repository.NoticeRepository;
 import kr.bit.bobple.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +19,14 @@ import java.util.Optional;
 @RequestMapping("/api/notices")
 public class NoticeController {
 
+
     private final NoticeService noticeService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private NoticeRepository noticeRepository;
 
     @Autowired
     public NoticeController(NoticeService noticeService) {
@@ -24,9 +35,13 @@ public class NoticeController {
 
     // 모든 공지사항 가져오기
     @GetMapping
-    public ResponseEntity<List<Notice>> getAllNotices() {
-        List<Notice> notices = noticeService.getAllNotices();
-        return new ResponseEntity<>(notices, HttpStatus.OK);
+    public ResponseEntity<List<NoticeDTO>> getAllNotices() {
+        List<Notice> notices = noticeRepository.findAll();
+        List<NoticeDTO> noticeDTOs = notices.stream()
+                .map(Notice::toDTO)
+                .toList();
+
+        return ResponseEntity.ok(noticeDTOs);
     }
 
     // 특정 공지사항 가져오기
@@ -39,9 +54,17 @@ public class NoticeController {
 
     // 공지사항 생성
     @PostMapping
-    public ResponseEntity<Notice> createNotice(@RequestBody Notice notice) {
-        Notice savedNotice = noticeService.createNotice(notice);
-        return new ResponseEntity<>(savedNotice, HttpStatus.CREATED);
+    public ResponseEntity<NoticeDTO> createNotice(@RequestBody NoticeDTO noticeDTO, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        if (!jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Notice notice = Notice.fromDTO(noticeDTO);
+        notice.setCreatedAt(new Date()); // 현재 시간으로 설정
+
+        Notice savedNotice = noticeRepository.save(notice);
+        return ResponseEntity.ok(savedNotice.toDTO());
     }
 
     // 공지사항 업데이트

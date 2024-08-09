@@ -98,6 +98,10 @@ function PointMain() {
         navigate('/point/pointGame/GachaGame');
     };
 
+    const moveMatching = () => {
+        navigate('/point/pointGame/MatchingGame');
+    };
+
     const moveSlot = () => {
         navigate('/point/pointGame/SlotGame');
     };
@@ -200,7 +204,7 @@ function PointMain() {
                     <h2 className="game-header">포인트 게임</h2>
                     <div className="game-container">
                         <button className="game-button" onClick={moveGacha}>Gacha</button>
-                        <button className="game-button" onClick={moveGacha}>matching</button>
+                        <button className="game-button" onClick={moveMatching}>matching</button>
                         <button className="game-button" onClick={moveAvoid}>avoid</button>
                         <button className="game-button" onClick={moveSlot}>slot</button>
                     </div>

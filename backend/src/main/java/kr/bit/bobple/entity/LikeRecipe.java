@@ -29,4 +29,9 @@ public class LikeRecipe {
     private Recipe recipe;
 
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -1,9 +1,17 @@
 package kr.bit.bobple.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Date;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "messages")
 public class Message {
 
@@ -17,40 +25,22 @@ public class Message {
     @Column(nullable = false)
     private String content;
 
+//    @Column(nullable = false)
+//    private ZonedDateTime createdAt;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String profileImage;
+
     // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getChatRoomId() {
-        return chatRoomId;
-    }
-
-    public void setChatRoomId(Long chatRoomId) {
-        this.chatRoomId = chatRoomId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    // ...
 }
+

@@ -9,33 +9,36 @@ function UserQnAList() {
     const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showUserQuestions, setShowUserQuestions] = useState(true);
+    const [showUserQuestions, setShowUserQuestions] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(null);
     const [expandedQuestionIds, setExpandedQuestionIds] = useState([]);
-    const userIdx = localStorage.getItem('userIdx');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userIdx, setUserIdx] = useState(null);
+
+    const token = localStorage.getItem('token');
+    const storedUserIdx = localStorage.getItem('userIdx');
 
     useEffect(() => {
+        setIsLoggedIn(!!token);
+        if (storedUserIdx) {
+            setUserIdx(parseInt(storedUserIdx, 10));
+        }
         fetchQuestions();
-    }, [showUserQuestions]);
+    }, [showUserQuestions, token, storedUserIdx]);
 
     const fetchQuestions = async () => {
         try {
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                alert('로그인이 필요합니다.');
-                return;
-            }
-
             const url = showUserQuestions
                 ? `http://localhost:8080/api/users/${userIdx}/questions`
                 : 'http://localhost:8080/api/questions';
 
             const response = await axios.get(url, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
+
+            console.log('API Response:', response.data); // Log API response for debugging
 
             setQuestions(response.data);
         } catch (error) {
@@ -60,13 +63,21 @@ function UserQnAList() {
 
     const handleEditSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('token');
+        const userIdx = localStorage.getItem('userIdx');
+
+        if (!token) {
+            alert('로그인 후 다시 시도해 주세요.');
+            return;
+        }
+
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.put(
+            await axios.put(
                 `http://localhost:8080/api/questions/${editingQuestion.queIdx}`,
                 {
                     queTitle: editingQuestion.queTitle,
                     queDescription: editingQuestion.queDescription,
+                    userIdx: parseInt(userIdx, 10)  // userIdx 추가
                 },
                 {
                     headers: {
@@ -76,13 +87,12 @@ function UserQnAList() {
                 }
             );
 
-            setQuestions(prevQuestions => prevQuestions.map(q =>
-                q.queIdx === response.data.queIdx ? response.data : q
-            ));
+            // 최신 데이터 가져오기
+            fetchQuestions(); // 수정 후 최신 데이터로 업데이트
             setEditingQuestion(null);
             alert('질문이 수정되었습니다!');
         } catch (error) {
-            console.error('질문 수정 오류:', error);
+            console.error('질문 수정 오류:', error.response?.data || error.message);
             alert('질문 수정에 실패했습니다.');
         }
     };
@@ -91,12 +101,6 @@ function UserQnAList() {
         if (!window.confirm('정말로 이 질문을 삭제하시겠습니까?')) return;
 
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('로그인이 필요합니다.');
-                return;
-            }
-
             await axios.delete(`http://localhost:8080/api/questions/${queIdx}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -112,7 +116,7 @@ function UserQnAList() {
     };
 
     const toggleExpand = (queIdx) => {
-        setExpandedQuestionIds((prev) =>
+        setExpandedQuestionIds(prev =>
             prev.includes(queIdx) ? prev.filter(id => id !== queIdx) : [...prev, queIdx]
         );
     };
@@ -128,8 +132,8 @@ function UserQnAList() {
 
 
     const moveUserQnA = () => {
-        navigate('/mypage/serviceCenter/userQnA')
-    }
+        navigate('/mypage/serviceCenter/userQnA');
+    };
 
     return (
         <div className="user-qna-list-main">
@@ -138,7 +142,8 @@ function UserQnAList() {
                 <div>
                     <button
                         className={showUserQuestions ? "qna-list-item select-qna" : "qna-list-item"}
-                        onClick={() => setShowUserQuestions(true)}
+                        onClick={() => isLoggedIn && setShowUserQuestions(true)}
+                        disabled={!isLoggedIn}
                     >
                         나의 문의내역
                     </button>
@@ -149,13 +154,15 @@ function UserQnAList() {
                         전체 문의내역
                     </button>
                 </div>
-                <button className="adit-qna" onClick={moveUserQnA}>
-                    문의 작성
-                </button>
+                {isLoggedIn && (
+                    <button className="adit-qna" onClick={moveUserQnA}>
+                        문의 작성
+                    </button>
+                )}
             </div>
             {questions.length === 0 ? (
                 <div className="no-inquiries">
-                    <img src="/bobple_mascot.png" alt="" width={200}/>
+                    <img src="/bobple_mascot.png" alt="" width={200} />
                     <p>아직 문의한 내용이 없습니다</p>
                 </div>
             ) : (
@@ -204,12 +211,17 @@ function UserQnAList() {
                                     {expandedQuestionIds.includes(question.queIdx) && (
                                         <div className="qna-content">
                                             <p>{question.queDescription}</p>
+                                            <p><strong>답변:</strong> {question.answers.length > 0 ? question.answers[0].answer : '답변 예정'}</p>
                                             <div className="qna-modify-buttons">
-                                                {question.userIdx === Number(userIdx) && (
-                                                    <button className="qna-delete" onClick={() => handleDeleteClick(question.queIdx)}>삭제</button>
-                                                )}
-                                                {question.userIdx === Number(userIdx) && !question.status && (
-                                                    <button className="qna-modify" onClick={() => handleEditClick(question)}>수정</button>
+                                                {question.userIdx === userIdx && (
+                                                    <>
+                                                        {/* 삭제 버튼은 항상 표시됨 */}
+                                                        <button className="qna-delete" onClick={() => handleDeleteClick(question.queIdx)}>삭제</button>
+                                                        {/* 수정 버튼은 status가 false일 때만 표시됨 */}
+                                                        {!question.status && (
+                                                            <button className="qna-modify" onClick={() => handleEditClick(question)}>수정</button>
+                                                        )}
+                                                    </>
                                                 )}
                                             </div>
                                         </div>

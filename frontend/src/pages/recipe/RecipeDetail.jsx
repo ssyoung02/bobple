@@ -4,6 +4,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import RecipeComment from './RecipeComment';
 import axios from "../../utils/axios";
 import '../../assets/style/recipe/RecipeDetail.css';
+import dayjs from 'dayjs'; // 날짜 포맷팅을 위한 라이브러리
+
 
 function RecipeDetail() {
     const { recipeIdx } = useParams();
@@ -12,7 +14,6 @@ function RecipeDetail() {
         selectedRecipe,
         loading,
         error,
-        likeRecipe,
         deleteRecipe,
         setSelectedRecipe,
         setError,
@@ -20,6 +21,9 @@ function RecipeDetail() {
     } = useContext(RecipeContext);
     const [newComment, setNewComment] = useState('');
     const navigate = useNavigate();
+
+    // 사용자 닉네임 가져오기
+    const userNickname = localStorage.getItem('userNickname'); // 실제 구현에서는 백엔드에서 유저 정보를 가져와야 합니다.
 
     const fetchRecipeAndComments = useCallback(async () => {
         try {
@@ -29,6 +33,8 @@ function RecipeDetail() {
                 ...prevRecipe,
                 comments: response.data
             }));
+            // Increment views count
+            await axios.post(`/api/recipes/${recipeIdx}/increment-views`);
         } catch (error) {
             setError(error.message || '데이터를 불러오는 중 오류가 발생했습니다.');
         }
@@ -63,8 +69,19 @@ function RecipeDetail() {
         </div>
     );
 
-    const handleLikeClick = () => {
-        likeRecipe(recipeIdx);
+    const handleLikeClick = async () => {
+        try {
+            await axios.post(`/api/recipes/${recipeIdx}/like`); // 사용자 ID를 요청에 포함하지 않음
+
+            // 좋아요 상태와 좋아요 수 업데이트
+            setSelectedRecipe(prevRecipe => ({
+                ...prevRecipe,
+                liked: !prevRecipe.liked,
+                likesCount: prevRecipe.liked ? prevRecipe.likesCount - 1 : prevRecipe.likesCount + 1
+            }));
+        } catch (error) {
+            setError(error.message || '좋아요 처리 중 오류가 발생했습니다.');
+        }
     };
 
     const handleDeleteClick = async () => {
@@ -79,9 +96,6 @@ function RecipeDetail() {
             }
         }
     };
-
-    // 사용자 닉네임 가져오기 (예시)
-    const userNickname = localStorage.getItem('userNickname'); // 실제 구현에서는 백엔드에서 유저 정보를 가져와야 합니다.
 
     // 재료와 조리 방법 분리 로직
     let ingredients = '';
@@ -106,8 +120,10 @@ function RecipeDetail() {
                 <>
                     <h2>{selectedRecipe.title}</h2>
                     <div className="recipe-info">
-                        <p>작성자: {selectedRecipe.nickname}</p>
-                        <p>작성 시간: {selectedRecipe.createdAt}</p>
+                        <p>작성자: {selectedRecipe.nickname} </p>
+                        <p>작성 시간: {dayjs(selectedRecipe.createdAt).format('YYYY-MM-DD HH:mm')} </p>
+                        <p>조리 시간: {selectedRecipe.cookTime} 분 </p> {/* 조리 시간 추가 */}
+                        <p>칼로리: {selectedRecipe.calories} kcal</p> {/* 칼로리 추가 */}
                     </div>
                     <img src={selectedRecipe.picture || '/images/default_recipe_image.jpg'} alt={selectedRecipe.title}
                          className="recipe-image"/>
@@ -145,7 +161,7 @@ function RecipeDetail() {
                     <div className="comment-section">
                         <h3>댓글</h3>
                         {selectedRecipe.comments && selectedRecipe.comments.map(comment => (
-                            <RecipeComment key={comment.recipeCommentIdx} comment={comment} />
+                            <RecipeComment key={comment.recipeCommentIdx} comment={comment} recipeId={recipeIdx} />
                         ))}
                         <div className="comment-input">
                             <textarea

@@ -7,6 +7,7 @@ import { faMagnifyingGlass, faChevronRight, faChevronLeft, faLocationDot,
     faX, faBars, faEye, faXmark} from "@fortawesome/free-solid-svg-icons";
 import MainFoodBanner_jeon from "../../assets/images/banner/MainFoodBanner_jeon.jpg";
 import trophy from "../../assets/images/gameimg/trophy.png";
+import sendMessage from '../../assets/images/sendMessage.png';
 import receiptSettlementImg from "../../assets/images/gameimg/receipt_ settlement.png";
 import thinking_about from "../../assets/images/gameimg/thinking_about.png";
 import gLogin from "../../assets/images/icon/google.png"
@@ -45,6 +46,10 @@ export const ThinkingAbout = () => {
     return (<img src={thinking_about} alt={""} />); // 변경된 이름 사용
 }
 
+export const SendMessage = () => {
+    return (<img src={sendMessage} alt={""} />);
+}
+
 // FontAwesomeIcon
 export const SearchIcon = () => {
     return (<FontAwesomeIcon icon={faMagnifyingGlass} />);
@@ -65,6 +70,7 @@ export const LocationDot = () => {
 export const FillBookmark = () => {
     return (<FontAwesomeIcon icon={faBookmark} />);
 }
+
 
 export const Bookmark = () => {
     return (
@@ -150,7 +156,7 @@ export const Down = () => {
 }
 
 export const Up = () => {
-    return (<FontAwesomeIcon icon={faAngleUp}/>);
+    return (<FontAwesomeIcon icon={faAngleUp} />);
 }
 
 export const LargeX = () => {
