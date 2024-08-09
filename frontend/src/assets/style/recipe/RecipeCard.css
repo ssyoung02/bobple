@@ -1,61 +1,19 @@
 /*RecipeCard.css */
-.recipe-card {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
+.latest-recipe-list{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
-
-.recipe-card:hover {
-    transform: translateY(-3px);
-}
-
-.recipe-card-image {
-    position: relative;
-}
-
 .recipe-card-image img {
-    width: 100%;
-    height: 200px;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
     object-fit: cover;
 }
 
-.recipe-card-image .like-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 0.5rem;
-    border-radius: 5px;
-    cursor: pointer;
+.latest-recipe-card a{
     display: flex;
-    align-items: center;
-}
-
-.recipe-card-image .like-button.liked {
-    color: red;
-}
-
-.recipe-card-content {
-    padding: 1rem;
-}
-
-.recipe-card-content h3 {
-    margin-bottom: 0.5rem;
-}
-
-.recipe-card-content .author {
-    font-size: 0.8rem;
-    color: #666;
-}
-
-.recipe-card-content .description {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* 표시할 줄 수 */
-    -webkit-box-orient: vertical;
+    color: black;
+    gap: 1em;
 }

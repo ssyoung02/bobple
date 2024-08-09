@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft } from "../../components/imgcomponents/ImgComponents";
+import { ArrowLeftLong, ReceiptSettlement, Recipt, RotateLeft, CloseIcon } from "../../components/imgcomponents/ImgComponents";
 import '../../assets/style/myPage/Calculator.css';
-import {useHeaderColorChange, useNavigateNone} from '../../hooks/NavigateComponentHooks';
+import { useHeaderColorChange } from '../../hooks/NavigateComponentHooks';
+import PageHeader from "../../components/layout/PageHeader";
 
 const Calculator = () => {
     const [file, setFile] = useState(null);
@@ -15,10 +16,11 @@ const Calculator = () => {
     const [reciptImage, setReciptImage] = useState(false);
     const [calculatedAmount, setCalculatedAmount] = useState('');
     const [showResult, setShowResult] = useState(false);
+    const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
 
     const location = useLocation();
-    const navigate = useNavigate();
 
+    useHeaderColorChange(location.pathname, '#AEE2FF');
 
     const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
@@ -159,21 +161,20 @@ const Calculator = () => {
         setShowResult(false);
     };
 
-    const moveMypage = () => {
-        navigate('/mypage');
-    }
+    // 이미지 팝업 열기/닫기 핸들러
+    const handleImageClick = () => {
+        setIsImagePopupOpen(true);
+    };
 
-    useHeaderColorChange(location.pathname,'#AEE2FF'); //
+    const closePopup = () => {
+        setIsImagePopupOpen(false);
+    };
+
 
     return (
         <div className="calculator-main">
             <div className="bgcolor-area"></div>
-            <div className="calculator-top">
-                <button className="goto-mypage" onClick={moveMypage}>
-                    <ArrowLeftLong/>
-                </button>
-                <h2>1/N 계산기</h2>
-            </div>
+            <PageHeader title="1/N 계산기" />
             <div className="calculator-img">
                 {!reciptImage && (
                     <ReceiptSettlement/>
@@ -184,6 +185,7 @@ const Calculator = () => {
                         src={base64Image}
                         alt="Uploaded"
                         id="uploadedImage"
+                        onClick={handleImageClick} // 이미지 클릭 핸들러 추가
                     />
                 )}
             </div>
@@ -221,17 +223,10 @@ const Calculator = () => {
                         </label>
                     </div>
                 </div>
-                {/*{reciptImage && (*/}
-                {/*    <div className="recipt-total">*/}
-                {/*        <h5>회식결과</h5>*/}
-                {/*        <pre>{resultText}</pre>*/}
-                {/*    </div>*/}
-                {/*)}*/}
                 <div className="calculator-result">
                     {!showResult && (
                         <button className="calculator-button" onClick={handleCalculate}>계산하기</button>
                     )}
-
                     {showResult && (
                         <>
                             <div className="result-money">
@@ -243,6 +238,18 @@ const Calculator = () => {
                     )}
                 </div>
             </div>
+
+            {/* 이미지 팝업 */}
+            {isImagePopupOpen && (
+                <div className="popup-overlay" onClick={closePopup}>
+                    <div className="popup-content">
+                        <button className="popup-close" onClick={closePopup} aria-label="닫기">
+                            <CloseIcon />
+                        </button>
+                        <img src={base64Image} alt="Popup" className="popup-image" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

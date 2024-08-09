@@ -4,27 +4,6 @@
     flex-direction: column;
     gap: 1.5em;
 }
-.notice-top {
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.notice-top h3 {
-    margin: 0;
-    justify-self: center;
-    grid-column: 2;
-}
-
-.notice-top button{
-    position: absolute;
-}
-
-.notice-top svg {
-    font-size: 1.5em;
-    color: #233B6F;
-}
 
 /*상세*/
 .notice-content{

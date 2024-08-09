@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../assets/style/myPage/UserModify.css';
 import { ModifyPen } from "../../components/imgcomponents/ImgComponents";
+import PageHeader from "../../components/layout/PageHeader";
 
 function UserModify() {
     const navigate = useNavigate();
@@ -154,6 +155,7 @@ function UserModify() {
 
     return (
         <div className="UserModify-main">
+            <PageHeader title="개인정보 수정" />
             <div className="profile">
                 {user && user.profileImage && (
                     <img src={user.profileImage} alt="Profile" className="profile-image" />

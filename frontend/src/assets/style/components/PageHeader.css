@@ -1,0 +1,22 @@
+.page-top {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.prev-page {
+    position: absolute;
+}
+
+.page-top h2 {
+    margin: 0;
+    justify-self: center;
+    grid-column: 2;
+}
+
+.page-top svg {
+    font-size: 1.5em;
+    color: #233B6F;
+}

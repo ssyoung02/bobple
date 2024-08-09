@@ -2,15 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../../assets/style/myPage/MyPageMain.css';
-import {
-    Bookmark,
-    Calculator,
-    CaretRight,
-    DefaultUser, Exclamation,
-    FilePen,
-    Hart,
-    NextTo, Notice, Question
-} from "../../components/imgcomponents/ImgComponents"; // 상대 경로로 수정
+import {Bookmark, Calculator, DefaultUser, Exclamation, FilePen, Heart, NextTo, Notice, Question} from "../../components/imgcomponents/ImgComponents"; // 상대 경로로 수정
+
 
 function MyPageMain() {
     const navigate = useNavigate();
@@ -117,6 +110,7 @@ function MyPageMain() {
                         </button>
                         <button className="goto-MyPointUsage" onClick={moveMyPointUsage}>
                             {user.point}P
+                            <NextTo/>
                         </button>
                     </>
                 ) : (
@@ -148,7 +142,7 @@ function MyPageMain() {
                     </button>
                     <button className="mypage-link" onClick={moveLikeRecipe}>
                         <span className="activites-icon">
-                            <Hart/>
+                            <Heart/>
                         </span>
                         <h6>좋아요 레시피</h6>
                     </button>

@@ -1,7 +1,6 @@
 // src/components/Recipe/LatestRecipeCard.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../assets/style/recipe/LatestRecipeCard.css'; // CSS 파일 import
 import errorImage from '../../assets/images/error_image.jpg';
 
 function LatestRecipeCard({ recipe }) {
@@ -15,7 +14,7 @@ function LatestRecipeCard({ recipe }) {
                     }}/>
                 </div>
                 <div className="recipe-card-content">
-                    <h3>{recipe.title}</h3>
+                    <h5>{recipe.title}</h5>
                     <p className="description">{recipe.content}</p>
                 </div>
             </Link>

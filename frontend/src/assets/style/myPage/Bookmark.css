@@ -1,30 +1,13 @@
-.bookmark-container {
-    padding: 20px;
-}
-
-.bookmark-container h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.restaurant-list {
-    list-style: none;
-    padding: 0;
-}
-
-.restaurant-item {
+.bookmark-restaurant-item{
     display: flex;
-    align-items: center; /* 수직 가운데 정렬 */
-    justify-content: space-between; /* 좌우 양끝 정렬 */
-    border-bottom: 1px solid #eee;
-    padding: 15px 0;
 }
 
-.restaurant-content {
+.bookmark-restaurant-content {
     display: flex;
     align-items: center;
     cursor: pointer;
-    flex-grow: 1; /* 컨텐츠 영역이 남은 공간을 꽉 차도록 설정 */
+    flex-grow: 1;
+    gap: 10px;
 }
 
 .restaurant-image {
@@ -34,7 +17,7 @@
     margin-right: 15px;
 }
 
-.restaurant-details {
+.bookmark-restaurant-details {
     display: flex; /* flexbox 적용 */
     flex-direction: column; /* 수직 배열 */
 }
