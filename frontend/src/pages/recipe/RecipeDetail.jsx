@@ -4,10 +4,12 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import RecipeComment from './RecipeComment';
 import axios from "../../utils/axios";
 import '../../assets/style/recipe/RecipeDetail.css';
-import dayjs from 'dayjs'; // 날짜 포맷팅을 위한 라이브러리
+import dayjs from 'dayjs';
+import {create} from "axios"; // 날짜 포맷팅을 위한 라이브러리
 
 
 function RecipeDetail() {
+
     const { recipeIdx } = useParams();
     const {
         getRecipeById,
