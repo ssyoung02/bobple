@@ -138,29 +138,7 @@ function RecipeForm() {
                     <label htmlFor="tags">태그 (쉼표로 구분)</label>
                     <input type="text" id="tags" value={tags} onChange={(e) => setTags(e.target.value)}/>
                 </div>
-                <div className="form-field">
-                    <label>카테고리</label>
-                    <div>
-                        <input type="radio" id="hansik" value="hansik" checked={category === '한식'}
-                               onChange={(e) => setCategory(e.target.value)}/>
-                        <label htmlFor="hansik">한식</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="yangsik" value="yangsik" checked={category === '양식'}
-                               onChange={(e) => setCategory(e.target.value)}/>
-                        <label htmlFor="yangsik">양식</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="yilsik" value="yilsik" checked={category === '일식'}
-                               onChange={(e) => setCategory(e.target.value)}/>
-                        <label htmlFor="yilsik">일식</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="jungsik" value="jungsik" checked={category === '중식'}
-                               onChange={(e) => setCategory(e.target.value)}/>
-                        <label htmlFor="중식">중식</label>
-                    </div>
-                </div>
+
                 <div className="form-field">
                     <label htmlFor="imageUpload">이미지 업로드</label>
                     <input type="file" id="imageUpload" onChange={handleImageChange}/>
