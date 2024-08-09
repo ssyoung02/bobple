@@ -85,7 +85,9 @@ const FoodWorldCupGame = () => {
                         <img src={winner.foodImageUrl}/> {/* winner.img -> winner.foodImageUrl */}
                         <h3 className="food-item-name">{winner.foodName}</h3>
                     </div>
-                    <button className="back-recommend-btn" onClick={moveRecommend}>돌아가기 ➡️</button>
+                    <div className="back-recommend">
+                        <button className="back-recommend-btn" onClick={moveRecommend}>돌아가기 ➡️</button>
+                    </div>
                 </div>
             </div>
         );
@@ -95,17 +97,19 @@ const FoodWorldCupGame = () => {
         <div className="worldCup-container game-container">
             <h1 className="worldCup-title game-title">Food World Cup</h1>
             <div className="round-info">
+                <span>Round of {round}</span>
                 <div className="progress-bar">
                     <div className="progress" style={{width: `${progress}%`}}></div>
                 </div>
-                <span>Round of {round}</span><br/>
                 ({pairIndex}/{round / 2})
             </div>
             <div className="items-grid">
                 <h3 className="worldCup-vs">VS</h3>
                 {currentPair.map((item, index) => (
                     <div key={item.foodIdx} className="food-item" onClick={() => handleSelect(item)}>
-                        <img src={item.foodImageUrl} />
+                        <div className="food-box">
+                            <img src={item.foodImageUrl}/>
+                        </div>
                         <h3 className="food-item-name">{item.foodName}</h3>
                     </div>
                 ))}

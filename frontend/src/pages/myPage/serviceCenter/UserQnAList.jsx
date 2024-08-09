@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../../../assets/style/myPage/serviceCenter/UserQnAList.css';
 import { ArrowLeftLong, Down, Up } from "../../../components/imgcomponents/ImgComponents";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import PageHeader from "../../../components/layout/PageHeader";
 
 function UserQnAList() {
     const navigate = useNavigate();
@@ -129,9 +130,6 @@ function UserQnAList() {
         return date.toLocaleDateString('ko-KR');
     };
 
-    const moveMyPage = () => {
-        navigate('/mypage');
-    };
 
     const moveUserQnA = () => {
         navigate('/mypage/serviceCenter/userQnA');
@@ -139,14 +137,7 @@ function UserQnAList() {
 
     return (
         <div className="user-qna-list-main">
-            <div className="qna-list-top">
-                <button aria-label="내정보로 돌아가기" onClick={moveMyPage}>
-                    <ArrowLeftLong />
-                </button>
-                <h3>
-                    {showUserQuestions ? "나의 문의내역" : "전체 문의내역"}
-                </h3>
-            </div>
+            <PageHeader title={showUserQuestions ? "나의 문의내역" : "전체 문의내역"} />
             <div className="user-qna-list">
                 <div>
                     <button

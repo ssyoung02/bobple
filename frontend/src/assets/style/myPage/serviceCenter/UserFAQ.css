@@ -4,27 +4,6 @@
     flex-direction: column;
     gap: 1.5em;
 }
-.user-FAQ-top {
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.user-FAQ-top h3 {
-    margin: 0;
-    justify-self: center;
-    grid-column: 2;
-}
-
-.user-FAQ-top button{
-    position: absolute;
-}
-
-.user-FAQ-top svg {
-    font-size: 1.5em;
-    color: #233B6F;
-}
 
 /*내용*/
 .faq-title{

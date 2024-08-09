@@ -1,25 +1,71 @@
 /* src/components/Recipe/AIRecommendation.css */
-.ai-recommendation-container {
-    /* 컨테이너 스타일 */
+.ai-recommendation-main {
+    position: relative;
+    text-align: center;
+    height: 80vh;
 }
 
-.ai-recommendation-container h2 {
+.ai-recommendation-main h3 {
     /* 제목 스타일 */
+    font-family: LuckiestGuy-Regular, serif;
+    font-size: 3em;
+    color: #003366;
 }
 
-.ai-recommendation-container form {
-    /* 폼 스타일 */
+.ai-recommendation-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+.ai-recommendation-info p{
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 15px 25px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.8);
 }
 
-.ai-recommendation-container input[type="text"] {
-    /* 입력 필드 스타일 */
+.ai-recommendation-form{
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    z-index: 1;
 }
 
-.ai-recommendation-container button {
-    /* 버튼 스타일 */
+.ai-recommendation-form textarea {
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    resize: none;
+    overflow: hidden;
 }
 
-.ai-recommendation-container .error-message {
+.ai-recommendation-form button {
+    width: 50%;
+    border-radius: 10px;
+    padding: 10px;
+    background: #003366;
+    color: #fff;
+    cursor: pointer;
+}
+
+.ai-recommendation-main .error-message {
     /* 에러 메시지 스타일 */
     color: red;
+}
+
+.ai-recommendation-main > img{
+    position: absolute;
+    width: 400px;
+    bottom: 0;
+    left: 0;
+
 }

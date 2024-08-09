@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import '../../assets/style/myPage/MyPointUsage.css';
+import { Down, Up } from "../../components/imgcomponents/ImgComponents";
+import PageHeader from "../../components/layout/PageHeader"; // assuming you have an Up component
 
 function MyPointUsage() {
     const [pointHistory, setPointHistory] = useState([]);
@@ -10,23 +12,28 @@ function MyPointUsage() {
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
     const [filter, setFilter] = useState('전체기한');
+    const [isYearSelectOpen, setIsYearSelectOpen] = useState(false);
+    const [isMonthSelectOpen, setIsMonthSelectOpen] = useState(false);
 
     const userIdx = localStorage.getItem('userIdx');
     const token = localStorage.getItem('token');
 
+    const yearSelectRef = useRef(null);
+    const monthSelectRef = useRef(null);
+
     const months = [
-        { value: 1, label: '1월' },
-        { value: 2, label: '2월' },
-        { value: 3, label: '3월' },
-        { value: 4, label: '4월' },
-        { value: 5, label: '5월' },
-        { value: 6, label: '6월' },
-        { value: 7, label: '7월' },
-        { value: 8, label: '8월' },
-        { value: 9, label: '9월' },
-        { value: 10, label: '10월' },
-        { value: 11, label: '11월' },
-        { value: 12, label: '12월' }
+        { value: 1, label: '1' },
+        { value: 2, label: '2' },
+        { value: 3, label: '3' },
+        { value: 4, label: '4' },
+        { value: 5, label: '5' },
+        { value: 6, label: '6' },
+        { value: 7, label: '7' },
+        { value: 8, label: '8' },
+        { value: 9, label: '9' },
+        { value: 10, label: '10' },
+        { value: 11, label: '11' },
+        { value: 12, label: '12' }
     ];
 
     const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i); // Last 10 years
@@ -77,68 +84,114 @@ function MyPointUsage() {
         setFilter(newFilter);
     };
 
+    const handleSelectOpen = (type) => {
+        if (type === 'year') {
+            setIsYearSelectOpen(true);
+        } else if (type === 'month') {
+            setIsMonthSelectOpen(true);
+        }
+    };
+
+    const handleSelectClose = (type) => {
+        if (type === 'year') {
+            setIsYearSelectOpen(false);
+        } else if (type === 'month') {
+            setIsMonthSelectOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (yearSelectRef.current && !yearSelectRef.current.contains(event.target)) {
+                handleSelectClose('year');
+            }
+            if (monthSelectRef.current && !monthSelectRef.current.contains(event.target)) {
+                handleSelectClose('month');
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     if (error) {
         return <div>{error}</div>;
     }
 
     return (
         <div className="my-point-usage-main">
+            <PageHeader title="포인트 내역" />
             <div className="my-point-total">
-                <h3>{nickName}님의 포인트</h3>
-                <h3 className="mypoint">{currentPoints}P</h3>
+                <h4>{nickName}님의 포인트</h4>
+                <h4 className="mypoint">{currentPoints}P</h4>
             </div>
 
-            <div className="filter-buttons">
-                <button onClick={() => handleFilterChange('전체기한')}>전체기한</button>
-                <button onClick={() => handleFilterChange('달마다')}>달마다</button>
-                <button onClick={() => handleFilterChange('1년마다')}>1년마다</button>
+            <div className="myPoint-filter-box">
+                <button
+                    className={filter === '전체기한' ? "myPint-Filter filter-select" : "myPint-Filter"}
+                    onClick={() => handleFilterChange('전체기한')}
+                >전체기한
+                </button>
+                <button
+                    className={filter === '달마다' ? "myPint-Filter filter-select" : "myPint-Filter"}
+                    onClick={() => handleFilterChange('달마다')}
+                >달마다
+                </button>
+                <button
+                    className={filter === '1년마다' ? "myPint-Filter filter-select" : "myPint-Filter"}
+                    onClick={() => handleFilterChange('1년마다')}
+                >1년마다
+                </button>
             </div>
 
-            {filter === '달마다' && (
-                <div className="month-year-select">
-                    <label htmlFor="year">년도: </label>
-                    <select
-                        id="year"
-                        value={selectedYear}
-                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                    >
-                        {years.map((year) => (
-                            <option key={year} value={year}>
-                                {year}
-                            </option>
-                        ))}
-                    </select>
-                    <label htmlFor="month">월: </label>
-                    <select
-                        id="month"
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                    >
-                        {months.map((month) => (
-                            <option key={month.value} value={month.value}>
-                                {month.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {filter === '1년마다' && (
-                <div className="year-select">
-                    <label htmlFor="year">년도: </label>
-                    <select
-                        id="year"
-                        value={selectedYear}
-                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                    >
-                        {years.map((year) => (
-                            <option key={year} value={year}>
-                                {year}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
+            <div className="point-date-select-box">
+                {!(filter === '전체기한') && (
+                    <>
+                        <div ref={yearSelectRef}>
+                            <div className="point-cutom-select">
+                                <select
+                                    className="point-date-select"
+                                    id="year"
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                                    onMouseDown={() => handleSelectOpen('year')}
+                                >
+                                    {years.map((year) => (
+                                        <option key={year} value={year}>
+                                            {year}
+                                        </option>
+                                    ))}
+                                </select>
+                                {isYearSelectOpen ? <Up /> : <Down />}
+                            </div>
+                            <label htmlFor="year">년</label>
+                        </div>
+                        {filter === '달마다' && (
+                            <div ref={monthSelectRef}>
+                                <div className="point-cutom-select">
+                                    <select
+                                        className="point-date-select"
+                                        id="month"
+                                        value={selectedMonth}
+                                        onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                                        onMouseDown={() => handleSelectOpen('month')}
+                                    >
+                                        {months.map((month) => (
+                                            <option key={month.value} value={month.value}>
+                                                {month.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {isMonthSelectOpen ? <Up /> : <Down />}
+                                </div>
+                                <label htmlFor="month">월</label>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
 
             <div className="point-usage-box">
                 <h5>포인트 사용 내역 ({filter})</h5>

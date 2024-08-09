@@ -25,7 +25,7 @@ public class Recipe {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-//    @JsonBackReference
+    @JsonBackReference
     @JoinColumn(name = "user_idx")
     private User user;
 
@@ -46,7 +46,10 @@ public class Recipe {
     @Column
     private int calories; // 총 칼로리
 
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -66,4 +69,17 @@ public class Recipe {
         this.calories = recipeDto.getCalories(); // 추가
         this.updatedAt = LocalDateTime.now();
     }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+
 }
