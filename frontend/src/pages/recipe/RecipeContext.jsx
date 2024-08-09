@@ -59,7 +59,6 @@ export const RecipeProvider = ({ children }) => {
             const response = await axios.get('/api/recipes/search', {
                 params: { keyword, category, page, size, sort }
             });
-            // setRecipes(response.data.content);
             setSearchedRecipes(response.data.content); // 검색 결과를 searchedRecipes에 저장\
             setTotalElements(response.data.totalElements || 0);
             setTotalPages(response.data.totalPages || 0);

@@ -1,5 +1,6 @@
 package kr.bit.bobple.controller;
 
+import kr.bit.bobple.auth.AuthenticationFacade;
 import kr.bit.bobple.config.JwtTokenProvider;
 import kr.bit.bobple.dto.AuthResponse;
 import kr.bit.bobple.dto.UserDto;
@@ -9,6 +10,7 @@ import kr.bit.bobple.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,11 +26,16 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private final AuthenticationFacade authenticationFacade;
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+//    @Autowired
+//    private AuthenticationFacade authenticationFacade; // AuthenticationFacade 주입
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -60,6 +67,15 @@ public class UserController {
             System.out.println("User not found");
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser() {
+        User currentUser = authenticationFacade.getCurrentUser();
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(currentUser);
     }
 
     @PutMapping("/update")
@@ -118,4 +134,15 @@ public class UserController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
     }
+
+//    @GetMapping("/me")
+//    public ResponseEntity<UserDto> getCurrentUser() {
+//        User currentUser = authenticationFacade.getCurrentUser();
+//        if (currentUser != null) {
+//            UserDto userDto = UserDto.fromEntity(currentUser);
+//            return ResponseEntity.ok(userDto);
+//        } else {
+//            return ResponseEntity.status(401).body(null);
+//        }
+//    }
 }
