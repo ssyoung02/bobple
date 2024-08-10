@@ -3,10 +3,13 @@ package kr.bit.bobple.controller;
 import kr.bit.bobple.config.JwtTokenProvider;
 import kr.bit.bobple.dto.AdminLoginRequest;
 import kr.bit.bobple.dto.QuestionDTO;
+import kr.bit.bobple.dto.RecipeDto;
 import kr.bit.bobple.dto.UserDto;
 import kr.bit.bobple.entity.Question;
+import kr.bit.bobple.entity.Recipe;
 import kr.bit.bobple.entity.User;
 import kr.bit.bobple.repository.QuestionRepository;
+import kr.bit.bobple.repository.RecipeRepository;
 import kr.bit.bobple.repository.UserRepository;
 import kr.bit.bobple.service.QuestionService;
 import lombok.Data;
@@ -37,6 +40,9 @@ public class AdminController {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AdminLoginRequest loginRequest) {
@@ -122,6 +128,18 @@ public class AdminController {
                 .toList();
 
         return ResponseEntity.ok(questionDTOs);
+    }
+
+
+    @GetMapping("/recipes")
+    public ResponseEntity<List<RecipeDto>> getRecipes() {
+        List<Recipe> recipes = recipeRepository.findAll();
+
+        List<RecipeDto> recipeDtos = recipes.stream()
+                .map(RecipeDto::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(recipeDtos);
     }
 }
 

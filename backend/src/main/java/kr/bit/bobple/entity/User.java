@@ -83,15 +83,15 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference("user-recipes")
     private List<Recipe> recipes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference("user-recipeComments")
     private List<RecipeComment> recipeComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference("user-likeRecipes")
     private List<LikeRecipe> likeRecipes = new ArrayList<>();
 
 
