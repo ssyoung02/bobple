@@ -18,11 +18,11 @@ const GroupChatting = () => {
     const [newMessage, setNewMessage] = useState("");
     const [user, setUser] = useState(null);
     const [isChattingModalOpen, setIsChattingModalOpen] = useState(false);
-    const socket = io('http://localhost:3001');
-
+    const socket = useRef(null);
     const messagesEndRef = useRef(null); // 스크롤 하단으로 이동하기 위한 ref
 
     useEffect(() => {
+        socket.current = io('http://localhost:3001');
         moment.locale('ko'); // 한국어 로케일 설정
 
         const fetchChatRoom = async () => {
@@ -42,6 +42,11 @@ const GroupChatting = () => {
                     createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
                 }));
                 setMessages(messagesWithFormattedTime);
+
+                // 각 메시지에 대해 읽지 않은 사용자 수를 가져옴
+                for (let message of response.data) {
+                    updateUnreadCounts(message.id);
+                }
             } catch (error) {
                 console.error('Failed to fetch messages', error);
             }
@@ -63,9 +68,10 @@ const GroupChatting = () => {
                 setUser(response.data);
 
                 // 유저 정보와 함께 채팅방에 입장
-                socket.emit('joinRoom', {
+                socket.current.emit('joinRoom', {
                     chatRoomId: numericChatRoomId,
                     userName: response.data.name,
+                    userId: response.data.userIdx
                 });
             } catch (error) {
                 console.error('Failed to fetch user', error);
@@ -76,17 +82,30 @@ const GroupChatting = () => {
         fetchMessages();
         fetchUser();
 
-        socket.on('newMessage', (message) => {
+        // 새로운 메시지가 도착했을 때 처리
+        socket.current.on('newMessage', (message) => {
             const formattedMessage = {
                 ...message,
                 createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
             };
             setMessages(prevMessages => [...prevMessages, formattedMessage]);
+
+            // 새로운 메시지의 읽지 않은 사용자 수를 업데이트
+            updateUnreadCounts(message.id);
             scrollToBottom(); // 새로운 메시지 추가 시 스크롤 하단으로 이동
         });
 
+        // 읽지 않은 메시지 수가 업데이트될 때 처리
+        socket.current.on('messageUnreadCount', ({ messageId, unreadCount }) => {
+            setMessages(prevMessages =>
+                prevMessages.map(message =>
+                    message.id === messageId ? { ...message, unreadCount } : message
+                )
+            );
+        });
+
         return () => {
-            socket.disconnect();
+            socket.current.disconnect();
         };
     }, [numericChatRoomId, navigate]);
 
@@ -100,6 +119,17 @@ const GroupChatting = () => {
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const updateUnreadCounts = async (messageId) => {
+        try {
+            const response = await axios.get(`http://localhost:3001/api/messages/${messageId}/unread-count`);
+            setMessages(prevMessages => prevMessages.map(message =>
+                message.id === messageId ? { ...message, unreadCount: response.data.unreadCount } : message
+            ));
+        } catch (error) {
+            console.error('Failed to fetch unread counts', error);
         }
     };
 
@@ -164,6 +194,9 @@ const GroupChatting = () => {
                         <div className="message-content">
                             <p><strong>{message.name}</strong>: {message.content}</p>
                             <p>{moment(message.createdAt).format('a h:mm')}</p> {/* 시간 표시 */}
+                            {message.unreadCount > 0 && (
+                                <span className="unread-count">{message.unreadCount}</span>
+                            )}
                         </div>
                     </div>
                 ))}
