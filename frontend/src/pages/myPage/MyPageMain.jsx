@@ -70,7 +70,7 @@ function MyPageMain() {
     }
 
     const moveLikeRecipe = () => {
-        navigate('/myPage/likeRecipe')
+        navigate('/myPage/MylikeRecipe')
     }
 
     const moveBookMark = () => {

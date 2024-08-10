@@ -5,7 +5,7 @@ import RecipeComment from './RecipeComment';
 import axios from "../../utils/axios";
 import '../../assets/style/recipe/RecipeDetail.css';
 import dayjs from 'dayjs';
-import {create} from "axios"; // 날짜 포맷팅을 위한 라이브러리
+import {Heart, HeartLine} from "../../components/imgcomponents/ImgComponents"; // 날짜 포맷팅을 위한 라이브러리
 
 
 function RecipeDetail() {
@@ -146,9 +146,10 @@ function RecipeDetail() {
                     </ul>
 
                     {/* 좋아요 버튼 */}
-                    <button className="like-button" onClick={handleLikeClick}>
-                        {selectedRecipe.liked ? '좋아요 취소' : '좋아요'} ({selectedRecipe.likesCount})
+                    <button className="recipe-like-button" onClick={handleLikeClick}>
+                        {selectedRecipe.liked ? <Heart/> : <HeartLine/>}
                     </button>
+                    {selectedRecipe.liked ? '좋아요 취소' : '좋아요'} ({selectedRecipe.likesCount})
 
                     {/* 수정 버튼 (작성자만 보이도록 조건 추가) */}
                     {localStorage.getItem('userIdx') == selectedRecipe.userIdx && (

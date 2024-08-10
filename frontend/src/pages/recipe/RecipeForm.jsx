@@ -117,7 +117,7 @@ function RecipeForm() {
 
     return (
         <div className="recipe-form-container">
-            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'} />
+            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'}/>
             {error && <div className="error-message">{error}</div>}
             <form onSubmit={handleSubmit} id="recipe-form">
                 <div className="form-field">
@@ -125,13 +125,14 @@ function RecipeForm() {
                         {!imageUrl ? (
                             <>
                                 <p className="blind">이미지 업로드</p>
-                                <ImageIcon />
+                                <ImageIcon/>
                             </>
                         ) : (
-                            <img className="recipe-header-exImg" src={imageUrl || '/images/default_recipe_image.jpg'} alt={title} />
+                            <img className="recipe-header-exImg" src={imageUrl || '/images/default_recipe_image.jpg'}
+                                 alt={title}/>
                         )}
                     </label>
-                    <input type="file" id="imageUpload" onChange={handleImageChange} className="blind" />
+                    <input type="file" id="imageUpload" onChange={handleImageChange} className="blind"/>
                 </div>
                 <div className="recipe-title-box">
                     <label htmlFor="title" className="blind">제목</label>
@@ -185,8 +186,8 @@ function RecipeForm() {
                 </div>
                 <div className="recipe-form-item">
                     <label htmlFor="instructions">조리 방법</label>
-                    <textarea 
-                        id="instructions" 
+                    <textarea
+                        id="instructions"
                         value={instructions} onChange={(e) => setInstructions(e.target.value)}
                         placeholder="조리 방법을 입력해주세요"
                     />
