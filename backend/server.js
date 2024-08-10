@@ -125,6 +125,30 @@ setInterval(() => {
     });
 }, 1000);
 
+// 메시지의 읽지 않은 사용자 수를 조회하는 엔드포인트 추가
+app.get('/api/messages/:messageId/unread-count', (req, res) => {
+    const { messageId } = req.params;
+
+    // 메시지의 읽지 않은 사용자 수를 조회하는 SQL 쿼리
+    const query = `
+        SELECT COUNT(*) AS unreadCount 
+        FROM message_reads 
+        WHERE message_id = ? AND read_at IS NULL
+    `;
+
+    db.query(query, [messageId], (err, results) => {
+        if (err) {
+            return res.status(500).send('Failed to fetch unread count');
+        }
+
+        if (results.length > 0) {
+            res.status(200).json({ unreadCount: results[0].unreadCount });
+        } else {
+            res.status(404).send('Message not found');
+        }
+    });
+});
+
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
