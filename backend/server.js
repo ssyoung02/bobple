@@ -72,6 +72,10 @@ app.post('/send-message', (req, res) => {
                 // Socket.io를 통해 메시지 전송
                 const message = { id: messageId, chatRoomId, content, createdAt, userId, name, profileImage };
                 io.to(chatRoomId).emit('newMessage', message);
+
+                // 메시지를 보낸 후 읽지 않은 메시지 수를 계산하고 전송
+                updateUnreadCounts(chatRoomId);
+
                 res.status(200).send(message);
             });
         });
@@ -90,6 +94,9 @@ io.on('connection', (socket) => {
         db.query(updateReadsQuery, [userId, chatRoomId], (err) => {
             if (err) {
                 console.error('Failed to update message reads', err);
+            } else {
+                // 메시지를 읽은 후 읽지 않은 메시지 수를 갱신
+                updateUnreadCounts(chatRoomId);
             }
         });
     });
@@ -99,31 +106,31 @@ io.on('connection', (socket) => {
     });
 });
 
-// 1초마다 읽지 않은 메시지 수를 갱신
-setInterval(() => {
-    // 읽지 않은 메시지 수를 가져오는 쿼리
+// 읽지 않은 메시지 수 갱신 함수
+const updateUnreadCounts = (chatRoomId) => {
     const query = `
-        SELECT m.id AS messageId, m.chat_room_id AS chatRoomId, COUNT(mr.user_id) AS unreadCount
+        SELECT m.id AS messageId, COUNT(mr.user_id) AS unreadCount
         FROM messages m
-        LEFT JOIN message_reads mr ON m.id = mr.message_id AND mr.read_at IS NULL
-        GROUP BY m.id, m.chat_room_id
+                 LEFT JOIN message_reads mr ON m.id = mr.message_id AND mr.read_at IS NULL
+        WHERE m.chat_room_id = ?
+        GROUP BY m.id
     `;
 
-    db.query(query, (err, results) => {
+    db.query(query, [chatRoomId], (err, results) => {
         if (err) {
             console.error('Failed to fetch unread counts', err);
             return;
         }
 
         results.forEach(row => {
-            // 각 채팅방에 메시지의 읽지 않은 사용자 수를 브로드캐스트
-            io.to(row.chatRoomId).emit('messageUnreadCount', {
+            // 각 메시지의 읽지 않은 사용자 수를 해당 채팅방에 브로드캐스트
+            io.to(chatRoomId).emit('messageUnreadCount', {
                 messageId: row.messageId,
                 unreadCount: row.unreadCount
             });
         });
     });
-}, 1000);
+};
 
 // 메시지의 읽지 않은 사용자 수를 조회하는 엔드포인트 추가
 app.get('/api/messages/:messageId/unread-count', (req, res) => {

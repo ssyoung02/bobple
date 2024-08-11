@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
 import moment from 'moment-timezone';
-import 'moment/locale/ko'; // 한국어 로케일 추가
+import 'moment/locale/ko';
 import '../../../assets/style/eatingGroup/GroupChatting.css';
 import { ArrowLeftLong, Menu, SendMessage } from "../../../components/imgcomponents/ImgComponents";
 import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
@@ -11,7 +11,7 @@ import ChattingModal from '../../../components/modal/ChattingModal';
 
 const GroupChatting = () => {
     const { chatRoomId } = useParams();
-    const numericChatRoomId = Number(chatRoomId); // 문자열을 숫자로 변환 (필요 시)
+    const numericChatRoomId = Number(chatRoomId);
     const navigate = useNavigate();
     const [chatRoom, setChatRoom] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -19,11 +19,10 @@ const GroupChatting = () => {
     const [user, setUser] = useState(null);
     const [isChattingModalOpen, setIsChattingModalOpen] = useState(false);
     const socket = useRef(null);
-    const messagesEndRef = useRef(null); // 스크롤 하단으로 이동하기 위한 ref
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
-        socket.current = io('http://localhost:3001');
-        moment.locale('ko'); // 한국어 로케일 설정
+        moment.locale('ko');
 
         const fetchChatRoom = async () => {
             try {
@@ -43,7 +42,6 @@ const GroupChatting = () => {
                 }));
                 setMessages(messagesWithFormattedTime);
 
-                // 각 메시지에 대해 읽지 않은 사용자 수를 가져옴
                 for (let message of response.data) {
                     updateUnreadCounts(message.id);
                 }
@@ -67,11 +65,34 @@ const GroupChatting = () => {
                 });
                 setUser(response.data);
 
-                // 유저 정보와 함께 채팅방에 입장
+                // 유저 정보가 로드된 후 WebSocket 연결 및 채팅방 입장
+                socket.current = io('http://localhost:3001', {
+                    query: { userId: response.data.userIdx }
+                });
+
                 socket.current.emit('joinRoom', {
                     chatRoomId: numericChatRoomId,
                     userName: response.data.name,
                     userId: response.data.userIdx
+                });
+
+                socket.current.on('newMessage', (message) => {
+                    const formattedMessage = {
+                        ...message,
+                        createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
+                    };
+                    setMessages(prevMessages => [...prevMessages, formattedMessage]);
+
+                    updateUnreadCounts(message.id);
+                    scrollToBottom();
+                });
+
+                socket.current.on('messageUnreadCount', ({ messageId, unreadCount }) => {
+                    setMessages(prevMessages =>
+                        prevMessages.map(message =>
+                            message.id === messageId ? { ...message, unreadCount } : message
+                        )
+                    );
                 });
             } catch (error) {
                 console.error('Failed to fetch user', error);
@@ -82,35 +103,14 @@ const GroupChatting = () => {
         fetchMessages();
         fetchUser();
 
-        // 새로운 메시지가 도착했을 때 처리
-        socket.current.on('newMessage', (message) => {
-            const formattedMessage = {
-                ...message,
-                createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
-            };
-            setMessages(prevMessages => [...prevMessages, formattedMessage]);
-
-            // 새로운 메시지의 읽지 않은 사용자 수를 업데이트
-            updateUnreadCounts(message.id);
-            scrollToBottom(); // 새로운 메시지 추가 시 스크롤 하단으로 이동
-        });
-
-        // 읽지 않은 메시지 수가 업데이트될 때 처리
-        socket.current.on('messageUnreadCount', ({ messageId, unreadCount }) => {
-            setMessages(prevMessages =>
-                prevMessages.map(message =>
-                    message.id === messageId ? { ...message, unreadCount } : message
-                )
-            );
-        });
-
         return () => {
-            socket.current.disconnect();
+            if (socket.current) {
+                socket.current.disconnect();
+            }
         };
-    }, [numericChatRoomId, navigate]);
+    }, [numericChatRoomId]);
 
     useEffect(() => {
-        // 메시지 로딩이 완료된 후 스크롤 하단으로 이동
         if (messages.length > 0) {
             scrollToBottom();
         }
@@ -145,12 +145,12 @@ const GroupChatting = () => {
                 userId: user.userIdx,
                 name: user.name,
                 profileImage: user.profileImage,
-                createdAt: moment().format('YYYY-MM-DD HH:mm:ss') // 현재 시간 추가
+                createdAt: moment().format('YYYY-MM-DD HH:mm:ss')
             };
 
             await axios.post('http://localhost:3001/send-message', message);
             setNewMessage("");
-            scrollToBottom(); // 메시지 전송 후 스크롤 하단으로 이동
+            scrollToBottom();
         } catch (error) {
             console.error('Failed to send message', error);
         }
@@ -190,17 +190,24 @@ const GroupChatting = () => {
             <div className="messages">
                 {messages.map((message, index) => (
                     <div key={index} className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
-                        <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
+                        {message.userId !== user?.userIdx && (
+                            <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
+                        )}
                         <div className="message-content">
-                            <p><strong>{message.name}</strong>: {message.content}</p>
-                            <p>{moment(message.createdAt).format('a h:mm')}</p> {/* 시간 표시 */}
+                            {message.userId !== user?.userIdx && (
+                                <p><strong>{message.name}</strong>: {message.content}</p>
+                            )}
+                            {message.userId === user?.userIdx && (
+                                <p>{message.content}</p>
+                            )}
+                            <p>{moment(message.createdAt).format('a h:mm')}</p>
                             {message.unreadCount > 0 && (
                                 <span className="unread-count">{message.unreadCount}</span>
                             )}
                         </div>
                     </div>
                 ))}
-                <div ref={messagesEndRef} /> {/* 스크롤 하단을 참조하는 div */}
+                <div ref={messagesEndRef} />
             </div>
             <div className="message-input">
                 <input
@@ -215,12 +222,11 @@ const GroupChatting = () => {
                 </button>
             </div>
 
-            {/* ChattingModal 추가 */}
             {isChattingModalOpen && (
                 <ChattingModal
                     modalState="show"
                     hideModal={closeChattingModal}
-                    chatRoomId={numericChatRoomId}  // 숫자로 변환된 chatRoomId 전달
+                    chatRoomId={numericChatRoomId}
                     chatRoomTitle={chatRoom?.chatRoomTitle || ''}
                 />
             )}
