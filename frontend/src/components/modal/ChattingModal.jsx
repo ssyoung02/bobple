@@ -2,9 +2,11 @@ import '../../assets/style/components/ChattingModal.css';
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import {useNavigate} from "react-router-dom";
 
 const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople }) => {
     const [participants, setParticipants] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchParticipants = async () => {
@@ -35,6 +37,10 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
             hideModal();
         }, 500);
     };
+
+    const moveCal = () => {
+        navigate('/myPage/calculator')
+    }
 
     return (
         <div className={`modal ${modalState}`}>
@@ -70,7 +76,7 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 </div>
                 <div className="chatRoom-footer">
                     <button onClick={closeModal}>나가기➡️</button>
-                    <button>정산하기️</button>
+                    <button onClick={moveCal}>정산하기️</button>
                 </div>
             </div>
         </div>
