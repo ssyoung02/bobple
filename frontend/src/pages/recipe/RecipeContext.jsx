@@ -186,18 +186,29 @@ export const RecipeProvider = ({ children }) => {
             console.error(error);
         }
     };
-// 좋아요 처리 함수
+    // // 좋아요 처리 함수
+    // const likeRecipe = async (recipeId) => {
+    //     try {
+    //         const response = await axios.post(`/api/recipes/${recipeId}/like`);
+    //         setRecipes(prevRecipes => prevRecipes.map(recipe =>
+    //             recipe.recipeIdx === recipeId ? response.data : recipe
+    //         ));
+    //         setSelectedRecipe(prevRecipe =>
+    //             prevRecipe && prevRecipe.recipeIdx === recipeId ? response.data : prevRecipe
+    //         );
+    //     } catch (error) {
+    //         setError(error.message || '좋아요 처리 중 오류가 발생했습니다.');
+    //         console.error(error);
+    //     }
+    // };
     const likeRecipe = async (recipeId) => {
         try {
-            const response = await axios.post(`/api/recipes/${recipeId}/likes`);
-            setRecipes(recipes.map(recipe => (recipe.recipeIdx === recipeId ? response.data : recipe)));
-            setSelectedRecipe(prevRecipe => prevRecipe && prevRecipe.recipeIdx === recipeId ? response.data : prevRecipe);
+            await axios.post(`/api/recipes/${recipeId}/like`);
         } catch (error) {
             setError(error.message || '좋아요 처리 중 오류가 발생했습니다.');
             console.error(error);
         }
     };
-
     // 페이지 변경 함수
     const changePage = (newPage) => {
         setPage(newPage);

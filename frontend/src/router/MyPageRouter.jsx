@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from "react-router-dom";
 import MyPageMain from "../pages/myPage/MyPageMain";
 import Calculator from "../pages/myPage/Calculator";
-import LikeRecipe from "../pages/myPage/LikeRecipe";
+import MyLikeRecipe from "../pages/myPage/MyLikeRecipe";
 import MyRecipe from "../pages/myPage/MyRecipe";
 import BookMark from "../pages/myPage/BookMark"
 import MyPointUsage from "../pages/myPage/MyPointUsage";
@@ -24,7 +24,7 @@ function MyPageRouter(){
             <Routes>
                     <Route path="/" element={<MyPageMain/>}/>
                     <Route path="/calculator" element={<Calculator/>}/>
-                    <Route path="/likeRecipe" element={<LikeRecipe/>}/>
+                    <Route path="/mylikeRecipe" element={<MyLikeRecipe/>}/>
                     <Route path="/myRecipe" element={<MyRecipe/>}/>
                     <Route path="/bookmark" element={<BookMark/>}/>
                     <Route path="/myPointUseage" element={<MyPointUsage/>}/>

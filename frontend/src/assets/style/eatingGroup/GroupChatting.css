@@ -35,16 +35,23 @@
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
 }
 
+.messages::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.messages img {
+    width: 5vh;
+    height: 5vh;
+}
+
 .message {
-    /*padding: 0 10px;*/
-    /*margin: 30px 0;*/
-    /*border: 1px solid #ddd;*/
-    display: inline-block;
-    border: 2px solid #233B6F;
+    display: flex;
+    flex-direction: column;
+    border: none;
     border-radius: 10px;
     padding: 10px;
-    margin: 20px 0;
-    max-width: 50%;
+    margin: 10px 0;
+    max-width: 100%;
     align-self: flex-start; /* 오른쪽 정렬 */
     word-wrap: break-word; /* 길이가 긴 단어를 자동으로 줄바꿈 */
     font-weight: bold;
@@ -87,7 +94,16 @@
 
 .message-right {
     align-self: flex-end; /* 오른쪽 정렬 */
-    background-color: #d1ffd1; /* 오른쪽 메시지 배경색 */
+    background-color: #F7CCD4; /* 오른쪽 메시지 배경색 */
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+}
+
+.message-content {
+    font-size: 13px;
 }
 
 .message-left .profile-image {

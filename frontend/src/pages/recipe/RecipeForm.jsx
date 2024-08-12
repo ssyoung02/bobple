@@ -86,7 +86,7 @@ function RecipeForm() {
 
         try {
             const formData = new FormData();
-            formData.append("recipe-title", title);
+            formData.append("title", title);
             formData.append("cookTime", cookTime);
             formData.append("calories", calories);
             formData.append("ingredients", ingredients);
@@ -118,22 +118,29 @@ function RecipeForm() {
 
     return (
         <div className="recipe-form-container">
-            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'} />
+            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'}/>
             {error && <div className="error-message">{error}</div>}
             <form onSubmit={handleSubmit} id="recipe-form">
                 <div className="form-field">
                     <label htmlFor="imageUpload" className="recipe-header-img">
-                        <p className="blind">이미지 업로드</p>
-                        <ImageIcon/>
-                        <p>레시피 메인 이미지를 업로드해주세요</p>
+                        {!imageUrl ? (
+                            <>
+                                <p className="blind">이미지 업로드</p>
+                                <ImageIcon/>
+                                <p>레시피 메인 이미지를 업로드해주세요</p>
+                            </>
+                        ) : (
+                            <img className="recipe-header-exImg" src={imageUrl || '/images/default_recipe_image.jpg'}
+                                 alt={title}/>
+                        )}
                     </label>
                     <input type="file" id="imageUpload" onChange={handleImageChange} className="blind"/>
                 </div>
                 <div className="recipe-title-box">
-                    <label htmlFor="recipe-title" className="blind">제목</label>
+                    <label htmlFor="title" className="blind">제목</label>
                     <input
                         type="text"
-                        id="recipe-title"
+                        id="title"
                         className="recipe-title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -183,8 +190,8 @@ function RecipeForm() {
                 </div>
                 <div className="recipe-form-item">
                     <label htmlFor="instructions">조리 방법</label>
-                    <textarea 
-                        id="instructions" 
+                    <textarea
+                        id="instructions"
                         value={instructions} onChange={(e) => setInstructions(e.target.value)}
                         placeholder="조리 방법을 입력해주세요"
                     />

@@ -58,6 +58,7 @@ export const ModalProvider = ({ children }) => {
                     modalState={modalState}
                     hideModal={hideModal}
                     chatRoomTitle={chatRoomData.chatRoomTitle}
+                    chatRoomPeople={chatRoomData.roomPeople}
                 />
             )}
             {errorState === 'show' && <ErrorModal message={errorMessage} hideErrorModal={hideErrorModal} />}
