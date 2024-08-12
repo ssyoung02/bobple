@@ -136,8 +136,33 @@ public class ChatRoomService {
     // 채팅 참여자 목록
     public List<ChatMemberDTO> getChatRoomParticipants(Long chatRoomId) {
         List<ChatMember> members = chatMemberRepository.findByChatRoomChatRoomIdx(chatRoomId);
-        return members.stream()
-                .map(member -> new ChatMemberDTO(member.getUser().getUserIdx(), member.getUser().getName(), member.getUser().getProfileImage()))
+//        return members.stream()
+//                .map(member -> new ChatMemberDTO(member.getUser().getUserIdx(), member.getUser().getName(), member.getUser().getProfileImage()))
+//                .collect(Collectors.toList());
+
+        // 리더와 나머지 멤버를 분리
+        List<ChatMemberDTO> leaders = members.stream()
+                .filter(member -> member.getRole() == ChatMember.Role.LEADER)
+                .map(member -> new ChatMemberDTO(
+                        member.getUser().getUserIdx(),
+                        member.getUser().getName(),
+                        member.getUser().getProfileImage()
+                ))
                 .collect(Collectors.toList());
+
+        List<ChatMemberDTO> membersSorted = members.stream()
+                .filter(member -> member.getRole() == ChatMember.Role.MEMBER)
+                .sorted((m1, m2) -> m1.getUser().getName().compareTo(m2.getUser().getName()))
+                .map(member -> new ChatMemberDTO(
+                        member.getUser().getUserIdx(),
+                        member.getUser().getName(),
+                        member.getUser().getProfileImage()
+                ))
+                .collect(Collectors.toList());
+
+        // 리더를 상단에 추가하고 나머지 멤버들을 뒤에 추가
+        leaders.addAll(membersSorted);
+
+        return leaders;
     }
 }

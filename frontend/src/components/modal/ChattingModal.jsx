@@ -2,7 +2,7 @@ import '../../assets/style/components/ChattingModal.css';
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople }) => {
     const [participants, setParticipants] = useState([]);
@@ -51,7 +51,7 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 </div>
                 <div className="chatRoom-info">
                     <h6>모임 정보</h6>
-                    <br/>
+                    <br />
                     <div>모임장소 :</div>
                     <div>모임시간 :</div>
                 </div>
@@ -59,9 +59,8 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 <div className="participants-list">
                     {participants.length > 0 ? (
                         participants.map((participant) => (
-                            <div key={participant.userId} className="participant-item">
-                                <img src={participant.profileImage} alt={`${participant.name}'s profile`}
-                                     className="participant-image"/>
+                            <div key={participant.userId} className={`participant-item ${participant.role === 'LEADER' ? 'leader' : ''}`}>
+                                <img src={participant.profileImage} alt={`${participant.name}'s profile`} className="participant-image" />
                                 <span>{participant.name}</span>
                             </div>
                         ))
