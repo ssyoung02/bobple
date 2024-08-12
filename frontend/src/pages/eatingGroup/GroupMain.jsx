@@ -139,13 +139,15 @@ const GroupMain = () => {
                                 className="item"
                                 onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
                             >
-                                <img src={chatRoom.roomImage} alt="chat room" />
+                                <div className="chatRoom-image">
+                                    {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
+                                        <span className="groupmain-unread-count">
+                                            {unreadMessagesCount[chatRoom.chatRoomIdx]}
+                                        </span>
+                                    )}
+                                    <img src={chatRoom.roomImage} alt="chat room"/>
+                                </div>
                                 <span>{chatRoom.chatRoomTitle}</span>
-                                {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
-                                    <span className="groupmain-unread-count">
-                                        {unreadMessagesCount[chatRoom.chatRoomIdx]}
-                                    </span>
-                                )}
                             </button>
                         ))
                     ) : (

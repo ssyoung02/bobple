@@ -164,10 +164,10 @@ app.get('/api/chatrooms/:chatRoomId/unread-messages-count', (req, res) => {
     const userId = req.query.userId;
 
     const query = `
-        SELECT COUNT(*) AS unreadCount 
-        FROM message_reads 
-        WHERE message_id IN (SELECT id FROM messages WHERE chat_room_id = ?) 
-          AND user_id = ? 
+        SELECT COUNT(*) AS unreadCount
+        FROM message_reads
+        WHERE message_id IN (SELECT id FROM messages WHERE chat_room_id = ?)
+          AND user_id = ?
           AND read_at IS NULL
     `;
 

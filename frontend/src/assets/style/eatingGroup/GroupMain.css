@@ -45,11 +45,10 @@
 
 .scroll-container {
     display: flex;
-    gap: 5px;
+    flex-wrap: nowrap;
+    gap: 20px;
     overflow-x: auto;
-    white-space: nowrap;
     padding: 10px 0;
-
 }
 
 .scroll-container::-webkit-scrollbar {
@@ -68,10 +67,19 @@
     border-radius: 50%;
     display: block;
     margin: 0 auto;
+
 }
 
 .item span {
     font-size: 15px;
+    display: block;
+    white-space: normal; /* 줄바꿈을 허용 */
+    word-wrap: break-word; /* 단어가 길면 줄바꿈 */
+    max-width: 200px; /* 필요시 너비를 제한하여 줄바꿈을 유도 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 텍스트가 너무 길면 말줄임 표시(...) */
+    line-height: 1.2; /* 텍스트 줄 간격 설정 */
+    max-height: 2.4em; /* 최대 두 줄까지만 표시되도록 설정 */
 }
 
 .meeting-list {
@@ -179,10 +187,12 @@
 }
 
 .groupmain-unread-count {
+    position: absolute;
     background-color: red;
     color: white;
     border-radius: 50%;
-    padding: 0.2em 0.5em;
+    padding: 0.1em 0.5em;
     font-size: 0.8em;
-    margin-left: 10px;
+    font-weight: bold;
+    translate: 10px;
 }
