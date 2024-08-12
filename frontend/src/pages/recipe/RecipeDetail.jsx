@@ -1,15 +1,22 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import RecipeComment from './RecipeComment';
 import axios from "../../utils/axios";
 import '../../assets/style/recipe/RecipeDetail.css';
 import dayjs from 'dayjs';
-import {Heart, HeartLine} from "../../components/imgcomponents/ImgComponents"; // 날짜 포맷팅을 위한 라이브러리
-
+import {
+    Calendar,
+    ClockIcon,
+    DefaultUser,
+    FireIcon,
+    Heart,
+    HeartLine, MoreIcon, SendMessage, View
+} from "../../components/imgcomponents/ImgComponents";
+import PageHeader from "../../components/layout/PageHeader";
+import {useOnlyHeaderColorChange} from "../../hooks/NavigateComponentHooks";
 
 function RecipeDetail() {
-
     const { recipeIdx } = useParams();
     const {
         getRecipeById,
@@ -19,10 +26,15 @@ function RecipeDetail() {
         deleteRecipe,
         setSelectedRecipe,
         setError,
-        createComment
+        createComment,
+        formatViewsCount
     } = useContext(RecipeContext);
     const [newComment, setNewComment] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
+    const [showActions, setShowActions] = useState(false); // 상태 추가
+
+    useOnlyHeaderColorChange(location.pathname, 'transparent');
 
     const fetchRecipeAndComments = useCallback(async () => {
         try {
@@ -70,9 +82,8 @@ function RecipeDetail() {
 
     const handleLikeClick = async () => {
         try {
-            await axios.post(`/api/recipes/${recipeIdx}/like`); // 사용자 ID를 요청에 포함하지 않음
+            await axios.post(`/api/recipes/${recipeIdx}/like`);
 
-            // 좋아요 상태와 좋아요 수 업데이트
             setSelectedRecipe(prevRecipe => ({
                 ...prevRecipe,
                 liked: !prevRecipe.liked,
@@ -103,78 +114,132 @@ function RecipeDetail() {
     // 재료와 조리 방법 분리 로직
     let ingredients = '';
     let instructions = '';
+
     if (selectedRecipe.content) {
-        const ingredientsStart = selectedRecipe.content.indexOf('재료:');
+        // "만드는 법:"을 기준으로 분리
         const instructionsStart = selectedRecipe.content.indexOf('만드는 법:');
 
-        if (ingredientsStart !== -1 && instructionsStart !== -1) {
-            ingredients = selectedRecipe.content.substring(ingredientsStart + 3, instructionsStart).trim(); // '재료:' 뒤부터 '만드는 법:' 전까지
-            instructions = selectedRecipe.content.substring(instructionsStart + 6).trim(); // '만드는 법:' 뒤부터 끝까지
-        } else if (ingredientsStart !== -1) {
-            ingredients = selectedRecipe.content.substring(ingredientsStart + 3).trim(); // '재료:' 뒤부터 끝까지
+        if (instructionsStart !== -1) {
+            // "만드는 법:" 앞부분은 재료
+            ingredients = selectedRecipe.content.substring(0, instructionsStart).trim();
+            // "만드는 법:" 뒷부분은 조리 방법
+            instructions = selectedRecipe.content.substring(instructionsStart + 6).trim();
         } else {
-            instructions = selectedRecipe.content.trim(); // '재료:'나 '만드는 법:'이 없는 경우 전체 내용을 조리 방법으로 설정
+            // "만드는 법:"이 없는 경우 전체 내용을 재료로 간주
+            ingredients = selectedRecipe.content.trim();
         }
     }
 
+    const toggleActions = () => {
+        setShowActions(!showActions); // showActions 상태를 토글
+    };
+
+
+
     return (
-        <div>
+        <div className="recipe-detail-main">
+            <PageHeader title="" />
+            <div className="recipe-detail-user-action ">
+                <button className="recipe-detail-like" onClick={handleLikeClick}>
+                    {selectedRecipe.liked ?
+                        <>
+                            <Heart/>
+                            {formatViewsCount(selectedRecipe.likesCount)}
+                        </>
+                        :
+                        <>
+                            <HeartLine/>
+                            {formatViewsCount(selectedRecipe.likesCount)}
+                        </>
+                    }
+                </button>
+                <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
+                    <MoreIcon/>
+                </button>
+                {showActions && (
+                    <div className="recipe-declaration">
+                        <button>신고</button>
+                    </div>
+                )}
+            </div>
             {selectedRecipe && (
                 <>
-                    <h2>{selectedRecipe.title}</h2>
-                    <div className="recipe-info">
-                        <p>작성자: {selectedRecipe.nickname} </p>
-                        <p>작성 시간: {dayjs(selectedRecipe.createdAt).format('YYYY-MM-DD HH:mm')} </p>
-                        <p>조리 시간: {selectedRecipe.cookTime} 분 </p> {/* 조리 시간 추가 */}
-                        <p>칼로리: {selectedRecipe.calories} kcal</p> {/* 칼로리 추가 */}
-                        <p>조회수: {selectedRecipe.viewsCount} 회</p> {/* 조회수 추가 */}
+                    <div className="recipe-detail-header">
+                        <img src={selectedRecipe.picture || '/images/default_recipe_image.jpg'}
+                             alt={selectedRecipe.title}
+                             className="recipe-detail-image"/>
                     </div>
-                    <img src={selectedRecipe.picture || '/images/default_recipe_image.jpg'} alt={selectedRecipe.title}
-                         className="recipe-image"/>
-                    <h3>재료:</h3>
-                    <ul>
-                        {ingredients.split(',').map((ingredient, index) => (
-                            <li key={index}>{ingredient.trim()}</li>
-                        ))}
-                    </ul>
+                    <div className="recipe-detail-title-box">
+                        <div className="recipe-detail-title-item">
+                            <h2>{selectedRecipe.title}</h2>
+                        </div>
+                        <div className="recipe-detail-title-item">
+                            <div className="recipe-detail-title-text">
+                                <DefaultUser />
+                                <p>{selectedRecipe.nickname} </p>
+                            </div>
+                            <div className="recipe-detail-title-text">
+                                <Calendar />
+                                <p> {dayjs(selectedRecipe.createdAt).format('YYYY-MM-DD')} </p>
+                            </div>
+                            <div className="recipe-detail-title-text">
+                                <View />
+                                <p>{formatViewsCount(selectedRecipe.viewsCount)} 회</p>
+                            </div>
+                        </div>
+                        <div className="recipe-detail-title-item">
+                            <div className="recipe-detail-title-text recipe-sub-title">
+                                <ClockIcon />
+                                <p>{selectedRecipe.cookTime} 분 </p>
+                            </div>
+                            <div className="recipe-detail-title-text recipe-sub-title">
+                                <FireIcon />
+                                <p>{selectedRecipe.calories} kcal</p>
+                            </div>
+                        </div>
+                    </div>
 
-                    <h3>조리 방법:</h3>
-                    <ul>
-                        {instructions.split('.').map((instruction, index) => (
-                            <li key={index}>{instruction.trim()}</li>
-                        ))}
-                    </ul>
-
-                    {/* 좋아요 버튼 */}
-                    <button className="recipe-like-button" onClick={handleLikeClick}>
-                        {selectedRecipe.liked ? <Heart/> : <HeartLine/>}
-                    </button>
-                    {selectedRecipe.liked ? '좋아요 취소' : '좋아요'} ({selectedRecipe.likesCount})
-
-                    {/* 수정 버튼 (작성자만 보이도록 조건 추가) */}
-                    {localStorage.getItem('userIdx') == selectedRecipe.userIdx && (
-                        <button className="edit-button" onClick={handleEditClick}>수정</button>
-                    )}
-
-                    {/* 삭제 버튼 (작성자만 보이도록 조건 추가) */}
-                    {localStorage.getItem('userIdx') == selectedRecipe.userIdx && (
-                        <button className="delete-button" onClick={handleDeleteClick}>삭제</button>
-                    )}
+                    <div className="recipe-detail-content">
+                        <h4>재료</h4>
+                        <ul>
+                            {ingredients.split(',').map((ingredient, index) => (
+                                <li key={index}>{ingredient.trim()}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="recipe-detail-content">
+                        <h4>조리 방법</h4>
+                        <ul>
+                            {instructions.split('.').map((instruction, index) => (
+                                <li key={index}>{instruction.trim()}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="recipe-detail-content-buttons">
+                        {localStorage.getItem('userIdx') == selectedRecipe.userIdx && (
+                            <button className="delete-button" onClick={handleDeleteClick}>삭제</button>
+                        )}
+                        {localStorage.getItem('userIdx') == selectedRecipe.userIdx && (
+                            <button className="edit-button" onClick={handleEditClick}>수정</button>
+                        )}
+                    </div>
 
                     <div className="comment-section">
-                        <h3>댓글</h3>
-                        {selectedRecipe.comments && selectedRecipe.comments.map(comment => (
-                            <RecipeComment key={comment.recipeCommentIdx} comment={comment} recipeId={recipeIdx} />
-                        ))}
+                        <h5>댓글 ({selectedRecipe.comments?.length || 0})</h5>
                         <div className="comment-input">
-                            <textarea
+                            <input
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                                 placeholder="댓글을 입력하세요"
                             />
-                            <button onClick={handleCommentSubmit}>댓글 작성</button>
+                            <button onClick={handleCommentSubmit} className="comment-send-button"><SendMessage />
+                            </button>
                         </div>
+                        {selectedRecipe.comments && selectedRecipe.comments.map(comment => (
+                            <RecipeComment key={comment.recipeCommentIdx} comment={comment} recipeId={recipeIdx} />
+                        ))}
                     </div>
+
                 </>
             )}
 

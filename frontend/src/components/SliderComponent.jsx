@@ -196,7 +196,7 @@ export const FoodCategories = () => {
 
 export const UserRecommendedRecipes = () => {
     const { recipeIdx } = useParams();
-    const {userRecommendedRecipes} = useContext(RecipeContext);
+    const {userRecommendedRecipes, formatViewsCount} = useContext(RecipeContext);
     // const {handleLikeClick} = useContext(RecipeDetail);
 
     const RecipeSettings = {
@@ -230,7 +230,7 @@ export const UserRecommendedRecipes = () => {
                                         <button className={`recipe-like-button ${recipe.liked ? 'liked' : ''}`}>
                                             {recipe.liked ? <Heart/> : <HeartLine/>}
                                         </button>
-                                        {recipe.likesCount}
+                                        {formatViewsCount(recipe.likesCount)}
                                     </div>
 
                                 </div>

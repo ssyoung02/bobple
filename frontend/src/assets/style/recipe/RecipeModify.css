@@ -1,11 +1,4 @@
 /* src/components/Recipe/RecipeModify.css */
-.recipe-modify-container {
-    width: 80%;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
 
 .loading-message {
     text-align: center;

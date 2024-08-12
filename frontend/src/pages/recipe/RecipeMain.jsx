@@ -4,18 +4,18 @@ import RecipeContext from '../../pages/recipe/RecipeContext';
 import LatestRecipeCard from './LatestRecipeCard';
 import axios from "../../utils/axios";
 import "../../assets/style/recipe/RecipeMain.css";
-import {ArrowRightLong, NextTo, PrevTo, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {ArrowRightLong, MoreIcon, NextTo, PrevTo, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {UserRecommendedRecipes} from "../../components/SliderComponent";
 
 function RecipeMain() {
     const {
          getRecipeById, totalPages, page, changePage,
-        setError, latestRecipes, setCategoryRecipes, setLatestRecipes, recipeCategory
+        setError, latestRecipes, setCategoryRecipes, setLatestRecipes,
+        recipeCategory
         // 필요한 값 가져오기
     } = useContext(RecipeContext);
     const [searchKeyword, setSearchKeyword] = useState('');
     const navigate = useNavigate(); // useNavigate 훅 사용
-
 
     useEffect(() => {
         getRecipesByCategory('');
@@ -94,7 +94,7 @@ function RecipeMain() {
             {/* 도시락 레시피 추천 섹션 */}
             <div className="lunchbox-recipes">
                 <h4>도시락 레시피 추천</h4>
-                <div className="category-buttons"> {/* 카테고리 버튼 섹션 추가 */}
+                <div className="category-buttons">
                     {recipeCategory.map(button => (
                         <button key={button.name} onClick={() => handleCategoryClick(button.category)}
                                 className="category-button">

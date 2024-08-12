@@ -2,7 +2,7 @@
 .recipe-main-container{
     position: relative;
     display: grid;
-    gap: 1.5em;
+    gap: 2em;
 }
 
 /*검색영역*/
@@ -177,4 +177,21 @@
     color: #fff;
     font-size: 30px;
     font-weight: bold;
+}
+
+/*최신 레시피*/
+.latest-recipe-card-wrapper{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #999999;
+}
+
+.latest-recipe-list a{
+    display: flex;
+    gap: 10px;
+    color: #000;
+}
+
+.recipe-writer{
+    font-size: 0.8em;
+    color: #555555;
 }

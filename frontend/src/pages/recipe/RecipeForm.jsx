@@ -1,16 +1,21 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import {useParams, useNavigate, useLocation} from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../../assets/style/recipe/RecipeForm.css';
 import axios from "../../utils/axios";
 import PageHeader from "../../components/layout/PageHeader";
-import {Clock, FireIcon, ImageIcon} from "../../components/imgcomponents/ImgComponents";
-import {useOnlyHeaderColorChange} from "../../hooks/NavigateComponentHooks";
+import { Clock, FireIcon, ImageIcon } from "../../components/imgcomponents/ImgComponents";
+import { useOnlyHeaderColorChange } from "../../hooks/NavigateComponentHooks";
 
 function RecipeForm() {
-    const {createRecipe, updateRecipe, selectedRecipe,
-        setSelectedRecipe, recipeCategory} = useContext(RecipeContext);
-    const {recipeIdx} = useParams();
+    const {
+        createRecipe,
+        updateRecipe,
+        selectedRecipe,
+        setSelectedRecipe,
+        recipeCategory,
+    } = useContext(RecipeContext);
+    const { recipeIdx } = useParams();
     const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
@@ -19,9 +24,9 @@ function RecipeForm() {
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
     const [tags, setTags] = useState('');
-    const [imageFile, setImageFile] = useState(null); // 추가: 이미지 파일 상태
-    const [imageUrl, setImageUrl] = useState(''); // Define imageUrl state here
-    const [category, setCategory] = useState(''); // 추가: 카테고리 상태
+    const [imageFile, setImageFile] = useState(null);
+    const [imageUrl, setImageUrl] = useState('');
+    const [category, setCategory] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState(null);
 
@@ -29,11 +34,10 @@ function RecipeForm() {
     useOnlyHeaderColorChange(location.pathname, 'transparent');
 
     useEffect(() => {
-        if (recipeIdx) { // 레시피 수정 모드일 때
+        if (recipeIdx) {
             setIsEditing(true);
             getRecipeById(recipeIdx);
         } else {
-            // 레시피 작성 모드일 때 초기화
             resetForm();
         }
     }, [recipeIdx]);
@@ -46,8 +50,8 @@ function RecipeForm() {
         setInstructions('');
         setTags('');
         setImageFile(null);
-        setImageUrl(''); // Reset imageUrl
-        setCategory(''); // 카테고리 초기화
+        setImageUrl('');
+        setCategory('');
         setIsEditing(false);
         setError(null);
     };
@@ -57,7 +61,6 @@ function RecipeForm() {
             const response = await axios.get(`/api/recipes/${id}`);
             setSelectedRecipe(response.data);
 
-            // 폼 필드 초기값 설정
             setTitle(response.data.title);
             setCookTime(response.data.cookTime);
             setCalories(response.data.calories);
@@ -65,20 +68,30 @@ function RecipeForm() {
             setInstructions(response.data.content.split('\n\n만드는 법:\n')[1]);
             setTags(response.data.tag || '');
             setImageUrl(response.data.picture || '');
-            setCategory(response.data.category || ''); // 기존 카테고리 값 설정
+            setCategory(response.data.category || '');
         } catch (error) {
             setError(error.message || '레시피 정보를 불러오는 중 오류가 발생했습니다.');
         }
     };
 
     const handleImageChange = (event) => {
-        setImageFile(event.target.files[0]);
+        const file = event.target.files[0];
+        setImageFile(file);
+
+        // FileReader를 사용하여 이미지 파일을 읽고 미리보기 URL을 생성
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImageUrl(reader.result); // 이미지 미리보기 설정
+            document.querySelector('.recipe-header-img').style.background="#fff";
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // 입력값 유효성 검사
         if (!title || !cookTime || !calories || !ingredients || !instructions || !tags || !category) {
             alert('모든 필드를 입력해주세요.');
             return;
@@ -92,20 +105,20 @@ function RecipeForm() {
             formData.append("ingredients", ingredients);
             formData.append("instructions", instructions);
             formData.append("tag", tags);
-            formData.append("category", category); // 카테고리 추가
+            formData.append("category", category);
 
             if (imageFile) {
                 formData.append("image", imageFile);
             }
             if (isEditing) {
                 await axios.put(`/api/recipes/${recipeIdx}`, formData, {
-                    headers: {'Content-Type': 'multipart/form-data'}
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 alert('레시피가 성공적으로 수정되었습니다.');
                 navigate(`/recipe/${recipeIdx}`);
             } else {
                 await axios.post("/api/recipes", formData, {
-                    headers: {'Content-Type': 'multipart/form-data'}
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 alert('레시피가 성공적으로 등록되었습니다.');
                 navigate('/recipe');
@@ -118,22 +131,29 @@ function RecipeForm() {
 
     return (
         <div className="recipe-form-container">
-            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'}/>
+            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'} />
             {error && <div className="error-message">{error}</div>}
             <form onSubmit={handleSubmit} id="recipe-form">
                 <div className="form-field">
-                    <label htmlFor="imageUpload" className="recipe-header-img">
+                    <div className="recipe-header-img">
+                        <label htmlFor="imageUpload" className="recipe-img-label">
+                            <p className="blind">이미지 업로드</p>
+                            <ImageIcon/>
+                            {!imageUrl ? (
+                                <span>레시피 메인 이미지를 업로드해주세요</span>
+                            ) : (
+                                <span>변경하려는 이미지를 업로드해주세요</span>
+                            )}
+                        </label>
                         {!imageUrl ? (
-                            <>
-                                <p className="blind">이미지 업로드</p>
-                                <ImageIcon/>
-                                <p>레시피 메인 이미지를 업로드해주세요</p>
-                            </>
-                        ) : (
-                            <img className="recipe-header-exImg" src={imageUrl || '/images/default_recipe_image.jpg'}
+                            <></>
+                        ):(
+                            <img className="recipe-header-exImg"
+                                 src={imageUrl || '/images/default_recipe_image.jpg'}
                                  alt={title}/>
+
                         )}
-                    </label>
+                    </div>
                     <input type="file" id="imageUpload" onChange={handleImageChange} className="blind"/>
                 </div>
                 <div className="recipe-title-box">
@@ -150,7 +170,7 @@ function RecipeForm() {
                         <div className="recipe-title-item-detail">
                             <label htmlFor="cookTime">
                                 <span className="blind">조리 시간 (분)</span>
-                                <Clock/>
+                                <Clock />
                             </label>
                             <input
                                 type="number"
@@ -166,7 +186,7 @@ function RecipeForm() {
                                 <span className="blind">
                                     칼로리 (kcal)
                                 </span>
-                                <FireIcon/>
+                                <FireIcon />
                             </label>
                             <input
                                 type="number"
@@ -191,8 +211,7 @@ function RecipeForm() {
                 <div className="recipe-form-item">
                     <label htmlFor="instructions">조리 방법</label>
                     <textarea
-                        id="instructions"
-                        value={instructions} onChange={(e) => setInstructions(e.target.value)}
+                        id="instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)}
                         placeholder="조리 방법을 입력해주세요"
                     />
                 </div>
@@ -214,15 +233,15 @@ function RecipeForm() {
 
                         {recipeCategory.map(categoryList => (
                             <li key={categoryList.name}>
-                            <input type="radio" id={categoryList.id} value={categoryList.name} checked={category === categoryList.name}
-                                   className="blind"
-                                   onChange={(e) => setCategory(e.target.value)}/>
-                            <label htmlFor={categoryList.id}
-                                   className={category === categoryList.name ? "recipe-category-item recipe-select" : "recipe-category-item"}>
-                                {categoryList.name}
-                            </label>
+                                <input type="radio" id={categoryList.id} value={categoryList.name} checked={category === categoryList.name}
+                                       className="blind"
+                                       onChange={(e) => setCategory(e.target.value)} />
+                                <label htmlFor={categoryList.id}
+                                       className={category === categoryList.name ? "recipe-category-item recipe-select" : "recipe-category-item"}>
+                                    {categoryList.name}
+                                </label>
                             </li>
-                            ))}
+                        ))}
                     </ul>
                 </div>
                 <button type="submit" className="submit-button">{isEditing ? '수정' : '등록'}</button>

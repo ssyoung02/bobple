@@ -33,7 +33,8 @@ const RecipeContext = createContext({
     userRecommendedRecipes: [],
     setSearchedRecipes: () => {},
     setUserRecommendedRecipes: () => {}, // 추가
-    recipeCategory: []
+    recipeCategory: [],
+    formatViewsCount: () => {},
 });
 
 export const RecipeProvider = ({ children }) => {
@@ -269,6 +270,13 @@ export const RecipeProvider = ({ children }) => {
         { name: '중식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-chinese-food.jpg', category: '중식', id: 'chinese' },
     ];
 
+    // viewsCount 포맷팅 로직
+    const formatViewsCount = (viewsCount) => {
+        if (viewsCount >= 1000) {
+            return (viewsCount / 1000).toFixed(1) + 'k';
+        }
+        return viewsCount;
+    };
 
     return (
         <RecipeContext.Provider value={{
@@ -291,6 +299,7 @@ export const RecipeProvider = ({ children }) => {
             setUserRecommendedRecipes,
             setSearchedRecipes,
             recipeCategory,
+            formatViewsCount,
         }}>
             {children}
         </RecipeContext.Provider>
