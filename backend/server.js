@@ -71,7 +71,9 @@ app.post('/send-message', (req, res) => {
 
                 // Socket.io를 통해 메시지 전송
                 const message = { id: messageId, chatRoomId, content, createdAt, userId, name, profileImage };
-                io.to(chatRoomId).emit('newMessage', message);
+                console.log('Sending newMessage event:', message); // 서버 로그 추가
+                // 모든 관련 클라이언트에 newMessage 이벤트 전송
+                io.emit('newMessage', message);  // 모든 클라이언트에 브로드캐스트;
 
                 // 메시지를 보낸 후 읽지 않은 메시지 수를 계산하고 전송
                 updateUnreadCounts(chatRoomId);
@@ -138,8 +140,8 @@ app.get('/api/messages/:messageId/unread-count', (req, res) => {
 
     // 메시지의 읽지 않은 사용자 수를 조회하는 SQL 쿼리
     const query = `
-        SELECT COUNT(*) AS unreadCount 
-        FROM message_reads 
+        SELECT COUNT(*) AS unreadCount
+        FROM message_reads
         WHERE message_id = ? AND read_at IS NULL
     `;
 
@@ -153,6 +155,28 @@ app.get('/api/messages/:messageId/unread-count', (req, res) => {
         } else {
             res.status(404).send('Message not found');
         }
+    });
+});
+
+// 채팅방의 읽지 않은 메시지 수를 반환하는 엔드포인트 추가
+app.get('/api/chatrooms/:chatRoomId/unread-messages-count', (req, res) => {
+    const { chatRoomId } = req.params;
+    const userId = req.query.userId;
+
+    const query = `
+        SELECT COUNT(*) AS unreadCount 
+        FROM message_reads 
+        WHERE message_id IN (SELECT id FROM messages WHERE chat_room_id = ?) 
+          AND user_id = ? 
+          AND read_at IS NULL
+    `;
+
+    db.query(query, [chatRoomId, userId], (err, results) => {
+        if (err) {
+            return res.status(500).send('Failed to fetch unread message count');
+        }
+
+        res.status(200).json({ unreadCount: results[0].unreadCount });
     });
 });
 
