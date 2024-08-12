@@ -45,8 +45,6 @@
 
 .scroll-container {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 20px;
     overflow-x: auto;
     padding: 10px 0;
 }
@@ -56,8 +54,12 @@
 }
 
 .item {
-    display: inline-block;
-    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* 이미지와 텍스트가 수직으로 중앙에 정렬되도록 설정 */
+    position: relative;
+    padding: 5px;
     text-align: center;
 }
 
@@ -65,21 +67,30 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    display: block;
     margin: 0 auto;
-
 }
 
-.item span {
+.joinChatRoom-title {
     font-size: 15px;
     display: block;
     white-space: normal; /* 줄바꿈을 허용 */
     word-wrap: break-word; /* 단어가 길면 줄바꿈 */
-    max-width: 200px; /* 필요시 너비를 제한하여 줄바꿈을 유도 */
-    overflow: hidden;
-    text-overflow: ellipsis; /* 텍스트가 너무 길면 말줄임 표시(...) */
+    width: 120px;
+    overflow: visible; /* 텍스트가 짤리지 않도록 설정 */
     line-height: 1.2; /* 텍스트 줄 간격 설정 */
-    max-height: 2.4em; /* 최대 두 줄까지만 표시되도록 설정 */
+    max-height: 20px; /* 텍스트의 최대 높이 제한을 없앰 */
+    margin-top: 10px; /* 이미지와 텍스트 사이의 간격 설정 */
+}
+
+.groupMain-unread-count {
+    position: absolute;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 0.1em 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    translate: 40px;
 }
 
 .meeting-list {
@@ -184,15 +195,4 @@
 
 .modal-title {
     flex-grow: 1;
-}
-
-.groupmain-unread-count {
-    position: absolute;
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    padding: 0.1em 0.5em;
-    font-size: 0.8em;
-    font-weight: bold;
-    translate: 10px;
 }

@@ -141,13 +141,13 @@ const GroupMain = () => {
                             >
                                 <div className="chatRoom-image">
                                     {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
-                                        <span className="groupmain-unread-count">
+                                        <span className="groupMain-unread-count">
                                             {unreadMessagesCount[chatRoom.chatRoomIdx]}
                                         </span>
                                     )}
                                     <img src={chatRoom.roomImage} alt="chat room"/>
                                 </div>
-                                <span>{chatRoom.chatRoomTitle}</span>
+                                <span className="joinChatRoom-title">{chatRoom.chatRoomTitle}</span>
                             </button>
                         ))
                     ) : (
