@@ -190,26 +190,39 @@ const GroupChatting = () => {
             )}
             <div className="messages">
                 {messages.map((message, index) => (
-                    <div key={index} className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
+                    <div key={index}
+                         className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
                         {message.userId !== user?.userIdx && (
-                            <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
+                            <div className="message-header">
+                                <img src={message.profileImage} alt={`${message.name}'s profile`}
+                                     className="profile-image"/>
+                                <p><strong>{message.name}</strong></p>
+                            </div>
                         )}
+                        {message.userId === user?.userIdx && (
+                            <p></p>
+                        )}
+
                         <div className="message-content">
                             {message.userId !== user?.userIdx && (
-                                <p><strong>{message.name}</strong>: {message.content}</p>
+                                <p>{message.content}</p>
                             )}
                             {message.userId === user?.userIdx && (
                                 <p>{message.content}</p>
                             )}
+                        </div>
+                        <div className="message-footer">
                             <p>{moment(message.createdAt).format('a h:mm')}</p>
                             {message.unreadCount > 0 && (
-                                <span className="unread-count">{message.unreadCount}</span>
+                                <span className="unread-count">읽음 {message.unreadCount}</span>
                             )}
                         </div>
                     </div>
                 ))}
-                <div ref={messagesEndRef} />
             </div>
+
+            <div ref={messagesEndRef}/>
+
             <div className="message-input">
                 <input
                     type="text"
