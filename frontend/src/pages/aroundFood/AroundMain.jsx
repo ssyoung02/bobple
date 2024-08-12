@@ -442,6 +442,24 @@ function AroundMain() {
                         onClick={() => handleListItemClick(restaurant)}
                     >
                         {restaurant.place_name}
+                        <div className="category-list">
+                            <p>{restaurant.category_name.replace('음식점 > ', '')}</p>
+                            <button
+                                className="around-bookmark list-bookmark"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                    if (restaurant) {
+                                        handleBookmarkToggle(restaurant);
+                                    }
+                                }}
+                            >
+                                {userBookmarks.includes(restaurant.id) ? (
+                                    <FillBookmark/>
+                                ) : (
+                                    <Bookmark/>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>

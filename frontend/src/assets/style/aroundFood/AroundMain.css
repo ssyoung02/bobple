@@ -55,9 +55,26 @@
 
 .list-item {
     /* 음식점 아이템 스타일 */
-    padding: 10px;
+    padding: 20px 10px;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #233B6F;
+}
+
+.list-item p {
+    font-size: 15px;
+    font-weight: lighter;
+    color: black;
+}
+
+.category-list {
+    display: flex;
+    gap: 50px;
 }
 
 .marker-label {
