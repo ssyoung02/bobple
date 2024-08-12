@@ -214,7 +214,7 @@ const GroupChatting = () => {
                         <div className="message-footer">
                             <p>{moment(message.createdAt).format('a h:mm')}</p>
                             {message.unreadCount > 0 && (
-                                <span className="unread-count">읽음 {message.unreadCount}</span>
+                                <span className="unread-count"> {message.unreadCount}</span>
                             )}
                         </div>
                     </div>
