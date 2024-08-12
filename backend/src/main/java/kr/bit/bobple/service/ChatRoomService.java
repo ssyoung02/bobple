@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -133,36 +134,49 @@ public class ChatRoomService {
         return chatRoom;
     }
 
-    // 채팅 참여자 목록
+    // ChatRoomService.java
     public List<ChatMemberDTO> getChatRoomParticipants(Long chatRoomId) {
         List<ChatMember> members = chatMemberRepository.findByChatRoomChatRoomIdx(chatRoomId);
-//        return members.stream()
-//                .map(member -> new ChatMemberDTO(member.getUser().getUserIdx(), member.getUser().getName(), member.getUser().getProfileImage()))
-//                .collect(Collectors.toList());
 
-        // 리더와 나머지 멤버를 분리
         List<ChatMemberDTO> leaders = members.stream()
                 .filter(member -> member.getRole() == ChatMember.Role.LEADER)
                 .map(member -> new ChatMemberDTO(
                         member.getUser().getUserIdx(),
                         member.getUser().getName(),
-                        member.getUser().getProfileImage()
+                        member.getUser().getProfileImage(),
+                        member.getRole().name(),
+                        member.getStatus().name()
                 ))
                 .collect(Collectors.toList());
 
         List<ChatMemberDTO> membersSorted = members.stream()
                 .filter(member -> member.getRole() == ChatMember.Role.MEMBER)
-                .sorted((m1, m2) -> m1.getUser().getName().compareTo(m2.getUser().getName()))
+                .sorted(Comparator.comparing(m -> m.getUser().getName()))
                 .map(member -> new ChatMemberDTO(
                         member.getUser().getUserIdx(),
                         member.getUser().getName(),
-                        member.getUser().getProfileImage()
+                        member.getUser().getProfileImage(),
+                        member.getRole().name(),
+                        member.getStatus().name()
                 ))
                 .collect(Collectors.toList());
 
-        // 리더를 상단에 추가하고 나머지 멤버들을 뒤에 추가
         leaders.addAll(membersSorted);
-
         return leaders;
     }
+
+    public void blockUser(Long chatRoomId, Long userId) {
+        ChatMember chatMember = chatMemberRepository.findById(new ChatMember.ChatMemberId(chatRoomId, userId))
+                .orElseThrow(() -> new RuntimeException("User not found in chat room"));
+
+        chatMember.setStatus(ChatMember.Status.DENIED);
+        chatMemberRepository.save(chatMember);
+    }
+
+    public String getUserRoleInChatRoom(Long chatRoomId, Long userIdx) {
+        ChatMember member = chatMemberRepository.findById(new ChatMember.ChatMemberId(chatRoomId, userIdx))
+                .orElseThrow(() -> new RuntimeException("User not found in chat room"));
+        return member.getRole().name();
+    }
+
 }

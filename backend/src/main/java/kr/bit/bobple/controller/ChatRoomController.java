@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/chatrooms")
@@ -97,5 +99,20 @@ public class ChatRoomController {
         List<ChatMemberDTO> participants = chatRoomService.getChatRoomParticipants(chatRoomId);
         return ResponseEntity.ok(participants);
     }
+
+    @PostMapping("/{chatRoomId}/block")
+    public ResponseEntity<Void> blockUser(@PathVariable Long chatRoomId, @RequestParam Long userId) {
+        chatRoomService.blockUser(chatRoomId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{chatRoomId}/role")
+    public ResponseEntity<Map<String, String>> getUserRoleInChatRoom(@PathVariable Long chatRoomId, @RequestParam Long userIdx) {
+        String role = chatRoomService.getUserRoleInChatRoom(chatRoomId, userIdx);
+        Map<String, String> response = new HashMap<>();
+        response.put("role", role);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

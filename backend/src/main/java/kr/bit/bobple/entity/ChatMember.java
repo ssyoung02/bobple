@@ -37,6 +37,14 @@ public class ChatMember {
         LEADER, MEMBER
     }
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.ACCEPTED;
+
+    public enum Status {
+        ACCEPTED, DENIED
+    }
+
     @Embeddable
     public static class ChatMemberId implements Serializable {
         private Long chatRoomIdx;
