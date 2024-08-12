@@ -3,7 +3,9 @@ import {Link, useNavigate} from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import errorImage from '../../assets/images/error_image.jpg';
 import '../../assets/style/recipe/RecipeCard.css';
-import {Heart, HeartLine} from "../../components/imgcomponents/ImgComponents"; // CSS 파일 import
+import {Heart, HeartLine} from "../../components/imgcomponents/ImgComponents";
+import mascot from "../../assets/images/bobple_mascot.png"; // CSS 파일 import
+
 
 function RecipeCard({ recipe }) {
     const { likeRecipe,deleteRecipe } = useContext(RecipeContext);
@@ -27,6 +29,7 @@ function RecipeCard({ recipe }) {
         if (confirmDelete) {
             try {
                 await deleteRecipe(recipe.recipeIdx);
+                localStorage.removeItem('recommendedRecipes');
                 window.location.reload(); // 페이지를 새로고침하여 변경사항 반영
             } catch (error) {
                 console.error('레시피 삭제 실패:', error);
@@ -43,11 +46,11 @@ function RecipeCard({ recipe }) {
         <div className="recipe-card">
             <Link to={`/recipe/${recipe.recipeIdx}`}>
                 <div className="recipe-card-image">
-                    <img src={recipe.picture || '/images/default_recipe_image.jpg'}
+                    <img src={recipe.picture }
                          alt={recipe.title}
                          onError={(e) => {
                              e.target.onerror = null;
-                             e.target.src = errorImage;
+                             e.target.src = mascot;
                          }}
                     />
                 </div>

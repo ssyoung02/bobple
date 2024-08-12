@@ -32,7 +32,9 @@ const RecipeContext = createContext({
     searchedRecipes: [],
     userRecommendedRecipes: [],
     setSearchedRecipes: () => {},
-    setUserRecommendedRecipes: () => {} // 추가
+    setUserRecommendedRecipes: () => {}, // 추가
+    totalRecipes: 0, // 전체 레시피 개수 추가
+    setTotalRecipes: () => {} // 전체 레시피 개수 업데이트 함수 추가
 });
 
 export const RecipeProvider = ({ children }) => {
@@ -48,8 +50,8 @@ export const RecipeProvider = ({ children }) => {
     const [latestRecipes, setLatestRecipes] = useState([]); // 최신 레시피
     const [userRecommendedRecipes, setUserRecommendedRecipes] = useState([]);
     const [searchedRecipes, setSearchedRecipes] = useState([]);
+    const [totalRecipes, setTotalRecipes] = useState(0); // 전체 레시피 개수
     const navigate = useNavigate();
-
 
 
     // 레시피 검색 함수 (useCallback으로 메모이징)
@@ -59,7 +61,7 @@ export const RecipeProvider = ({ children }) => {
             const response = await axios.get('/api/recipes/search', {
                 params: { keyword, category, page, size, sort }
             });
-            setSearchedRecipes(response.data.content); // 검색 결과를 searchedRecipes에 저장\
+            setSearchedRecipes(response.data.content); // 검색 결과를 searchedRecipes에 저장
             setTotalElements(response.data.totalElements || 0);
             setTotalPages(response.data.totalPages || 0);
             setPage(response.data.number);
@@ -76,22 +78,19 @@ export const RecipeProvider = ({ children }) => {
         }
     }, [navigate]);
 
-
     useEffect(() => {
         searchRecipes('', '', page, size); // 토큰 확인 없이 레시피 목록 요청
-        getRecipesByCategory('');
-        getLatestRecipes();
         getUserRecommendedRecipes(); // 초기에는 유저 추천 레시피만 로드
-
     }, [page, size, searchRecipes]);
 
 
     const getLatestRecipes = async () => {
         try {
             const response = await axios.get('/api/recipes/latest', {
-                params: { page: 0, size: 4 }
+                params: { page: 0, size: 20 }
             });
             setLatestRecipes(response.data.content);
+            setTotalRecipes(response.data.totalElements);  // 전체 레시피 수를 설정
         } catch (error) {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
         }
@@ -179,6 +178,7 @@ export const RecipeProvider = ({ children }) => {
         try {
             await axios.delete(`/api/recipes/${id}`);
             setRecipes(recipes.filter(recipe => recipe.recipeIdx !== id)); // recipeIdx 사용
+            localStorage.removeItem('recommendedRecipes');
             setSelectedRecipe(null); // 상세 페이지를 닫거나 다른 페이지로 이동
         } catch (error) {
             setError(error.message || '레시피 삭제에 실패했습니다.');
@@ -281,6 +281,8 @@ export const RecipeProvider = ({ children }) => {
             searchedRecipes,
             setUserRecommendedRecipes,
             setSearchedRecipes,
+            totalRecipes, // 전체 레시피 개수
+            setTotalRecipes // 전체 레시피 개수 설정 함수
         }}>
             {children}
         </RecipeContext.Provider>

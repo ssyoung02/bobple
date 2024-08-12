@@ -43,7 +43,7 @@ public class RecipeController {
 
     @GetMapping("/latest")
     public ResponseEntity<Page<RecipeDto>> getLatestRecipes(
-            @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
         Page<RecipeDto> recipeDtoPage = recipeService.getLatestRecipes(pageable).map(RecipeDto::fromEntity);

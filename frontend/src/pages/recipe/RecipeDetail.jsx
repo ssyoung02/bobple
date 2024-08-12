@@ -6,6 +6,7 @@ import axios from "../../utils/axios";
 import '../../assets/style/recipe/RecipeDetail.css';
 import dayjs from 'dayjs';
 import {Heart, HeartLine} from "../../components/imgcomponents/ImgComponents"; // 날짜 포맷팅을 위한 라이브러리
+import mascot from "../../assets/images/bobple_mascot.png";
 
 
 function RecipeDetail() {
@@ -129,7 +130,10 @@ function RecipeDetail() {
                         <p>칼로리: {selectedRecipe.calories} kcal</p> {/* 칼로리 추가 */}
                         <p>조회수: {selectedRecipe.viewsCount} 회</p> {/* 조회수 추가 */}
                     </div>
-                    <img src={selectedRecipe.picture || '/images/default_recipe_image.jpg'} alt={selectedRecipe.title}
+                    <img src={selectedRecipe.picture || '/bobple_mascot.png'} alt={selectedRecipe.title}onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = mascot;
+                    }}
                          className="recipe-image"/>
                     <h3>재료:</h3>
                     <ul>

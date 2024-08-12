@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function SearchFilter() {
     const [keyword, setKeyword] = useState('');
     const [category, setCategory] = useState('');
-    const [sortBy, setSortBy] = useState('latest');
+    const [sortBy, setSortBy] = useState('createdAt,desc');
     const navigate = useNavigate();
 
     const handleSearch = () => {

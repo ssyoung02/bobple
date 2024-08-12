@@ -101,12 +101,14 @@ function RecipeForm() {
                     headers: {'Content-Type': 'multipart/form-data'}
                 });
                 alert('레시피가 성공적으로 수정되었습니다.');
+                localStorage.removeItem('recommendedRecipes');
                 navigate(`/recipe/${recipeIdx}`);
             } else {
                 await axios.post("/api/recipes", formData, {
                     headers: {'Content-Type': 'multipart/form-data'}
                 });
                 alert('레시피가 성공적으로 등록되었습니다.');
+                localStorage.removeItem('recommendedRecipes');
                 navigate('/recipe');
             }
         } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef, useCallback  } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import LatestRecipeCard from './LatestRecipeCard';
@@ -6,15 +6,69 @@ import axios from "../../utils/axios";
 import "../../assets/style/recipe/RecipeMain.css";
 import {ArrowRightLong, NextTo, PrevTo, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {UserRecommendedRecipes} from "../../components/SliderComponent";
+import {ClipLoader} from "react-spinners";
 
 function RecipeMain() {
     const {
-         getRecipeById, totalPages, page, changePage,
-        setError, latestRecipes, setCategoryRecipes, setLatestRecipes,userRecommendedRecipes
-        // 필요한 값 가져오기
+        getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes // totalRecipes를 RecipeContext에서 가져옴
     } = useContext(RecipeContext);
+
     const [searchKeyword, setSearchKeyword] = useState('');
-    const navigate = useNavigate(); // useNavigate 훅 사용
+    const navigate = useNavigate();
+    const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const [initialLoad, setInitialLoad] = useState(true);
+
+    const observer = useRef();
+
+    const lastRecipeElementRef = useCallback(node => {
+        if (loading) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+        if (node) observer.current.observe(node);
+    }, [loading, hasMore]);
+
+    useEffect(() => {
+        if (initialLoad && latestRecipes.length > 0) {
+            setInitialLoad(false);
+            return;
+        }
+
+        const loadLatestRecipes = async () => {
+            if (!hasMore) return;
+            setLoading(true);
+            try {
+                const response = await axios.get('/api/recipes/latest', {
+                    params: { page, size: 20 }
+                });
+
+                if (response.data.content.length > 0) {
+                    setLatestRecipes(prevRecipes => [...prevRecipes, ...response.data.content]);
+
+                    // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
+                    if (latestRecipes.length + response.data.content.length >= totalRecipes) {
+                        setHasMore(false);
+                    }
+                } else {
+                    setHasMore(false);
+                }
+            } catch (error) {
+                setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (initialLoad || page > 0) {
+            loadLatestRecipes();
+        }
+    }, [page, initialLoad, latestRecipes.length, hasMore, setLatestRecipes, setError, totalRecipes]);
+
 
 
     const categoryButtons = [
@@ -24,12 +78,7 @@ function RecipeMain() {
         { name: '중식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-chinese-food.jpg', category: '중식' },
     ];
 
-    useEffect(() => {
-        getRecipesByCategory('');
-        getLatestRecipes();
-        // // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
-        // searchRecipes('', '', 0, 10, 'createdAt,desc');
-    }, []);
+
 
     const handleRecipeClick = (recipeId) => {
         getRecipeById(recipeId); // 레시피 상세 정보 가져오기
@@ -46,28 +95,6 @@ function RecipeMain() {
 
     const handleCategoryClick = (category) => {
         navigate(`/recipe/search?category=${category}&sort=viewsCount,desc`);
-    };
-
-    const getRecipesByCategory = async (category) => {
-        try {
-            const response = await axios.get('/api/recipes/search', {
-                params: { category, page: 0, size: 4, sort: 'createdAt,desc' }
-            });
-            setCategoryRecipes(response.data.content);
-        } catch (error) {
-            setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
-        }
-    };
-
-    const getLatestRecipes = async () => {
-        try {
-            const response = await axios.get('/api/recipes/latest', { // 엔드포인트 수정
-                params: { page: 0, size: 4 } // 페이징 정보 전달
-            });
-            setLatestRecipes(response.data.content);
-        } catch (error) {
-            setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
-        }
     };
 
     const moveAIRecommendation = () => {
@@ -90,7 +117,7 @@ function RecipeMain() {
                 </button>
             </div>
 
-            <button className="AIRecipe" onClick={moveAIRecommendation} >
+            <button className="AIRecipe" onClick={moveAIRecommendation}>
                 <div className="AIRecipeTitle">
                     <p>지금 냉장고에 있는 재료로 뭐 만들어 먹지?</p>
                     <h3>AI 레시피 추천</h3>
@@ -125,37 +152,40 @@ function RecipeMain() {
                     <UserRecommendedRecipes/>
                 </div>
             </div>
-
             <div className="latest-recipes">
                 <h4>최신 레시피</h4>
                 <div className="latest-recipe-list">
                     {latestRecipes.length > 0 ? (
-                        latestRecipes.map(recipe => (
-                            <div key={recipe.recipeIdx} onClick={() => handleRecipeClick(recipe.recipeIdx)}
-                                 className="latest-recipe-card-wrapper">
-                                <LatestRecipeCard recipe={recipe}/>
-                            </div>
-                        ))
+                        latestRecipes.map((recipe, index) => {
+                            const uniqueKey = `${recipe.recipeIdx}-${index}`;
+                            if (latestRecipes.length === index + 1) {
+                                return (
+                                    <div ref={lastRecipeElementRef} key={uniqueKey}
+                                         onClick={() => handleRecipeClick(recipe.recipeIdx)}
+                                         className="latest-recipe-card-wrapper">
+                                        <LatestRecipeCard recipe={recipe}/>
+                                    </div>
+                                );
+                            } else {
+                                return (
+                                    <div key={uniqueKey} onClick={() => handleRecipeClick(recipe.recipeIdx)}
+                                         className="latest-recipe-card-wrapper">
+                                        <LatestRecipeCard recipe={recipe}/>
+                                    </div>
+                                );
+                            }
+                        })
                     ) : (
                         <div className="no-recipes-message">조회된 레시피가 없습니다.</div>
                     )}
                 </div>
-                {/* 페이지네이션 추가 */}
-                <div className="recipe-pagination">
-                    <button onClick={() => changePage(page - 1)} disabled={page === 0} aria-label="이전">
-                        <PrevTo/>
-                    </button>
-                    <span>{page + 1} / {totalPages}</span>
-                    <button onClick={() => changePage(page + 1)} disabled={page === totalPages - 1} aria-label="다음">
-                        <NextTo/>
-                    </button>
-                </div>
 
+                {loading && (
+                    <div className="loading-spinner">
+                        <ClipLoader size={50} color={"#123abc"} loading={loading}/>
+                    </div>
+                )}
             </div>
-
-
-
-            {/* 레시피 작성 버튼 (플로팅 버튼) */}
             <div className="create-recipe-button-box">
                 <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
                     +
