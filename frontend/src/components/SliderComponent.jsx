@@ -243,7 +243,7 @@ export const UserRecommendedRecipes = () => {
                                              }}/>
                                         <span className="recipe-view">
                                             <View/>
-                                            {recipe.viewsCount}
+                                            {formatViewsCount(recipe.viewsCount)}
                                         </span>
                                     </div>
                                     <div className="user-recommended-recipe-card-content">
