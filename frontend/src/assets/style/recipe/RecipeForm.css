@@ -1,25 +1,40 @@
 .recipe-form-container {
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
+    position: relative;
+    display: grid;
+    gap: 1.5em;
 }
 
-.form-field {
-    margin-bottom: 15px;
+.recipe-form-container .page-top{
+    position: absolute;
+    z-index: 2;
 }
 
-.form-field label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+/*이미지 첨부 헤더*/
+.recipe-header-img{
+    position: absolute;
+    top: -85px;
+    left: -20px;
+    width: calc(100% + 2.5rem);
+    height: 20em;
+    border-radius: 0 0 30px 30px;
+    background: rgba(165, 165, 165, 0.5);
 }
 
-.form-field input,
-.form-field textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.recipe-header-exImg {
+    width: 100%; /* 부모 요소에 맞게 이미지 너비를 100%로 설정 */
+    margin-top: 4em;
+    height: 90%; /* 부모 요소에 맞게 이미지 높이를 100%로 설정 */
+    object-fit: cover; /* 이미지의 비율을 유지하면서 영역에 맞게 크기 조절 */
+    border-radius: 0 0 30px 30px;
+}
+
+.recipe-header-img svg{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    color: #666666;
 }
 
 .recipe-image {
@@ -29,6 +44,92 @@
     object-fit: cover;
 }
 
+.form-field{
+    height: 10em;
+}
+
+#recipe-form{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+}
+
+/*제목, 시간, 칼로리 박스*/
+.recipe-title-box{
+    position: relative;
+    width: 90%;
+    margin: auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5em;
+    z-index: 1;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-title{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #003366;
+    padding: 10px;
+    font-size: 1.3em;
+    text-align: center;
+}
+.recipe-title-item{
+    display: flex;
+}
+
+.recipe-title-item-detail{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.recipe-title-item label{
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.recipe-title-item input{
+    border: none;
+    border-bottom: 1px solid #003366;
+    padding: 10px;
+    text-align: center;
+    width: 60%;
+}
+
+.recipe-title-item svg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/*레시피 추가 입력서식*/
+.recipe-form-item{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recipe-form-item label{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.recipe-form-item textarea{
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    resize: none;
+    overflow: hidden;
+}
+
+/*등록버튼*/
 .submit-button {
     width: 100%;
     padding: 10px;

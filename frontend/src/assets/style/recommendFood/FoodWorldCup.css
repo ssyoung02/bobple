@@ -1,6 +1,7 @@
 .worldCup-container {
     padding-top: 40px;
     position: relative;
+
 }
 
 .arrow-btn {
@@ -53,7 +54,7 @@
 .worldCup-content{
     position: absolute;
     width: 80%;
-    top: 50%;
+    top: 700%;
     left: 50%;
     transform: translate(-50%, -50%);
 }

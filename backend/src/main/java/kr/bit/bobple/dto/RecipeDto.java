@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bit.bobple.repository.LikeRecipeRepository;
 
 /**
  * 레시피 정보를 담는 DTO (Data Transfer Object) 클래스
@@ -37,13 +38,18 @@ public class RecipeDto {
 
     private List<RecipeCommentDto> comments; // 댓글 목록 추가
 
+
+    public static RecipeDto fromEntity(Recipe recipe) {
+        return fromEntity(recipe, null, null);
+    }
+
     /**
      * Recipe 엔티티를 RecipeDto로 변환하는 메서드
      *
      * @param recipe 변환할 Recipe 엔티티
      * @return 변환된 RecipeDto 객체
      */
-    public static RecipeDto fromEntity(Recipe recipe) {
+    public static RecipeDto fromEntity(Recipe recipe, Long currentUserId, LikeRecipeRepository likeRecipeRepository) {
         RecipeDto recipeDto = new RecipeDto();
         recipeDto.setRecipeIdx(recipe.getRecipeIdx());
         recipeDto.setUserIdx(recipe.getUser().getUserIdx());
@@ -62,8 +68,12 @@ public class RecipeDto {
         recipeDto.setReportCount(recipe.getReportCount());
         recipeDto.setCreatedAt(recipe.getCreatedAt());
         recipeDto.setUpdatedAt(recipe.getUpdatedAt());
-        //recipeDto.setLiked(...); // 현재 사용자가 좋아요를 눌렀는지 여부 설정 필요
-
+//        recipeDto.setLiked; // 현재 사용자가 좋아요를 눌렀는지 여부 설정 필요
+        // 현재 사용자가 좋아요를 눌렀는지 여부 설정
+        if (currentUserId != null) {
+            boolean isLiked = likeRecipeRepository.existsByUser_UserIdxAndRecipe_Id(currentUserId, recipe.getRecipeIdx());
+            recipeDto.setLiked(isLiked);
+        }
         // 댓글 목록 설정
         if (recipe.getRecipeComments() != null) {
             recipeDto.setComments(recipe.getRecipeComments().stream()

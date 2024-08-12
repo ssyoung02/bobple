@@ -57,60 +57,11 @@ button{
   padding: 0;
 }
 
-/* App.css */
-.recipe-main-container {
-  /* 페이지 전체 레이아웃 스타일 */
-}
-
-.search-bar {
-  /* 검색창 스타일 */
-}
-
-.ai-recommendation,
-.lunchbox-recipes,
-.user-recommended-recipes,
-.latest-recipes {
-  /* 각 섹션 스타일 */
-}
-
-.recipe-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 반응형 그리드 설정 */
-  gap: 1rem;
-}
-
-.more-button {
-  /* 더보기 버튼 스타일 */
-}
-
-.pagination {
-  /* 페이지네이션 스타일 */
-}
-/* src/components/Recipe/AIRecommendation.css */
-.ai-recommendation-container {
-  /* 컨테이너 스타일 */
-}
-
-.ai-recommendation-container h2 {
-  /* 제목 스타일 */
-}
-
-.ai-recommendation-container form {
-  /* 폼 스타일 */
-}
-
-.ai-recommendation-container input[type="text"] {
-  /* 입력 필드 스타일 */
-}
-
-.ai-recommendation-container button {
-  /* 버튼 스타일 */
-}
-
-.ai-recommendation-container .error-message {
-  /* 에러 메시지 스타일 */
-  color: red;
-}
-ul, li {
-  list-style: none;
+.blind{
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
 }

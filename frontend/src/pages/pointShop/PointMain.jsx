@@ -201,8 +201,9 @@ function PointMain() {
             )}
             {selectedTab === '게임' && (
                 <>
-                    <h2 className="game-header">포인트 게임</h2>
-                    <div className="game-container">
+
+                    <h2 className="game-header">"Point Game"</h2>
+                    <div className="point-game-btns">
                         <button className="game-button" onClick={moveGacha}>Gacha</button>
                         <button className="game-button" onClick={moveMatching}>matching</button>
                         <button className="game-button" onClick={moveAvoid}>avoid</button>
