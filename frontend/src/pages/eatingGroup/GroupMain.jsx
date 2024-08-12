@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
 import { SearchIcon } from "../../components/imgcomponents/ImgComponents";
-import io from 'socket.io-client'; // socket.io-client 추가
+import io from 'socket.io-client';
 
 const GroupMain = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const GroupMain = () => {
     const [searchOption, setSearchOption] = useState('all-post');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
-    const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수를 관리할 상태
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState({}); // 읽지 않은 메시지 수를 관리할 상태
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -25,15 +25,20 @@ const GroupMain = () => {
             query: { userIdx }
         });
 
-        // 메시지 수신 핸들러
-        socket.on('newMessage', (message) => {
-            setUnreadMessages(prevState => ({
-                ...prevState,
-                [message.chatRoomId]: (prevState[message.chatRoomId] || 0) + 1
-            }));
-        });
+        const fetchUnreadMessagesCount = async (chatRoomId) => {
+            try {
+                const response = await axios.get(`http://localhost:3001/api/chatrooms/${chatRoomId}/unread-messages-count`, {
+                    params: { userId: userIdx }
+                });
+                setUnreadMessagesCount(prevState => ({
+                    ...prevState,
+                    [chatRoomId]: response.data.unreadCount
+                }));
+            } catch (error) {
+                console.error('Failed to fetch unread messages count', error);
+            }
+        };
 
-        // 초기 데이터 불러오기
         const fetchMyChatRooms = async () => {
             try {
                 const myRoomsResponse = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
@@ -41,6 +46,11 @@ const GroupMain = () => {
                 });
 
                 setMyChatRooms(myRoomsResponse.data);
+
+                // 각 채팅방에 대해 읽지 않은 메시지 수를 가져옴
+                myRoomsResponse.data.forEach(room => {
+                    fetchUnreadMessagesCount(room.chatRoomIdx);
+                });
             } catch (error) {
                 console.error('Failed to fetch my chat rooms', error);
             }
@@ -75,7 +85,7 @@ const GroupMain = () => {
 
     const handleRoomClick = (chatRoomId) => {
         // 채팅방에 입장할 때 해당 방의 읽지 않은 메시지 수 초기화
-        setUnreadMessages(prevState => ({
+        setUnreadMessagesCount(prevState => ({
             ...prevState,
             [chatRoomId]: 0
         }));
@@ -131,9 +141,9 @@ const GroupMain = () => {
                             >
                                 <img src={chatRoom.roomImage} alt="chat room" />
                                 <span>{chatRoom.chatRoomTitle}</span>
-                                {unreadMessages[chatRoom.chatRoomIdx] > 0 && (
-                                    <span className="unread-count">
-                                        {unreadMessages[chatRoom.chatRoomIdx]}
+                                {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
+                                    <span className="groupmain-unread-count">
+                                        {unreadMessagesCount[chatRoom.chatRoomIdx]}
                                     </span>
                                 )}
                             </button>
