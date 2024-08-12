@@ -8,7 +8,8 @@ import {Clock, FireIcon, ImageIcon} from "../../components/imgcomponents/ImgComp
 import {useOnlyHeaderColorChange} from "../../hooks/NavigateComponentHooks";
 
 function RecipeForm() {
-    const {createRecipe, updateRecipe, selectedRecipe, setSelectedRecipe} = useContext(RecipeContext);
+    const {createRecipe, updateRecipe, selectedRecipe,
+        setSelectedRecipe, recipeCategory} = useContext(RecipeContext);
     const {recipeIdx} = useParams();
     const navigate = useNavigate();
 
@@ -124,6 +125,7 @@ function RecipeForm() {
                     <label htmlFor="imageUpload" className="recipe-header-img">
                         <p className="blind">이미지 업로드</p>
                         <ImageIcon/>
+                        <p>레시피 메인 이미지를 업로드해주세요</p>
                     </label>
                     <input type="file" id="imageUpload" onChange={handleImageChange} className="blind"/>
                 </div>
@@ -150,6 +152,7 @@ function RecipeForm() {
                                 onChange={(e) => setCookTime(e.target.value)}
                                 placeholder="시간"
                             />
+                            분
                         </div>
                         <div className="recipe-title-item-detail">
                             <label htmlFor="calories" className="blind">
@@ -165,6 +168,7 @@ function RecipeForm() {
                                 onChange={(e) => setCalories(e.target.value)}
                                 placeholder="칼로리"
                             />
+                            Kcal
                         </div>
                     </div>
                 </div>
@@ -199,35 +203,21 @@ function RecipeForm() {
 
                 <div className="recipe-form-item">
                     <label>카테고리</label>
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <div>
-                            <input type="radio" id="korean" value="한식" checked={category === '한식'}
-                                   onChange={(e) => setCategory(e.target.value)}/>
-                            <label htmlFor="korean">한식</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="chinese" value="중식" checked={category === '중식'}
-                                   onChange={(e) => setCategory(e.target.value)}/>
-                            <label htmlFor="chinese">중식</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="japanese" value="일식" checked={category === '일식'}
-                                   onChange={(e) => setCategory(e.target.value)}/>
-                            <label htmlFor="japanese">일식</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="western" value="양식" checked={category === '양식'}
-                                   onChange={(e) => setCategory(e.target.value)}/>
-                            <label htmlFor="western">양식</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="undefined" value="미지정" checked={category === '미지정'}
-                                   onChange={(e) => setCategory(e.target.value)}/>
-                            <label htmlFor="undefined">미지정</label>
-                        </div>
-                    </div>
-                </div>
+                    <ul className="recipe-category-list">
 
+                        {recipeCategory.map(categoryList => (
+                            <li key={categoryList.name}>
+                            <input type="radio" id={categoryList.id} value={categoryList.name} checked={category === categoryList.name}
+                                   className="blind"
+                                   onChange={(e) => setCategory(e.target.value)}/>
+                            <label htmlFor={categoryList.id}
+                                   className={category === categoryList.name ? "recipe-category-item recipe-select" : "recipe-category-item"}>
+                                {categoryList.name}
+                            </label>
+                            </li>
+                            ))}
+                    </ul>
+                </div>
                 <button type="submit" className="submit-button">{isEditing ? '수정' : '등록'}</button>
             </form>
         </div>

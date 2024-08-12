@@ -11,6 +11,8 @@
 
 /*이미지 첨부 헤더*/
 .recipe-header-img{
+    display: flex;
+    flex-direction: column;
     position: absolute;
     top: -85px;
     left: -20px;
@@ -27,6 +29,18 @@
     transform: translate(-50%, -50%);
     font-size: 2em;
     color: #666666;
+    cursor: pointer;
+}
+
+.recipe-header-img p{
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    color: #666666;
+    cursor: pointer;
+    text-align: center;
 }
 
 .recipe-image {
@@ -80,14 +94,15 @@
     position: relative;
     width: 20px;
     height: 20px;
+    cursor: pointer;
 }
 
 .recipe-title-item input{
     border: none;
     border-bottom: 1px solid #003366;
     padding: 10px;
-    text-align: center;
-    width: 60%;
+    text-align: right;
+    width: 50%;
 }
 
 .recipe-title-item svg{
@@ -121,14 +136,40 @@
     overflow: hidden;
 }
 
+/*카테고리*/
+.recipe-category-list{
+    display: flex;
+    gap: 5px;
+    list-style: none;
+    width: 100%;
+}
+
+.recipe-category-list li{
+    width: 100%;
+}
+
+.recipe-category-item{
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #003366;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1em !important;
+}
+.recipe-select{
+    background: #003366;
+    color: #fff;
+}
+
 /*등록버튼*/
 .submit-button {
     width: 100%;
-    padding: 10px;
-    background-color: #007bff;
+    padding: 15px;
+    background-color: #003366;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
 }

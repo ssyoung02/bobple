@@ -10,19 +10,12 @@ import {UserRecommendedRecipes} from "../../components/SliderComponent";
 function RecipeMain() {
     const {
          getRecipeById, totalPages, page, changePage,
-        setError, latestRecipes, setCategoryRecipes, setLatestRecipes,userRecommendedRecipes
+        setError, latestRecipes, setCategoryRecipes, setLatestRecipes, recipeCategory
         // 필요한 값 가져오기
     } = useContext(RecipeContext);
     const [searchKeyword, setSearchKeyword] = useState('');
     const navigate = useNavigate(); // useNavigate 훅 사용
 
-
-    const categoryButtons = [
-        { name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식' },
-        { name: '양식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-japanese-food.jpg', category: '양식' },
-        { name: '일식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-western-food.jpg', category: '일식' },
-        { name: '중식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-chinese-food.jpg', category: '중식' },
-    ];
 
     useEffect(() => {
         getRecipesByCategory('');
@@ -102,7 +95,7 @@ function RecipeMain() {
             <div className="lunchbox-recipes">
                 <h4>도시락 레시피 추천</h4>
                 <div className="category-buttons"> {/* 카테고리 버튼 섹션 추가 */}
-                    {categoryButtons.map(button => (
+                    {recipeCategory.map(button => (
                         <button key={button.name} onClick={() => handleCategoryClick(button.category)}
                                 className="category-button">
                             <img src={button.image} alt={button.name}/>

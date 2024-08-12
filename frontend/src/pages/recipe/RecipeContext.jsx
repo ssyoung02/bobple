@@ -32,7 +32,8 @@ const RecipeContext = createContext({
     searchedRecipes: [],
     userRecommendedRecipes: [],
     setSearchedRecipes: () => {},
-    setUserRecommendedRecipes: () => {} // 추가
+    setUserRecommendedRecipes: () => {}, // 추가
+    recipeCategory: []
 });
 
 export const RecipeProvider = ({ children }) => {
@@ -249,6 +250,14 @@ export const RecipeProvider = ({ children }) => {
         }
     };
 
+    // categoryButtons 배열 정의
+    const recipeCategory = [
+        { name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식', id: 'korean'},
+        { name: '양식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-japanese-food.jpg', category: '양식', id: 'western' },
+        { name: '일식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-western-food.jpg', category: '일식', id: 'japanese' },
+        { name: '중식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-chinese-food.jpg', category: '중식', id: 'chinese' },
+    ];
+
 
     return (
         <RecipeContext.Provider value={{
@@ -270,6 +279,7 @@ export const RecipeProvider = ({ children }) => {
             searchedRecipes,
             setUserRecommendedRecipes,
             setSearchedRecipes,
+            recipeCategory,
         }}>
             {children}
         </RecipeContext.Provider>
