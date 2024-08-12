@@ -112,9 +112,7 @@ const GroupChatting = () => {
 
     useEffect(() => {
         // 메시지 로딩이 완료된 후 스크롤 하단으로 이동
-        if (messages.length > 0) {
-            scrollToBottom();
-        }
+        scrollToBottom();
     }, [messages]);
 
     const scrollToBottom = () => {
@@ -219,9 +217,9 @@ const GroupChatting = () => {
                         </div>
                     </div>
                 ))}
+                {/* 메시지 목록이 끝나는 지점을 참조하는 div */}
+                <div ref={messagesEndRef} />
             </div>
-
-            <div ref={messagesEndRef}/>
 
             <div className="message-input">
                 <input
@@ -242,7 +240,7 @@ const GroupChatting = () => {
                     hideModal={closeChattingModal}
                     chatRoomId={numericChatRoomId}
                     chatRoomTitle={chatRoom?.chatRoomTitle || ''}
-                    chatRoomPeople={chatRoom?.roomPeople || 0} // 이 부분 확인
+                    chatRoomPeople={chatRoom?.roomPeople || 0}
                 />
             )}
         </div>
