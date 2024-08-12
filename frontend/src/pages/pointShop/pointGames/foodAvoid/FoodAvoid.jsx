@@ -4,6 +4,7 @@ import '../../../../assets/style/pointGame/avoid/FoodAvoid.css';
 import bobpleMascot from '../../../../assets/images/bobple_mascot.png';
 import {getUserIdx} from "../../../../utils/auth"; // 이미지 import
 import axios from 'axios';
+import {useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
 
 const CANVAS_WIDTH = 800; // 캔버스 너비 설정
 const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
@@ -276,36 +277,41 @@ const FoodAvoid = () => {
         }
     }, [openDialog, score, userIdx]);
 
+    useNavigateNone();
+
     return (
         <div className="avoid-body">
+            <h1>AVOID GAME</h1>
             <div className="avoid-container">
-                <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
-                {!gameStart && !openDialog && (
-                    <button className="avoid-button center-button" onClick={handleGameStart}>
-                        Start Game
-                    </button>
-                )}
-                {openDialog && (
-                    <button className="avoid-button center-button" onClick={handleExit}>
-                        Exit
-                    </button>
-                )}
+                <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>
+                <div className="point-game-1st-btn">
+                    {!gameStart && !openDialog && (
+                        <button className="avoid-button center-button avoid-start-btn" onClick={handleGameStart}>
+                            Start Game
+                        </button>
+                    )}
+                    {openDialog && (
+                        <button className="avoid-button center-button avoid-exit-btn" onClick={handleExit}>
+                            Exit
+                        </button>
+                    )}
+                </div>
                 <div className="button-container">
                     <button className="avoid-button" onClick={moveCharLeft} disabled={!gameStart}>Left</button>
                     <button className="avoid-button" onClick={moveCharRight} disabled={!gameStart}>Right</button>
+                    <div className="avoid-score">Score: {score}</div>
                 </div>
-                {openDialog && <div className="avoid-dialog">Game Over!</div>}
-                <div className="avoid-score">Score: {score}</div>
-                {openDialog && ( // openDialog가 true일 때만 포인트 획득 실패 메시지 표시
-                    <div>
-                        {earnedPoint > 0 ? (
-                            <p>{earnedPoint} 포인트 획득!</p>
-                        ) : (
-                            <p>포인트 획득 실패!</p>
-                        )}
-                    </div>
-                )}
             </div>
+            {openDialog && <div className="avoid-dialog">Game Over!</div>}
+            {openDialog && ( // openDialog가 true일 때만 포인트 획득 실패 메시지 표시
+                <div className="avoid-dialog-point">
+                    {earnedPoint > 0 ? (
+                        <p>{earnedPoint} 포인트 획득!</p>
+                    ) : (
+                        <p>포인트 획득 실패!</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

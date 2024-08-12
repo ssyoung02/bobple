@@ -2,9 +2,11 @@ import '../../assets/style/components/ChattingModal.css';
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import {useNavigate} from "react-router-dom";
 
-const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle }) => {
+const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople }) => {
     const [participants, setParticipants] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchParticipants = async () => {
@@ -36,22 +38,45 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle }) => 
         }, 500);
     };
 
+    const moveCal = () => {
+        navigate('/myPage/calculator')
+    }
+
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content chatting">
-                <button onClick={closeModal}>X</button>
-                <h3>{chatRoomTitle}</h3>
+                <div className="chatRoom-header">
+                    <h5 className="chatRoom-title">{chatRoomTitle}</h5>
+                    <p>"잠금"</p>
+                </div>
+                <div className="chatRoom-info">
+                    <h6>모임 정보</h6>
+                    <br/>
+                    <div>모임장소 :</div>
+                    <div>모임시간 :</div>
+                </div>
+                <h6 className="chatRoom-people">모집 인원 {chatRoomPeople}</h6>
                 <div className="participants-list">
                     {participants.length > 0 ? (
                         participants.map((participant) => (
                             <div key={participant.userId} className="participant-item">
-                                <img src={participant.profileImage} alt={`${participant.name}'s profile`} className="participant-image" />
+                                <img src={participant.profileImage} alt={`${participant.name}'s profile`}
+                                     className="participant-image"/>
                                 <span>{participant.name}</span>
                             </div>
                         ))
                     ) : (
                         <p>No participants found</p>
                     )}
+                </div>
+                <div className="chatRoom-game">
+                    <h6>오늘의 주인공</h6>
+                    <button>제비뽑기</button>
+                    <button>돌림판</button>
+                </div>
+                <div className="chatRoom-footer">
+                    <button onClick={closeModal}>나가기➡️</button>
+                    <button onClick={moveCal}>정산하기️</button>
                 </div>
             </div>
         </div>
@@ -63,6 +88,7 @@ ChattingModal.propTypes = {
     hideModal: PropTypes.func.isRequired,
     chatRoomId: PropTypes.number.isRequired,
     chatRoomTitle: PropTypes.string.isRequired,
+    chatRoomPeople: PropTypes.number.isRequired,
 };
 
 export default ChattingModal;

@@ -1,12 +1,11 @@
 .comment {
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    padding: 1rem;
-    border-radius: 5px;
-    background-color: #f9f9f9;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 51, 102, 0.5);
 }
 
 .comment-header {
+    position: relative;
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
@@ -28,41 +27,80 @@
 
 .comment-info {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.nickname {
+.comment-nickname {
     font-weight: bold;
-    margin-right: 0.5rem;
 }
 
+/*더보기 버튼*/
 .created-at {
     font-size: 0.8rem;
     color: #666;
 }
 
+.comment-more{
+    height: 100%;
+    width: 50px;
+    color: #555555;
+}
+
+.comment-actions{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    top: 40px;
+    right: 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #555555;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    z-index: 1;
+}
+
 .comment-actions button {
     background-color: transparent;
     border: none;
-    color: #007bff;
     cursor: pointer;
-    margin-left: 0.5rem;
+    width: 50px;
 }
 
-.comment-actions button:hover {
-    text-decoration: underline;
-}
 
+/*내가 쓴 댓글*/
 .comment-content {
     margin-top: 0.5rem;
 }
 
 .comment-content textarea {
-    width: 100%;
+    width: 95%;
     height: 5rem;
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0;
     padding: 0.5rem;
     font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 10px;
     resize: none;
+}
+
+.comment-content-buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    width: 95%;
+}
+
+.comment-content-buttons button{
+    padding: 3px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.comment-content-buttons .edit-button{
+    background: #2facff;
+    color: #fff;
 }

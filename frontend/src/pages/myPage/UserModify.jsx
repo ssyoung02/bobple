@@ -77,10 +77,10 @@ function UserModify() {
 
             const updatedUserData = response.data;
             setUser(updatedUserData);
-            alert('Profile image updated successfully!');
+            alert('프로필 이미지 수정이 완료되었습니다.');
         } catch (error) {
             console.error('Error updating profile image:', error);
-            alert('Failed to update profile image');
+            alert('이미지 업로드에 실패하였습니다.');
         }
     };
 
@@ -115,10 +115,10 @@ function UserModify() {
             }));
 
             setEditMode(false);
-            alert('Profile updated successfully!');
+            alert('회원정보 수정이 완료되었습니다.');
         } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Failed to update profile');
+            alert('회원정보 수정에 실패하였습니다.');
         }
     };
 

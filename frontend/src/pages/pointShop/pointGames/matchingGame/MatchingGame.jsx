@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../../../../assets/style/pointGame/MatchingGame.css'
-import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
-import {useLocation} from "react-router-dom";
-import {getUserIdx} from "../../../../utils/auth";
+import '../../../../assets/style/pointGame/MatchingGame.css';
+import { useHeaderColorChange, useNavigateNone } from '../../../../hooks/NavigateComponentHooks';
+import {useLocation, useNavigate} from 'react-router-dom';
+import { getUserIdx } from '../../../../utils/auth';
+import Matching from '../../../../assets/images/MatchingGame.png';
 
 function MatchingGame() {
     const [userInput, setUserInput] = useState('');
@@ -15,7 +16,8 @@ function MatchingGame() {
     const [showResult, setShowResult] = useState(false);
     const location = useLocation();
     const [earnedPoint, setEarnedPoint] = useState(0);
-    const userIdx=getUserIdx();
+    const userIdx = getUserIdx();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/matching-game/foods')
@@ -30,7 +32,6 @@ function MatchingGame() {
             });
     }, []);
 
-
     const handleInputChange = (event) => {
         setUserInput(event.target.value);
     };
@@ -38,13 +39,12 @@ function MatchingGame() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // randomGames가 비어있는지 확인
         if (randomGames.length === 0) {
-            return; // 빈 배열이면 아무 동작도 하지 않음
+            return;
         }
 
         const currentGame = randomGames[currentGameIndex];
-        const normalizedAnswer = userInput.toLowerCase().replace(/\s/g, ''); // 공백 제거 및 소문자 변환
+        const normalizedAnswer = userInput.toLowerCase().replace(/\s/g, '');
         const normalizedFoodName = currentGame.foodName.toLowerCase().replace(/\s/g, '');
 
         if (normalizedAnswer === normalizedFoodName ||
@@ -60,7 +60,7 @@ function MatchingGame() {
 
     const handleNext = () => {
         if (currentGameIndex === randomGames.length - 1 && showAnswer) {
-            setShowResult(true); // 결과 화면 표시
+            setShowResult(true);
         } else if (showAnswer) {
             setShowAnswer(false);
             setCurrentGameIndex(currentGameIndex + 1);
@@ -71,13 +71,13 @@ function MatchingGame() {
 
     useEffect(() => {
         if (showResult) {
-            const calculatedPoint = calculatePoint(score); // 포인트 계산 로직
+            const calculatedPoint = calculatePoint(score);
             setEarnedPoint(calculatedPoint);
             const token = localStorage.getItem('token');
 
             axios.post('http://localhost:8080/api/point/result', {
                 userIdx: parseInt(userIdx, 10),
-                point: calculatedPoint, // 계산된 포인트 전달
+                point: calculatedPoint,
                 pointComment: "음식 확대사진 맞추기 게임"
             }, {
                 headers: {
@@ -88,18 +88,14 @@ function MatchingGame() {
                 console.log("포인트 저장 성공:");
             }).catch(error => {
                 if (error.response) {
-                    // 서버에서 에러 응답을 받은 경우
                     if (error.response.status === 401) {
                         console.error("Unauthorized: ", error.response.data);
-                        // 사용자에게 로그인 필요 알림 등 추가 처리
                     } else {
-                        console.error("Error saving matching game result:", error.response.data); // 에러 메시지 출력
+                        console.error("Error saving matching game result:", error.response.data);
                     }
                 } else if (error.request) {
-                    // 요청을 보냈지만 응답을 받지 못한 경우
                     console.error("No response received from server:", error.request);
                 } else {
-                    // 요청 설정 중에 에러가 발생한 경우
                     console.error("Error setting up the request:", error.message);
                 }
             });
@@ -107,35 +103,48 @@ function MatchingGame() {
     }, [showResult, score, userIdx]);
 
     function calculatePoint(correctAnswers) {
-        // 게임별 포인트 계산 로직 구현
-        if (correctAnswers == 5) {
+        if (correctAnswers === 5) {
             return 5;
         } else {
             return 0;
         }
     }
 
-    useHeaderColorChange(location.pathname,'#FFE68B'); //
+    const moveGameHome = () => {
+        navigate('/point');
+    }
+
+    useHeaderColorChange(location.pathname, '#FFE68B');
     useNavigateNone();
+
+    const progressBarWidth = showResult
+        ? '100%' // 게임이 종료되면 게이지를 꽉 채움
+        : (currentGameIndex / randomGames.length) * 100 + '%';
 
     return (
         <div className="point-game-container">
-
             <h1 className="point-game-title">FOOD MATCHING</h1>
+            <div className="point-progress-bar-container">
+                <div className="point-progress-bar" style={{ width: progressBarWidth }}></div>
+            </div>
             <p className="point-game-round">Round {currentGameIndex + 1}/{randomGames.length}</p>
 
-            {showResult ? ( // 결과 화면 조건
+            {showResult ? (
                 <div className="matching-result">
                     <h2>게임 종료!</h2>
-                    <p>총 {score}개 맞췄습니다!</p>
-                    {earnedPoint > 0 ? ( // 획득 포인트가 0보다 크면 성공 메시지
-                        <p>{earnedPoint} 포인트 획득!</p>
-                    ) : ( // 획득 포인트가 0이면 실패 메시지
-                        <p>포인트 획득 실패!</p>
-                    )}
+                    <img src={Matching} alt="퀴즈" />
+                    <div className="matching-point-result">
+                        <p>총 {score}개 맞췄습니다</p>
+                        {earnedPoint > 0 ? (
+                            <h3>{earnedPoint} 포인트 획득!</h3>
+                        ) : (
+                            <h3>포인트 획득 실패!</h3>
+                        )}
+                    </div>
+                    <button onClick={moveGameHome}>돌아가기</button>
                 </div>
             ) : (
-                currentGameIndex < randomGames.length && ( // 문제 화면 조건
+                currentGameIndex < randomGames.length && (
                     <div>
                         {showAnswer ? (
                             <div className="matching-box">
@@ -153,11 +162,11 @@ function MatchingGame() {
                             <div className="matching-box">
                                 <img src={randomGames[currentGameIndex].largeImageUrl}
                                      alt="음식 확대 사진"
-                                     style={{width: '200px', height: '200px'}}
+                                     style={{ width: '200px', height: '200px' }}
                                 />
                                 <h5>이 사진의 음식은 무엇일까요?</h5>
                                 <form onSubmit={handleSubmit}>
-                                    <input className="matching-input" type="text" value={userInput} onChange={handleInputChange}/>
+                                    <input className="matching-input" type="text" value={userInput} onChange={handleInputChange} />
                                     <button className="matching-btn" type="submit">제출</button>
                                 </form>
                             </div>
@@ -168,4 +177,5 @@ function MatchingGame() {
         </div>
     );
 }
+
 export default MatchingGame;

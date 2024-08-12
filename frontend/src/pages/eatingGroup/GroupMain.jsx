@@ -3,7 +3,8 @@ import '../../assets/style/eatingGroup/GroupMain.css';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
-import {SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import { SearchIcon } from "../../components/imgcomponents/ImgComponents";
+import io from 'socket.io-client';
 
 const GroupMain = () => {
     const navigate = useNavigate();
@@ -13,30 +14,43 @@ const GroupMain = () => {
     const [searchOption, setSearchOption] = useState('all-post');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState({}); // 읽지 않은 메시지 수를 관리할 상태
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        const userIdx = localStorage.getItem('userIdx');
+
+        // WebSocket 연결 설정
+        const socket = io('http://localhost:3001', {
+            query: { userIdx }
+        });
+
+        const fetchUnreadMessagesCount = async (chatRoomId) => {
+            try {
+                const response = await axios.get(`http://localhost:3001/api/chatrooms/${chatRoomId}/unread-messages-count`, {
+                    params: { userId: userIdx }
+                });
+                setUnreadMessagesCount(prevState => ({
+                    ...prevState,
+                    [chatRoomId]: response.data.unreadCount
+                }));
+            } catch (error) {
+                console.error('Failed to fetch unread messages count', error);
+            }
+        };
+
         const fetchMyChatRooms = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const userIdx = localStorage.getItem('userIdx');
-
-                if (!token) {
-                    console.error('No JWT token found');
-                    return;
-                }
-
-                if (!userIdx) {
-                    console.error('No user ID found');
-                    return;
-                }
-
                 const myRoomsResponse = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 setMyChatRooms(myRoomsResponse.data);
+
+                // 각 채팅방에 대해 읽지 않은 메시지 수를 가져옴
+                myRoomsResponse.data.forEach(room => {
+                    fetchUnreadMessagesCount(room.chatRoomIdx);
+                });
             } catch (error) {
                 console.error('Failed to fetch my chat rooms', error);
             }
@@ -54,6 +68,11 @@ const GroupMain = () => {
 
         fetchMyChatRooms();
         fetchAllChatRooms();
+
+        // Clean up on unmount
+        return () => {
+            socket.disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -65,6 +84,11 @@ const GroupMain = () => {
     }, [allChatRooms, myChatRooms]);
 
     const handleRoomClick = (chatRoomId) => {
+        // 채팅방에 입장할 때 해당 방의 읽지 않은 메시지 수 초기화
+        setUnreadMessagesCount(prevState => ({
+            ...prevState,
+            [chatRoomId]: 0
+        }));
         navigate(`/group/chatting/${chatRoomId}`);
     };
 
@@ -117,6 +141,11 @@ const GroupMain = () => {
                             >
                                 <img src={chatRoom.roomImage} alt="chat room" />
                                 <span>{chatRoom.chatRoomTitle}</span>
+                                {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
+                                    <span className="groupmain-unread-count">
+                                        {unreadMessagesCount[chatRoom.chatRoomIdx]}
+                                    </span>
+                                )}
                             </button>
                         ))
                     ) : (
@@ -149,7 +178,7 @@ const GroupMain = () => {
                             onChange={(e) => setSearchKeyword(e.target.value)}
                         />
                         <button className="group-search-btn" onClick={handleSearch}>
-                            <SearchIcon/>
+                            <SearchIcon />
                         </button>
                     </div>
                 </fieldset>

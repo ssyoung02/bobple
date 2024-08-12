@@ -13,6 +13,8 @@ const UserInfo = () => {
     const [detailUser, setDetailUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [sortField, setSortField] = useState(null);
+    const [sortOrder, setSortOrder] = useState('asc');
     const itemsPerPage = 20;
     const navigate = useNavigate();
 
@@ -88,8 +90,22 @@ const UserInfo = () => {
         setDetailUser(detailUser?.userIdx === user.userIdx ? null : user);
     };
 
-    const filteredData = data.filter(user =>
-        user.name.includes(searchTerm) || user.email.includes(searchTerm)
+    const handleSort = (field) => {
+        const isAsc = sortField === field && sortOrder === 'asc';
+        setSortOrder(isAsc ? 'desc' : 'asc');
+        setSortField(field);
+    };
+
+    // Sort and filter data
+    const sortedData = [...data].sort((a, b) => {
+        if (!sortField) return 0; // No sorting
+        const order = sortOrder === 'asc' ? 1 : -1;
+        return (a[sortField] > b[sortField] ? 1 : -1) * order;
+    });
+
+    const filteredData = sortedData.filter(user =>
+        (user.name && user.name.includes(searchTerm)) ||
+        (user.email && user.email.includes(searchTerm))
     );
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -191,12 +207,14 @@ const UserInfo = () => {
                             <th>이메일</th>
                             <th>생년월일</th>
                             <th>소셜로그인</th>
-                            <th>신고</th>
+                            <th onClick={() => handleSort('reportCount')}>
+                                신고 {sortField === 'reportCount' && (sortOrder === 'asc' ? '▲' : '▼')}
+                            </th>
                             <th>가입일</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {currentItems.map((user, index) => (
+                        {currentItems.map((user) => (
                             <React.Fragment key={user.userIdx}>
                                 <tr onClick={() => handleRowClick(user)}
                                     className={`tr-detail ${detailUser?.userIdx === user.userIdx ? 'active' : ''}`}>
@@ -207,7 +225,7 @@ const UserInfo = () => {
                                             onChange={() => handleSelectUser(user.userIdx)}
                                             className="select-input"
                                             onClick={(e) => e.stopPropagation()}
-                                            disabled={index === 0} // 첫 번째 유저의 체크박스 비활성화
+                                            disabled={user.userIdx === 1} // userIdx가 1이면 체크박스 비활성화
                                         />
                                     </td>
                                     <td>{user.userIdx}</td>

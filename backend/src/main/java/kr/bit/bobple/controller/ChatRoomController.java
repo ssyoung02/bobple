@@ -24,6 +24,7 @@ public class ChatRoomController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+
     @PostMapping
     public ChatRoom createChatRoom(@RequestParam("chatRoomTitle") String chatRoomTitle,
                                    @RequestParam("description") String description,
@@ -96,4 +97,5 @@ public class ChatRoomController {
         List<ChatMemberDTO> participants = chatRoomService.getChatRoomParticipants(chatRoomId);
         return ResponseEntity.ok(participants);
     }
+
 }

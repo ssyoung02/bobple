@@ -197,6 +197,9 @@ export const FoodCategories = () => {
 }
 
 export const UserRecommendedRecipes = () => {
+    const { recipeIdx } = useParams();
+    const {userRecommendedRecipes, formatViewsCount} = useContext(RecipeContext);
+    // const {handleLikeClick} = useContext(RecipeDetail);
     // const { recipeIdx } = useParams();
     // const {userRecommendedRecipes} = useContext(RecipeContext);
     // // const {handleLikeClick} = useContext(RecipeDetail);
@@ -325,7 +328,7 @@ export const UserRecommendedRecipes = () => {
                                                 onClick={() => handleLikeClick(recipe.recipeIdx)}>
                                             {recipe.liked ? <Heart/> : <HeartLine/>}
                                         </button>
-                                        {recipe.likesCount}
+                                        {formatViewsCount(recipe.likesCount)}
                                     </div>
 
                                 </div>
@@ -338,7 +341,7 @@ export const UserRecommendedRecipes = () => {
                                              }}/>
                                         <span className="recipe-view">
                                             <View/>
-                                            {recipe.viewsCount}
+                                            {formatViewsCount(recipe.viewsCount)}
                                         </span>
                                     </div>
                                     <div className="user-recommended-recipe-card-content">

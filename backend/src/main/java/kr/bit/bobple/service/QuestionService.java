@@ -61,8 +61,13 @@ public class QuestionService {
     }
 
     // 모든 질문과 답변을 반환
+//    public List<QuestionDTO> getAllQuestionsWithAnswers() {
+//        List<Question> questions = questionRepository.findAll();
+//        return questions.stream().map(this::convertToDTOWithAnswers).collect(Collectors.toList());
+//    }
+
     public List<QuestionDTO> getAllQuestionsWithAnswers() {
-        List<Question> questions = questionRepository.findAll();
+        List<Question> questions = questionRepository.findAllWithUserDetails();
         return questions.stream().map(this::convertToDTOWithAnswers).collect(Collectors.toList());
     }
 

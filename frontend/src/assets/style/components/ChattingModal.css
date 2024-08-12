@@ -61,11 +61,31 @@
 
 /* 추가된 스타일 */
 
+.chatRoom-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px;
+}
+
+.chatRoom-title {
+    font-size: 20px;
+}
+
+.chatRoom-info, .chatRoom-people, .chatRoom-game, .chatRoom-footer {
+    margin: 15px;
+}
+
 /* 참여자 리스트 스타일링 */
 .participants-list {
-    margin-top: 20px;
+    margin: 15px;
     overflow-y: auto;
-    width: 100%;
+    width: 90%;
+    max-height: 31%;
+}
+
+.participants-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 /* 참여자 아이템 스타일링 */
@@ -94,7 +114,12 @@
 
 /* 참여자 이름 스타일링 */
 .participant-item span {
-    font-size: 16px;
+    font-size: 15px;
     color: #333;
     font-weight: 500;
+}
+
+.chatRoom-footer {
+    display: flex;
+    gap: 20px;
 }

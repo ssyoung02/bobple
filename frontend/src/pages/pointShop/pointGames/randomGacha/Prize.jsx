@@ -3,6 +3,7 @@ import '../../../../assets/style/pointGame/gacha/Prize.scss';
 import {useNavigate} from "react-router-dom";
 import {getUserIdx} from "../../../../utils/auth";
 import axios from 'axios';
+import shine from '../../../../assets/images/shine_effect.png'
 
 const Prize = () => {
     const navigate = useNavigate();
@@ -103,19 +104,17 @@ const Prize = () => {
             <div className="prize-ball-container"></div>
             <div className="prize-reward-container">
                 <div className="shine">
-                    <img src="https://assets.codepen.io/2509128/shine.png" alt="Shine"/>
+                    <img src={shine} alt="Shine"/>
                 </div>
                 <div className="prize">
                     {selectedPrize && ( // selectedPrize가 null이 아닌 경우에만 이미지 렌더링
                         <img className="wiggle" src={selectedPrize.image} alt="Prize"/>
                     )}
+                    <br/>
+                    {selectedPrize && selectedPrize.point > 0 && ( // 포인트가 있는 경우에만 메시지 표시
+                        <h3 className="point-message">{selectedPrize.point} 포인트 획득!</h3>
+                    )}
                 </div>
-                <div className="button">
-                    <button className="exit-button" onClick={handleButtonClick}>돌아가기</button>
-                </div>
-                {selectedPrize && selectedPrize.point > 0 && ( // 포인트가 있는 경우에만 메시지 표시
-                    <div className="point-message">{selectedPrize.point} 포인트 획득!</div>
-                )}
             </div>
         </div>
     );

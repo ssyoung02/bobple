@@ -34,7 +34,7 @@ const GachaGame = () => {
         }
 
         const TITLE = 'Random Gacha!';
-        const PRICE = 'Go!';
+        const PRICE = 'Go⬆️';
 
         const $machine = $app.querySelector('.machine-container');
         if (!$machine) {

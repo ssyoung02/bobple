@@ -4,13 +4,17 @@ import RecipeContext from '../../pages/recipe/RecipeContext';
 import LatestRecipeCard from './LatestRecipeCard';
 import axios from "../../utils/axios";
 import "../../assets/style/recipe/RecipeMain.css";
-import {ArrowRightLong, NextTo, PrevTo, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import {ArrowRightLong, MoreIcon, NextTo, PrevTo, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import {UserRecommendedRecipes} from "../../components/SliderComponent";
 import {ClipLoader} from "react-spinners";
 
 function RecipeMain() {
     const {
         getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes // totalRecipes를 RecipeContext에서 가져옴
+         totalPages, changePage,
+        setCategoryRecipes,
+        recipeCategory
+        // 필요한 값 가져오기
     } = useContext(RecipeContext);
 
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -70,6 +74,12 @@ function RecipeMain() {
     }, [page, initialLoad, latestRecipes.length, hasMore, setLatestRecipes, setError, totalRecipes]);
 
 
+    useEffect(() => {
+        getRecipesByCategory('');
+        getLatestRecipes();
+        // // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
+        // searchRecipes('', '', 0, 10, 'createdAt,desc');
+    }, []);
 
     const categoryButtons = [
         { name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식' },
@@ -128,8 +138,8 @@ function RecipeMain() {
             {/* 도시락 레시피 추천 섹션 */}
             <div className="lunchbox-recipes">
                 <h4>도시락 레시피 추천</h4>
-                <div className="category-buttons"> {/* 카테고리 버튼 섹션 추가 */}
-                    {categoryButtons.map(button => (
+                <div className="category-buttons">
+                    {recipeCategory.map(button => (
                         <button key={button.name} onClick={() => handleCategoryClick(button.category)}
                                 className="category-button">
                             <img src={button.image} alt={button.name}/>
