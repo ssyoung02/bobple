@@ -10,9 +10,7 @@ import {ClipLoader} from "react-spinners";
 
 function RecipeMain() {
     const {
-        getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes // totalRecipes를 RecipeContext에서 가져옴
-         totalPages, changePage,
-        setCategoryRecipes,
+        getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes, // totalRecipes를 RecipeContext에서 가져옴
         recipeCategory
         // 필요한 값 가져오기
     } = useContext(RecipeContext);
@@ -73,13 +71,13 @@ function RecipeMain() {
         }
     }, [page, initialLoad, latestRecipes.length, hasMore, setLatestRecipes, setError, totalRecipes]);
 
-
-    useEffect(() => {
-        getRecipesByCategory('');
-        getLatestRecipes();
-        // // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
-        // searchRecipes('', '', 0, 10, 'createdAt,desc');
-    }, []);
+    //
+    // useEffect(() => {
+    //     getRecipesByCategory('');
+    //     getLatestRecipes();
+    //     // // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
+    //     // searchRecipes('', '', 0, 10, 'createdAt,desc');
+    // }, []);
 
     const categoryButtons = [
         { name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식' },
