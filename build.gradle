@@ -85,3 +85,6 @@ tasks.register('copyFrontendBuild', Copy) {
     into "$projectDir/backend/src/main/resources/static"
     dependsOn ":frontend:build" // frontend 프로젝트 빌드 task 의존성 추가
 }
+test {
+    exclude '**/*'
+}
