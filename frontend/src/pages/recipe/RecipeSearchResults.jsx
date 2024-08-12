@@ -29,7 +29,7 @@ function RecipeSearchResults() {
             setLoading(true);
             try {
                 const response = await axios.get('/api/recipes/search', {
-                    params: { keyword: searchKeyword, category, page: currentPage, size: 10, sort }//'likesCount,desc,viewsCount,desc' }
+                    params: { keyword: searchKeyword, category, page: currentPage, size: 10, sort }
                 });
                 setRecipes(response.data.content);
                 setTotalPages(response.data.totalPages);

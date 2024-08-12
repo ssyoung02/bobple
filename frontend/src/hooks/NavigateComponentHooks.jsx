@@ -47,3 +47,25 @@ export const useNavigateNone = () => {
         };
     }, []); // 빈 의존성 배열을 추가하여 한 번만 실행되도록 함
 };
+
+
+export const useOnlyHeaderColorChange = (location, changeColor) => {
+    useEffect(() => {
+        const header = document.querySelector('.header');
+
+        const changeBackgroundColor = () => {
+            if (location === '/myPage/calculator' || '/recommend/foodWorldCup/foodWorldCupGame' || '/point/pointGame/MatchingGame') {
+                if (header) header.style.backgroundColor = changeColor;
+            } else {
+                if (header) header.style.backgroundColor = '#fff'; // Default color
+            }
+        };
+
+        changeBackgroundColor(); // 초기 배경 색상을 설정
+
+        return () => {
+            if (header) header.style.backgroundColor = ''; // Reset on unmount
+        };
+
+    }, [location, changeColor]); // location.pathname을 의존성 배열에 추가
+};

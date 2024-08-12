@@ -3,7 +3,8 @@ import '../../assets/style/eatingGroup/GroupMain.css';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
-import {SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import { SearchIcon } from "../../components/imgcomponents/ImgComponents";
+import io from 'socket.io-client'; // socket.io-client 추가
 
 const GroupMain = () => {
     const navigate = useNavigate();
@@ -13,27 +14,30 @@ const GroupMain = () => {
     const [searchOption, setSearchOption] = useState('all-post');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
+    const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수를 관리할 상태
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        const userIdx = localStorage.getItem('userIdx');
+
+        // WebSocket 연결 설정
+        const socket = io('http://localhost:3001', {
+            query: { userIdx }
+        });
+
+        // 메시지 수신 핸들러
+        socket.on('newMessage', (message) => {
+            setUnreadMessages(prevState => ({
+                ...prevState,
+                [message.chatRoomId]: (prevState[message.chatRoomId] || 0) + 1
+            }));
+        });
+
+        // 초기 데이터 불러오기
         const fetchMyChatRooms = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const userIdx = localStorage.getItem('userIdx');
-
-                if (!token) {
-                    console.error('No JWT token found');
-                    return;
-                }
-
-                if (!userIdx) {
-                    console.error('No user ID found');
-                    return;
-                }
-
                 const myRoomsResponse = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 setMyChatRooms(myRoomsResponse.data);
@@ -54,6 +58,11 @@ const GroupMain = () => {
 
         fetchMyChatRooms();
         fetchAllChatRooms();
+
+        // Clean up on unmount
+        return () => {
+            socket.disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -65,6 +74,11 @@ const GroupMain = () => {
     }, [allChatRooms, myChatRooms]);
 
     const handleRoomClick = (chatRoomId) => {
+        // 채팅방에 입장할 때 해당 방의 읽지 않은 메시지 수 초기화
+        setUnreadMessages(prevState => ({
+            ...prevState,
+            [chatRoomId]: 0
+        }));
         navigate(`/group/chatting/${chatRoomId}`);
     };
 
@@ -117,6 +131,11 @@ const GroupMain = () => {
                             >
                                 <img src={chatRoom.roomImage} alt="chat room" />
                                 <span>{chatRoom.chatRoomTitle}</span>
+                                {unreadMessages[chatRoom.chatRoomIdx] > 0 && (
+                                    <span className="unread-count">
+                                        {unreadMessages[chatRoom.chatRoomIdx]}
+                                    </span>
+                                )}
                             </button>
                         ))
                     ) : (
@@ -149,7 +168,7 @@ const GroupMain = () => {
                             onChange={(e) => setSearchKeyword(e.target.value)}
                         />
                         <button className="group-search-btn" onClick={handleSearch}>
-                            <SearchIcon/>
+                            <SearchIcon />
                         </button>
                     </div>
                 </fieldset>

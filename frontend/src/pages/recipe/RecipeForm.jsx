@@ -1,8 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
-import {useParams, useNavigate} from 'react-router-dom';
+import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import '../../assets/style/recipe/RecipeForm.css';
 import axios from "../../utils/axios";
+import PageHeader from "../../components/layout/PageHeader";
+import {Clock, FireIcon, ImageIcon} from "../../components/imgcomponents/ImgComponents";
+import {useOnlyHeaderColorChange} from "../../hooks/NavigateComponentHooks";
 
 function RecipeForm() {
     const {createRecipe, updateRecipe, selectedRecipe, setSelectedRecipe} = useContext(RecipeContext);
@@ -20,6 +23,9 @@ function RecipeForm() {
     const [category, setCategory] = useState(''); // 추가: 카테고리 상태
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState(null);
+
+    const location = useLocation();
+    useOnlyHeaderColorChange(location.pathname, 'transparent');
 
     useEffect(() => {
         if (recipeIdx) { // 레시피 수정 모드일 때
@@ -111,38 +117,124 @@ function RecipeForm() {
 
     return (
         <div className="recipe-form-container">
-            <h2>{isEditing ? '레시피 수정' : '레시피 등록'}</h2>
+            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'}/>
             {error && <div className="error-message">{error}</div>}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} id="recipe-form">
                 <div className="form-field">
-                    <label htmlFor="title">제목</label>
-                    <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)}/>
+                    <label htmlFor="imageUpload" className="recipe-header-img">
+                        {!imageUrl ? (
+                            <>
+                                <p className="blind">이미지 업로드</p>
+                                <ImageIcon/>
+                            </>
+                        ) : (
+                            <img className="recipe-header-exImg" src={imageUrl || '/images/default_recipe_image.jpg'}
+                                 alt={title}/>
+                        )}
+                    </label>
+                    <input type="file" id="imageUpload" onChange={handleImageChange} className="blind"/>
                 </div>
-                <div className="form-field">
-                    <label htmlFor="cookTime">조리 시간 (분)</label>
-                    <input type="number" id="cookTime" value={cookTime} onChange={(e) => setCookTime(e.target.value)}/>
+                <div className="recipe-title-box">
+                    <label htmlFor="title" className="blind">제목</label>
+                    <input
+                        type="text"
+                        id="title"
+                        className="recipe-title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="제목을 입력해주세요"
+                    />
+                    <div className="recipe-title-item">
+                        <div className="recipe-title-item-detail">
+                            <label htmlFor="cookTime">
+                                <span className="blind">조리 시간 (분)</span>
+                                <Clock/>
+                            </label>
+                            <input
+                                type="number"
+                                id="cookTime"
+                                value={cookTime}
+                                onChange={(e) => setCookTime(e.target.value)}
+                                placeholder="시간"
+                            />
+                        </div>
+                        <div className="recipe-title-item-detail">
+                            <label htmlFor="calories" className="blind">
+                                <span className="blind">
+                                    칼로리 (kcal)
+                                </span>
+                                <FireIcon/>
+                            </label>
+                            <input
+                                type="number"
+                                id="calories"
+                                value={calories}
+                                onChange={(e) => setCalories(e.target.value)}
+                                placeholder="칼로리"
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className="form-field">
-                    <label htmlFor="calories">칼로리 (kcal)</label>
-                    <input type="number" id="calories" value={calories} onChange={(e) => setCalories(e.target.value)}/>
+                <div className="recipe-form-item">
+                    <label htmlFor="ingredients">재료</label>
+                    <textarea
+                        id="ingredients"
+                        value={ingredients}
+                        onChange={(e) => setIngredients(e.target.value)}
+                        placeholder="재료를 입력해주세요.(쉼표로 구분)"
+                    />
                 </div>
-                <div className="form-field">
-                    <label htmlFor="ingredients">재료 (쉼표로 구분)</label>
-                    <textarea id="ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)}/>
-                </div>
-                <div className="form-field">
+                <div className="recipe-form-item">
                     <label htmlFor="instructions">조리 방법</label>
-                    <textarea id="instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)}/>
+                    <textarea
+                        id="instructions"
+                        value={instructions} onChange={(e) => setInstructions(e.target.value)}
+                        placeholder="조리 방법을 입력해주세요"
+                    />
                 </div>
-                <div className="form-field">
-                    <label htmlFor="tags">태그 (쉼표로 구분)</label>
-                    <input type="text" id="tags" value={tags} onChange={(e) => setTags(e.target.value)}/>
+                <div className="recipe-form-item">
+                    <label htmlFor="tags">태그</label>
+                    <textarea
+                        type="text"
+                        id="tags"
+                        value={tags}
+                        onChange={(e) => setTags(e.target.value)}
+                        placeholder="태그를 입력해주세요.(쉼표로 구분)"
+                    />
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="imageUpload">이미지 업로드</label>
-                    <input type="file" id="imageUpload" onChange={handleImageChange}/>
+
+                <div className="recipe-form-item">
+                    <label>카테고리</label>
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div>
+                            <input type="radio" id="korean" value="한식" checked={category === '한식'}
+                                   onChange={(e) => setCategory(e.target.value)}/>
+                            <label htmlFor="korean">한식</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="chinese" value="중식" checked={category === '중식'}
+                                   onChange={(e) => setCategory(e.target.value)}/>
+                            <label htmlFor="chinese">중식</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="japanese" value="일식" checked={category === '일식'}
+                                   onChange={(e) => setCategory(e.target.value)}/>
+                            <label htmlFor="japanese">일식</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="western" value="양식" checked={category === '양식'}
+                                   onChange={(e) => setCategory(e.target.value)}/>
+                            <label htmlFor="western">양식</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="undefined" value="미지정" checked={category === ' '}
+                                   onChange={(e) => setCategory(e.target.value)}/>
+                            <label htmlFor="undefined">미지정</label>
+                        </div>
+                    </div>
                 </div>
+
                 <button type="submit" className="submit-button">{isEditing ? '수정' : '등록'}</button>
             </form>
         </div>

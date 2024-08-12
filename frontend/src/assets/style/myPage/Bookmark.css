@@ -1,5 +1,6 @@
 .bookmark-restaurant-item{
     display: flex;
+    margin-top: 20px;
 }
 
 .bookmark-restaurant-content {
