@@ -229,6 +229,7 @@ const GroupChatting = () => {
                     hideModal={closeChattingModal}
                     chatRoomId={numericChatRoomId}
                     chatRoomTitle={chatRoom?.chatRoomTitle || ''}
+                    chatRoomPeople={chatRoom?.roomPeople || 0} // 이 부분 확인
                 />
             )}
         </div>
