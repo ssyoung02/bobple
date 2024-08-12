@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../assets/style/admin/RecipeBoard.css';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import mascot from '../../assets/images/bobple_mascot.png';
 import axios from 'axios';
 
@@ -45,10 +45,28 @@ const RecipeBoard = () => {
         );
     };
 
-    const handleDeleteSelected = () => {
-        setRecipes(recipes.filter(recipe => !selectedRecipes.includes(recipe.recipeIdx)));
-        setSelectedRecipes([]); // Clear selected recipes
-        setCurrentPage(1); // Reset to first page after deletion
+    const handleDeleteSelected = async () => {
+        if (selectedRecipes.length === 0) return;
+
+        // 사용자에게 삭제 확인 메시지를 보여줍니다.
+        const confirmDelete = window.confirm('선택한 레시피를 삭제하시겠습니까?');
+        if (!confirmDelete) return;
+
+        try {
+            // Send delete request for each selected recipe
+            await Promise.all(
+                selectedRecipes.map(async (id) => {
+                    await axios.delete(`http://localhost:8080/api/admin/recipes/${id}`);
+                })
+            );
+
+            // Remove successfully deleted recipes from local state
+            setRecipes(recipes.filter(recipe => !selectedRecipes.includes(recipe.recipeIdx)));
+            setSelectedRecipes([]); // Clear selected recipes
+            setCurrentPage(1); // Reset to first page after deletion
+        } catch (error) {
+            console.error("Error deleting recipes:", error);
+        }
     };
 
     // Handle sorting
@@ -144,10 +162,8 @@ const RecipeBoard = () => {
                             <th>작성자 이름</th>
                             <th>제목</th>
                             <th>카테고리</th>
-                            <th onClick={() => handleSort('likesCount')}>좋아요
-                                수 {sortField === 'likesCount' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-                            <th onClick={() => handleSort('reportCount')}>신고
-                                수 {sortField === 'reportCount' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
+                            <th onClick={() => handleSort('likesCount')}>좋아요 수 {sortField === 'likesCount' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
+                            <th onClick={() => handleSort('reportCount')}>신고 수 {sortField === 'reportCount' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
                             <th>생성일</th>
                         </tr>
                         </thead>
@@ -168,7 +184,7 @@ const RecipeBoard = () => {
                                 <td>{recipe.category}</td>
                                 <td>{recipe.likesCount}</td>
                                 <td>{recipe.reportCount}</td>
-                                <td>{recipe.createdAt}</td>
+                                <td>{recipe.createdAt.split('T')[0]}</td>
                             </tr>
                         ))}
                         </tbody>
@@ -178,8 +194,12 @@ const RecipeBoard = () => {
                     <div className="pagination">
                         {renderPageNumbers()}
                     </div>
-                    <button onClick={handleDeleteSelected} disabled={selectedRecipes.length === 0}
-                            className="admin-delete-button">삭제
+                    <button
+                        onClick={handleDeleteSelected}
+                        disabled={selectedRecipes.length === 0}
+                        className="admin-delete-button"
+                    >
+                        삭제
                     </button>
                 </div>
             </div>

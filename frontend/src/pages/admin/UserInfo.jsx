@@ -214,7 +214,7 @@ const UserInfo = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {currentItems.map((user, index) => (
+                        {currentItems.map((user) => (
                             <React.Fragment key={user.userIdx}>
                                 <tr onClick={() => handleRowClick(user)}
                                     className={`tr-detail ${detailUser?.userIdx === user.userIdx ? 'active' : ''}`}>
@@ -225,7 +225,7 @@ const UserInfo = () => {
                                             onChange={() => handleSelectUser(user.userIdx)}
                                             className="select-input"
                                             onClick={(e) => e.stopPropagation()}
-                                            disabled={index === 0} // 첫 번째 유저의 체크박스 비활성화
+                                            disabled={user.userIdx === 1} // userIdx가 1이면 체크박스 비활성화
                                         />
                                     </td>
                                     <td>{user.userIdx}</td>

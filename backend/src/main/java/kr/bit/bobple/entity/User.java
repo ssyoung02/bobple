@@ -35,7 +35,7 @@ public class User {
     private LocalDate birthdate;
 
     @Column(name = "nick_name", nullable = true, length = 50)
-    private String nickName = "";
+    private String nickName ;
 
     @Column(name = "profile_image", length = 255)
     private String profileImage;

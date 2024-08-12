@@ -141,6 +141,18 @@ public class AdminController {
 
         return ResponseEntity.ok(recipeDtos);
     }
+
+    // DELETE 요청: 특정 레시피 삭제
+    @DeleteMapping("/recipes/{id}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        if (recipeOptional.isPresent()) {
+            recipeRepository.delete(recipeOptional.get());
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
 

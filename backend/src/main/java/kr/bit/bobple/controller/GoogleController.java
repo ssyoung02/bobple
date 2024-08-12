@@ -95,6 +95,7 @@ public class GoogleController {
             user.setUsername(email); // username을 email로 설정
             user.setEmail(email);
             user.setName(username);
+            user.setNickName("");
             user.setProfileImage(profileImage);
             user.setEnabled(true);
             user.setProvider("google");
@@ -133,24 +134,28 @@ public class GoogleController {
     }
 
     private void handleDailyPoint(Long userIdx) {
-        // Check today's date
+        // 오늘 날짜 가져오기
         Date today = java.sql.Date.valueOf(LocalDate.now());
 
-        // Check if the user has logged in today
+        // 사용자가 오늘 로그인했는지 확인
         Optional<LoginHistory> loginHistoryOptional = loginHistoryRepository.findByUserIdxAndLoginTime(userIdx, today);
 
         if (!loginHistoryOptional.isPresent()) {
-            // Allocate points
+            // 사용자 정보 가져오기
             User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException("User not found"));
-            int currentPoints = user.getPoint() != null ? user.getPoint() : 0;
+
+            // 하루 포인트 설정
+            int currentPoints = user.getPoint(); // 현재 포인트 가져오기
+
+            // 포인트 업데이트
             int updatedPoints = currentPoints ;
 
-            // Save point record
+            // 사용자의 포인트 업데이트 및 저장
             user.setPoint(updatedPoints);
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
 
-            // Save login history
+            // 오늘 로그인 기록 저장
             LoginHistory loginHistory = new LoginHistory();
             loginHistory.setUserIdx(userIdx);
             loginHistory.setLoginTime(today);
