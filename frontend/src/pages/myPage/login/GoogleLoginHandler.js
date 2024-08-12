@@ -26,6 +26,8 @@ const GoogleLoginHandler = () => {
                 localStorage.setItem("name", res.data.username);
                 localStorage.setItem("email", res.data.email);
                 localStorage.setItem("token", res.data.token);
+                localStorage.setItem("nickName", res.data.nickName);
+
 
                 // 로그인이 성공하면 메인 페이지로 이동
                 navigate("/");

@@ -5,7 +5,7 @@
 }
 
 .point-game-title {
-    color: #FFE609;
+    color: white;
     font-weight: bold;
     font-size: 60px;
     text-align: center;
@@ -16,6 +16,25 @@
     padding: 30px;
 }
 
+.point-progress-bar-container {
+    width: 80%;
+    background-color: #ddd;
+    border: 2px solid white;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.point-progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: #ffe700 !important;
+    transition: width 0.3s;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 20px;
+}
+
 .point-game-round {
     font-size: 25px;
     font-weight: bold;
@@ -23,9 +42,30 @@
 }
 
 .matching-result {
+    text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    align-items: center;
+    margin: 30px;
+}
+
+.matching-result img {
+    width: 70%;
+}
+
+.matching-point-result {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.matching-point-result p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.matching-point-result h3 {
+    margin-bottom: 30px;
 }
 
 .matching-box {
@@ -70,7 +110,8 @@
     border-color: #FDDC3F;
 }
 
-.matching-btn {
+.matching-btn,
+.matching-result button {
     font-size: 20px;
     font-weight: bold;
     border: none;
@@ -78,4 +119,9 @@
     background-color: #FFA800;
     padding: 5px;
     width: 50%;
+}
+
+.matching-btn:active,
+.matching-result button:active {
+
 }

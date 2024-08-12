@@ -30,6 +30,7 @@ public class RecipeDto {
     private int viewsCount; // 조회 수
     private int cookTime; // 조리 시간 (분 단위) 추가
     private int calories; // 총 칼로리 추가
+    private int reportCount; // 신고 수
     private String tag; // 여러 개의 태그는 쉼표로 구분하여 저장
     private LocalDateTime createdAt; // 레시피 생성 시간
     private LocalDateTime updatedAt; // 레시피 수정 시간
@@ -64,6 +65,7 @@ public class RecipeDto {
         recipeDto.setCookTime(recipe.getCookTime()); // 추가
         recipeDto.setCalories(recipe.getCalories()); // 추가
         recipeDto.setTag(recipe.getTag()); // 변경된 필드명
+        recipeDto.setReportCount(recipe.getReportCount());
         recipeDto.setCreatedAt(recipe.getCreatedAt());
         recipeDto.setUpdatedAt(recipe.getUpdatedAt());
 //        recipeDto.setLiked; // 현재 사용자가 좋아요를 눌렀는지 여부 설정 필요

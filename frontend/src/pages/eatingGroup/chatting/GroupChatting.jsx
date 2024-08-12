@@ -112,9 +112,7 @@ const GroupChatting = () => {
 
     useEffect(() => {
         // 메시지 로딩이 완료된 후 스크롤 하단으로 이동
-        if (messages.length > 0) {
-            scrollToBottom();
-        }
+        scrollToBottom();
     }, [messages]);
 
     const scrollToBottom = () => {
@@ -190,26 +188,39 @@ const GroupChatting = () => {
             )}
             <div className="messages">
                 {messages.map((message, index) => (
-                    <div key={index} className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
+                    <div key={index}
+                         className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
                         {message.userId !== user?.userIdx && (
-                            <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
+                            <div className="message-header">
+                                <img src={message.profileImage} alt={`${message.name}'s profile`}
+                                     className="profile-image"/>
+                                <p><strong>{message.name}</strong></p>
+                            </div>
                         )}
+                        {message.userId === user?.userIdx && (
+                            <p></p>
+                        )}
+
                         <div className="message-content">
                             {message.userId !== user?.userIdx && (
-                                <p><strong>{message.name}</strong>: {message.content}</p>
+                                <p>{message.content}</p>
                             )}
                             {message.userId === user?.userIdx && (
                                 <p>{message.content}</p>
                             )}
+                        </div>
+                        <div className="message-footer">
                             <p>{moment(message.createdAt).format('a h:mm')}</p>
                             {message.unreadCount > 0 && (
-                                <span className="unread-count">{message.unreadCount}</span>
+                                <span className="unread-count"> {message.unreadCount}</span>
                             )}
                         </div>
                     </div>
                 ))}
+                {/* 메시지 목록이 끝나는 지점을 참조하는 div */}
                 <div ref={messagesEndRef} />
             </div>
+
             <div className="message-input">
                 <input
                     type="text"
@@ -229,6 +240,7 @@ const GroupChatting = () => {
                     hideModal={closeChattingModal}
                     chatRoomId={numericChatRoomId}
                     chatRoomTitle={chatRoom?.chatRoomTitle || ''}
+                    chatRoomPeople={chatRoom?.roomPeople || 0}
                 />
             )}
         </div>

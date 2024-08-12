@@ -12,10 +12,11 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 //    List<Question> findByUserIdx(Long userIdx);
 
     // 모든 질문을 작성자 정보와 함께 가져오는 쿼리
-    @Query("SELECT q FROM Question q JOIN FETCH q.user")
+    @Query("SELECT q FROM Question q JOIN FETCH q.user ORDER BY q.createdAt DESC")
     List<Question> findAllWithUserDetails();
 
     // userIdx를 통해 질문을 가져오는 메소드 수정
-    List<Question> findByUser_UserIdx(Long userIdx);
+    @Query("SELECT q FROM Question q WHERE q.user.userIdx = :userIdx ORDER BY q.createdAt DESC")
+    List<Question> findByUser_UserIdx(@Param("userIdx") Long userIdx);
 
 }

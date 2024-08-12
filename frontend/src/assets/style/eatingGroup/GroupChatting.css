@@ -103,6 +103,18 @@
 }
 
 .message-content {
+    display: flex;
+    font-size: 18px;
+    margin-top: -5px;
+}
+
+.message-footer {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.message-footer span {
     font-size: 13px;
 }
 
