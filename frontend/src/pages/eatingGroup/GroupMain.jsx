@@ -14,7 +14,7 @@ const GroupMain = () => {
     const [searchOption, setSearchOption] = useState('all-post');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
-    const [unreadMessagesCount, setUnreadMessagesCount] = useState({}); // 읽지 않은 메시지 수를 관리할 상태
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState({});
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -44,11 +44,10 @@ const GroupMain = () => {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                // 차단된 채팅방을 제외
+                // DENIED 상태의 채팅방을 제외
                 const availableChatRooms = response.data.filter(room => room.status !== 'DENIED');
                 setMyChatRooms(availableChatRooms);
 
-                // 각 채팅방에 대해 읽지 않은 메시지 수를 가져옴
                 availableChatRooms.forEach(room => {
                     fetchUnreadMessagesCount(room.chatRoomIdx);
                 });
@@ -59,10 +58,11 @@ const GroupMain = () => {
 
         const fetchAllChatRooms = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/chatrooms/all');
-                const availableChatRooms = response.data.filter(room => room.status !== 'DENIED');
-                setAllChatRooms(availableChatRooms);
-                setFilteredChatRooms(availableChatRooms);
+                const response = await axios.get('http://localhost:8080/api/chatrooms/all', {
+                    headers: { 'Authorization': `Bearer ${token}` } // 헤더에 토큰 추가
+                });
+                setAllChatRooms(response.data); // 모든 채팅방 설정
+                setFilteredChatRooms(response.data); // 초기 필터링 상태 설정
             } catch (error) {
                 console.error('Failed to fetch all chat rooms', error);
             }

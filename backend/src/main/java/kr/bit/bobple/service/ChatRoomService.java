@@ -92,6 +92,36 @@ public class ChatRoomService {
         return convFile;
     }
 
+    public ChatRoom joinChatRoom(Long chatRoomId, Long userId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        ChatMember existingMember = chatMemberRepository.findById(new ChatMember.ChatMemberId(chatRoomId, userId))
+                .orElse(null);
+
+        if (existingMember != null && existingMember.getStatus() == ChatMember.Status.DENIED) {
+            throw new RuntimeException("You are blocked from this chat room");
+        }
+
+        if (existingMember == null) {
+            ChatMember chatMember = new ChatMember();
+            ChatMember.ChatMemberId chatMemberId = new ChatMember.ChatMemberId(chatRoomId, userId);
+            chatMember.setId(chatMemberId);
+            chatMember.setChatRoom(chatRoom);
+            chatMember.setUser(user);
+            chatMember.setRole(ChatMember.Role.MEMBER);
+            chatMemberRepository.save(chatMember);
+
+            chatRoom.setCurrentParticipants(chatRoom.getCurrentParticipants() + 1);
+            chatRoom.updateStatus();
+            chatRoomRepository.save(chatRoom);
+        }
+
+        return chatRoom;
+    }
+
     public List<ChatRoom> getAllChatRoomsIncludingOrphaned(Long userIdx) {
         return chatRoomRepository.findByRoomLeaderUserIdxOrRoomLeaderIsNull(userIdx);
     }
@@ -109,30 +139,6 @@ public class ChatRoomService {
         return chatRoomRepository.findAll();
     }
 
-    public ChatRoom joinChatRoom(Long chatRoomId, Long userId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new RuntimeException("Chat room not found"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // 이미 해당 채팅방에 참가하고 있는지 확인
-        boolean isMember = chatMemberRepository.existsById(new ChatMember.ChatMemberId(chatRoomId, userId));
-        if (!isMember) {
-            ChatMember chatMember = new ChatMember();
-            ChatMember.ChatMemberId chatMemberId = new ChatMember.ChatMemberId(chatRoomId, userId);
-            chatMember.setId(chatMemberId);
-            chatMember.setChatRoom(chatRoom);
-            chatMember.setUser(user);
-            chatMember.setRole(ChatMember.Role.MEMBER);
-            chatMemberRepository.save(chatMember);
-
-            chatRoom.setCurrentParticipants(chatRoom.getCurrentParticipants() + 1);
-            chatRoom.updateStatus(); // 참가자 수 변경 후 상태 업데이트
-            chatRoomRepository.save(chatRoom);
-        }
-
-        return chatRoom;
-    }
 
     // ChatRoomService.java
     public List<ChatMemberDTO> getChatRoomParticipants(Long chatRoomId) {

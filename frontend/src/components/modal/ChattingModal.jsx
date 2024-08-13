@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople }) => {
     const [participants, setParticipants] = useState([]);
-    const [currentUserRole, setCurrentUserRole] = useState(null); // 현재 유저의 역할을 저장
+    const [currentUserRole, setCurrentUserRole] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,7 +34,9 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                     }
                 });
 
-                setParticipants(participantsResponse.data);
+                // 차단된 참여자들을 제외
+                const activeParticipants = participantsResponse.data.filter(participant => participant.status !== 'DENIED');
+                setParticipants(activeParticipants);
 
                 // 현재 유저의 역할 가져오기
                 const roleResponse = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/role`, {

@@ -45,13 +45,13 @@ public class ChatRoomController {
         );
     }
 
-    @GetMapping
-    public List<ChatRoom> getAllChatRooms(HttpServletRequest request) {
-        String token = resolveToken(request);
-        Long userIdx = jwtTokenProvider.getUserIdx(token);
-        // 차단된 방을 제외한 모든 채팅방을 가져옴
-        return chatRoomService.getAvailableChatRoomsForUser(userIdx);
-    }
+//    @GetMapping
+//    public List<ChatRoom> getAllChatRooms(HttpServletRequest request) {
+//        String token = resolveToken(request);
+//        Long userIdx = jwtTokenProvider.getUserIdx(token);
+//        // 차단된 방을 제외한 모든 채팅방을 가져옴
+//        return chatRoomService.getAvailableChatRoomsForUser(userIdx);
+//    }
 
     @GetMapping("/{chatRoomId}")
     public ResponseEntity<ChatRoomDTO> getChatRoom(@PathVariable Long chatRoomId) {
