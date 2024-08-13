@@ -154,6 +154,10 @@ function RestaurantInfo() {
         return <div>Loading...</div>;
     }
 
+    const averageScore = reviews.length > 0
+        ? (reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length).toFixed(1) // 소수점 첫째 자리까지 표시
+        : 0;
+
     return (
         <div className="restaurant-info-container">
             <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded}
@@ -180,13 +184,17 @@ function RestaurantInfo() {
             {/* 리뷰 영역 */}
             <div className="review-section">
                 <h3>리뷰</h3>
+                <div className="average-score">
+                    {/* 평균 별점 표시 */}
+                    <span>★ {averageScore}</span>
+                </div>
                 <Link
                     to={`/recommend/restaurant/${restaurant.id}/review`}
-                    state={{ restaurantId: restaurant.id, reviews: reviews }}
+                    state={{restaurantId: restaurant.id, reviews: reviews}}
                 >
                     리뷰 작성
                 </Link>
-                <ul>
+                <ul style={{listStyle: 'none', padding: 0}}>
                     {reviews.map(review => (
                         <li key={review.reviewIdx}>
                             <div className="user-info">
@@ -194,7 +202,7 @@ function RestaurantInfo() {
                                     <img
                                         src={review.userProfileImage}
                                         alt="사용자 프로필 이미지"
-                                        style={{ width: '50px', height: '50px' }} // 이미지 크기 설정 추가
+                                        style={{width: '50px', height: '50px'}} // 이미지 크기 설정 추가
                                     />
                                 )}
                                 <span>{review.userName}</span>
@@ -210,6 +218,14 @@ function RestaurantInfo() {
                                 </div>
                                 <span className="review-time">{review.createdAt}</span>
                                 <p>{review.review}</p>
+                                {/* 리뷰 사진 추가 */}
+                                {review.photoUrl && (
+                                    <img
+                                        src={review.photoUrl}
+                                        alt="리뷰 사진"
+                                        style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                                    />
+                                )}
 
                                 {/* 사용자가 작성한 리뷰인 경우에만 수정/삭제 버튼 표시 */}
                                 {review.userIdx.toString() === userIdx && (

@@ -4,11 +4,14 @@ import kr.bit.bobple.dto.RestaurantReviewDto;
 import kr.bit.bobple.entity.RestaurantReview;
 import kr.bit.bobple.repository.RestaurantReviewRepository;
 import kr.bit.bobple.repository.UserRepository;
+import kr.bit.bobple.service.RestaurantReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +25,7 @@ public class RestaurantReviewController {
     private RestaurantReviewRepository restaurantReviewRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private RestaurantReviewService restaurantReviewService;
 
     // 특정 음식점의 리뷰 조회
     @GetMapping("/{restaurantId}")
@@ -36,38 +39,44 @@ public class RestaurantReviewController {
 
     // 리뷰 생성
     @PostMapping
-    @Transactional
-    public ResponseEntity<RestaurantReviewDto> createReview(@RequestBody RestaurantReviewDto reviewDto) {
-        // DTO를 엔티티로 변환
-        RestaurantReview restaurantReview = new RestaurantReview();
-        restaurantReview.setRestaurantId(reviewDto.getRestaurantId());
-        restaurantReview.setUser(userRepository.findById(reviewDto.getUserIdx()) // 별도의 UserRepository 필요
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID")));
-        restaurantReview.setScore(reviewDto.getScore());
-        restaurantReview.setReview(reviewDto.getReview());
-        restaurantReview.setPhotoUrl(reviewDto.getPhotoUrl());
+    public ResponseEntity<RestaurantReviewDto> createReview(
+            @RequestParam("userIdx") Long userIdx,
+            @RequestParam("restaurantId") Long restaurantId,
+            @RequestParam("score") int score,
+            @RequestParam("review") String review,
+            @RequestParam(value = "photoUrl", required = false) MultipartFile photoFile
+    ) {
+        // RestaurantReviewDto 객체 생성 및 필드 설정
+        RestaurantReviewDto reviewDto = new RestaurantReviewDto();
+        reviewDto.setUserIdx(userIdx);
+        reviewDto.setRestaurantId(restaurantId);
+        reviewDto.setScore(score);
+        reviewDto.setReview(review);
 
-        RestaurantReview savedReview = restaurantReviewRepository.save(restaurantReview);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new RestaurantReviewDto(savedReview));
+        RestaurantReviewDto savedReviewDto = restaurantReviewService.createReview(reviewDto, photoFile);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedReviewDto);
     }
-
 
     // 리뷰 수정 (PUT 방식)
     @PutMapping("/{reviewIdx}")
-    @Transactional
-    public ResponseEntity<RestaurantReviewDto> updateReview(@PathVariable Long reviewIdx, @RequestBody RestaurantReviewDto updatedReviewDto) {
-        Optional<RestaurantReview> optionalReview = restaurantReviewRepository.findById(reviewIdx);
-        if (optionalReview.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<RestaurantReviewDto> updateReview(
+            @PathVariable Long reviewIdx,
+            @RequestParam("userIdx") Long userIdx, // userIdx를 RequestParam으로 받습니다.
+            @RequestParam("restaurantId") Long restaurantId,
+            @RequestParam("score") int score,
+            @RequestParam("review") String review,
+            @RequestParam(value = "photoUrl", required = false) MultipartFile photoFile
+    ) {
+        // RestaurantReviewDto 객체 생성 및 필드 설정
+        RestaurantReviewDto updatedReviewDto = new RestaurantReviewDto();
+        updatedReviewDto.setReviewIdx(reviewIdx); // reviewIdx 설정 추가
+        updatedReviewDto.setUserIdx(userIdx);
+        updatedReviewDto.setRestaurantId(restaurantId);
+        updatedReviewDto.setScore(score);
+        updatedReviewDto.setReview(review);
 
-        RestaurantReview review = optionalReview.get();
-        review.setScore(updatedReviewDto.getScore());
-        review.setReview(updatedReviewDto.getReview());
-        review.setPhotoUrl(updatedReviewDto.getPhotoUrl());
-
-        RestaurantReview savedReview = restaurantReviewRepository.save(review);
-        return ResponseEntity.ok(new RestaurantReviewDto(savedReview));
+        RestaurantReviewDto savedReviewDto = restaurantReviewService.updateReview(reviewIdx, updatedReviewDto, photoFile);
+        return ResponseEntity.ok(savedReviewDto);
     }
 
     // 리뷰 삭제
