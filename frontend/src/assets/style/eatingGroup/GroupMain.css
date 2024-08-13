@@ -35,8 +35,7 @@
     appearance: none; /* 기본 브라우저 스타일 제거 */
     -webkit-appearance: none; /* WebKit 브라우저에서 기본 스타일 제거 */
     -moz-appearance: none; /* Mozilla 브라우저에서 기본 스타일 제거 */
-    background-color: rgba(247, 204, 212, 0.5); /* 배경 색상 */
-    border: 1px solid #ccc; /* 테두리 */
+    border: 1px solid #233B6F; /* 테두리 */
     padding: 5px 10px;
     font-size: 15px;
     font-weight: bold;
@@ -47,7 +46,6 @@
 }
 
 .group-search-select:focus {
-    border: none;
     outline: none; /* 포커스 시 아웃라인 제거 */
 }
 
@@ -141,40 +139,65 @@
 
 .meeting-item {
     width: 100%;
-    display: flex;
-    align-items: center;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 10px;
 }
 
-.meeting-item img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
+.meeting-item:hover,
+.meeting-item:active {
+    border: none;
+}
+
+.meeting-contents {
+    display: flex;
+    align-items: center;
+
+}
+
+.meeting-contents img {
+    width: 70px;
+    height: 70px;
+    border-radius: 20%;
+    margin-right: 15px;
 }
 
 .meeting-info {
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    gap: 5px;
+    margin-left: 10px;
 }
 
-.meeting-info h3 {
+.meeting-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.meeting-header-left {
+    display: flex;
+    gap: 20px;
+}
+
+.meeting-header h3 {
     margin: 0;
     font-size: 16px;
 }
 
-.meeting-info p {
-    margin: 5px 0 0;
-    font-size: 14px;
-    color: #555;
-}
-
-.meeting-info span {
+.meeting-header span {
     font-size: 12px;
     color: #999;
 }
+
+.meeting-text {
+    display: flex;
+}
+
+
 
 .fab-box {
     display: flex;
@@ -187,7 +210,7 @@
     bottom: 90px; /* Adjust this value based on the height of the navbar */
     width: 60px;
     height: 60px;
-    background-color: pink;
+    background-color: #EB517E;
     border-radius: 50%;
     display: flex;
     align-items: center;

@@ -193,12 +193,26 @@ const GroupMain = () => {
                             className="meeting-item"
                             onClick={() => showJoinModal(chatRoom)}
                         >
-                            <img src={chatRoom.roomImage} alt="chat room" />
-                            <div className="meeting-info">
-                                <h3>{chatRoom.chatRoomTitle}</h3>
-                                <p>{chatRoom.description}</p>
-                                <p>{chatRoom.location}</p>
-                                <span>{new Date(chatRoom.createdAt).toLocaleDateString()}</span>
+                            <div className="meeting-contents">
+                                <img src={chatRoom.roomImage} alt="chat room"/>
+                                <div className="meeting-info">
+                                    <div className="meeting-header">
+                                        <div className="meeting-header-left">
+                                            <h3>{chatRoom.chatRoomTitle}</h3>
+                                            <span>({chatRoom.location})</span>
+                                        </div>
+                                        <div>
+                                            <span>{new Intl.DateTimeFormat('ko-KR', {
+                                                year: '2-digit',
+                                                month: 'numeric',
+                                                day: 'numeric'
+                                            }).format(new Date(chatRoom.createdAt))}</span>
+                                        </div>
+                                    </div>
+                                    <div className="meeting-text">
+                                        <p>{chatRoom.description}</p>
+                                    </div>
+                                </div>
                             </div>
                         </button>
                     ))
