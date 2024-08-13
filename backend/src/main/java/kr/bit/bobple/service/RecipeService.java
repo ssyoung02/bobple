@@ -73,10 +73,11 @@ public class RecipeService {
         if (user == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
         }
-        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
         Recipe recipe = recipeDto.toEntity(user);
+        if (imageFile != null && !imageFile.isEmpty()) {
+        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
         recipe.setPicture(imageUrl);
-
+        }
         // 좋아요 수, 조회수, 댓글 수 초기화
         recipe.setLikesCount(0);
         recipe.setViewsCount(0);
@@ -93,9 +94,14 @@ public class RecipeService {
         if (!isRecipeAuthor(recipeId, authenticationFacade.getCurrentUser())) {
             throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         }
-        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
+            recipe.setPicture(imageUrl);
+        } else {
+            // 이미지가 업로드되지 않은 경우, 기존 이미지 경로를 유지합니다.
+            recipeDto.setPicture(recipe.getPicture());
+        }
         recipe.updateRecipe(recipeDto);
-        recipe.setPicture(imageUrl);
 
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }

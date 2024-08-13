@@ -82,7 +82,7 @@ public class RecipeController {
     public ResponseEntity<RecipeDto> updateRecipe(
             @PathVariable Long recipeId,
             @ModelAttribute RecipeDto recipeDto,
-            @RequestParam("image") MultipartFile imageFile) {
+            @RequestParam(value = "image", required = false) MultipartFile imageFile) {
         return ResponseEntity.ok(recipeService.updateRecipe(recipeId, recipeDto, imageFile));
     }
 

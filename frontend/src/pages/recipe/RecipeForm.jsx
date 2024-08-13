@@ -6,6 +6,7 @@ import axios from "../../utils/axios";
 import PageHeader from "../../components/layout/PageHeader";
 import { Clock, FireIcon, ImageIcon } from "../../components/imgcomponents/ImgComponents";
 import { useOnlyHeaderColorChange } from "../../hooks/NavigateComponentHooks";
+import mascot from "../../assets/images/bobple_mascot.png"; // CSS 파일 import
 
 function RecipeForm() {
     const {
@@ -97,6 +98,11 @@ function RecipeForm() {
             return;
         }
 
+        if (!isEditing && !imageFile) {
+            alert('레시피 이미지를 업로드해주세요.');
+            return;
+        }
+
         try {
             const formData = new FormData();
             formData.append("title", title);
@@ -109,6 +115,9 @@ function RecipeForm() {
 
             if (imageFile) {
                 formData.append("image", imageFile);
+            } else if (isEditing && imageUrl) {
+                // 이미지 파일이 업로드되지 않았고 수정 모드라면 기존 이미지 URL을 유지
+                formData.append("picture", imageUrl);
             }
             if (isEditing) {
                 await axios.put(`/api/recipes/${recipeIdx}`, formData, {
@@ -151,7 +160,7 @@ function RecipeForm() {
                             <></>
                         ):(
                             <img className="recipe-header-exImg"
-                                 src={imageUrl || '/images/default_recipe_image.jpg'}
+                                 src={imageUrl || mascot}
                                  alt={title}/>
 
                         )}
