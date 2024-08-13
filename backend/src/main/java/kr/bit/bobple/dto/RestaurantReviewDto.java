@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+@Setter
+@Getter
 public class RestaurantReviewDto {
     private Long reviewIdx;
     private Long restaurantId;
@@ -31,14 +32,4 @@ public class RestaurantReviewDto {
         this.review = entity.getReview();
         this.photoUrl = entity.getPhotoUrl();
     }
-
-    public Long getReviewIdx() { return reviewIdx;}
-    public Long getRestaurantId() { return restaurantId;}
-    public Long getUserIdx() {return userIdx;}
-    public String getUserName() { return userName;}
-    public String getUserProfileImage() { return userProfileImage;}
-    public LocalDateTime getCreatedAt() { return createdAt;}
-    public int getScore() { return score;}
-    public String getReview() { return review;}
-    public String getPhotoUrl() { return photoUrl;}
 }
