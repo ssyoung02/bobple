@@ -3,10 +3,10 @@ import '../../assets/style/components/Layout.css'
 import Header from "../navigate/Header";
 import NavBar from "../navigate/NavBar";
 
-function Layout({ children }) {
+function Layout({ children, theme, toggleTheme }) {
     return (
-        <div className="App">
-            <Header />
+        <div className={`App ${theme}`}>
+            <Header theme={theme} toggleTheme={toggleTheme} />
             <main>
                 {children}
             </main>
