@@ -75,10 +75,11 @@ function MatchingGame() {
             setEarnedPoint(calculatedPoint);
             const token = localStorage.getItem('token');
 
+            // 포인트 획득 여부와 상관없이 요청 전송
             axios.post('http://localhost:8080/api/point/result', {
                 userIdx: parseInt(userIdx, 10),
                 point: calculatedPoint,
-                pointComment: "음식 확대사진 맞추기 게임"
+                pointComment: calculatedPoint > 0 ? "음식 확대사진 맞추기 게임" : "음식 확대사진 맞추기 게임 실패" // point에 따라 comment 변경
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`

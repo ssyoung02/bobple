@@ -26,37 +26,35 @@ const Prize = () => {
         const prize = getRandomPrize();
         setSelectedPrize(prize);
 
-        if (prize.point > 0) { // 포인트 획득 시에만 요청 전송
-            const token = localStorage.getItem('token');
-            const userIdx = getUserIdx();
-
-            axios.post('http://localhost:8080/api/point/result', { // 백엔드 엔드포인트 확인
-                userIdx: parseInt(userIdx, 10),
-                point: prize.point,
-                pointComment: "가챠 게임"
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                withCredentials: true
+        const token = localStorage.getItem('token');
+        console.log(prize.point);
+        // 포인트 획득 여부와 상관없이 요청 전송
+        axios.post('http://localhost:8080/api/point/result', {
+            userIdx: parseInt(userIdx, 10),
+            point: prize.point,
+            pointComment: prize.point > 0 ? "가챠 게임" : "가챠 게임 실패" // point에 따라 comment 변경
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: true
+        })
+            .then(response => {
+                console.log("포인트 저장 성공:", response.data);
             })
-                .then(response => {
-                    console.log("포인트 저장 성공:", response.data);
-                })
-                .catch(error => {
-                    if (error.response) {
-                        if (error.response.status === 401) {
-                            console.error("Unauthorized: ", error.response.data);
-                        } else {
-                            console.error("Error saving matching game result:", error.response.data);
-                        }
-                    } else if (error.request) {
-                        console.error("No response received from server:", error.request);
+            .catch(error => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error("Unauthorized: ", error.response.data);
                     } else {
-                        console.error("Error setting up the request:", error.message);
+                        console.error("Error saving matching game result:", error.response.data);
                     }
-                });
-        }
+                } else if (error.request) {
+                    console.error("No response received from server:", error.request);
+                } else {
+                    console.error("Error setting up the request:", error.message);
+                }
+            });
     }, []);
 
 
