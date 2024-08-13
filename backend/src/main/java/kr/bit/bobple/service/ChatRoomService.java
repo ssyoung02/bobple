@@ -165,12 +165,36 @@ public class ChatRoomService {
         return leaders;
     }
 
+    public List<ChatRoom> getAvailableChatRoomsForUser(Long userId) {
+        List<Long> chatRoomIds = chatMemberRepository.findChatRoomIdsByUserIdx(userId);
+        return chatRoomRepository.findAllById(chatRoomIds).stream()
+                .filter(chatRoom -> {
+                    ChatMember chatMember = chatMemberRepository.findById(new ChatMember.ChatMemberId(chatRoom.getChatRoomIdx(), userId))
+                            .orElseThrow(() -> new RuntimeException("User not found in chat room"));
+                    return chatMember.getStatus() != ChatMember.Status.DENIED;
+                })
+                .collect(Collectors.toList());
+    }
+
     public void blockUser(Long chatRoomId, Long userId) {
         ChatMember chatMember = chatMemberRepository.findById(new ChatMember.ChatMemberId(chatRoomId, userId))
                 .orElseThrow(() -> new RuntimeException("User not found in chat room"));
 
         chatMember.setStatus(ChatMember.Status.DENIED);
         chatMemberRepository.save(chatMember);
+
+        updateChatRoomStatusAfterBlock(chatRoomId);
+    }
+
+    private void updateChatRoomStatusAfterBlock(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+
+        long activeMembersCount = chatMemberRepository.countByChatRoomChatRoomIdxAndStatus(chatRoomId, ChatMember.Status.ACCEPTED);
+
+        chatRoom.setCurrentParticipants((int) activeMembersCount);
+        chatRoom.updateStatus();
+        chatRoomRepository.save(chatRoom);
     }
 
     public String getUserRoleInChatRoom(Long chatRoomId, Long userIdx) {
@@ -178,5 +202,4 @@ public class ChatRoomService {
                 .orElseThrow(() -> new RuntimeException("User not found in chat room"));
         return member.getRole().name();
     }
-
 }

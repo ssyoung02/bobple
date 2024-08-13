@@ -26,7 +26,6 @@ public class ChatRoomController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-
     @PostMapping
     public ChatRoom createChatRoom(@RequestParam("chatRoomTitle") String chatRoomTitle,
                                    @RequestParam("description") String description,
@@ -50,7 +49,8 @@ public class ChatRoomController {
     public List<ChatRoom> getAllChatRooms(HttpServletRequest request) {
         String token = resolveToken(request);
         Long userIdx = jwtTokenProvider.getUserIdx(token);
-        return chatRoomService.getAllChatRoomsIncludingOrphaned(userIdx);
+        // 차단된 방을 제외한 모든 채팅방을 가져옴
+        return chatRoomService.getAvailableChatRoomsForUser(userIdx);
     }
 
     @GetMapping("/{chatRoomId}")
@@ -69,11 +69,13 @@ public class ChatRoomController {
         String token = resolveToken(request);
         Long userIdx = jwtTokenProvider.getUserIdx(token);
         System.out.println("User ID from token: " + userIdx); // 로그 추가
-        return chatRoomService.getChatRoomsByUser(userIdx);
+        // 차단된 방을 제외한 유저가 참여 중인 채팅방을 가져옴
+        return chatRoomService.getAvailableChatRoomsForUser(userIdx);
     }
 
     @GetMapping("/all")
     public List<ChatRoom> getAllChatRooms() {
+        // 차단된 방을 제외한 모든 채팅방을 가져옴
         return chatRoomService.getAllChatRooms();
     }
 
@@ -113,6 +115,4 @@ public class ChatRoomController {
         response.put("role", role);
         return ResponseEntity.ok(response);
     }
-
-
 }
