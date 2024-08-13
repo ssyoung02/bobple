@@ -7,9 +7,7 @@ import kr.bit.bobple.dto.ChatMemberDTO;
 import kr.bit.bobple.entity.ChatMember;
 import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.entity.User;
-import kr.bit.bobple.repository.ChatMemberRepository;
-import kr.bit.bobple.repository.ChatRoomRepository;
-import kr.bit.bobple.repository.UserRepository;
+import kr.bit.bobple.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +33,9 @@ public class ChatRoomService {
 
     @Autowired
     private ChatMemberRepository chatMemberRepository;
+
+    @Autowired
+    private MessageReadRepository messageReadRepository;
 
     @Autowired
     private AmazonS3 amazonS3;
@@ -188,6 +189,9 @@ public class ChatRoomService {
 
         chatMember.setStatus(ChatMember.Status.DENIED);
         chatMemberRepository.save(chatMember);
+
+        // 강퇴된 사용자의 모든 message_reads 정보 삭제
+        messageReadRepository.deleteByUserIdAndChatRoomId(userId, chatRoomId);
 
         updateChatRoomStatusAfterBlock(chatRoomId);
     }

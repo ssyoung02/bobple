@@ -58,11 +58,9 @@ const GroupMain = () => {
 
         const fetchAllChatRooms = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/chatrooms/all', {
-                    headers: { 'Authorization': `Bearer ${token}` } // 헤더에 토큰 추가
-                });
-                setAllChatRooms(response.data); // 모든 채팅방 설정
-                setFilteredChatRooms(response.data); // 초기 필터링 상태 설정
+                const allRoomsResponse = await axios.get('http://localhost:8080/api/chatrooms/all');
+                setAllChatRooms(allRoomsResponse.data);
+                setFilteredChatRooms(allRoomsResponse.data);
             } catch (error) {
                 console.error('Failed to fetch all chat rooms', error);
             }
