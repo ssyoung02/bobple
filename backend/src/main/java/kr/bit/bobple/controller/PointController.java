@@ -101,4 +101,18 @@ public class PointController {
         return ResponseEntity.ok(savedPoint);
     }
 
+    // 오늘 특정 사용자가 플레이한 게임 목록 조회
+    @GetMapping("/points/{userIdx}/today")
+    public ResponseEntity<List<PointDto>> getPlayedGamesToday(
+            @PathVariable Long userIdx,
+            @RequestParam String date // YYYY-MM-DD 형식의 날짜 문자열
+    ) {
+        List<PointDto> playedGames = pointService.getPointsByDateAndUserIdx(userIdx, date)
+                .stream()
+                .map(PointDto::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(playedGames);
+    }
+
 }
