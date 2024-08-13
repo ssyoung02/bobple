@@ -33,8 +33,8 @@ const RecipeContext = createContext({
     userRecommendedRecipes: [],
     setSearchedRecipes: () => {},
     setUserRecommendedRecipes: () => {}, // 추가
-    totalRecipes: 0, // 전체 레시피 개수 추가
-    setTotalRecipes: () => {}, // 전체 레시피 개수 업데이트 함수 추가
+    totalRecipes: 0, // 전체 레시피 개수
+    setTotalRecipes: () => {}, // 전체 레시피 개수를 설정하는 함수
     recipeCategory: [],
     formatViewsCount: () => {},
 });
@@ -54,6 +54,22 @@ export const RecipeProvider = ({ children }) => {
     const [searchedRecipes, setSearchedRecipes] = useState([]);
     const [totalRecipes, setTotalRecipes] = useState(0); // 전체 레시피 개수
     const navigate = useNavigate();
+
+    const loadTotalRecipesCount = useCallback(async () => {
+        try {
+            const response = await axios.get('/api/recipes/count');
+            console.log('Fetched totalRecipes from server:', response.data);
+            setTotalRecipes(response.data);
+        } catch (error) {
+            setError('전체 레시피 수를 불러오는 중 오류가 발생했습니다.');
+        }
+    }, [setTotalRecipes, setError]);
+
+    useEffect(() => {
+        loadTotalRecipesCount();
+        console.log('Total recipes count effect executed.');
+    }, [loadTotalRecipesCount]);
+
 
 
     // 레시피 검색 함수 (useCallback으로 메모이징)
@@ -117,6 +133,8 @@ export const RecipeProvider = ({ children }) => {
             setLoading(true);
             const response = await axios.get(`/api/recipes/${id}`);
             setSelectedRecipe(response.data);
+            return response.data;
+
         } catch (error) {
             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
             console.error(error);
@@ -187,21 +205,7 @@ export const RecipeProvider = ({ children }) => {
             console.error(error);
         }
     };
-    // // 좋아요 처리 함수
-    // const likeRecipe = async (recipeId) => {
-    //     try {
-    //         const response = await axios.post(`/api/recipes/${recipeId}/like`);
-    //         setRecipes(prevRecipes => prevRecipes.map(recipe =>
-    //             recipe.recipeIdx === recipeId ? response.data : recipe
-    //         ));
-    //         setSelectedRecipe(prevRecipe =>
-    //             prevRecipe && prevRecipe.recipeIdx === recipeId ? response.data : prevRecipe
-    //         );
-    //     } catch (error) {
-    //         setError(error.message || '좋아요 처리 중 오류가 발생했습니다.');
-    //         console.error(error);
-    //     }
-    // };
+
     const likeRecipe = async (recipeId) => {
         try {
             await axios.post(`/api/recipes/${recipeId}/like`);
@@ -287,6 +291,7 @@ export const RecipeProvider = ({ children }) => {
             createComment, updateComment, deleteComment,
             setSelectedRecipe, setError, latestRecipes,
             setLatestRecipes,
+            getLatestRecipes,
             getRecipesByCategory,
             getUserRecommendedRecipes,
             aiRecommendRecipes,

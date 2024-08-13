@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect, useRef, useCallback  } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState, useContext, useEffect, useRef, useCallback} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import LatestRecipeCard from './LatestRecipeCard';
 import axios from "../../utils/axios";
@@ -8,11 +8,188 @@ import {ArrowRightLong, MoreIcon, NextTo, PrevTo, SearchIcon} from "../../compon
 import {UserRecommendedRecipes} from "../../components/SliderComponent";
 import {ClipLoader} from "react-spinners";
 
+// function RecipeMain() {
+//     const {
+//         getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes, // totalRecipes를 RecipeContext에서 가져옴
+//         recipeCategory
+//     } = useContext(RecipeContext);
+//
+//     const [searchKeyword, setSearchKeyword] = useState('');
+//     const navigate = useNavigate();
+//     const [page, setPage] = useState(0);
+//     const [loading, setLoading] = useState(false);
+//     const [hasMore, setHasMore] = useState(true);
+//     const [initialLoad, setInitialLoad] = useState(true);
+//
+//     const observer = useRef();
+//
+//     const lastRecipeElementRef = useCallback(node => {
+//         if (loading || !hasMore) return;
+//         if (observer.current) observer.current.disconnect();
+//         observer.current = new IntersectionObserver(entries => {
+//             if (entries[0].isIntersecting) {
+//                 console.log('Last recipe element is intersecting. Loading more recipes...');
+//                 setPage(prevPage => prevPage + 1);
+//             }
+//         });
+//         if (node) observer.current.observe(node);
+//     }, [loading, hasMore]);
+//
+//     const loadLatestRecipes = useCallback(async () => {
+//         if (!hasMore) return;
+//         setLoading(true);
+//         try {
+//             const response = await axios.get('/api/recipes/latest', {
+//                 params: { page, size: 20 }
+//             });
+//
+//             if (response.data.content.length > 0) {
+//                 const newRecipes = response.data.content;
+//
+//                 // 이전에 로드된 레시피와 현재 로드된 레시피를 비교하여 중복을 방지
+//                 if (latestRecipes.length > 0) {
+//                     const lastLoadedRecipeIdx = latestRecipes[latestRecipes.length - 1].recipeIdx;
+//                     const isDuplicate = newRecipes.some(recipe => recipe.recipeIdx === lastLoadedRecipeIdx);
+//                     if (isDuplicate) {
+//                         console.log('Duplicate recipes found, skipping this load.');
+//                         setHasMore(false);
+//                         setLoading(false);
+//                         return;
+//                     }
+//                 }
+//
+//                 setLatestRecipes(prevRecipes => [...prevRecipes, ...newRecipes]);
+//
+//                 // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
+//                 console.log("latestRecipes.length" + latestRecipes.length + "+" + "response.data.content.length" + newRecipes.length + ">=" + "totalRecipes :" + totalRecipes);
+//                 if (latestRecipes.length + newRecipes.length >= totalRecipes) {
+//                     console.log('All recipes have been loaded.');
+//                     setHasMore(false);
+//                 }
+//             } else {
+//                 setHasMore(false);
+//             }
+//         } catch (error) {
+//             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
+//         } finally {
+//             setLoading(false);
+//         }
+//     }, [hasMore, latestRecipes.length, totalRecipes, setLatestRecipes, setError]);
+//
+//     useEffect(() => {
+//         if (totalRecipes === 0) {
+//             console.log('totalRecipes is not ready yet. Skipping load.');
+//             return;
+//         }
+//
+//         if (initialLoad && latestRecipes.length > 0) {
+//             console.log('Initial load is complete. No need to reload.');
+//             setInitialLoad(false);
+//             return;
+//         }
+//
+//         if (initialLoad || page > 0) {
+//             console.log('Initial load or page has changed. Loading more recipes...');
+//             loadLatestRecipes();
+//         }
+//
+//         console.log('Current totalRecipes value:', totalRecipes); // 여기에 totalRecipes 값을 로깅
+//
+//     }, [page, initialLoad, loadLatestRecipes, totalRecipes]);
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
+// function RecipeMain() {
+//     const {
+//         getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes, // totalRecipes를 RecipeContext에서 가져옴
+//         recipeCategory
+//     } = useContext(RecipeContext);
+//
+//     const [searchKeyword, setSearchKeyword] = useState('');
+//     const navigate = useNavigate();
+//     const [page, setPage] = useState(0);
+//     const [loading, setLoading] = useState(false);
+//     const [hasMore, setHasMore] = useState(true);
+//     const [initialLoad, setInitialLoad] = useState(true);
+//
+//     const observer = useRef();
+//
+//     const lastRecipeElementRef = useCallback(node => {
+//         if (loading || !hasMore) return;
+//         if (observer.current) observer.current.disconnect();
+//         observer.current = new IntersectionObserver(entries => {
+//             if (entries[0].isIntersecting) {
+//                 console.log('Last recipe element is intersecting. Loading more recipes...');
+//                 setPage(prevPage => prevPage + 1);
+//             }
+//         });
+//         if (node) observer.current.observe(node);
+//     }, [loading, hasMore]);
+//
+//     const loadLatestRecipes = useCallback(async () => {
+//         if (!hasMore) return;
+//         setLoading(true);
+//         try {
+//             const response = await axios.get('/api/recipes/latest', {
+//                 params: { page, size: 20 }
+//             });
+//
+//             if (response.data.content.length > 0) {
+//                 const newRecipes = response.data.content;
+//
+//                 // 고유한 recipeIdx로 중복 확인
+//                 const uniqueRecipes = newRecipes.filter(
+//                     newRecipe => !latestRecipes.some(recipe => recipe.recipeIdx === newRecipe.recipeIdx)
+//                 );
+//
+//                 if (uniqueRecipes.length === 0) {
+//                     console.log('Duplicate recipes found, skipping this load.');
+//                     setHasMore(false);
+//                     setLoading(false);
+//                     return;
+//                 }
+//
+//                 setLatestRecipes(prevRecipes => [...prevRecipes, ...uniqueRecipes]);
+//
+//                 // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
+//                 console.log("latestRecipes.length" + latestRecipes.length + "+" + "uniqueRecipes.length" + uniqueRecipes.length + ">=" + "totalRecipes :" + totalRecipes);
+//                 if (latestRecipes.length + uniqueRecipes.length >= totalRecipes) {
+//                     console.log('All recipes have been loaded.');
+//                     setHasMore(false);
+//                 }
+//             } else {
+//                 setHasMore(false);
+//             }
+//         } catch (error) {
+//             setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
+//         } finally {
+//             setLoading(false);
+//         }
+//     }, [hasMore, latestRecipes, totalRecipes, setLatestRecipes, setError]);
+//
+//     useEffect(() => {
+//         if (totalRecipes === 0) {
+//             console.log('totalRecipes is not ready yet. Skipping load.');
+//             return;
+//         }
+//
+//         if (initialLoad && latestRecipes.length > 0) {
+//             console.log('Initial load is complete. No need to reload.');
+//             setInitialLoad(false);
+//             return;
+//         }
+//
+//         if (initialLoad || page > 0) {
+//             console.log('Initial load or page has changed. Loading more recipes...');
+//             loadLatestRecipes();
+//         }
+//
+//         console.log('Current totalRecipes value:', totalRecipes); // 여기에 totalRecipes 값을 로깅
+//
+//     }, [page, initialLoad, loadLatestRecipes, totalRecipes]);
+
 function RecipeMain() {
     const {
         getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes, // totalRecipes를 RecipeContext에서 가져옴
         recipeCategory
-        // 필요한 값 가져오기
     } = useContext(RecipeContext);
 
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -25,67 +202,100 @@ function RecipeMain() {
     const observer = useRef();
 
     const lastRecipeElementRef = useCallback(node => {
-        if (loading) return;
+        if (loading || !hasMore) return;
         if (observer.current) observer.current.disconnect();
         observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting && hasMore) {
+            if (entries[0].isIntersecting) {
+                console.log('Last recipe element is intersecting. Loading more recipes...');
                 setPage(prevPage => prevPage + 1);
             }
         });
         if (node) observer.current.observe(node);
     }, [loading, hasMore]);
 
+    const loadLatestRecipes = useCallback(async () => {
+        if (!hasMore) return;
+        setLoading(true);
+        console.log(`Requesting page ${page}...`);
+        try {
+            const response = await axios.get('/api/recipes/latest', {
+                params: { page, size: 20 }
+            });
+
+            if (response.data.content.length > 0) {
+                const newRecipes = response.data.content;
+
+                // 고유한 recipeIdx로 중복 확인
+                const uniqueRecipes = newRecipes.filter(
+                    newRecipe => !latestRecipes.some(recipe => recipe.recipeIdx === newRecipe.recipeIdx)
+                );
+
+                if (uniqueRecipes.length === 0) {
+                    console.log('Duplicate recipes found, skipping this load.');
+                    setHasMore(false);
+                    setLoading(false);
+                    return;
+                }
+
+                setLatestRecipes(prevRecipes => [...prevRecipes, ...uniqueRecipes]);
+
+                // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
+                console.log("latestRecipes.length" + latestRecipes.length + "+" + "uniqueRecipes.length" + uniqueRecipes.length + ">=" + "totalRecipes :" + totalRecipes);
+                if (latestRecipes.length + uniqueRecipes.length >= totalRecipes) {
+                    console.log('All recipes have been loaded.');
+                    setHasMore(false);
+                }
+            } else {
+                setHasMore(false);
+            }
+        } catch (error) {
+            setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
+        } finally {
+            setLoading(false);
+        }
+    }, [hasMore, latestRecipes, totalRecipes, setLatestRecipes, setError, page]);
+
     useEffect(() => {
+        // totalRecipes 값이 준비되기 전에는 로딩을 시도하지 않음
+        if (totalRecipes === 0) {
+            console.log('totalRecipes is not ready yet. Skipping load.');
+            return;
+        }
+
         if (initialLoad && latestRecipes.length > 0) {
+            console.log('Initial load is complete. No need to reload.');
             setInitialLoad(false);
             return;
         }
 
-        const loadLatestRecipes = async () => {
-            if (!hasMore) return;
-            setLoading(true);
-            try {
-                const response = await axios.get('/api/recipes/latest', {
-                    params: { page, size: 20 }
-                });
-
-                if (response.data.content.length > 0) {
-                    setLatestRecipes(prevRecipes => [...prevRecipes, ...response.data.content]);
-
-                    // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
-                    if (latestRecipes.length + response.data.content.length >= totalRecipes) {
-                        setHasMore(false);
-                    }
-                } else {
-                    setHasMore(false);
-                }
-            } catch (error) {
-                setError(error.message || '레시피를 불러오는 중 오류가 발생했습니다.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         if (initialLoad || page > 0) {
+            console.log('Initial load or page has changed. Loading more recipes...');
             loadLatestRecipes();
         }
-    }, [page, initialLoad, latestRecipes.length, hasMore, setLatestRecipes, setError, totalRecipes]);
 
-    //
-    // useEffect(() => {
-    //     getRecipesByCategory('');
-    //     getLatestRecipes();
-    //     // // 초기 레시피 목록 로드 (최신순으로 1페이지 10개)
-    //     // searchRecipes('', '', 0, 10, 'createdAt,desc');
-    // }, []);
+        console.log('Current totalRecipes value:', totalRecipes); // 여기에 totalRecipes 값을 로깅
+
+    }, [page, initialLoad, loadLatestRecipes, totalRecipes]);
+
 
     const categoryButtons = [
-        { name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식' },
-        { name: '양식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-japanese-food.jpg', category: '양식' },
-        { name: '일식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-western-food.jpg', category: '일식' },
-        { name: '중식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-chinese-food.jpg', category: '중식' },
+        {name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식'},
+        {
+            name: '양식',
+            image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-japanese-food.jpg',
+            category: '양식'
+        },
+        {
+            name: '일식',
+            image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-western-food.jpg',
+            category: '일식'
+        },
+        {
+            name: '중식',
+            image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-chinese-food.jpg',
+            category: '중식'
+        },
     ];
-
 
 
     const handleRecipeClick = (recipeId) => {
@@ -194,6 +404,8 @@ function RecipeMain() {
                     </div>
                 )}
             </div>
+
+
             <div className="create-recipe-button-box">
                 <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
                     +

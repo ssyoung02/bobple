@@ -31,6 +31,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByUser(@Param("user") User user);
 
 
+    //레시피 전체 개수
+    @Query("SELECT COUNT(r) FROM Recipe r")
+    long countAllRecipes();
+
 
     @Query("SELECT r FROM Recipe r JOIN FETCH r.user WHERE (:keyword IS NULL OR :keyword = '' OR r.title LIKE %:keyword% OR r.content LIKE %:keyword%) AND (:category IS NULL OR :category = '' OR r.category = :category)")
     Page<Recipe> searchRecipes(@Param("keyword") String keyword, @Param("category") String category, Pageable pageable);

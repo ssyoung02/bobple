@@ -32,13 +32,11 @@ public class RecipeController {
     private final RecipeImageService recipeImageService;
 
 
-
     @GetMapping
     public ResponseEntity<Page<RecipeDto>> getAllRecipes(Pageable pageable) {
         // 모든 레시피 목록 조회 (페이징 처리)
         return ResponseEntity.ok(recipeService.getAllRecipes(pageable));
     }
-
 
 
     @GetMapping("/latest")
@@ -52,18 +50,12 @@ public class RecipeController {
     }
 
     // 유저 추천 레시피 목록 조회 (TODO: 실제 추천 로직 구현 필요)
-    // 유저 추천 레시피 목록 조회
     @GetMapping("/recommended")
     public ResponseEntity<List<RecipeDto>> getRecommendedRecipes(@AuthenticationPrincipal User user) {
         List<RecipeDto> recommendedRecipes = recipeService.getRecommendedRecipes(user);
         return ResponseEntity.ok(recommendedRecipes);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable Long id) {
-//        RecipeDto recipeDto = recipeService.getRecipeById(id);
-//        return ResponseEntity.ok(recipeDto);
-//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDto> getRecipeById(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
@@ -78,16 +70,12 @@ public class RecipeController {
     }
 
 
-
     @PostMapping
     public ResponseEntity<RecipeDto> createRecipe(
             @ModelAttribute RecipeDto recipeDto,
             @RequestParam("image") MultipartFile imageFile) {
         return ResponseEntity.ok(recipeService.createRecipe(recipeDto, imageFile));
     }
-
-
-
 
 
     @PutMapping("/{recipeId}")
@@ -107,19 +95,6 @@ public class RecipeController {
         return ResponseEntity.noContent().build();
     }
 
-
-
-//    @GetMapping("/search")
-//    public ResponseEntity<Page<RecipeDto>> searchRecipes(
-//            @RequestParam(required = false) String keyword,
-//            @RequestParam(required = false) String category,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "viewsCount,desc") String sort
-//    ) {
-//        Page<RecipeDto> recipes = recipeService.searchRecipes(keyword, category, page, size, sort);
-//        return ResponseEntity.ok(recipes);
-//    }
 
     @GetMapping("/search")
     public ResponseEntity<Page<RecipeDto>> searchRecipes(
@@ -151,15 +126,15 @@ public class RecipeController {
     }
 
 
-// 좋아요한 레시피 목록 조회 엔드포인트 추가
-@GetMapping("/liked")
-public ResponseEntity<List<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal User currentUser) {
-    if (currentUser == null) {
-        return ResponseEntity.status(401).build(); // 인증되지 않은 사용자는 401 응답
+    // 좋아요한 레시피 목록 조회 엔드포인트 추가
+    @GetMapping("/liked")
+    public ResponseEntity<List<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal User currentUser) {
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build(); // 인증되지 않은 사용자는 401 응답
+        }
+        List<RecipeDto> likedRecipes = recipeService.getLikedRecipes(currentUser.getUserIdx());
+        return ResponseEntity.ok(likedRecipes);
     }
-    List<RecipeDto> likedRecipes = recipeService.getLikedRecipes(currentUser.getUserIdx());
-    return ResponseEntity.ok(likedRecipes);
-}
 
     @GetMapping("/user/{userIdx}")
     public ResponseEntity<List<RecipeDto>> getRecipesByUser(@AuthenticationPrincipal User currentUser) {
@@ -167,5 +142,10 @@ public ResponseEntity<List<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal 
         return ResponseEntity.ok(userRecipes);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalRecipeCount() {
+        long count = recipeService.getTotalRecipeCount();
+        return ResponseEntity.ok(count);
+    }
 
 }
