@@ -4,6 +4,7 @@ import {Bookmark, FillBookmark, CaretRight, LocationDot} from "../../components/
 import {getUserIdx} from "../../utils/auth";
 import axios from "axios";
 import NaverImageSearch from "../../components/NaverImageSearch";
+import '../../assets/style/recommendFood/RestaurantInfo.css'
 
 // Star 컴포넌트 직접 구현
 function Star({ filled }) {
@@ -158,95 +159,116 @@ function RestaurantInfo() {
         ? (reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length).toFixed(1) // 소수점 첫째 자리까지 표시
         : 0;
 
+
     return (
         <div className="restaurant-info-container">
             <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded}/>
-            <h2>{restaurant.place_name}</h2>
-            <p>{restaurant.address_name} </p>
-            <p>(지번: {restaurant.road_address_name})</p>
-            <p><CaretRight/>{restaurant.category_name.replace(/ > /g, ' > ')}</p>
-            <p>{restaurant.phone}</p>
-            <p><LocationDot/>{Math.round(restaurant.distance)}m</p>
-            {/* 홈페이지 링크 추가 */}
-            {restaurant.place_url && (
-                <p>
-                    <a href={restaurant.place_url} target="_blank" rel="noopener noreferrer">홈페이지</a>
-                </p>
-            )}
+            <div className="restaurant-info-header">
+                <div className="restaurant-info-left-header">
+                    <div className="restaurant-info-title">
+                        <h2>{restaurant.place_name}</h2>
+                        <p><CaretRight/> {restaurant.category_name.replace('음식점 > ', '')}</p>
+                    </div>
+                    <div className="restaurant-info-location">
+                        <p>{restaurant.road_address_name}</p>
+                        <p><LocationDot/> {Math.round(restaurant.distance)}m</p>
+                    </div>
+                    <div className="restaurant-info-link">
+                        {/* 홈페이지 링크 추가 */}
+                        {restaurant.place_url && (
+                            <p>
+                                <a href={restaurant.place_url} target="_blank" rel="noopener noreferrer">홈페이지</a>
+                            </p>
+                        )}
+                        <p>{restaurant.phone}</p>
+                    </div>
+                </div>
+                <div className="restaurant-info-right-header">
+                    <button className="restaurant-bookmarks"
+                            onClick={handleBookmarkToggle}>
+                        {userBookmarks.includes(restaurant.id) ? <FillBookmark/> : <Bookmark/>}
+                    </button>
+                    {restaurant.bookmarks_count || 0}
+                </div>
+            </div>
 
-            <button className="restaurant-bookmarks"
-                    onClick={handleBookmarkToggle}>
-                {userBookmarks.includes(restaurant.id) ? <FillBookmark /> : <Bookmark />}
-                {restaurant.bookmarks_count || 0}
-            </button>
+            <hr className="thick-divider"/>
 
             {/* 리뷰 영역 */}
             <div className="review-section">
-                <h3>리뷰</h3>
-                <div className="average-score">
+                <div className="review-header">
+                    <h4>방문자 리뷰</h4>
                     {/* 평균 별점 표시 */}
-                    <span>★ {averageScore}</span>
+                    <p className="average-score"><span>★</span> {averageScore}</p>
+                    <Link
+                        to={`/recommend/restaurant/${restaurant.id}/review`}
+                        state={{restaurantId: restaurant.id, reviews: reviews, restaurantName: restaurant.place_name}}
+                    >
+                        리뷰 작성
+                    </Link>
                 </div>
-                <Link
-                    to={`/recommend/restaurant/${restaurant.id}/review`}
-                    state={{ restaurantId: restaurant.id, reviews: reviews, restaurantName: restaurant.place_name }}
-                >
-                    리뷰 작성
-                </Link>
+
                 <ul style={{listStyle: 'none', padding: 0}}>
                     {reviews.map(review => (
-                        <li key={review.reviewIdx}>
-                            <div className="user-info">
-                                {review.userProfileImage && ( // 조건부 렌더링 유지
-                                    <img
-                                        src={review.userProfileImage}
-                                        alt="사용자 프로필 이미지"
-                                        style={{width: '50px', height: '50px'}} // 이미지 크기 설정 추가
-                                    />
-                                )}
-                                <span>{review.userName}</span>
-                            </div>
-                            <div className="review-content">
-                                <div className="star-rating">
-                                    {[...Array(review.score)].map((_, index) => (
-                                        <Star key={index} filled/>
-                                    ))}
-                                    {[...Array(5 - review.score)].map((_, index) => (
-                                        <Star key={index + review.score}/>
-                                    ))}
+                        <li key={review.reviewIdx} className="review-box">
+                            <div className="review-left-content">
+                                <div className="review-user-info">
+                                    {review.userProfileImage && ( // 조건부 렌더링 유지
+                                        <img
+                                            src={review.userProfileImage}
+                                            alt="사용자 프로필 이미지"
+                                            style={{width: '50px', height: '50px'}} // 이미지 크기 설정 추가
+                                        />
+                                    )}
+                                    <div className="review-right-info">
+                                        <span>{review.userName}</span>
+                                        <div className="star-rating">
+                                            {[...Array(review.score)].map((_, index) => (
+                                                <Star key={index} filled/>
+                                            ))}
+                                            {[...Array(5 - review.score)].map((_, index) => (
+                                                <Star key={index + review.score}/>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                                {/*연도 앞자리 두개, 시간 제거*/}
-                                <span>{new Intl.DateTimeFormat('ko-KR', {
-                                    year: '2-digit',
-                                    month: 'numeric',
-                                    day: 'numeric'
-                                }).format(new Date(review.createdAt)).replace(/\.$/, '')}</span>
+                                <div className="review-contents">
+                                    <p>{review.review}</p>
+                                    <div className="review-bottom-content">
+                                        {/*연도 앞자리 두개, 시간 제거*/}
+                                        <span>{new Intl.DateTimeFormat('ko-KR', {
+                                            year: '2-digit',
+                                            month: 'numeric',
+                                            day: 'numeric'
+                                        }).format(new Date(review.createdAt)).replace(/\.$/, '')}</span>
+                                        {/* 사용자가 작성한 리뷰인 경우에만 수정/삭제 버튼 표시 */}
+                                        {review.userIdx.toString() === userIdx && (
+                                            <div className="review-utils">
+                                                <Link
+                                                    to={`/recommend/restaurant/${restaurant.id}/review`} // 수정 페이지 경로
+                                                    state={{
+                                                        restaurantId: restaurant.id,
+                                                        review: review,
+                                                        isEditing: true,
+                                                        restaurantName: restaurant.place_name
+                                                    }} // 수정 데이터 전달
+                                                >
+                                                    수정
+                                                </Link>
+                                                <button onClick={() => handleDelete(review.reviewIdx)}>삭제</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="review-right-content">
                                 {/* 리뷰 사진 추가 */}
                                 {review.photoUrl && (
                                     <img
                                         src={review.photoUrl}
                                         alt="리뷰 사진"
-                                        style={{width: '200px', height: '200px', objectFit: 'cover'}}
+                                        style={{width: '150px', height: '150px', objectFit: 'cover'}}
                                     />
-                                )}
-                                <p>{review.review}</p>
-
-                                {/* 사용자가 작성한 리뷰인 경우에만 수정/삭제 버튼 표시 */}
-                                {review.userIdx.toString() === userIdx && (
-                                    <div>
-                                        <Link
-                                            to={`/recommend/restaurant/${restaurant.id}/review`} // 수정 페이지 경로
-                                            state={{
-                                                restaurantId: restaurant.id,
-                                                review: review,
-                                                isEditing: true,
-                                                restaurantName: restaurant.place_name
-                                            }} // 수정 데이터 전달
-                                        >
-                                            수정
-                                        </Link>
-                                        <button onClick={() => handleDelete(review.reviewIdx)}>삭제</button>
-                                    </div>
                                 )}
                             </div>
                         </li>

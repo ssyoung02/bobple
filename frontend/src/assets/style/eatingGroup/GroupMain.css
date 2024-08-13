@@ -3,7 +3,6 @@
 }
 
 .group-header {
-    text-align: center;
     margin-bottom: 30px;
 }
 
@@ -99,6 +98,12 @@
     position: relative;
     padding: 5px;
     text-align: center;
+    height: 100%;
+}
+
+.item:hover,
+.item:active {
+    font-weight: bold;
 }
 
 .item img {
@@ -115,7 +120,7 @@
     word-wrap: break-word; /* 단어가 길면 줄바꿈 */
     width: 100px;
     overflow: visible; /* 텍스트가 짤리지 않도록 설정 */
-    line-height: 1.1; /* 텍스트 줄 간격 설정 */
+    line-height: 1.2; /* 텍스트 줄 간격 설정 */
     max-height: 20px; /* 텍스트의 최대 높이 제한을 없앰 */
     margin-top: 10px; /* 이미지와 텍스트 사이의 간격 설정 */
 }
