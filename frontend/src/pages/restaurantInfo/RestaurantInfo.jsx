@@ -190,7 +190,7 @@ function RestaurantInfo() {
                 </div>
                 <Link
                     to={`/recommend/restaurant/${restaurant.id}/review`}
-                    state={{restaurantId: restaurant.id, reviews: reviews}}
+                    state={{ restaurantId: restaurant.id, reviews: reviews, restaurantName: restaurant.place_name }}
                 >
                     리뷰 작성
                 </Link>
