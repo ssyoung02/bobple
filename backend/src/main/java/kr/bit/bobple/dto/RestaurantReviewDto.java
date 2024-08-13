@@ -17,6 +17,7 @@ public class RestaurantReviewDto {
     private int score;
     private String review;
     private String photoUrl;
+    private String restaurantName;
 
     public RestaurantReviewDto() {}
 
@@ -31,5 +32,6 @@ public class RestaurantReviewDto {
         this.score = entity.getScore();
         this.review = entity.getReview();
         this.photoUrl = entity.getPhotoUrl();
+        this.restaurantName = entity.getRestaurantName();
     }
 }

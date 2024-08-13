@@ -13,7 +13,6 @@ public interface RestaurantReviewRepository extends JpaRepository<RestaurantRevi
     @Query("SELECT r FROM RestaurantReview r JOIN FETCH r.user WHERE r.restaurantId = :restaurantId")
     List<RestaurantReview> findAllByRestaurantId(Long restaurantId);
 
-
     // 특정 사용자의 리뷰 조회
     List<RestaurantReview> findByUser_UserIdx(Long userIdx);
 }

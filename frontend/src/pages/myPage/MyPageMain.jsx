@@ -77,6 +77,9 @@ function MyPageMain() {
         navigate('/myPage/bookmark')
     }
 
+    const moveMyReviews = () => {
+        navigate('/myPage/myReviews')
+    }
     const moveNotice = () => {
         navigate('/mypage/serviceCenter/userNotice')
     }
@@ -151,6 +154,12 @@ function MyPageMain() {
                             <Bookmark/>
                         </span>
                         <h6>북마크 음식점</h6>
+                    </button>
+                    <button className="mypage-link" onClick={moveMyReviews}> {/* 새로운 버튼 추가 */}
+                        <span className="activites-icon">
+                            <FilePen/>
+                        </span>
+                        <h6>작성한 리뷰</h6>
                     </button>
                 </div>
                 <div className="mypag-point">

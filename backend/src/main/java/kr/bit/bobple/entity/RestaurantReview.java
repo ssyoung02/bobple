@@ -36,5 +36,6 @@ public class RestaurantReview {
     @Column(length = 250)
     private String photoUrl;
 
-
+    @Column(nullable = false, length = 50)
+    private String restaurantName;
 }

@@ -48,6 +48,7 @@ public class RestaurantReviewService {
         restaurantReview.setUser(user);
         restaurantReview.setScore(reviewDto.getScore());
         restaurantReview.setReview(reviewDto.getReview());
+        restaurantReview.setRestaurantName(reviewDto.getRestaurantName());
 
         // 이미지 업로드 및 URL 설정 (photoFile이 null이 아닌 경우에만)
         if (photoFile != null && !photoFile.isEmpty()) {

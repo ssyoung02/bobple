@@ -44,6 +44,7 @@ public class RestaurantReviewController {
             @RequestParam("restaurantId") Long restaurantId,
             @RequestParam("score") int score,
             @RequestParam("review") String review,
+            @RequestParam("restaurantName") String restaurantName,
             @RequestParam(value = "photoUrl", required = false) MultipartFile photoFile
     ) {
         // RestaurantReviewDto 객체 생성 및 필드 설정
@@ -52,6 +53,7 @@ public class RestaurantReviewController {
         reviewDto.setRestaurantId(restaurantId);
         reviewDto.setScore(score);
         reviewDto.setReview(review);
+        reviewDto.setRestaurantName(restaurantName);
 
         RestaurantReviewDto savedReviewDto = restaurantReviewService.createReview(reviewDto, photoFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReviewDto);
@@ -85,5 +87,15 @@ public class RestaurantReviewController {
     public ResponseEntity<Void> deleteReview(@PathVariable Long reviewIdx) {
         restaurantReviewRepository.deleteById(reviewIdx);
         return ResponseEntity.noContent().build();
+    }
+
+    // 특정 사용자의 리뷰 전체 조회
+    @GetMapping("/user/{userIdx}")
+    public ResponseEntity<List<RestaurantReviewDto>> getReviewsByUserIdx(@PathVariable Long userIdx) {
+        List<RestaurantReview> reviews = restaurantReviewRepository.findByUser_UserIdx(userIdx);
+        List<RestaurantReviewDto> reviewDtos = reviews.stream()
+                .map(RestaurantReviewDto::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(reviewDtos);
     }
 }
