@@ -1,7 +1,7 @@
 // src/components/Recipe/LatestRecipeCard.jsx
 import React, {useContext} from 'react';
 import { Link } from 'react-router-dom';
-import errorImage from '../../assets/images/error_image.jpg';
+import mascot from "../../assets/images/bobple_mascot.png"; // CSS 파일 import
 import {Calendar, DefaultUser, View} from "../../components/imgcomponents/ImgComponents";
 import dayjs from "dayjs";
 import RecipeContext from "./RecipeContext";
@@ -15,7 +15,7 @@ function LatestRecipeCard({ recipe }) {
                 <div className="recipe-card-image">
                     <img src={recipe.picture || '/images/default_recipe_image.jpg'} alt={recipe.title} onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = errorImage;
+                        e.target.src = mascot;
                     }}/>
                 </div>
                 <div className="recipe-card-content">

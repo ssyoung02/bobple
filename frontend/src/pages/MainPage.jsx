@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import '../assets/style/MainPage.css'
 import SliderComponent from "../components/SliderComponent";
-
+import { clearRecipeLocalStorage } from '../utils/localStorageUtils';
 function MainPage() {
     const navigate = useNavigate();
 
@@ -27,21 +27,26 @@ function MainPage() {
     }, []);
 
     const moveGame = () => {
+        clearRecipeLocalStorage();
         navigate('/mainGame');
     };
 
     const moveCalculator = () => {
+        clearRecipeLocalStorage();
         navigate('/myPage/calculator');
     };
 
     const moveRecipeAI = () => {
+        clearRecipeLocalStorage();
         navigate('/recipe/ai-recommendation'); // 경로 복원
     }
     const moveGroup = () => {
+        clearRecipeLocalStorage();
         navigate('/group');
     };
 
     const moveRecommend = () => {
+        clearRecipeLocalStorage();
         navigate('/recommend/');
     };
 

@@ -17,15 +17,30 @@ function RecipeMain() {
 
     const [searchKeyword, setSearchKeyword] = useState('');
     const navigate = useNavigate();
-    const [page, setPage] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(() => {
+        // 뒤로 가기 시 마지막 페이지를 유지하기 위해 로컬 스토리지에서 초기 값을 가져옵니다.
+        const storedPage = localStorage.getItem('recipePage');
+        return storedPage ? JSON.parse(storedPage) : 0;
+    });    const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [initialLoad, setInitialLoad] = useState(true);
+    const [lastLoadedKey, setLastLoadedKey] = useState(() => {
+        const storedKey = localStorage.getItem('lastLoadedKey');
+        return storedKey || null;
+    });
+
 
     const observer = useRef();
-
     // 페이지 증가와 중복 방지를 위한 useRef를 추가하여 비동기 작업 간의 상태 관리
     const currentRequestPage = useRef(null);
+
+    useEffect(() => {
+        const storedRecipes = localStorage.getItem('latestRecipes');
+        if (storedRecipes) {
+            setLatestRecipes(JSON.parse(storedRecipes));
+            setInitialLoad(false);
+        }
+    }, [setLatestRecipes]);
 
     const lastRecipeElementRef = useCallback(node => {
         if (loading || !hasMore) return;
@@ -65,7 +80,15 @@ function RecipeMain() {
                     return;
                 }
 
-                setLatestRecipes(prevRecipes => [...prevRecipes, ...uniqueRecipes]);
+                setLatestRecipes(prevRecipes => {
+                    const updatedRecipes = [...prevRecipes, ...uniqueRecipes];
+                    localStorage.setItem('latestRecipes', JSON.stringify(updatedRecipes));
+                    return updatedRecipes;
+                });
+
+                const lastKey = `${uniqueRecipes[uniqueRecipes.length - 1].recipeIdx}-${uniqueRecipes[uniqueRecipes.length - 1].userIdx}`;
+                setLastLoadedKey(lastKey);
+                localStorage.setItem('lastLoadedKey', lastKey);
 
                 // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
                 console.log(`latestRecipes.length${latestRecipes.length} + uniqueRecipes.length${uniqueRecipes.length} >= totalRecipes: ${totalRecipes}`);
@@ -104,6 +127,11 @@ function RecipeMain() {
         console.log('Current totalRecipes value:', totalRecipes);
 
     }, [page, initialLoad, loadLatestRecipes, totalRecipes]);
+
+    useEffect(() => {
+        // 페이지 상태를 로컬 스토리지에 저장하여 뒤로 가기 시 유지합니다.
+        localStorage.setItem('recipePage', page);
+    }, [page]);
 
     const categoryButtons = [
         {name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식'},

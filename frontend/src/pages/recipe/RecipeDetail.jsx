@@ -17,6 +17,7 @@ import {
 } from "../../components/imgcomponents/ImgComponents";
 import PageHeader from "../../components/layout/PageHeader";
 import {useOnlyHeaderColorChange} from "../../hooks/NavigateComponentHooks";
+import {clearRecipeLocalStorage} from "../../utils/localStorageUtils";
 
 function RecipeDetail() {
     const { recipeIdx } = useParams();
@@ -102,6 +103,7 @@ function RecipeDetail() {
         if (confirmDelete) {
             try {
                 await deleteRecipe(recipeIdx);
+                clearRecipeLocalStorage();
                 navigate('/recipe');
             } catch (error) {
                 console.error('레시피 삭제 실패:', error);
