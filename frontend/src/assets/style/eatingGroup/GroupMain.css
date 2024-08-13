@@ -14,6 +14,7 @@
 
 .search-box {
     display: flex;
+    justify-content: space-between;
     gap: 5px;
     margin: 10px 0;
 }
@@ -23,11 +24,50 @@
 }
 
 .group-search-box {
+    border: none;
+    border-bottom: 2px solid #000; /* 아래쪽 테두리만 추가 */
+    outline: none; /* 클릭 시 나타나는 기본 아웃라인 제거 */
+    padding: 5px; /* 인풋 내부 여백 */
     width: 180px;
 }
 
-.group-search-box::placeholder,
 .group-search-select {
+    appearance: none; /* 기본 브라우저 스타일 제거 */
+    -webkit-appearance: none; /* WebKit 브라우저에서 기본 스타일 제거 */
+    -moz-appearance: none; /* Mozilla 브라우저에서 기본 스타일 제거 */
+    background-color: rgba(247, 204, 212, 0.5); /* 배경 색상 */
+    border: 1px solid #ccc; /* 테두리 */
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 4px; /* 둥근 테두리 */
+    width: 50%; /* 너비 조정 */
+    box-sizing: border-box; /* 패딩 포함한 박스 사이즈 */
+    color: #233B6F !important; /* 글자 색상 */
+}
+
+.group-search-select:focus {
+    border: none;
+    outline: none; /* 포커스 시 아웃라인 제거 */
+}
+
+.group-search-select-wrapper {
+    position: relative; /* 커스텀 아이콘 위치 조정용 */
+    width: 50%; /* 전체 너비 */
+}
+
+.group-search-select-wrapper::after {
+    content: '▼'; /* 커스텀 화살표 추가 */
+    font-size: 12px;
+    color: #233B6F;
+    position: absolute;
+    left: 38%;
+    top: 48%;
+    transform: translateY(-50%);
+    pointer-events: none; /* 화살표에 클릭 이벤트 방지 */
+}
+
+.group-search-box::placeholder {
     font-size: 15px;
 }
 
@@ -75,7 +115,7 @@
     display: block;
     white-space: normal; /* 줄바꿈을 허용 */
     word-wrap: break-word; /* 단어가 길면 줄바꿈 */
-    width: 120px;
+    width: 100px;
     overflow: visible; /* 텍스트가 짤리지 않도록 설정 */
     line-height: 1.1; /* 텍스트 줄 간격 설정 */
     max-height: 20px; /* 텍스트의 최대 높이 제한을 없앰 */

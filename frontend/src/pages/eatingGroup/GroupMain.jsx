@@ -158,18 +158,20 @@ const GroupMain = () => {
             <div className="meeting-list">
                 <h2 className="group-title">모집 중인 모임</h2>
                 <fieldset className="search-box flex-row">
-                    <select
-                        className="group-search-select"
-                        id="searchOption"
-                        name="searchCnd"
-                        title="검색 조건 선택"
-                        onChange={(e) => setSearchOption(e.target.value)}
-                    >
-                        <option value="all-post">전체</option>
-                        <option value="title-post">제목</option>
-                        <option value="title-content">제목+내용</option>
-                        <option value="location-post">장소</option>
-                    </select>
+                    <div className="group-search-select-wrapper">
+                        <select
+                            className="group-search-select"
+                            id="searchOption"
+                            name="searchCnd"
+                            title="검색 조건 선택"
+                            onChange={(e) => setSearchOption(e.target.value)}
+                        >
+                            <option value="all-post">전체</option>
+                            <option value="title-post">제목</option>
+                            <option value="title-content">제목+내용</option>
+                            <option value="location-post">장소</option>
+                        </select>
+                    </div>
                     <div className="search-field">
                         <input
                             className="group-search-box"
