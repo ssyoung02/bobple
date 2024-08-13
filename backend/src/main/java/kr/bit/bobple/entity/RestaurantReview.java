@@ -33,7 +33,7 @@ public class RestaurantReview {
     @Column(nullable = false, length = 500)
     private String review;
 
-    @Column(length = 250)
+    @Column(length = 500)
     private String photoUrl;
 
     @Column(nullable = false, length = 50)

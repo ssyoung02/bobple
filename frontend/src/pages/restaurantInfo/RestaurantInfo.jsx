@@ -160,8 +160,7 @@ function RestaurantInfo() {
 
     return (
         <div className="restaurant-info-container">
-            <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded}
-                              width="300" height="200"/>
+            <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded}/>
             <h2>{restaurant.place_name}</h2>
             <p>{restaurant.address_name} </p>
             <p>(지번: {restaurant.road_address_name})</p>
