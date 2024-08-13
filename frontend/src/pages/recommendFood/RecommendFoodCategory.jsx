@@ -318,6 +318,15 @@ function RecommendFoodCategory() {
         setFilteredThemes(filtered);
     }, [recommendThemes, displayedTitle]);
 
+    // Best 음식점 3개 설정 (북마크 개수 기준 정렬 후 상위 3개 선택)
+    const top3BookmarkedRestaurants = [...restaurants] // restaurants 배열 복사
+        .sort((a, b) => b.bookmarks_count - a.bookmarks_count) // 북마크 개수 내림차순 정렬
+        .slice(0, 3);
+
+    // Best 음식점 목록 (북마크 수가 0이 아닌 음식점이 3개 미만이면 기존 로직 유지)
+    const bestRestaurants = top3BookmarkedRestaurants.length < 3 ? sortedRestaurants.slice(0, 3) : top3BookmarkedRestaurants;
+
+
     return (
         <div className="recommend-category-container">
             {/* 검색창 */}
@@ -354,7 +363,7 @@ function RecommendFoodCategory() {
                 </h3>
 
                 <ul className="restaurant-list top-list">
-                    {restaurants.slice(0, 3).map((restaurant) => (
+                    {bestRestaurants.map((restaurant) => (
                         <li key={restaurant.id} className="top-item">
 
                                 <div className="restaurant-image-wrapper">
