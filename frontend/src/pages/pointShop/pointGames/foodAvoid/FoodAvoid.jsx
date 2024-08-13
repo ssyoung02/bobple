@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom'; // React Router useNavigate import
+import {useLocation, useNavigate} from 'react-router-dom'; // React Router useNavigate import
 import '../../../../assets/style/pointGame/avoid/FoodAvoid.css';
 import bobpleMascot from '../../../../assets/images/bobple_mascot.png';
 import {getUserIdx} from "../../../../utils/auth"; // 이미지 import
 import axios from 'axios';
-import {useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
+import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
 
 const CANVAS_WIDTH = 800; // 캔버스 너비 설정
 const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
@@ -36,6 +36,7 @@ const FoodAvoid = () => {
     const moveRef = useRef(); // moveChar 함수 참조를 위해 useRef 사용
     const userIdx=getUserIdx();
     const [earnedPoint, setEarnedPoint] = useState(0);
+    const location = useLocation();
 
     useEffect(() => {
         if (gameStart) {
@@ -277,11 +278,12 @@ const FoodAvoid = () => {
         }
     }, [openDialog, score, userIdx]);
 
+    useHeaderColorChange(location.pathname, '#C8EEFF');
     useNavigateNone();
 
     return (
         <div className="avoid-body">
-            <h1>AVOID GAME</h1>
+            <h1>AVOID FOOD</h1>
             <div className="avoid-container">
                 <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>
                 <div className="point-game-1st-btn">
@@ -297,21 +299,23 @@ const FoodAvoid = () => {
                     )}
                 </div>
                 <div className="button-container">
-                    <button className="avoid-button" onClick={moveCharLeft} disabled={!gameStart}>Left</button>
-                    <button className="avoid-button" onClick={moveCharRight} disabled={!gameStart}>Right</button>
+                    <button className="avoid-button" onClick={moveCharLeft} disabled={!gameStart}>⬅️</button>
+                    <button className="avoid-button" onClick={moveCharRight} disabled={!gameStart}>➡️</button>
                     <div className="avoid-score">Score: {score}</div>
                 </div>
             </div>
-            {openDialog && <div className="avoid-dialog">Game Over!</div>}
-            {openDialog && ( // openDialog가 true일 때만 포인트 획득 실패 메시지 표시
-                <div className="avoid-dialog-point">
-                    {earnedPoint > 0 ? (
-                        <p>{earnedPoint} 포인트 획득!</p>
-                    ) : (
-                        <p>포인트 획득 실패!</p>
-                    )}
-                </div>
-            )}
+            <div className="avoid-footer">
+                {openDialog && <div className="avoid-dialog">Game Over!</div>}
+                {openDialog && ( // openDialog가 true일 때만 포인트 획득 실패 메시지 표시
+                    <div className="avoid-dialog-point">
+                        {earnedPoint > 0 ? (
+                            <p>{earnedPoint} 포인트 획득!</p>
+                        ) : (
+                            <p>포인트 획득 실패!</p>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

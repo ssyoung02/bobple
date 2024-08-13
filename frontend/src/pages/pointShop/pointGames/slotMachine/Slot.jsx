@@ -22,6 +22,8 @@ const Slot = forwardRef(({ fruits }, ref) => {
         getResult() {
             const totalHeight = fruits.length * 90;
             const normalizedPosition = (position % totalHeight + totalHeight) % totalHeight;
+            // 화살표가 가리키는 슬롯의 중앙을 기준으로 이미지 인덱스를 계산
+            const centerOffset = 45; // 슬롯의 높이(90px)의 절반
             const index = Math.floor((normalizedPosition + 45) / 90) % fruits.length; // Adjust to ensure accurate result
             return fruits[index];
         }
@@ -37,7 +39,7 @@ const Slot = forwardRef(({ fruits }, ref) => {
                     }
                     return newPos;
                 });
-            }, 150); // Increase speed by decreasing the interval time
+            }, 100); // Increase speed by decreasing the interval time
             setIntervalId(id);
         } else {
             clearInterval(intervalId);
