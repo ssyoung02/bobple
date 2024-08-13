@@ -217,7 +217,6 @@ function RestaurantInfo() {
                                     ))}
                                 </div>
                                 <span className="review-time">{review.createdAt}</span>
-                                <p>{review.review}</p>
                                 {/* 리뷰 사진 추가 */}
                                 {review.photoUrl && (
                                     <img
@@ -226,6 +225,7 @@ function RestaurantInfo() {
                                         style={{ width: '200px', height: '200px', objectFit: 'cover' }}
                                     />
                                 )}
+                                <p>{review.review}</p>
 
                                 {/* 사용자가 작성한 리뷰인 경우에만 수정/삭제 버튼 표시 */}
                                 {review.userIdx.toString() === userIdx && (
@@ -235,7 +235,8 @@ function RestaurantInfo() {
                                             state={{
                                                 restaurantId: restaurant.id,
                                                 review: review,
-                                                isEditing: true
+                                                isEditing: true,
+                                                restaurantName: restaurant.place_name
                                             }} // 수정 데이터 전달
                                         >
                                             수정
