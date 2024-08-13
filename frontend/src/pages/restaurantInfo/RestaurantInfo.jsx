@@ -215,13 +215,18 @@ function RestaurantInfo() {
                                         <Star key={index + review.score}/>
                                     ))}
                                 </div>
-                                <span className="review-time">{review.createdAt}</span>
+                                {/*연도 앞자리 두개, 시간 제거*/}
+                                <span>{new Intl.DateTimeFormat('ko-KR', {
+                                    year: '2-digit',
+                                    month: 'numeric',
+                                    day: 'numeric'
+                                }).format(new Date(review.createdAt)).replace(/\.$/, '')}</span>
                                 {/* 리뷰 사진 추가 */}
                                 {review.photoUrl && (
                                     <img
                                         src={review.photoUrl}
                                         alt="리뷰 사진"
-                                        style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                                        style={{width: '200px', height: '200px', objectFit: 'cover'}}
                                     />
                                 )}
                                 <p>{review.review}</p>
