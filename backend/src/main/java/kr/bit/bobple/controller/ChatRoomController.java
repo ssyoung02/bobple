@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/chatrooms")
@@ -23,7 +25,6 @@ public class ChatRoomController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
 
     @PostMapping
     public ChatRoom createChatRoom(@RequestParam("chatRoomTitle") String chatRoomTitle,
@@ -48,7 +49,8 @@ public class ChatRoomController {
     public List<ChatRoom> getAllChatRooms(HttpServletRequest request) {
         String token = resolveToken(request);
         Long userIdx = jwtTokenProvider.getUserIdx(token);
-        return chatRoomService.getAllChatRoomsIncludingOrphaned(userIdx);
+        // 차단된 방을 제외한 모든 채팅방을 가져옴
+        return chatRoomService.getAvailableChatRoomsForUser(userIdx);
     }
 
     @GetMapping("/{chatRoomId}")
@@ -67,11 +69,13 @@ public class ChatRoomController {
         String token = resolveToken(request);
         Long userIdx = jwtTokenProvider.getUserIdx(token);
         System.out.println("User ID from token: " + userIdx); // 로그 추가
-        return chatRoomService.getChatRoomsByUser(userIdx);
+        // 차단된 방을 제외한 유저가 참여 중인 채팅방을 가져옴
+        return chatRoomService.getAvailableChatRoomsForUser(userIdx);
     }
 
     @GetMapping("/all")
     public List<ChatRoom> getAllChatRooms() {
+        // 차단된 방을 제외한 모든 채팅방을 가져옴
         return chatRoomService.getAllChatRooms();
     }
 
@@ -98,4 +102,17 @@ public class ChatRoomController {
         return ResponseEntity.ok(participants);
     }
 
+    @PostMapping("/{chatRoomId}/block")
+    public ResponseEntity<Void> blockUser(@PathVariable Long chatRoomId, @RequestParam Long userId) {
+        chatRoomService.blockUser(chatRoomId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{chatRoomId}/role")
+    public ResponseEntity<Map<String, String>> getUserRoleInChatRoom(@PathVariable Long chatRoomId, @RequestParam Long userIdx) {
+        String role = chatRoomService.getUserRoleInChatRoom(chatRoomId, userIdx);
+        Map<String, String> response = new HashMap<>();
+        response.put("role", role);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -14,13 +14,12 @@ const GroupMain = () => {
     const [searchOption, setSearchOption] = useState('all-post');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
-    const [unreadMessagesCount, setUnreadMessagesCount] = useState({}); // 읽지 않은 메시지 수를 관리할 상태
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState({});
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         const userIdx = localStorage.getItem('userIdx');
 
-        // WebSocket 연결 설정
         const socket = io('http://localhost:3001', {
             query: { userIdx }
         });
@@ -41,14 +40,15 @@ const GroupMain = () => {
 
         const fetchMyChatRooms = async () => {
             try {
-                const myRoomsResponse = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                setMyChatRooms(myRoomsResponse.data);
+                // DENIED 상태의 채팅방을 제외
+                const availableChatRooms = response.data.filter(room => room.status !== 'DENIED');
+                setMyChatRooms(availableChatRooms);
 
-                // 각 채팅방에 대해 읽지 않은 메시지 수를 가져옴
-                myRoomsResponse.data.forEach(room => {
+                availableChatRooms.forEach(room => {
                     fetchUnreadMessagesCount(room.chatRoomIdx);
                 });
             } catch (error) {
@@ -69,14 +69,12 @@ const GroupMain = () => {
         fetchMyChatRooms();
         fetchAllChatRooms();
 
-        // Clean up on unmount
         return () => {
             socket.disconnect();
         };
     }, []);
 
     useEffect(() => {
-        // 현재 유저가 참여하고 있는 모임을 제외한 모임을 필터링
         const excludeMyChatRooms = allChatRooms.filter(
             (chatRoom) => !myChatRooms.some(myRoom => myRoom.chatRoomIdx === chatRoom.chatRoomIdx)
         );
@@ -84,7 +82,6 @@ const GroupMain = () => {
     }, [allChatRooms, myChatRooms]);
 
     const handleRoomClick = (chatRoomId) => {
-        // 채팅방에 입장할 때 해당 방의 읽지 않은 메시지 수 초기화
         setUnreadMessagesCount(prevState => ({
             ...prevState,
             [chatRoomId]: 0

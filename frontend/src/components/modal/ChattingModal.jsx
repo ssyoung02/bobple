@@ -2,34 +2,61 @@ import '../../assets/style/components/ChattingModal.css';
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople }) => {
     const [participants, setParticipants] = useState([]);
+    const [currentUserRole, setCurrentUserRole] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchParticipants = async () => {
+        const fetchParticipantsAndRole = async () => {
             try {
-                const token = localStorage.getItem('token'); // JWT 토큰을 로컬 스토리지에서 가져옴
+                const token = localStorage.getItem('token');
                 if (!token) {
                     console.error('No JWT token found');
                     return;
                 }
 
-                const response = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/participants`, {
+                // 현재 유저 정보 가져오기
+                const userResponse = await axios.get('http://localhost:8080/api/users/me', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
-                setParticipants(response.data);
+                const userIdx = userResponse.data.userIdx;
+
+                // 해당 채팅방 참여자 정보 가져오기
+                const participantsResponse = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/participants`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                // 차단된 참여자들을 제외
+                const activeParticipants = participantsResponse.data.filter(participant => participant.status !== 'DENIED');
+                setParticipants(activeParticipants);
+
+                // 현재 유저의 역할 가져오기
+                const roleResponse = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/role`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    params: {
+                        userIdx
+                    }
+                });
+
+                console.log('Current User Role:', roleResponse.data.role); // 콘솔에 현재 유저의 역할 출력
+                setCurrentUserRole(roleResponse.data.role);
+
             } catch (error) {
-                console.error('Failed to fetch participants', error);
+                console.error('Failed to fetch participants or user role', error);
             }
         };
 
-        fetchParticipants();
+        fetchParticipantsAndRole();
     }, [chatRoomId]);
 
     const closeModal = () => {
@@ -39,8 +66,29 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
     };
 
     const moveCal = () => {
-        navigate('/myPage/calculator')
-    }
+        navigate('/myPage/calculator');
+    };
+
+    const handleBlockUser = async (userId, userName) => {
+        const confirmed = window.confirm(`${userName}님을 차단하시겠습니까?\n차단하면 차단한 사용자는 다시 현재 채팅방에 들어올 수 없습니다.`);
+        if (confirmed) {
+            try {
+                const token = localStorage.getItem('token');
+                await axios.post(`http://localhost:8080/api/chatrooms/${chatRoomId}/block`, null, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    params: {
+                        userId
+                    }
+                });
+                setParticipants(prevParticipants => prevParticipants.filter(participant => participant.userId !== userId));
+                alert(`${userName}님이 차단되었습니다.`);
+            } catch (error) {
+                console.error('Failed to block user', error);
+            }
+        }
+    };
 
     return (
         <div className={`modal ${modalState}`}>
@@ -51,7 +99,7 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 </div>
                 <div className="chatRoom-info">
                     <h6>모임 정보</h6>
-                    <br/>
+                    <br />
                     <div>모임장소 :</div>
                     <div>모임시간 :</div>
                 </div>
@@ -59,10 +107,12 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 <div className="participants-list">
                     {participants.length > 0 ? (
                         participants.map((participant) => (
-                            <div key={participant.userId} className="participant-item">
-                                <img src={participant.profileImage} alt={`${participant.name}'s profile`}
-                                     className="participant-image"/>
+                            <div key={participant.userId} className={`participant-item ${participant.role === 'LEADER' ? 'leader' : ''}`}>
+                                <img src={participant.profileImage} alt={`${participant.name}'s profile`} className="participant-image" />
                                 <span>{participant.name}</span>
+                                {currentUserRole === 'LEADER' && participant.role !== 'LEADER' && (
+                                    <button className="block-button" onClick={() => handleBlockUser(participant.userId, participant.name)}>차단</button>
+                                )}
                             </div>
                         ))
                     ) : (
