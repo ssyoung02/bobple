@@ -8,9 +8,10 @@ import {ArrowRightLong, MoreIcon, NextTo, PrevTo, SearchIcon} from "../../compon
 import {UserRecommendedRecipes} from "../../components/SliderComponent";
 import {ClipLoader} from "react-spinners";
 
+
 function RecipeMain() {
     const {
-        getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes, // totalRecipes를 RecipeContext에서 가져옴
+        getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes,
         recipeCategory
     } = useContext(RecipeContext);
 
@@ -22,6 +23,9 @@ function RecipeMain() {
     const [initialLoad, setInitialLoad] = useState(true);
 
     const observer = useRef();
+
+    // 페이지 증가와 중복 방지를 위한 useRef를 추가하여 비동기 작업 간의 상태 관리
+    const currentRequestPage = useRef(null);
 
     const lastRecipeElementRef = useCallback(node => {
         if (loading || !hasMore) return;
@@ -35,13 +39,15 @@ function RecipeMain() {
         if (node) observer.current.observe(node);
     }, [loading, hasMore]);
 
-    const loadLatestRecipes = useCallback(async () => {
-        if (!hasMore) return;
+    const loadLatestRecipes = useCallback(async (currentPage) => {
+        if (!hasMore || currentRequestPage.current === currentPage) return;
+        currentRequestPage.current = currentPage;
         setLoading(true);
-        console.log(`Requesting page ${page}...`);
+        console.log(`Requesting page ${currentPage}...`);
+
         try {
             const response = await axios.get('/api/recipes/latest', {
-                params: { page, size: 20 }
+                params: { page: currentPage, size: 20 }
             });
 
             if (response.data.content.length > 0) {
@@ -62,7 +68,7 @@ function RecipeMain() {
                 setLatestRecipes(prevRecipes => [...prevRecipes, ...uniqueRecipes]);
 
                 // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
-                console.log("latestRecipes.length" + latestRecipes.length + "+" + "uniqueRecipes.length" + uniqueRecipes.length + ">=" + "totalRecipes :" + totalRecipes);
+                console.log(`latestRecipes.length${latestRecipes.length} + uniqueRecipes.length${uniqueRecipes.length} >= totalRecipes: ${totalRecipes}`);
                 if (latestRecipes.length + uniqueRecipes.length >= totalRecipes) {
                     console.log('All recipes have been loaded.');
                     setHasMore(false);
@@ -75,30 +81,29 @@ function RecipeMain() {
         } finally {
             setLoading(false);
         }
-    }, [hasMore, latestRecipes, totalRecipes, setLatestRecipes, setError, page]);
+    }, [hasMore, latestRecipes, totalRecipes, setLatestRecipes, setError]);
 
     useEffect(() => {
         // totalRecipes 값이 준비되기 전에는 로딩을 시도하지 않음
-        if (totalRecipes === 0) {
+        if (totalRecipes === 0 || !totalRecipes) {
             console.log('totalRecipes is not ready yet. Skipping load.');
             return;
         }
 
-        if (initialLoad && latestRecipes.length > 0) {
-            console.log('Initial load is complete. No need to reload.');
+        if (initialLoad) {
+            console.log('Initial load or page has changed. Loading more recipes...');
+            loadLatestRecipes(0);
             setInitialLoad(false);
             return;
         }
 
-        if (initialLoad || page > 0) {
-            console.log('Initial load or page has changed. Loading more recipes...');
-            loadLatestRecipes();
+        if (page > 0) {
+            loadLatestRecipes(page);
         }
 
-        console.log('Current totalRecipes value:', totalRecipes); // 여기에 totalRecipes 값을 로깅
+        console.log('Current totalRecipes value:', totalRecipes);
 
     }, [page, initialLoad, loadLatestRecipes, totalRecipes]);
-
 
     const categoryButtons = [
         {name: '한식', image: 'https://kr.object.ncloudstorage.com/bobple/banner/recipe-korean-food.jpg', category: '한식'},
@@ -197,7 +202,7 @@ function RecipeMain() {
                 <div className="latest-recipe-list">
                     {latestRecipes.length > 0 ? (
                         latestRecipes.map((recipe, index) => {
-                            const uniqueKey = `${recipe.recipeIdx}-${index}`;
+                            const uniqueKey = `${recipe.recipeIdx}-${recipe.userIdx}-${index}`;
                             if (latestRecipes.length === index + 1) {
                                 return (
                                     <div ref={lastRecipeElementRef} key={uniqueKey}
