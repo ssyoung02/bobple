@@ -160,8 +160,7 @@ function RestaurantInfo() {
 
     return (
         <div className="restaurant-info-container">
-            <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded}
-                              width="300" height="200"/>
+            <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded}/>
             <h2>{restaurant.place_name}</h2>
             <p>{restaurant.address_name} </p>
             <p>(지번: {restaurant.road_address_name})</p>
@@ -190,7 +189,7 @@ function RestaurantInfo() {
                 </div>
                 <Link
                     to={`/recommend/restaurant/${restaurant.id}/review`}
-                    state={{restaurantId: restaurant.id, reviews: reviews}}
+                    state={{ restaurantId: restaurant.id, reviews: reviews, restaurantName: restaurant.place_name }}
                 >
                     리뷰 작성
                 </Link>
@@ -217,7 +216,6 @@ function RestaurantInfo() {
                                     ))}
                                 </div>
                                 <span className="review-time">{review.createdAt}</span>
-                                <p>{review.review}</p>
                                 {/* 리뷰 사진 추가 */}
                                 {review.photoUrl && (
                                     <img
@@ -226,6 +224,7 @@ function RestaurantInfo() {
                                         style={{ width: '200px', height: '200px', objectFit: 'cover' }}
                                     />
                                 )}
+                                <p>{review.review}</p>
 
                                 {/* 사용자가 작성한 리뷰인 경우에만 수정/삭제 버튼 표시 */}
                                 {review.userIdx.toString() === userIdx && (
@@ -235,7 +234,8 @@ function RestaurantInfo() {
                                             state={{
                                                 restaurantId: restaurant.id,
                                                 review: review,
-                                                isEditing: true
+                                                isEditing: true,
+                                                restaurantName: restaurant.place_name
                                             }} // 수정 데이터 전달
                                         >
                                             수정

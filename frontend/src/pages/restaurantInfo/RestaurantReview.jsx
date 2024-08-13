@@ -5,7 +5,7 @@ import { useNavigate,useLocation } from 'react-router-dom';
 
 function RestaurantReview() {
     const location = useLocation();
-    const { restaurantId, review, isEditing: initialIsEditing } = location.state || {};
+    const { restaurantId, review, isEditing: initialIsEditing, restaurantName } = location.state || {}; // restaurantName 추가
 
     const [isEditing, setIsEditing] = useState(initialIsEditing || false); // isEditing 상태 초기화
     const [editingReviewId, setEditingReviewId] = useState(null);
@@ -51,6 +51,7 @@ function RestaurantReview() {
             formData.append("restaurantId", restaurantId);
             formData.append("score", reviewScore);
             formData.append("review", reviewContent);
+            formData.append("restaurantName", restaurantName);
 
             if (selectedFile) { // 선택된 파일이 있는 경우에만 추가
                 formData.append("photoUrl", selectedFile);
@@ -96,6 +97,7 @@ function RestaurantReview() {
             formData.append("userIdx", userIdx);
             formData.append("score", reviewScore);
             formData.append("review", reviewContent);
+            formData.append("restaurantName", restaurantName);
             if (selectedFile) {
                 formData.append("photoUrl", selectedFile);
             }
