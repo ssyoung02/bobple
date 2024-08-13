@@ -196,7 +196,9 @@ function MyPointUsage() {
             <div className="point-usage-box">
                 <h5>포인트 사용 내역 ({filter})</h5>
                 <ul className="point-usage-list">
-                    {pointHistory.map((point, index) => (
+                    {pointHistory
+                        .filter(point => point.pointValue !== 0) // pointValue가 0이 아닌 경우만 필터링
+                        .map((point, index) => (
                         <li key={index}>
                             <div className="point-usage-details">
                                 <p className="point-usage-date">{new Date(point.createdAt).toLocaleString()}</p>

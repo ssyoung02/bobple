@@ -70,20 +70,20 @@ const SlotMachine = () => {
 
         setResultMessage(message); // 계산된 메시지로 설정
 
-        // 포인트 저장 요청 (userIdx 필요)
-        if (earnedPoint > 0) {
-            const token = localStorage.getItem('token');
+        // 포인트 저장 요청 (userIdx 필요) - 획득 여부와 상관없이 항상 전송
+        const token = localStorage.getItem('token');
 
-            axios.post('http://localhost:8080/api/point/result', {
-                userIdx: parseInt(userIdx, 10),
-                point: earnedPoint,
-                pointComment: "슬롯 게임"
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                withCredentials: true
-            }).then(response => {
+        axios.post('http://localhost:8080/api/point/result', {
+            userIdx: parseInt(userIdx, 10),
+            point: earnedPoint, // 0 포인트도 전송
+            pointComment: isWin ? "슬롯 게임" : "슬롯 게임 실패" // 성공/실패 여부에 따라 comment 변경
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: true
+        })
+            .then(response => {
                 console.log("포인트 저장 성공:", response.data);
             }).catch(error => {
                 if (error.response) {
@@ -102,7 +102,6 @@ const SlotMachine = () => {
                     console.error("Error setting up the request:", error.message);
                 }
             });
-        }
     };
 
 

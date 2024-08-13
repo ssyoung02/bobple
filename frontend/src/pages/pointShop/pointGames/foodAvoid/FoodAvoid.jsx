@@ -241,40 +241,35 @@ const FoodAvoid = () => {
         if (openDialog) { // 게임 오버 시 포인트 계산 및 전송
             const finalPoint = Math.floor(score / 100); // 100점당 1 포인트 계산
             setEarnedPoint(finalPoint);
-            if (finalPoint > 0) {
-                const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
 
-                axios.post('http://localhost:8080/api/point/result', { // 백엔드 엔드포인트 확인
-                    userIdx: parseInt(userIdx, 10),
-                    point: finalPoint,
-                    pointComment: "음식 피하기 게임"
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    withCredentials: true
+            // 포인트 획득 여부와 상관없이 요청 전송
+            axios.post('http://localhost:8080/api/point/result', {
+                userIdx: parseInt(userIdx, 10),
+                point: finalPoint,
+                pointComment: finalPoint > 0 ? "음식 피하기 게임" : "음식 피하기 게임 실패" // point에 따라 comment 변경
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
+            })
+                .then(response => {
+                    console.log("포인트 저장 성공:", response.data);
                 })
-                    .then(response => {
-                        console.log("포인트 저장 성공:", response.data);
-                    })
-                    .catch(error => {
-                        if (error.response) {
-                            // 서버에서 에러 응답을 받은 경우
-                            if (error.response.status === 401) {
-                                console.error("Unauthorized: ", error.response.data);
-                                // 사용자에게 로그인 필요 알림 등 추가 처리
-                            } else {
-                                console.error("Error saving matching game result:", error.response.data); // 에러 메시지 출력
-                            }
-                        } else if (error.request) {
-                            // 요청을 보냈지만 응답을 받지 못한 경우
-                            console.error("No response received from server:", error.request);
+                .catch(error => {
+                    if (error.response) {
+                        if (error.response.status === 401) {
+                            console.error("Unauthorized: ", error.response.data);
                         } else {
-                            // 요청 설정 중에 에러가 발생한 경우
-                            console.error("Error setting up the request:", error.message);
+                            console.error("Error saving matching game result:", error.response.data);
                         }
-                    });
-            }
+                    } else if (error.request) {
+                        console.error("No response received from server:", error.request);
+                    } else {
+                        console.error("Error setting up the request:", error.message);
+                    }
+                });
         }
     }, [openDialog, score, userIdx]);
 
