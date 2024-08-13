@@ -7,6 +7,7 @@ import kr.bit.bobple.dto.ChatRoomDTO;
 import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -115,4 +116,19 @@ public class ChatRoomController {
         response.put("role", role);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{chatRoomId}")
+    public ResponseEntity<Void> deleteChatRoom(@PathVariable Long chatRoomId, HttpServletRequest request) {
+        String token = resolveToken(request);
+        Long userIdx = jwtTokenProvider.getUserIdx(token);
+
+        // 삭제 요청한 유저가 방장인지 확인
+        if (chatRoomService.isUserRoomLeader(chatRoomId, userIdx)) {
+            chatRoomService.deleteChatRoom(chatRoomId);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한 없는 유저가 삭제 시도
+        }
+    }
+
 }

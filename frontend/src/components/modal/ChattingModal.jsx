@@ -90,6 +90,25 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
         }
     };
 
+    const handleDeleteChatRoom = async () => {
+        const confirmed = window.confirm('정말 이 채팅방을 삭제하시겠습니까? 모든 데이터가 삭제됩니다.');
+        if (confirmed) {
+            try {
+                const token = localStorage.getItem('token');
+                await axios.delete(`http://localhost:8080/api/chatrooms/${chatRoomId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                alert('채팅방이 삭제되었습니다.');
+                closeModal();
+                navigate('/group');
+            } catch (error) {
+                console.error('Failed to delete chat room', error);
+            }
+        }
+    };
+
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content chatting">
@@ -127,6 +146,9 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 <div className="chatRoom-footer">
                     <button onClick={closeModal}>나가기➡️</button>
                     <button onClick={moveCal}>정산하기️</button>
+                    {currentUserRole === 'LEADER' && (
+                        <button className="delete-button" onClick={handleDeleteChatRoom}>삭제</button>
+                    )}
                 </div>
             </div>
         </div>
