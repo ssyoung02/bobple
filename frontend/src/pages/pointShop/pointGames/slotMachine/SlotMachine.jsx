@@ -3,6 +3,8 @@ import Dashboard from "./Dashboard";
 import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 import {getUserIdx} from "../../../../utils/auth";
 import axios from "axios";
+import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
+import {useLocation} from "react-router-dom";
 
 const SlotMachine = () => {
     const [rolling, setRolling] = useState(false);
@@ -11,6 +13,7 @@ const SlotMachine = () => {
     const slotRefs = [useRef(null), useRef(null), useRef(null)];
     const fruits = ["🍒", "🍉", "🍊", "🍓", "🍇", "🥝", "🍍", "🍎", "🍋", "💎"];
     const userIdx=getUserIdx();
+    const location = useLocation();
 
     const roll = () => {
         if (!rolling) {
@@ -52,7 +55,7 @@ const SlotMachine = () => {
 
 
         if (isWin) {
-            if (slotItems[0] === "💎") {
+            if (slotItems[0] || slotItems[1] || slotItems[2]=== "💎") {
                 console.log(slotItems[0]);
                 earnedPoint = 50;
                 message = `${earnedPoint} 포인트 획득! (💎 당첨!)`; // 보석 당첨 메시지
@@ -114,18 +117,25 @@ const SlotMachine = () => {
         });
     };
 
+    useHeaderColorChange(location.pathname, '#CCE1AB');
+    useNavigateNone();
+
+
     return (
-        <div className="slot-game">
-            <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits} />
-            <div className="machine-controls">
-                <div className="machine-roll" onClick={roll}>
-                    {rolling ? `STOP ${3 - stoppedSlots}` : "ROLL"}
+        <div className="slot-game-container">
+            <h1 className="slot-title">SLOT MACHINE</h1>
+            <div className="slot-game">
+                <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits} />
+                <div className="machine-controls">
+                    <div className="machine-roll" onClick={roll}>
+                        {rolling ? `STOP ${3 - stoppedSlots}` : "ROLL"}
+                    </div>
+                    <div className="machine-reset" onClick={reset}>
+                        RESET
+                    </div>
                 </div>
-                <div className="machine-reset" onClick={reset}>
-                    RESET
-                </div>
+                {resultMessage && <div className="slot-result">{resultMessage}</div>}
             </div>
-            {resultMessage && <div className="slot-result">{resultMessage}</div>}
         </div>
     );
 };

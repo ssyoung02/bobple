@@ -3,12 +3,19 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: #C8EEFF;
+    height: 80vh;
 }
 
 .avoid-body h1 {
     font-family: LuckiestGuy-Regular, serif;
-    font-size: 40px;
-    margin: 30px auto;
+    font-size: 50px;
+    margin: 40px auto;
+    color: #4DDDFD;
+    font-weight: bold;
+    letter-spacing: 1px;
+    -webkit-text-stroke-width: 0.1px;
+    -webkit-text-stroke-color: black;
 }
 
 .avoid-container {
@@ -17,8 +24,6 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 65vh;
-
 }
 
 .avoid-canvas {
@@ -53,11 +58,18 @@
 
 .avoid-score {
     position: fixed;
-    bottom: 20%;
+    bottom: 18%;
     font-size: 30px;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 5px 0;
     color: black; /* 점수 색상을 흰색으로 변경 */
+}
+
+.avoid-footer {
+    margin-top: 30px;
+    text-align: center;
+    position: fixed;
+    bottom: 10%;
 }
 
 .avoid-dialog {

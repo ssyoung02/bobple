@@ -139,13 +139,15 @@ const GroupMain = () => {
                                 className="item"
                                 onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
                             >
-                                <img src={chatRoom.roomImage} alt="chat room" />
-                                <span>{chatRoom.chatRoomTitle}</span>
-                                {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
-                                    <span className="groupmain-unread-count">
-                                        {unreadMessagesCount[chatRoom.chatRoomIdx]}
-                                    </span>
-                                )}
+                                <div className="chatRoom-image">
+                                    {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
+                                        <span className="groupMain-unread-count">
+                                            {unreadMessagesCount[chatRoom.chatRoomIdx]}
+                                        </span>
+                                    )}
+                                    <img src={chatRoom.roomImage} alt="chat room"/>
+                                </div>
+                                <span className="joinChatRoom-title">{chatRoom.chatRoomTitle}</span>
                             </button>
                         ))
                     ) : (
@@ -156,18 +158,20 @@ const GroupMain = () => {
             <div className="meeting-list">
                 <h2 className="group-title">모집 중인 모임</h2>
                 <fieldset className="search-box flex-row">
-                    <select
-                        className="group-search-select"
-                        id="searchOption"
-                        name="searchCnd"
-                        title="검색 조건 선택"
-                        onChange={(e) => setSearchOption(e.target.value)}
-                    >
-                        <option value="all-post">전체</option>
-                        <option value="title-post">제목</option>
-                        <option value="title-content">제목+내용</option>
-                        <option value="location-post">장소</option>
-                    </select>
+                    <div className="group-search-select-wrapper">
+                        <select
+                            className="group-search-select"
+                            id="searchOption"
+                            name="searchCnd"
+                            title="검색 조건 선택"
+                            onChange={(e) => setSearchOption(e.target.value)}
+                        >
+                            <option value="all-post">전체</option>
+                            <option value="title-post">제목</option>
+                            <option value="title-content">제목+내용</option>
+                            <option value="location-post">장소</option>
+                        </select>
+                    </div>
                     <div className="search-field">
                         <input
                             className="group-search-box"

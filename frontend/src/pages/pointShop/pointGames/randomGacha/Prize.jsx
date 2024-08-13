@@ -3,47 +3,12 @@ import '../../../../assets/style/pointGame/gacha/Prize.scss';
 import {useNavigate} from "react-router-dom";
 import {getUserIdx} from "../../../../utils/auth";
 import axios from 'axios';
-import shine from '../../../../assets/images/shine_effect.png'
+import shine from '../../../../assets/images/shine_effect.png';
+import { getRandomPrize } from '../../../../utils/GachaUtils'; // GachaUtils에서 getRandomPrize 가져오기
 
 const Prize = () => {
     const navigate = useNavigate();
-    const userIdx=getUserIdx();
-
-    const prizes = [
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/3.png', point: 3 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/3.png', point: 3 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/5.png', point: 5 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/5.png', point: 5 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/10.png', point: 10 }
-    ];
-
-    // 랜덤으로 상품 뽑기
-    const getRandomPrize = () => {
-        const totalWeight = prizes.reduce((sum, prize) => sum + prize.point + 1, 0); // 꽝에도 가중치 1 부여
-        let randomNum = Math.random() * totalWeight;
-        for (let prize of prizes) {
-            randomNum -= prize.point + 1;
-            if (randomNum <= 0) {
-                return prize;
-            }
-        }
-    };
-
+    const userIdx = getUserIdx();
     const [selectedPrize, setSelectedPrize] = useState(null);
 
     useEffect(() => {
@@ -80,18 +45,14 @@ const Prize = () => {
                 })
                 .catch(error => {
                     if (error.response) {
-                        // 서버에서 에러 응답을 받은 경우
                         if (error.response.status === 401) {
                             console.error("Unauthorized: ", error.response.data);
-                            // 사용자에게 로그인 필요 알림 등 추가 처리
                         } else {
-                            console.error("Error saving matching game result:", error.response.data); // 에러 메시지 출력
+                            console.error("Error saving matching game result:", error.response.data);
                         }
                     } else if (error.request) {
-                        // 요청을 보냈지만 응답을 받지 못한 경우
                         console.error("No response received from server:", error.request);
                     } else {
-                        // 요청 설정 중에 에러가 발생한 경우
                         console.error("Error setting up the request:", error.message);
                     }
                 });

@@ -4,9 +4,9 @@ import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 
 const Dashboard = ({ slotRefs, fruits }) => {
     return (
-        <div>
+        <div className="dashBoard">
             {slotRefs.map((ref, index) => (
-                <Slot key={index} ref={ref} fruits={fruits} />
+                <Slot key={index} ref={ref} fruits={fruits}/>
             ))}
         </div>
     );
