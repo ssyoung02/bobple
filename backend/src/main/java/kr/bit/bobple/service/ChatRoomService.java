@@ -38,6 +38,9 @@ public class ChatRoomService {
     private MessageReadRepository messageReadRepository;
 
     @Autowired
+    private MessageRepository messageRepository;
+
+    @Autowired
     private AmazonS3 amazonS3;
 
     @Value("${ncloud.object-storage.bucket-name}")
@@ -211,5 +214,21 @@ public class ChatRoomService {
         ChatMember member = chatMemberRepository.findById(new ChatMember.ChatMemberId(chatRoomId, userIdx))
                 .orElseThrow(() -> new RuntimeException("User not found in chat room"));
         return member.getRole().name();
+    }
+
+    public void deleteChatRoom(Long chatRoomId) {
+        // 메시지 읽음 정보 삭제
+        messageReadRepository.deleteByChatRoomId(chatRoomId);
+        // 메시지 삭제
+        messageRepository.deleteByChatRoomId(chatRoomId);
+        // 채팅 멤버 삭제
+        chatMemberRepository.deleteByChatRoomId(chatRoomId);
+        // 채팅방 삭제
+        chatRoomRepository.deleteById(chatRoomId);
+    }
+
+    public boolean isUserRoomLeader(Long chatRoomId, Long userId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("Chat room not found"));
+        return chatRoom.getRoomLeader().getUserIdx().equals(userId);
     }
 }
