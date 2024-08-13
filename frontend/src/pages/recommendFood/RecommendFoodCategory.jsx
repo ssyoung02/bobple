@@ -366,32 +366,34 @@ function RecommendFoodCategory() {
                     {bestRestaurants.map((restaurant) => (
                         <li key={restaurant.id} className="top-item">
 
-                                <div className="restaurant-image-wrapper">
-                                    {/* NaverImageSearch 컴포넌트 사용 */}
-                                    <NaverImageSearch
-                                        restaurantName={restaurant.place_name}
-                                        onImageLoaded={handleImageLoaded}
-                                    />
-                                </div>
+                            <div className="restaurant-image-wrapper">
+                                {/* NaverImageSearch 컴포넌트 사용 */}
+                                <NaverImageSearch
+                                    restaurantName={restaurant.place_name}
+                                    onImageLoaded={handleImageLoaded}
+                                />
+                            </div>
 
                             <div className="top-restaurant-info">
                                 <div
                                     onClick={() => navigate(`/recommend/restaurant/${restaurant.id}`, {state: {restaurant}})}>
                                     <h6 className="restaurant-name">{restaurant.place_name}</h6>
                                 </div>
-                                <span
-                                    className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
-                                <button
-                                    className="restaurant-bookmarks"
-                                    onClick={() => handleBookmarkToggle(restaurant)}
-                                >
-                                    {userBookmarks.includes(restaurant.id) ? (
-                                        <FillBookmark/>
-                                    ) : (
-                                        <Bookmark/>
-                                    )}
-                                    {restaurant.bookmarks_count || 0}
-                                </button>
+                                <div className="top-restaurant-location">
+                                    <span
+                                        className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
+                                    <button
+                                        className="restaurant-bookmarks"
+                                        onClick={() => handleBookmarkToggle(restaurant)}
+                                    >
+                                        {userBookmarks.includes(restaurant.id) ? (
+                                            <FillBookmark/>
+                                        ) : (
+                                            <Bookmark/>
+                                        )}
+                                        {restaurant.bookmarks_count || 0}
+                                    </button>
+                                </div>
                             </div>
                         </li>
                     ))}
@@ -399,7 +401,7 @@ function RecommendFoodCategory() {
             </div>
             <div>
                 <h5 className="nearby-title">주변 음식점</h5>
-                <ul className="restaurant-list">
+                <ul className="restaurant-list bottom-list">
                     {sortedRestaurants.map((restaurant) => (
                         <li key={restaurant.id} className="restaurant-item">
                                 <div className="restaurant-image-wrapper">
@@ -411,19 +413,18 @@ function RecommendFoodCategory() {
                                 </div>
                             <div className="restaurant-info">
                                 <div className="restaurant-left">
-                                    <div
+                                    <div className="restaurant-left-title"
                                         onClick={() => navigate(`/recommend/restaurant/${restaurant.id}`, {state: {restaurant}})}>
                                         <h6 className="restaurant-name">{restaurant.place_name}</h6>
+                                        <span
+                                            className="restaurant-category"><CaretRight/>{restaurant.category_name.replace('음식점 > ', '')}</span>
                                     </div>
                                     <p className="restaurant-address">{restaurant.address_name}</p>
-                                    <span
-                                        className="restaurant-category"><CaretRight/>{restaurant.category_name.replace('음식점 > ', '')}</span>
-
-                                </div>
-                                <div className="restaurant-right">
                                     <span className="restaurant-distance">
                                         <LocationDot/>{Math.round(restaurant.distance)}m
                                     </span>
+                                </div>
+                                <div className="restaurant-right">
                                     <button
                                         className="restaurant-bookmarks"
                                         onClick={() => handleBookmarkToggle(restaurant)}

@@ -31,9 +31,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .menu-recommendation-back{
@@ -130,6 +130,10 @@
     width: 100%;
 }
 
+.food-categories h4 {
+    margin-bottom: 20px;
+}
+
 /* 회식장소 Pick 스타일 */
 .group-dinner-pick {
     margin-bottom: 20px;
@@ -142,6 +146,7 @@
     overflow-x: auto;
     position: relative;
     height: 45px;
+    margin: 20px 0;
 }
 
 .restaurant-category-btn-container::-webkit-scrollbar,
@@ -153,21 +158,20 @@
     position: absolute;
     display: flex;
     justify-content: center;
-    margin-bottom: 30px;
-    translate: 0 30px;
-    font-size: 12px;
-    width: max-content;
-    top: -30px;
+    font-size: 15px;
+    width: 100%;
+    translate: 0 -5px;
 }
 
 .restaurant-category-buttons button {
     margin: 5px;
-    padding: 10px 20px;
+    padding: 10px 25px;
     border: none;
     background-color: #f0f0f0;
     cursor: pointer;
-    border-radius: 15px;
+    border-radius: 8px;
     white-space: nowrap;
+    font-weight: bold;
 }
 
 .restaurant-category-buttons .active {
@@ -179,13 +183,13 @@
 .restaurant-info-list{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     margin-top: 1em;
-    padding: 0 10px;
+    padding: 10px 0;
 }
 .restaurant-info-item{
     display: flex;
-    gap: 10px;
+    gap: 20px;
 }
 .restaurant-image-link{
     flex: 1;
@@ -211,11 +215,11 @@
 .pub-info-container{
     flex: 3.5;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
+    flex-direction: column;
+    gap: 5px;
     flex-wrap: wrap;
     width: 70%;
-    padding: 5px 0;
 }
 
 .pub-info-container a{
@@ -241,6 +245,10 @@
 
 .pub-distance svg{
     margin-right: 5px;
+}
+
+.pub-bookmark-state {
+    display: flex;
 }
 
 .pub-bookmarks{

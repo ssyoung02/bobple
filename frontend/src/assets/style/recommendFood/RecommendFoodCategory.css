@@ -1,11 +1,11 @@
 /* 컨테이너 스타일 */
 .recommend-category-container{
     display: grid;
-    gap: 1.5em;
+    gap: 10px;
 }
 
 .category-title{
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 .category-title span{
     color: #ff970e;
@@ -27,73 +27,65 @@
 /* 상단 BEST 음식점 컨테이너 스타일 추가 */
 .top-list {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
+    gap: 20px;
 }
 
 .top-item {
-    position: relative;
-    max-width: 8em;
+    width: 100%;
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     overflow: hidden;
     padding: 10px 0;
-    display: flex;
-    align-items: center;
 }
 
-.top-item:hover{
+.top-item:hover,
+.top-item:active {
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
-.top-item > a{
-    width: 70%;
-}
-
-.top-item img{
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 90%;
-    object-fit: cover;
-    border-radius: 10px;
-
-}
 .top-restaurant-info{
     width: 90%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.top-restaurant-info a{
-    display: inline-block;
-    width: 100%;
+.top-restaurant-location {
+    display: flex;
+    gap: 40px;
+    font-size: 20px;
 }
 
 .restaurant-distance{
-    font-size: 0.7em;
+    font-size: 0.8em;
     color: #898989;
 }
 
-.restaurant-info-link{
-    text-align: center;
-    color: #092543;
-}
-
-.restaurant-info-link span{
-    font-size: 0.7em;
-    color: #898989;
-}
 .restaurant-bookmarks{
     display: flex;
     align-items: center;
-    font-size: 0.8em;
+    font-size: 0.9em;
 }
 .restaurant-bookmarks svg{
-    height: 10px;
+    height: 15px;
+    translate: 0 2px;
+}
+
+
+.nearby-title {
+    margin: 20px 0;
+}
+
+.bottom-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .restaurant-name{
@@ -106,47 +98,35 @@
     margin: 0;
 }
 
+.restaurant-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.restaurant-left-title {
+    display: flex;
+    gap: 10px;
+}
+
+.restaurant-left .restaurant-address,
+.restaurant-left .restaurant-distance {
+    font-size: 15px;
+}
+
 /* 주변 음식점 아이템 스타일 수정 */
 .restaurant-item {
     border-bottom: 1px solid #eee;
     display: flex;
     align-items: center;
     gap: 1em;
-    padding: 5px 0;
+    padding: 10px 0;
 }
 
-.restaurant-item a{
-    flex: 1;
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-}
-
-.restaurant-item .restaurant-image-wrapper{
-    position: absolute;
-}
-
-.restaurant-item > a:after{
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-}
-
-.restaurant-list-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.restaurant-details {
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    margin-top: 5px;
+.restaurant-item:hover,
+.restaurant-item:active {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
 .restaurant-info{
@@ -155,23 +135,14 @@
     justify-content: space-between;
 }
 
-.restaurant-left{
-    width: 240px;
+.restaurant-right {
+    display: flex;
+    font-size: 23px;
+    margin-right: 5px;
 }
 
-.restaurant-right{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
-}
-
-.restaurant-info a{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    color: #233B6F;
+.restaurant-right .restaurant-bookmarks svg {
+    height: 20px;
 }
 
 .restaurant-title .restaurant-name{
@@ -194,8 +165,6 @@
 
 .restaurant-category{
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .recommend-category-container svg {

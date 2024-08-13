@@ -363,37 +363,36 @@ function RecommendMain() {
                                     className="restaurant-info-item"
                                     ref={nearbyPub.length === index + 1 ? lastPubElementRef : null}
                                 >
-                                        <div className="restaurant-image-wrapper">
-                                            {/* NaverImageSearch 컴포넌트 사용 */}
-                                            <NaverImageSearch
-                                                restaurantName={pub.place_name}
-                                                onImageLoaded={handleImageLoaded}
-                                            />
-                                        </div>
+                                    <div className="restaurant-image-wrapper">
+                                        {/* NaverImageSearch 컴포넌트 사용 */}
+                                        <NaverImageSearch
+                                            restaurantName={pub.place_name}
+                                            onImageLoaded={handleImageLoaded}
+                                        />
+                                    </div>
                                     <div className="pub-info-container">
                                         <div
-                                            onClick={() => navigate(`/recommend/restaurant/${pub.id}`, { state: { restaurant: pub } })}>
+                                            onClick={() => navigate(`/recommend/restaurant/${pub.id}`, {state: {restaurant: pub}})}>
                                             <h6 className="pub-name">{pub.place_name}</h6>
                                         </div>
-
-                                            <p className="pub-address">{pub.address_name}</p>
-
-                                            <span
-                                                className="pub-distance"><LocationDot/>{Math.round(pub.distance)}m</span>
-                                            <button
-                                                className="pub-bookmarks"
-                                                onClick={() => handleBookmarkToggle(pub)} // 클릭 이벤트 추가
-                                            >
-                                                {userBookmarks.includes(pub.id) ? ( // 사용자 북마크에 포함된 경우
-                                                    <FillBookmark/>
-                                                ) : (
-                                                    <Bookmark/>
-                                                )}
-                                                {pub.bookmarks_count || 0}
-                                            </button>
-                                        </div>
+                                        <p className="pub-address">{pub.address_name}</p>
+                                        <span className="pub-distance"><LocationDot/>{Math.round(pub.distance)}m</span>
+                                    </div>
+                                    <div className="pub-bookmark-state">
+                                        <button
+                                            className="pub-bookmarks"
+                                            onClick={() => handleBookmarkToggle(pub)} // 클릭 이벤트 추가
+                                        >
+                                            {userBookmarks.includes(pub.id) ? ( // 사용자 북마크에 포함된 경우
+                                                <FillBookmark/>
+                                            ) : (
+                                                <Bookmark/>
+                                            )}
+                                            {pub.bookmarks_count || 0}
+                                        </button>
+                                    </div>
                                 </li>
-                                ))}
+                            ))}
                         </ul>
                     ) : (
                         <p>주변 술집이 없습니다.</p>

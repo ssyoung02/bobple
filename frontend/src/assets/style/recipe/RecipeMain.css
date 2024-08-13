@@ -65,6 +65,7 @@
 .category-buttons {
     display: flex;
     justify-content: space-around;
+    gap: 25px;
 }
 
 .category-button {
@@ -146,9 +147,11 @@
 
 
 .recipe-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     flex-grow: 1;
 }
-
 
 .recipe-card-content .description {
     margin: 5px 0 0;
