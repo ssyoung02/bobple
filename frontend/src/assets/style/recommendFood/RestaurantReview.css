@@ -1,0 +1,156 @@
+.review-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+}
+
+.review-title {
+    padding: 0 5px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.star-score {
+    padding: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.review-form-content {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 15px;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    box-sizing: border-box;
+    resize: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+}
+
+.review-form-content::placeholder {
+    font-size: 16px;
+}
+
+.review-form-content:focus {
+    outline: none;
+    border-color: #233B6F;
+}
+
+.review-file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.image-preview-box {
+    width: 400px; /* 원하는 크기로 조정 */
+    height: 250px; /* 원하는 크기로 조정 */
+    background-color: white;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden; /* 이미지가 박스 크기를 넘지 않도록 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    object-fit: cover; /* 이미지가 박스를 채우도록 조정 */
+}
+
+.image-preview-box-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.image-placeholder {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.review-upload-btn {
+    font-size: 40px; /* 크기를 크게 설정 */
+    font-weight: bold;
+    background-color: #afeefd; /* 반투명 배경 */
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 5px;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+
+}
+
+.review-form-btns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.review-form-btns button {
+    margin: 0 10px;
+    padding: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+.back-form-button,
+.cancel-form-button {
+    font-weight: bold;
+}
+
+.create-form-button,
+.edit-form-button {
+    background-color: #0056b3;
+    color: white;
+    width: 100px;
+}
