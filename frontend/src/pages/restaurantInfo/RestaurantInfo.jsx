@@ -241,10 +241,11 @@ function RestaurantInfo() {
                     {/* 평균 별점 표시 */}
                     <p className="average-score"><span>★</span> {averageScore}</p>
                     <Link
+                        className="review-header-link"
                         to={`/recommend/restaurant/${restaurant.id}/review`}
                         state={{restaurantId: restaurant.id, reviews: reviews, restaurantName: restaurant.place_name}}
                     >
-                        리뷰 작성
+                        ✎ 리뷰 쓰기
                     </Link>
                 </div>
 
