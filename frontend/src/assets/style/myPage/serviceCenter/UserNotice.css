@@ -9,3 +9,7 @@
 .notice-content{
     padding: 0 10px;
 }
+
+.notice-main ul{
+    list-style: none;
+}

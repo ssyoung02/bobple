@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getUserIdx } from "../../utils/auth";
 import {Link, useNavigate} from 'react-router-dom';
+import {StarFill, StarLine} from "../../components/imgcomponents/ImgComponents";
 
 // Star 컴포넌트 직접 구현
 function Star({ filled }) {
-    const starIcon = filled ? '★' : '☆';
+    const starIcon = filled ? <StarFill/> : <StarLine/>;
     return <span className="star">{starIcon}</span>;
 }
 
@@ -67,41 +68,50 @@ function MyReviews() {
             <h2>내가 작성한 리뷰</h2>
             <ul style={{listStyle: 'none', padding: 0}}>
                 {myReviews.map(review => (
-                    <li key={review.reviewIdx}>
-                        <h4>{review.restaurantName}</h4> {/* 음식점 이름 추가 */}
-                        <div className="star-rating">
-                            {[...Array(review.score)].map((_, index) => (
-                                <Star key={index} filled/>
-                            ))}
-                            {[...Array(5 - review.score)].map((_, index) => (
-                                <Star key={index + review.score}/>
-                            ))}
+                    <li key={review.reviewIdx} className="review-box">
+                        <div className="review-left-content">
+                            <h4>{review.restaurantName}</h4> {/* 음식점 이름 추가 */}
+                            <div className="star-rating">
+                                {[...Array(review.score)].map((_, index) => (
+                                    <Star key={index} filled/>
+                                ))}
+                                {[...Array(5 - review.score)].map((_, index) => (
+                                    <Star key={index + review.score}/>
+                                ))}
+                                &nbsp;&nbsp;
+                                <span>{new Intl.DateTimeFormat('ko-KR', {
+                                    year: '2-digit',
+                                    month: 'numeric',
+                                    day: 'numeric'
+                                }).format(new Date(review.createdAt)).replace(/\.$/, '')}</span>
+                            </div>
+                            <p className="review-contents">{review.review}</p>
                         </div>
-                        <p>{review.createdAt}</p>
-                        {review.photoUrl && (
-                            <img
-                                src={review.photoUrl}
-                                alt="리뷰 사진"
-                                style={{width: '300px', height: '300px', objectFit: 'cover'}}
-                            />
-                        )}
-                        <p>{review.review}</p>
+                        <div className="review-right-content">
+                            {review.photoUrl && (
+                                <img
+                                    src={review.photoUrl}
+                                    alt="리뷰 사진"
+                                    style={{width: '100px', height: '100px', objectFit: 'cover'}}
+                                />
+                            )}
+                        </div>
                         {/* 모든 리뷰에 수정/삭제 버튼 표시 */}
-                        <div>
+                        <div className="review-bottom-content">
                             <Link
                                 to={`/recommend/restaurant/${review.restaurantId}/review`} // 수정 페이지 경로
                                 state={{
                                     restaurantId: review.restaurantId,
                                     review: review,
-                                    isEditing: true
-                                }} // 수정 데이터 전달
-                            >
-                                수정
-                            </Link>
-                            <button onClick={() => handleDelete(review.reviewIdx)}>삭제</button>
-                        </div>
+                                        isEditing: true
+                                    }} // 수정 데이터 전달
+                                >
+                                    수정
+                                </Link>
+                                <button onClick={() => handleDelete(review.reviewIdx)}>삭제</button>
+                            </div>
                     </li>
-                ))}
+                    ))}
             </ul>
         </div>
     );

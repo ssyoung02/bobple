@@ -235,6 +235,7 @@
 
 .pub-info-container h6{
     margin: 0;
+    cursor: pointer;
 }
 
 .pub-address{

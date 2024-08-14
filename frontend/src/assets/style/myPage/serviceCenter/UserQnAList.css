@@ -5,6 +5,10 @@
     gap: 1.5em;
 }
 
+.user-qna-list-main ul{
+    list-style: none;
+}
+
 /*메뉴*/
 .user-qna-list{
     display: flex;
