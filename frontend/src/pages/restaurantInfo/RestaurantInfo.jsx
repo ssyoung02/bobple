@@ -24,6 +24,7 @@ function RestaurantInfo() {
     const userIdx = getUserIdx();
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const [imageUrlFromNaver, setImageUrlFromNaver] = useState(null);
 
     useEffect(() => {
         const fetchUserDataAndReviews = async () => {
@@ -58,6 +59,7 @@ function RestaurantInfo() {
         };
 
         fetchUserDataAndReviews(); // 함수 이름 변경
+
     }, [navigate, restaurantId, userIdx]);
 
     useEffect(() => {
@@ -74,6 +76,18 @@ function RestaurantInfo() {
 
         fetchUserBookmarks();
     }, [restaurantId]);
+
+    // NaverImageSearch에서 가져온 이미지가 default 이미지인 경우 리뷰에 사진이 있다면 해당 사진으로 변경
+    useEffect(() => {
+        if (imageUrlFromNaver === '/bobple_mascot_icon.png') {
+            const firstReviewWithPhoto = reviews.find(review => review.photoUrl);
+            console.log(firstReviewWithPhoto);
+            if (firstReviewWithPhoto) {
+                setImageUrlFromNaver(firstReviewWithPhoto.photoUrl);
+            }
+        }
+    }, [reviews, imageUrlFromNaver]);
+
 
 
     const handleBookmarkToggle = async () => {
@@ -120,14 +134,21 @@ function RestaurantInfo() {
             }
         }
     };
-
+    /*
     const handleImageLoaded = (imageUrl) => {
         if (imageUrl) {
             // 이미지가 성공적으로 로드된 경우
+            console.log("이미지 로드 성공");
         } else {
             console.warn("이미지 로드 실패 또는 이미지 없음");
         }
     };
+*/
+    const handleImageLoaded = (imageUrl) => {
+        setImageUrlFromNaver(imageUrl);
+    };
+
+
 
     const handleDelete = async (reviewIdx) => {
         if (window.confirm("정말 삭제하시겠습니까?")) { // 확인 창 띄우기
@@ -159,10 +180,29 @@ function RestaurantInfo() {
         ? (reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length).toFixed(1) // 소수점 첫째 자리까지 표시
         : 0;
 
-
+    const firstReviewWithPhoto = reviews.find(review => review.photoUrl); // 리뷰 중 첫 번째 사진 찾기
     return (
         <div className="restaurant-info-container">
-            <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded}/>
+            {/* NaverImageSearch 컴포넌트 바깥에 조건문 추가 */}
+            {imageUrlFromNaver === null && (
+                <NaverImageSearch restaurantName={restaurant.place_name} onImageLoaded={handleImageLoaded} />
+            )}
+
+            {/* 이미지 렌더링 부분 수정 */}
+            {imageUrlFromNaver ? (
+                <img
+                    src={imageUrlFromNaver === '/bobple_mascot_icon.png' && firstReviewWithPhoto
+                        ? firstReviewWithPhoto.photoUrl
+                        : imageUrlFromNaver}
+                    alt={restaurant.place_name}
+                    onError={() => {
+                        setImageUrlFromNaver('/bobple_mascot_icon.png');
+                    }}
+                />
+            ) : (
+                <div>Loading...</div>
+            )}
+
             <div className="restaurant-info-header">
                 <div className="restaurant-info-left-header">
                     <div className="restaurant-info-title">
