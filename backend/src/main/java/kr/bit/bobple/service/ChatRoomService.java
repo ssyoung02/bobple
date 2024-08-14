@@ -16,11 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class ChatRoomService {
@@ -45,6 +47,8 @@ public class ChatRoomService {
 
     @Value("${ncloud.object-storage.bucket-name}")
     private String bucketName;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public ChatRoom createChatRoom(String title, String description, String location, int people, Long userIdx, MultipartFile imageFile) throws IOException {
         User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException("User not found"));
@@ -75,6 +79,7 @@ public class ChatRoomService {
         chatMember.setChatRoom(chatRoom);
         chatMember.setUser(user);
         chatMember.setRole(ChatMember.Role.LEADER);
+        chatMember.setJoinedAt(LocalDateTime.now().format(FORMATTER));  // LocalDateTime을 포맷하여 문자열로 저장 // 방장이 방을 만들 때 참여 시간 저장
         chatMemberRepository.save(chatMember);
 
         return chatRoom;
@@ -116,6 +121,7 @@ public class ChatRoomService {
             chatMember.setChatRoom(chatRoom);
             chatMember.setUser(user);
             chatMember.setRole(ChatMember.Role.MEMBER);
+            chatMember.setJoinedAt(LocalDateTime.now().format(FORMATTER));  // LocalDateTime을 포맷하여 문자열로 저장 // 유저가 참여할 때 참여 시간 저장
             chatMemberRepository.save(chatMember);
 
             chatRoom.setCurrentParticipants(chatRoom.getCurrentParticipants() + 1);

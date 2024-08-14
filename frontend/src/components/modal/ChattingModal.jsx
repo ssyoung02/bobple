@@ -114,7 +114,7 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
             <div className="modal-content chatting">
                 <div className="chatRoom-header">
                     <h5 className="chatRoom-title">{chatRoomTitle}</h5>
-                    <p>"잠금"</p>
+                    <button onClick={closeModal}>X</button>
                 </div>
                 <div className="chatRoom-info">
                     <h6>모임 정보</h6>
@@ -144,7 +144,7 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                     <button>돌림판</button>
                 </div>
                 <div className="chatRoom-footer">
-                    <button onClick={closeModal}>나가기➡️</button>
+                    <button>나가기➡️</button>
                     <button onClick={moveCal}>정산하기️</button>
                     {currentUserRole === 'LEADER' && (
                         <button className="delete-button" onClick={handleDeleteChatRoom}>삭제</button>
