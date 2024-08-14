@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import '../../assets/style/myPage/MyPageMain.css';
+import '../../assets/style/mypage/MyPageMain.css';
 import {Bookmark, Calculator, DefaultUser, Exclamation, FilePen, Heart, NextTo, Notice, Question} from "../../components/imgcomponents/ImgComponents"; // 상대 경로로 수정
 
 
