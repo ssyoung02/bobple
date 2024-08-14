@@ -10,7 +10,7 @@
 
     front:
       build:
-        context: ../frontend
+        context: ./frontend
         dockerfile: Dockerfile
       restart: always
       ports:
