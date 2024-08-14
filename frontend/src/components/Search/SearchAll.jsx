@@ -8,8 +8,8 @@ export const handleSearch = async (keyword, fetchTopKeywords) => {
             },
             withCredentials: true,
         });
-        alert('검색어가 저장되었습니다.');
-        fetchTopKeywords(); // 새로운 검색어 저장 후 인기 검색어를 다시 가져옵니다.
+        //alert('검색어가 저장되었습니다.');
+        fetchTopKeywords(); // 업데이트된 인기 검색어 가져오기
     } catch (error) {
         console.error('오류가 발생했습니다!', error);
     }
@@ -26,12 +26,15 @@ export const fetchTopKeywords = async (setTopKeywords) => {
     }
 };
 
+// keyword와 setTopKeywords를 사용하는 이벤트 핸들러
 export const handleKeyDown = (keyword, setTopKeywords) => async (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && keyword.trim() !== '') {
         await handleSearch(keyword, () => fetchTopKeywords(setTopKeywords));
     }
 };
 
-export const handleSearchClick = (keyword, setTopKeywords) => async () => {
-    await handleSearch(keyword, () => fetchTopKeywords(setTopKeywords));
+export const handleSearchClick = async (keyword, setTopKeywords) => {
+    if (keyword.trim() !== '') {
+        await handleSearch(keyword, () => fetchTopKeywords(setTopKeywords));
+    }
 };

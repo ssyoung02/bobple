@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTopKeywords, handleKeyDown, handleSearchClick } from '../../components/Search/SearchAll';
+import { fetchTopKeywords, handleSearchClick } from '../../components/Search/SearchAll';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/style/allSearch/AllSearch.css';
 import { SearchIcon } from "../../components/imgcomponents/ImgComponents";
@@ -8,35 +8,25 @@ const AllSearch = () => {
     const [keyword, setKeyword] = useState('');
     const [topKeywords, setTopKeywords] = useState([]);
     const navigate = useNavigate();
-    const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
         fetchTopKeywords(setTopKeywords);
     }, []);
 
+    const handleKeywordChange = (e) => {
+        setKeyword(e.target.value);
+    }; //키워드 변경 함수
 
-    const handleSearchClick = () => {
-        if (keyword.trim() !== '') {
-            navigate(`/search/SearchKeyword/${encodeURIComponent(keyword)}`); // AllSearchRouter 참고
-            setKeyword('');
-        }
-    };
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            handleSearchClick();
-        }
-    };
-
-    useEffect(() => {
-        if (isSearching) {
-            setIsSearching(false);
-        }
-    }, [isSearching]);
-
-    // 인기 검색어 클릭 시 이동 함수
     const handleTopKeywordClick = (keyword) => {
         navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`);
+    };
+
+    const handleSearch = async () => { //검색 함수
+        if (keyword.trim() !== '') {
+            await handleSearchClick(keyword, setTopKeywords); //서버에 검색어 저장
+            navigate(`/search/SearchKeyword/${encodeURIComponent(keyword)}`); //화면 전환
+            setKeyword(''); //검색 후 입력창 초기화
+        }
     };
 
     return (
@@ -46,14 +36,16 @@ const AllSearch = () => {
                     className="AllSaerchBox"
                     type="text"
                     value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    onKeyDown={handleKeyDown}
+                    onChange={handleKeywordChange}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()} // Enter 키로 검색 실행
                     placeholder="검색 키워드를 입력해주세요"
                 />
 
-                {/* handleSearchClick 함수 자체를 전달 */}
-                <button className="AllSearchButton" onClick={handleSearchClick}>
-                    <SearchIcon/>
+                <button
+                    className="AllSearchButton"
+                    onClick={handleSearch} // 검색 버튼 클릭 시 검색 실행
+                >
+                    <SearchIcon />
                 </button>
             </div>
 
@@ -69,7 +61,9 @@ const AllSearch = () => {
                 <h2 className="all-search-title">인기검색어</h2>
                 <ul className="search-ul">
                     {topKeywords.map((keyword, index) => (
-                        <li key={index} className="search-list"
+                        <li
+                            key={index}
+                            className="search-list"
                             onClick={() => handleTopKeywordClick(keyword.keyword)}
                         >
                             <span>{index + 1}</span>. {keyword.keyword}
