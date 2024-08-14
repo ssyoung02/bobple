@@ -1,19 +1,25 @@
+# 1단계: Node.js 이미지를 기반으로 빌드
 FROM node:14 AS builder
 WORKDIR /frontend
+
+# package.json과 package-lock.json을 복사하여 캐싱 효과를 극대화
 COPY package.json package-lock.json ./
 RUN npm install
 
+# 소스 코드를 복사한 후 빌드 수행
 COPY . .
 RUN npm run build
 
+# 2단계: Nginx 이미지를 기반으로 프로덕션 환경 설정
 FROM nginx:latest
 RUN rm /etc/nginx/conf.d/default.conf
-#RUN rm -rf /etc/nginx/conf.d/*
 COPY ./nginx.conf /etc/nginx/conf.d/
 
-COPY --from=builder frontend/build /usr/share/nginx/html
+# 빌드된 파일을 Nginx의 정적 파일 위치로 복사
+COPY --from=builder /frontend/build /usr/share/nginx/html
 EXPOSE 80
-CMD [ "nginx", "-g", "daemon off;"]
+CMD [ "nginx", "-g", "daemon off;" ]
+
 
 
 ## 1단계: 빌드 단계
