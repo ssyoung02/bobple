@@ -9,6 +9,7 @@ import {UserRecommendedRecipes} from "../../components/SliderComponent";
 import {ClipLoader} from "react-spinners";
 
 
+
 function RecipeMain() {
     const {
         getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes,
@@ -18,21 +19,15 @@ function RecipeMain() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const navigate = useNavigate();
     const [page, setPage] = useState(() => {
-        // 뒤로 가기 시 마지막 페이지를 유지하기 위해 로컬 스토리지에서 초기 값을 가져옵니다.
         const storedPage = localStorage.getItem('recipePage');
         return storedPage ? JSON.parse(storedPage) : 0;
-    });    const [loading, setLoading] = useState(false);
+    });
+    const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [initialLoad, setInitialLoad] = useState(true);
-    const [lastLoadedKey, setLastLoadedKey] = useState(() => {
-        const storedKey = localStorage.getItem('lastLoadedKey');
-        return storedKey || null;
-    });
-
+    const currentRequestPage = useRef(null);
 
     const observer = useRef();
-    // 페이지 증가와 중복 방지를 위한 useRef를 추가하여 비동기 작업 간의 상태 관리
-    const currentRequestPage = useRef(null);
 
     useEffect(() => {
         const storedRecipes = localStorage.getItem('latestRecipes');
@@ -68,7 +63,6 @@ function RecipeMain() {
             if (response.data.content.length > 0) {
                 const newRecipes = response.data.content;
 
-                // 고유한 recipeIdx로 중복 확인
                 const uniqueRecipes = newRecipes.filter(
                     newRecipe => !latestRecipes.some(recipe => recipe.recipeIdx === newRecipe.recipeIdx)
                 );
@@ -87,11 +81,8 @@ function RecipeMain() {
                 });
 
                 const lastKey = `${uniqueRecipes[uniqueRecipes.length - 1].recipeIdx}-${uniqueRecipes[uniqueRecipes.length - 1].userIdx}`;
-                setLastLoadedKey(lastKey);
                 localStorage.setItem('lastLoadedKey', lastKey);
 
-                // 총 로드된 레시피 수가 총 레시피 수와 동일한지 확인
-                console.log(`latestRecipes.length${latestRecipes.length} + uniqueRecipes.length${uniqueRecipes.length} >= totalRecipes: ${totalRecipes}`);
                 if (latestRecipes.length + uniqueRecipes.length >= totalRecipes) {
                     console.log('All recipes have been loaded.');
                     setHasMore(false);
@@ -107,15 +98,14 @@ function RecipeMain() {
     }, [hasMore, latestRecipes, totalRecipes, setLatestRecipes, setError]);
 
     useEffect(() => {
-        // totalRecipes 값이 준비되기 전에는 로딩을 시도하지 않음
         if (totalRecipes === 0 || !totalRecipes) {
             console.log('totalRecipes is not ready yet. Skipping load.');
             return;
         }
 
-        if (initialLoad) {
+        if (initialLoad && latestRecipes.length === 0) {
             console.log('Initial load or page has changed. Loading more recipes...');
-            loadLatestRecipes(0);
+            loadLatestRecipes(page);
             setInitialLoad(false);
             return;
         }
@@ -129,7 +119,6 @@ function RecipeMain() {
     }, [page, initialLoad, loadLatestRecipes, totalRecipes]);
 
     useEffect(() => {
-        // 페이지 상태를 로컬 스토리지에 저장하여 뒤로 가기 시 유지합니다.
         localStorage.setItem('recipePage', page);
     }, [page]);
 
