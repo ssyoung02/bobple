@@ -3,7 +3,7 @@ import Machine from './Machine';
 import UILayer from './UILayer';
 import '../../../../assets/style/pointGame/gacha/GachaGame.scss';
 import { gsap } from 'gsap';
-import { getPrize, createBalls, showHint, hideHint, showHint2, prepare, start, stopJittering, pickup, pop, confetti, delay, addAnimClass } from '../../../../utils/GachaUtils';
+import { getRandomPrize, createBalls, showHint, hideHint, showHint2, prepare, start, stopJittering, pickup, pop, confetti, delay, addAnimClass } from '../../../../utils/GachaUtils';
 
 export const uiLayerRef = React.createRef();
 
@@ -25,7 +25,7 @@ const GachaGame = () => {
 
         $app.classList.add('gotcha');
 
-        const prize = await getPrize();
+        const prize = getRandomPrize(); // GachaUtils에서 getRandomPrize 호출
         const prizeImg = $app.querySelector('.prize-container .prize img');
         if (prizeImg) {
             prizeImg.src = prize.image;
@@ -34,7 +34,7 @@ const GachaGame = () => {
         }
 
         const TITLE = 'Random Gacha!';
-        const PRICE = 'Go!';
+        const PRICE = 'Go⬆️';
 
         const $machine = $app.querySelector('.machine-container');
         if (!$machine) {
@@ -91,7 +91,6 @@ const GachaGame = () => {
 
         $handle.addEventListener('click', () => start($handle, $machine, $title, $pointer, prize, uiLayerRef), { once: true });
     };
-
 
     return (
         <div id="app" ref={appRef}>

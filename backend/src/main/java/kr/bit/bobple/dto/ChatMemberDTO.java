@@ -11,4 +11,6 @@ public class ChatMemberDTO {
     private Long userId;
     private String name;
     private String profileImage;
+    private String role;
+    private String status;
 }

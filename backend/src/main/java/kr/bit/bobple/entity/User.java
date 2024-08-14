@@ -35,7 +35,7 @@ public class User {
     private LocalDate birthdate;
 
     @Column(name = "nick_name", nullable = true, length = 50)
-    private String nickName = "";
+    private String nickName ;
 
     @Column(name = "profile_image", length = 255)
     private String profileImage;
@@ -83,15 +83,15 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference("user-recipes")
     private List<Recipe> recipes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference("user-recipeComments")
     private List<RecipeComment> recipeComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference("user-likeRecipes")
     private List<LikeRecipe> likeRecipes = new ArrayList<>();
 
 

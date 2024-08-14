@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom'; // React Router useNavigate import
+import {useLocation, useNavigate} from 'react-router-dom'; // React Router useNavigate import
 import '../../../../assets/style/pointGame/avoid/FoodAvoid.css';
 import bobpleMascot from '../../../../assets/images/bobple_mascot.png';
 import {getUserIdx} from "../../../../utils/auth"; // 이미지 import
 import axios from 'axios';
+import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
 
 const CANVAS_WIDTH = 800; // 캔버스 너비 설정
 const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
@@ -35,6 +36,7 @@ const FoodAvoid = () => {
     const moveRef = useRef(); // moveChar 함수 참조를 위해 useRef 사용
     const userIdx=getUserIdx();
     const [earnedPoint, setEarnedPoint] = useState(0);
+    const location = useLocation();
 
     useEffect(() => {
         if (gameStart) {
@@ -239,65 +241,68 @@ const FoodAvoid = () => {
         if (openDialog) { // 게임 오버 시 포인트 계산 및 전송
             const finalPoint = Math.floor(score / 100); // 100점당 1 포인트 계산
             setEarnedPoint(finalPoint);
-            if (finalPoint > 0) {
-                const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
 
-                axios.post('http://localhost:8080/api/point/result', { // 백엔드 엔드포인트 확인
-                    userIdx: parseInt(userIdx, 10),
-                    point: finalPoint,
-                    pointComment: "음식 피하기 게임"
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    withCredentials: true
+            // 포인트 획득 여부와 상관없이 요청 전송
+            axios.post('http://localhost:8080/api/point/result', {
+                userIdx: parseInt(userIdx, 10),
+                point: finalPoint,
+                pointComment: finalPoint > 0 ? "음식 피하기 게임" : "음식 피하기 게임 실패" // point에 따라 comment 변경
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true
+            })
+                .then(response => {
+                    console.log("포인트 저장 성공:", response.data);
                 })
-                    .then(response => {
-                        console.log("포인트 저장 성공:", response.data);
-                    })
-                    .catch(error => {
-                        if (error.response) {
-                            // 서버에서 에러 응답을 받은 경우
-                            if (error.response.status === 401) {
-                                console.error("Unauthorized: ", error.response.data);
-                                // 사용자에게 로그인 필요 알림 등 추가 처리
-                            } else {
-                                console.error("Error saving matching game result:", error.response.data); // 에러 메시지 출력
-                            }
-                        } else if (error.request) {
-                            // 요청을 보냈지만 응답을 받지 못한 경우
-                            console.error("No response received from server:", error.request);
+                .catch(error => {
+                    if (error.response) {
+                        if (error.response.status === 401) {
+                            console.error("Unauthorized: ", error.response.data);
                         } else {
-                            // 요청 설정 중에 에러가 발생한 경우
-                            console.error("Error setting up the request:", error.message);
+                            console.error("Error saving matching game result:", error.response.data);
                         }
-                    });
-            }
+                    } else if (error.request) {
+                        console.error("No response received from server:", error.request);
+                    } else {
+                        console.error("Error setting up the request:", error.message);
+                    }
+                });
         }
     }, [openDialog, score, userIdx]);
 
+    useHeaderColorChange(location.pathname, '#C8EEFF');
+    useNavigateNone();
+
     return (
         <div className="avoid-body">
+            <h1>AVOID FOOD</h1>
             <div className="avoid-container">
-                <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
-                {!gameStart && !openDialog && (
-                    <button className="avoid-button center-button" onClick={handleGameStart}>
-                        Start Game
-                    </button>
-                )}
-                {openDialog && (
-                    <button className="avoid-button center-button" onClick={handleExit}>
-                        Exit
-                    </button>
-                )}
-                <div className="button-container">
-                    <button className="avoid-button" onClick={moveCharLeft} disabled={!gameStart}>Left</button>
-                    <button className="avoid-button" onClick={moveCharRight} disabled={!gameStart}>Right</button>
+                <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>
+                <div className="point-game-1st-btn">
+                    {!gameStart && !openDialog && (
+                        <button className="avoid-button center-button avoid-start-btn" onClick={handleGameStart}>
+                            Start Game
+                        </button>
+                    )}
+                    {openDialog && (
+                        <button className="avoid-button center-button avoid-exit-btn" onClick={handleExit}>
+                            Exit
+                        </button>
+                    )}
                 </div>
+                <div className="button-container">
+                    <button className="avoid-button" onClick={moveCharLeft} disabled={!gameStart}>⬅️</button>
+                    <button className="avoid-button" onClick={moveCharRight} disabled={!gameStart}>➡️</button>
+                    <div className="avoid-score">Score: {score}</div>
+                </div>
+            </div>
+            <div className="avoid-footer">
                 {openDialog && <div className="avoid-dialog">Game Over!</div>}
-                <div className="avoid-score">Score: {score}</div>
                 {openDialog && ( // openDialog가 true일 때만 포인트 획득 실패 메시지 표시
-                    <div>
+                    <div className="avoid-dialog-point">
                         {earnedPoint > 0 ? (
                             <p>{earnedPoint} 포인트 획득!</p>
                         ) : (

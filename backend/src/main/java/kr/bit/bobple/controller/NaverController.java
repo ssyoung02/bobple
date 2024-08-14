@@ -84,7 +84,7 @@ public class NaverController {
         Map<String, Object> responseMap = (Map<String, Object>) userInfo.get("response");
 
         // 사용자 정보 중 필요한 부분만 추출하여 사용자 저장 또는 업데이트
-        String username = (String) responseMap.get("nickname");
+        String username = (String) responseMap.get("email");
         String email = (String) responseMap.get("email");
         String name = (String) responseMap.get("name");
         String profileImage = (String) responseMap.get("profile_image");

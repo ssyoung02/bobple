@@ -112,9 +112,7 @@ const GroupChatting = () => {
 
     useEffect(() => {
         // 메시지 로딩이 완료된 후 스크롤 하단으로 이동
-        if (messages.length > 0) {
-            scrollToBottom();
-        }
+        scrollToBottom();
     }, [messages]);
 
     const scrollToBottom = () => {
@@ -182,34 +180,54 @@ const GroupChatting = () => {
         <div className="chatting">
             {chatRoom && (
                 <div className="chat-room-info">
-                    <button onClick={handleGoBack}><ArrowLeftLong /></button>
+                    <button onClick={handleGoBack}><ArrowLeftLong/></button>
                     <h2>{chatRoom.chatRoomTitle}</h2>
                     <h3>{chatRoom.chatRoomPeople}</h3>
-                    <button onClick={openChattingModal}><Menu /></button>
+                    <button onClick={openChattingModal}><Menu/></button>
                 </div>
             )}
             <div className="messages">
                 {messages.map((message, index) => (
-                    <div key={index} className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
+                    <div key={index}
+                         className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
+
                         {message.userId !== user?.userIdx && (
-                            <img src={message.profileImage} alt={`${message.name}'s profile`} className="profile-image" />
+                            <div className="message-row">
+                                <img src={message.profileImage} alt={`${message.name}'s profile`}
+                                     className="chat-profile-image"/>
+                                <div className="message-user-info">
+                                    <h5 className="message-user"><strong>{message.name}</strong></h5>
+                                    <div className="message-bubble">
+                                        <p className="message-content">{message.content}</p>
+                                    </div>
+                                </div>
+                                <div className="message-time">
+                                    <p>{moment(message.createdAt).format('h:mm')}</p>
+                                    {message.unreadCount > 0 && (
+                                        <span className="unread-count">{message.unreadCount}</span>
+                                    )}
+                                </div>
+                            </div>
                         )}
-                        <div className="message-content">
-                            {message.userId !== user?.userIdx && (
-                                <p><strong>{message.name}</strong>: {message.content}</p>
-                            )}
-                            {message.userId === user?.userIdx && (
-                                <p>{message.content}</p>
-                            )}
-                            <p>{moment(message.createdAt).format('a h:mm')}</p>
-                            {message.unreadCount > 0 && (
-                                <span className="unread-count">{message.unreadCount}</span>
-                            )}
-                        </div>
+
+                        {message.userId === user?.userIdx && (
+                            <div className="message-row message-right-row">
+                                <div className="message-time">
+                                    {message.unreadCount > 0 && (
+                                        <span className="unread-count">{message.unreadCount}</span>
+                                    )}
+                                    <p>{moment(message.createdAt).format('h:mm')}</p>
+                                </div>
+                                <div className="message-bubble message-right-bubble">
+                                    <p className="message-content">{message.content}</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))}
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef}/>
             </div>
+
             <div className="message-input">
                 <input
                     type="text"
@@ -219,7 +237,7 @@ const GroupChatting = () => {
                     placeholder="메시지를 입력하세요"
                 />
                 <button onClick={handleSendMessage}>
-                    <span><SendMessage /></span>
+                    <span><SendMessage/></span>
                 </button>
             </div>
 
@@ -229,6 +247,7 @@ const GroupChatting = () => {
                     hideModal={closeChattingModal}
                     chatRoomId={numericChatRoomId}
                     chatRoomTitle={chatRoom?.chatRoomTitle || ''}
+                    chatRoomPeople={chatRoom?.roomPeople || 0}
                 />
             )}
         </div>

@@ -50,19 +50,7 @@ public class RecipeService {
         return recipeRepository.findAll(pageable).map(this::convertToDto);
     }
 
-//    @Transactional(readOnly = true)
-//    public RecipeDto getRecipeById(Long recipeId) {
-//        Recipe recipe = recipeRepository.findRecipeWithUserById(recipeId)
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
-//
-//        // Increase views count outside of read-only transaction
-//        incrementViewsCount(recipe.getId());
-//
-//        // 강제로 초기화
-//        Hibernate.initialize(recipe.getUser());
-//
-//        return convertToDto(recipe); // 댓글 목록 포함하여 DTO 변환
-//    }
+
 
     public RecipeDto getRecipeById(Long recipeId, Long currentUserId) {
         Recipe recipe = recipeRepository.findById(recipeId)
@@ -85,10 +73,11 @@ public class RecipeService {
         if (user == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
         }
-        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
         Recipe recipe = recipeDto.toEntity(user);
+        if (imageFile != null && !imageFile.isEmpty()) {
+        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
         recipe.setPicture(imageUrl);
-
+        }
         // 좋아요 수, 조회수, 댓글 수 초기화
         recipe.setLikesCount(0);
         recipe.setViewsCount(0);
@@ -105,9 +94,14 @@ public class RecipeService {
         if (!isRecipeAuthor(recipeId, authenticationFacade.getCurrentUser())) {
             throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         }
-        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
+            recipe.setPicture(imageUrl);
+        } else {
+            // 이미지가 업로드되지 않은 경우, 기존 이미지 경로를 유지합니다.
+            recipeDto.setPicture(recipe.getPicture());
+        }
         recipe.updateRecipe(recipeDto);
-        recipe.setPicture(imageUrl);
 
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }
@@ -120,28 +114,6 @@ public class RecipeService {
         recipeRepository.deleteById(recipeId);
     }
 
-//    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort,Long currentUserId) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
-//        if (sort.equals("viewsCount,desc")) {
-//            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
-//        }
-
-//        // If keyword and category are null or empty, find all recipes
-//        if ((keyword == null || keyword.isEmpty()) && (category == null || category.isEmpty())) {
-//            return recipeRepository.findAll(pageable).map(RecipeDto::fromEntity);
-//        }
-//        // If keyword is not null or empty and category is null or empty, find by keyword
-//        else if (keyword != null && !keyword.isEmpty() && (category == null || category.isEmpty())) {
-//            return recipeRepository.findByKeyword(keyword, pageable).map(RecipeDto::fromEntity);
-//        }
-//        // If keyword is null or empty and category is not null or empty, find by category
-//        else if ((keyword == null || keyword.isEmpty()) && category != null && !category.isEmpty()) {
-//            return recipeRepository.findByCategory(category, pageable).map(RecipeDto::fromEntity);
-//        }
-//        // If both keyword and category are not null or empty, find by both keyword and category
-//        else {
-//            return recipeRepository.findByKeywordAndCategory(keyword, category, pageable).map(RecipeDto::fromEntity);
-//        }
 
 
     public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort, Long currentUserId) {
@@ -247,6 +219,11 @@ public class RecipeService {
         User user = authenticationFacade.getCurrentUser();
         List<Recipe> recipes = recipeRepository.findByUser(user);
         return recipes.stream().map(RecipeDto::fromEntity).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalRecipeCount() {
+        return recipeRepository.countAllRecipes();
     }
 }
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
 import { SearchIcon } from "../../components/imgcomponents/ImgComponents";
-import io from 'socket.io-client'; // socket.io-client 추가
+import io from 'socket.io-client';
 
 const GroupMain = () => {
     const navigate = useNavigate();
@@ -14,33 +14,43 @@ const GroupMain = () => {
     const [searchOption, setSearchOption] = useState('all-post');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
-    const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수를 관리할 상태
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState({});
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         const userIdx = localStorage.getItem('userIdx');
 
-        // WebSocket 연결 설정
         const socket = io('http://localhost:3001', {
             query: { userIdx }
         });
 
-        // 메시지 수신 핸들러
-        socket.on('newMessage', (message) => {
-            setUnreadMessages(prevState => ({
-                ...prevState,
-                [message.chatRoomId]: (prevState[message.chatRoomId] || 0) + 1
-            }));
-        });
+        const fetchUnreadMessagesCount = async (chatRoomId) => {
+            try {
+                const response = await axios.get(`http://localhost:3001/api/chatrooms/${chatRoomId}/unread-messages-count`, {
+                    params: { userId: userIdx }
+                });
+                setUnreadMessagesCount(prevState => ({
+                    ...prevState,
+                    [chatRoomId]: response.data.unreadCount
+                }));
+            } catch (error) {
+                console.error('Failed to fetch unread messages count', error);
+            }
+        };
 
-        // 초기 데이터 불러오기
         const fetchMyChatRooms = async () => {
             try {
-                const myRoomsResponse = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/my`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                setMyChatRooms(myRoomsResponse.data);
+                // DENIED 상태의 채팅방을 제외
+                const availableChatRooms = response.data.filter(room => room.status !== 'DENIED');
+                setMyChatRooms(availableChatRooms);
+
+                availableChatRooms.forEach(room => {
+                    fetchUnreadMessagesCount(room.chatRoomIdx);
+                });
             } catch (error) {
                 console.error('Failed to fetch my chat rooms', error);
             }
@@ -59,14 +69,12 @@ const GroupMain = () => {
         fetchMyChatRooms();
         fetchAllChatRooms();
 
-        // Clean up on unmount
         return () => {
             socket.disconnect();
         };
     }, []);
 
     useEffect(() => {
-        // 현재 유저가 참여하고 있는 모임을 제외한 모임을 필터링
         const excludeMyChatRooms = allChatRooms.filter(
             (chatRoom) => !myChatRooms.some(myRoom => myRoom.chatRoomIdx === chatRoom.chatRoomIdx)
         );
@@ -74,8 +82,7 @@ const GroupMain = () => {
     }, [allChatRooms, myChatRooms]);
 
     const handleRoomClick = (chatRoomId) => {
-        // 채팅방에 입장할 때 해당 방의 읽지 않은 메시지 수 초기화
-        setUnreadMessages(prevState => ({
+        setUnreadMessagesCount(prevState => ({
             ...prevState,
             [chatRoomId]: 0
         }));
@@ -129,13 +136,15 @@ const GroupMain = () => {
                                 className="item"
                                 onClick={() => handleRoomClick(chatRoom.chatRoomIdx)}
                             >
-                                <img src={chatRoom.roomImage} alt="chat room" />
-                                <span>{chatRoom.chatRoomTitle}</span>
-                                {unreadMessages[chatRoom.chatRoomIdx] > 0 && (
-                                    <span className="unread-count">
-                                        {unreadMessages[chatRoom.chatRoomIdx]}
-                                    </span>
-                                )}
+                                <div className="chatRoom-image">
+                                    {unreadMessagesCount[chatRoom.chatRoomIdx] > 0 && (
+                                        <span className="groupMain-unread-count">
+                                            {unreadMessagesCount[chatRoom.chatRoomIdx]}
+                                        </span>
+                                    )}
+                                    <img src={chatRoom.roomImage} alt="chat room"/>
+                                </div>
+                                <span className="joinChatRoom-title">{chatRoom.chatRoomTitle}</span>
                             </button>
                         ))
                     ) : (
@@ -146,18 +155,20 @@ const GroupMain = () => {
             <div className="meeting-list">
                 <h2 className="group-title">모집 중인 모임</h2>
                 <fieldset className="search-box flex-row">
-                    <select
-                        className="group-search-select"
-                        id="searchOption"
-                        name="searchCnd"
-                        title="검색 조건 선택"
-                        onChange={(e) => setSearchOption(e.target.value)}
-                    >
-                        <option value="all-post">전체</option>
-                        <option value="title-post">제목</option>
-                        <option value="title-content">제목+내용</option>
-                        <option value="location-post">장소</option>
-                    </select>
+                    <div className="group-search-select-wrapper">
+                        <select
+                            className="group-search-select"
+                            id="searchOption"
+                            name="searchCnd"
+                            title="검색 조건 선택"
+                            onChange={(e) => setSearchOption(e.target.value)}
+                        >
+                            <option value="all-post">전체</option>
+                            <option value="title-post">제목</option>
+                            <option value="title-content">제목+내용</option>
+                            <option value="location-post">장소</option>
+                        </select>
+                    </div>
                     <div className="search-field">
                         <input
                             className="group-search-box"
@@ -179,12 +190,26 @@ const GroupMain = () => {
                             className="meeting-item"
                             onClick={() => showJoinModal(chatRoom)}
                         >
-                            <img src={chatRoom.roomImage} alt="chat room" />
-                            <div className="meeting-info">
-                                <h3>{chatRoom.chatRoomTitle}</h3>
-                                <p>{chatRoom.description}</p>
-                                <p>{chatRoom.location}</p>
-                                <span>{new Date(chatRoom.createdAt).toLocaleDateString()}</span>
+                            <div className="meeting-contents">
+                                <img src={chatRoom.roomImage} alt="chat room"/>
+                                <div className="meeting-info">
+                                    <div className="meeting-header">
+                                        <div className="meeting-header-left">
+                                            <h3>{chatRoom.chatRoomTitle}</h3>
+                                            <span>({chatRoom.location})</span>
+                                        </div>
+                                        <div>
+                                            <span>{new Intl.DateTimeFormat('ko-KR', {
+                                                year: '2-digit',
+                                                month: 'numeric',
+                                                day: 'numeric'
+                                            }).format(new Date(chatRoom.createdAt))}</span>
+                                        </div>
+                                    </div>
+                                    <div className="meeting-text">
+                                        <p>{chatRoom.description}</p>
+                                    </div>
+                                </div>
                             </div>
                         </button>
                     ))

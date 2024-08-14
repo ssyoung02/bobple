@@ -28,6 +28,14 @@ instance.interceptors.response.use(
             localStorage.removeItem('token');
             localStorage.removeItem('userNickname');
             localStorage.removeItem('userId');
+            localStorage.removeItem('userIdx');
+            localStorage.removeItem('name');
+            localStorage.removeItem('email');
+            localStorage.removeItem('recipePage');
+            localStorage.removeItem('latestRecipes');
+            localStorage.removeItem('lastLoadedKey');
+            localStorage.removeItem('recommendedRecipes');
+
             window.location.href = '/myPage/login';
             return Promise.reject({ ...error, redirectTo: '/myPage/login' });
         } else if (error.response) {

@@ -1,0 +1,109 @@
+.restaurant-info-container img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.restaurant-info-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.restaurant-info-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.restaurant-info-location {
+    display: flex;
+    gap: 10px
+}
+
+.restaurant-info-link {
+    display: flex;
+    gap: 10px;
+}
+
+.restaurant-info-right-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 5px;
+    translate: 0 -30px;
+}
+
+.restaurant-info-right-header .restaurant-bookmarks {
+    font-size: 25px;
+}
+.restaurant-info-right-header .restaurant-bookmarks svg {
+    height: 26px;
+}
+
+.thick-divider {
+    height: 10px; /* 구분선의 두께 */
+    background-color: #233B6F; /* 구분선의 색상 */
+    margin: 40px 0; /* 구분선 위아래의 여백 */
+}
+
+.review-section {
+    margin-top: 30px;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.average-score {
+    font-size: 20px;
+    font-weight: bold;
+    translate: 0 -3px;
+}
+
+.average-score span {
+    color: red;
+}
+
+.review-box {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.review-user-info {
+    display: flex;
+    gap: 15px;
+}
+
+.review-contents {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review-left-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-left-content p {
+    font-size: 18px;
+}
+
+.review-bottom-content {
+    display: flex;
+    gap: 10px;
+}
+
+.review-utils {
+    display: flex;
+    gap: 5px;
+}

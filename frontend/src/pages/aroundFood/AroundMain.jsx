@@ -6,6 +6,7 @@ import axios from 'axios';
 import {Bookmark, FillBookmark, LocationDot, LocationTarget, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import { getUserIdx } from "../../utils/auth";
 import NaverImageSearch from "../../components/NaverImageSearch";
+import {useNavigate} from "react-router-dom";
 
 function AroundMain() {
     const [state, setState] = useState({
@@ -21,6 +22,7 @@ function AroundMain() {
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedRestaurantImage, setSelectedRestaurantImage] = useState(null);
+    const navigate = useNavigate();
 
     const [userBookmarks, setUserBookmarks] = useState([]);
 
@@ -367,10 +369,10 @@ function AroundMain() {
                             <div className="info">
                                 <div className="title">
                                     <div>
-                                        <a href={selectedMarker.place_url} target="_blank" className="info-link"
-                                           rel="noreferrer">
+                                        <div
+                                            onClick={() => navigate(`/recommend/restaurant/${selectedMarker.id}`, { state: { restaurant: selectedMarker }})}>
                                             {selectedMarker.place_name}
-                                        </a>
+                                        </div>
                                         <button className="around-bookmark"
                                                 onClick={() => handleBookmarkToggle(selectedMarker)}>
                                             {userBookmarks.includes(selectedMarker.id) ? (
@@ -442,6 +444,24 @@ function AroundMain() {
                         onClick={() => handleListItemClick(restaurant)}
                     >
                         {restaurant.place_name}
+                        <div className="category-list">
+                            <p>{restaurant.category_name.replace('음식점 > ', '')}</p>
+                            <button
+                                className="around-bookmark list-bookmark"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                    if (restaurant) {
+                                        handleBookmarkToggle(restaurant);
+                                    }
+                                }}
+                            >
+                                {userBookmarks.includes(restaurant.id) ? (
+                                    <FillBookmark/>
+                                ) : (
+                                    <Bookmark/>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>

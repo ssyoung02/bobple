@@ -363,23 +363,22 @@ function RecommendMain() {
                                     className="restaurant-info-item"
                                     ref={nearbyPub.length === index + 1 ? lastPubElementRef : null}
                                 >
-                                    <a className={"restaurant-image-link"} href={pub.place_url} target="_blank"
-                                       rel="noreferrer">
-                                        <div className="restaurant-image-wrapper">
-                                            {/* NaverImageSearch 컴포넌트 사용 */}
-                                            <NaverImageSearch
-                                                restaurantName={pub.place_name}
-                                                onImageLoaded={handleImageLoaded}
-                                            />
-                                        </div>
-                                    </a>
+                                    <div className="restaurant-image-wrapper">
+                                        {/* NaverImageSearch 컴포넌트 사용 */}
+                                        <NaverImageSearch
+                                            restaurantName={pub.place_name}
+                                            onImageLoaded={handleImageLoaded}
+                                        />
+                                    </div>
                                     <div className="pub-info-container">
-                                        <a href={pub.place_url} target="_blank" rel="noreferrer">
+                                        <div
+                                            onClick={() => navigate(`/recommend/restaurant/${pub.id}`, {state: {restaurant: pub}})}>
                                             <h6 className="pub-name">{pub.place_name}</h6>
-                                            <p className="pub-address">{pub.address_name}</p>
-                                        </a>
-                                        <span
-                                            className="pub-distance"><LocationDot/>{Math.round(pub.distance)}m</span>
+                                        </div>
+                                        <p className="pub-address">{pub.address_name}</p>
+                                        <span className="pub-distance"><LocationDot/>{Math.round(pub.distance)}m</span>
+                                    </div>
+                                    <div className="pub-bookmark-state">
                                         <button
                                             className="pub-bookmarks"
                                             onClick={() => handleBookmarkToggle(pub)} // 클릭 이벤트 추가

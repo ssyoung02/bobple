@@ -96,31 +96,40 @@ export const addAnimClass = (selector, className) => {
     }
 };
 
-export const getPrize = async () => {
+// 통합된 getRandomPrize 함수
+export const getRandomPrize = () => {
     const prizes = [
-        {
-            image: 'https://assets.codepen.io/2509128/prize1.png',
-            title: 'Bunny'
-        },
-        {
-            image: 'https://assets.codepen.io/2509128/prize2.png',
-            title: 'Teddy Bear'
-        },
-        {
-            image: 'https://assets.codepen.io/2509128/prize3.png',
-            title: 'Polar Bear'
-        },
-        {
-            image: 'https://assets.codepen.io/2509128/prize4.png',
-            title: 'Polar Bear Bride'
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/3.png', point: 3 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/3.png', point: 3 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/5.png', point: 5 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/5.png', point: 5 },
+        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/10.png', point: 10 }
+    ];
+
+    const totalWeight = prizes.reduce((sum, prize) => sum + prize.point + 1, 0); // 꽝에도 가중치 1 부여
+    let randomNum = Math.random() * totalWeight;
+    for (let prize of prizes) {
+        randomNum -= prize.point + 1;
+        if (randomNum <= 0) {
+            return prize;
         }
-    ]
-
-    return await prizes[~~(prizes.length * Math.random())];
-}
-
-
-
+    }
+};
 
 // prepare 함수 정의
 export const prepare = ($handle, $machine, $title, $pointer) => {
@@ -162,7 +171,6 @@ export const prepare = ($handle, $machine, $title, $pointer) => {
         }
     });
 }
-
 
 export const start = async ($handle, $machine, $title, $pointer, prize) => {
     $handle.style.cursor = 'default';
@@ -277,11 +285,6 @@ export const start = async ($handle, $machine, $title, $pointer, prize) => {
     }
 };
 
-
-
-
-
-
 const pickup = () => {
     console.log('pickup function called');
     console.log('prizeBall.dom:', prizeBall.dom);
@@ -387,7 +390,6 @@ const pickup = () => {
     });
 }
 
-
 const pop = () => {
     confetti($app, {
         speedX: 0,
@@ -455,7 +457,6 @@ const pop = () => {
         }
     });
 }
-
 
 export const showHint = ($title, $pointer) => {
     gsap.set($pointer, { opacity: 0 });
@@ -592,13 +593,11 @@ export const createBalls = ($balls) => {
     createBall(1, 0.8);
     createBall(0.25, 0.75);
 
-    createBall(0.95, 1);
-    createBall(0.4, 1);
-    createBall(0.65, 1);
-    createBall(0.05, 1);
+    createBall(0.95, 0.9);
+    createBall(0.4, 0.9);
+    createBall(0.65, 0.9);
+    createBall(0.05, 0.9);
 }
-
-
 
 const jitter = () => {
     balls.forEach(({ dom, rotate }, i) => {

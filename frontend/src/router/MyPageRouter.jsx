@@ -18,6 +18,7 @@ import KakaoLoginHandler from "../pages/myPage/login/KakaoLoginHandler";
 import GoogleLoginHandler from "../pages/myPage/login/GoogleLoginHandler";
 import NaverLoginHandler from "../pages/myPage/login/NaverLoginHandler";
 import AdminLogin from "../pages/myPage/login/AdminLogin";
+import MyReviews from "../pages/myPage/MyReviews";
 
 function MyPageRouter(){
         return(
@@ -27,6 +28,7 @@ function MyPageRouter(){
                     <Route path="/mylikeRecipe" element={<MyLikeRecipe/>}/>
                     <Route path="/myRecipe" element={<MyRecipe/>}/>
                     <Route path="/bookmark" element={<BookMark/>}/>
+                    <Route path="/myReviews" element={<MyReviews/>}/>
                     <Route path="/myPointUseage" element={<MyPointUsage/>}/>
                     <Route path="/userModify" element={<UserModify/>}/>
 

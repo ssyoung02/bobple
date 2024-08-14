@@ -3,6 +3,8 @@ import Dashboard from "./Dashboard";
 import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 import {getUserIdx} from "../../../../utils/auth";
 import axios from "axios";
+import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
+import {useLocation} from "react-router-dom";
 
 const SlotMachine = () => {
     const [rolling, setRolling] = useState(false);
@@ -11,6 +13,7 @@ const SlotMachine = () => {
     const slotRefs = [useRef(null), useRef(null), useRef(null)];
     const fruits = ["🍒", "🍉", "🍊", "🍓", "🍇", "🥝", "🍍", "🍎", "🍋", "💎"];
     const userIdx=getUserIdx();
+    const location = useLocation();
 
     const roll = () => {
         if (!rolling) {
@@ -52,7 +55,7 @@ const SlotMachine = () => {
 
 
         if (isWin) {
-            if (slotItems[0] === "💎") {
+            if (slotItems[0] || slotItems[1] || slotItems[2]=== "💎") {
                 console.log(slotItems[0]);
                 earnedPoint = 50;
                 message = `${earnedPoint} 포인트 획득! (💎 당첨!)`; // 보석 당첨 메시지
@@ -67,20 +70,20 @@ const SlotMachine = () => {
 
         setResultMessage(message); // 계산된 메시지로 설정
 
-        // 포인트 저장 요청 (userIdx 필요)
-        if (earnedPoint > 0) {
-            const token = localStorage.getItem('token');
+        // 포인트 저장 요청 (userIdx 필요) - 획득 여부와 상관없이 항상 전송
+        const token = localStorage.getItem('token');
 
-            axios.post('http://localhost:8080/api/point/result', {
-                userIdx: parseInt(userIdx, 10),
-                point: earnedPoint,
-                pointComment: "슬롯 게임"
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                withCredentials: true
-            }).then(response => {
+        axios.post('http://localhost:8080/api/point/result', {
+            userIdx: parseInt(userIdx, 10),
+            point: earnedPoint, // 0 포인트도 전송
+            pointComment: isWin ? "슬롯 게임" : "슬롯 게임 실패" // 성공/실패 여부에 따라 comment 변경
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: true
+        })
+            .then(response => {
                 console.log("포인트 저장 성공:", response.data);
             }).catch(error => {
                 if (error.response) {
@@ -99,7 +102,6 @@ const SlotMachine = () => {
                     console.error("Error setting up the request:", error.message);
                 }
             });
-        }
     };
 
 
@@ -114,18 +116,25 @@ const SlotMachine = () => {
         });
     };
 
+    useHeaderColorChange(location.pathname, '#CCE1AB');
+    useNavigateNone();
+
+
     return (
-        <div className="slot-game">
-            <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits} />
-            <div className="machine-controls">
-                <div className="machine-roll" onClick={roll}>
-                    {rolling ? `STOP ${3 - stoppedSlots}` : "ROLL"}
+        <div className="slot-game-container">
+            <h1 className="slot-title">SLOT MACHINE</h1>
+            <div className="slot-game">
+                <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits} />
+                <div className="machine-controls">
+                    <div className="machine-roll" onClick={roll}>
+                        {rolling ? `STOP ${3 - stoppedSlots}` : "ROLL"}
+                    </div>
+                    <div className="machine-reset" onClick={reset}>
+                        RESET
+                    </div>
                 </div>
-                <div className="machine-reset" onClick={reset}>
-                    RESET
-                </div>
+                {resultMessage && <div className="slot-result">{resultMessage}</div>}
             </div>
-            {resultMessage && <div className="slot-result">{resultMessage}</div>}
         </div>
     );
 };

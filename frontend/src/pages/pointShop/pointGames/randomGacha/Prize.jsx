@@ -3,46 +3,12 @@ import '../../../../assets/style/pointGame/gacha/Prize.scss';
 import {useNavigate} from "react-router-dom";
 import {getUserIdx} from "../../../../utils/auth";
 import axios from 'axios';
+import shine from '../../../../assets/images/shine_effect.png';
+import { getRandomPrize } from '../../../../utils/GachaUtils'; // GachaUtils에서 getRandomPrize 가져오기
 
 const Prize = () => {
     const navigate = useNavigate();
-    const userIdx=getUserIdx();
-
-    const prizes = [
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/Bomb.png', point: 0 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/1.png', point: 1 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/2.png', point: 2 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/3.png', point: 3 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/3.png', point: 3 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/5.png', point: 5 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/5.png', point: 5 },
-        { image: 'https://bobple.kr.object.ncloudstorage.com/gacha_prize/10.png', point: 10 }
-    ];
-
-    // 랜덤으로 상품 뽑기
-    const getRandomPrize = () => {
-        const totalWeight = prizes.reduce((sum, prize) => sum + prize.point + 1, 0); // 꽝에도 가중치 1 부여
-        let randomNum = Math.random() * totalWeight;
-        for (let prize of prizes) {
-            randomNum -= prize.point + 1;
-            if (randomNum <= 0) {
-                return prize;
-            }
-        }
-    };
-
+    const userIdx = getUserIdx();
     const [selectedPrize, setSelectedPrize] = useState(null);
 
     useEffect(() => {
@@ -60,41 +26,35 @@ const Prize = () => {
         const prize = getRandomPrize();
         setSelectedPrize(prize);
 
-        if (prize.point > 0) { // 포인트 획득 시에만 요청 전송
-            const token = localStorage.getItem('token');
-            const userIdx = getUserIdx();
-
-            axios.post('http://localhost:8080/api/point/result', { // 백엔드 엔드포인트 확인
-                userIdx: parseInt(userIdx, 10),
-                point: prize.point,
-                pointComment: "가챠 게임"
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                withCredentials: true
+        const token = localStorage.getItem('token');
+        console.log(prize.point);
+        // 포인트 획득 여부와 상관없이 요청 전송
+        axios.post('http://localhost:8080/api/point/result', {
+            userIdx: parseInt(userIdx, 10),
+            point: prize.point,
+            pointComment: prize.point > 0 ? "가챠 게임" : "가챠 게임 실패" // point에 따라 comment 변경
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            withCredentials: true
+        })
+            .then(response => {
+                console.log("포인트 저장 성공:", response.data);
             })
-                .then(response => {
-                    console.log("포인트 저장 성공:", response.data);
-                })
-                .catch(error => {
-                    if (error.response) {
-                        // 서버에서 에러 응답을 받은 경우
-                        if (error.response.status === 401) {
-                            console.error("Unauthorized: ", error.response.data);
-                            // 사용자에게 로그인 필요 알림 등 추가 처리
-                        } else {
-                            console.error("Error saving matching game result:", error.response.data); // 에러 메시지 출력
-                        }
-                    } else if (error.request) {
-                        // 요청을 보냈지만 응답을 받지 못한 경우
-                        console.error("No response received from server:", error.request);
+            .catch(error => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error("Unauthorized: ", error.response.data);
                     } else {
-                        // 요청 설정 중에 에러가 발생한 경우
-                        console.error("Error setting up the request:", error.message);
+                        console.error("Error saving matching game result:", error.response.data);
                     }
-                });
-        }
+                } else if (error.request) {
+                    console.error("No response received from server:", error.request);
+                } else {
+                    console.error("Error setting up the request:", error.message);
+                }
+            });
     }, []);
 
 
@@ -103,19 +63,17 @@ const Prize = () => {
             <div className="prize-ball-container"></div>
             <div className="prize-reward-container">
                 <div className="shine">
-                    <img src="https://assets.codepen.io/2509128/shine.png" alt="Shine"/>
+                    <img src={shine} alt="Shine"/>
                 </div>
                 <div className="prize">
                     {selectedPrize && ( // selectedPrize가 null이 아닌 경우에만 이미지 렌더링
                         <img className="wiggle" src={selectedPrize.image} alt="Prize"/>
                     )}
+                    <br/>
+                    {selectedPrize && selectedPrize.point > 0 && ( // 포인트가 있는 경우에만 메시지 표시
+                        <h3 className="point-message">{selectedPrize.point} 포인트 획득!</h3>
+                    )}
                 </div>
-                <div className="button">
-                    <button className="exit-button" onClick={handleButtonClick}>돌아가기</button>
-                </div>
-                {selectedPrize && selectedPrize.point > 0 && ( // 포인트가 있는 경우에만 메시지 표시
-                    <div className="point-message">{selectedPrize.point} 포인트 획득!</div>
-                )}
             </div>
         </div>
     );

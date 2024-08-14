@@ -24,6 +24,8 @@ function PointMain() {
 
     const categories = ['전체', '카페', '치킨', '햄버거', '피자', '편의점'];
 
+    const [playedGamesToday, setPlayedGamesToday] = useState([]);
+
     // Fetch products or purchased products based on selectedTab
     useEffect(() => {
         if (!token) {
@@ -86,6 +88,34 @@ function PointMain() {
             });
     }, [userIdx, token]);
 
+    useEffect(() => {
+        const fetchPlayedGamesToday = async () => {
+            if (!token || !userIdx) return; // 토큰 또는 userIdx가 없는 경우 함수 종료
+
+            const today = new Date().toISOString().slice(0, 10); // 오늘 날짜 YYYY-MM-DD 형식으로 가져오기
+
+            try {
+                const response = await axios.get(`http://localhost:8080/api/points/${userIdx}/today`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    withCredentials: true,
+                    params: {
+                        date: today
+                    }
+                });
+
+                const playedGameComments = response.data.map(point => point.pointComment);
+                setPlayedGamesToday(playedGameComments);
+            } catch (error) {
+                console.error('오늘 플레이한 게임 정보 가져오기 실패:', error);
+                // 추가적인 에러 처리 로직 (예: 사용자에게 에러 메시지 표시)
+            }
+        };
+
+        fetchPlayedGamesToday();
+    }, [userIdx, token]);
+
     const handleTabClick = (tab) => {
         setSelectedTab(tab);
     };
@@ -94,21 +124,33 @@ function PointMain() {
         setSelectedItemTab(tab);
     };
 
-    const moveGacha = () => {
-        navigate('/point/pointGame/GachaGame');
+    const handleGameClick = (gameComment) => {
+        const playedToday = playedGamesToday.some(comment =>
+            comment === gameComment || comment === `${gameComment} 실패`
+        );
+        if (playedToday) {
+            alert("오늘 이미 플레이한 게임입니다.");
+        } else {
+            // 해당 게임 페이지로 이동하는 로직 추가
+            switch (gameComment) {
+                case "가챠 게임":
+                    navigate('/point/pointGame/GachaGame');
+                    break;
+                case "음식 확대사진 맞추기 게임":
+                    navigate('/point/pointGame/MatchingGame');
+                    break;
+                case "음식 피하기 게임":
+                    navigate('/point/pointGame/FoodAvoid');
+                    break;
+                case "슬롯 게임":
+                    navigate('/point/pointGame/SlotGame');
+                    break;
+                default:
+                    console.error("알 수 없는 게임:", gameComment);
+            }
+        }
     };
 
-    const moveMatching = () => {
-        navigate('/point/pointGame/MatchingGame');
-    };
-
-    const moveSlot = () => {
-        navigate('/point/pointGame/SlotGame');
-    };
-
-    const moveAvoid = () => {
-        navigate('/point/pointGame/FoodAvoid');
-    };
 
     const movegiftDetail = (productIdx) => {
         navigate('/point/pointGifticonDetail', { state: { productIdx } });
@@ -201,16 +243,16 @@ function PointMain() {
             )}
             {selectedTab === '게임' && (
                 <>
-
                     <h2 className="game-header">"Point Game"</h2>
                     <div className="point-game-btns">
-                        <button className="game-button" onClick={moveGacha}>Gacha</button>
-                        <button className="game-button" onClick={moveGacha}>matching</button>
-                        <button className="game-button" onClick={moveAvoid}>avoid</button>
-                        <button className="game-button" onClick={moveSlot}>slot</button>
+                        <button className="game-button" onClick={() => handleGameClick("가챠 게임")}>Gacha</button>
+                        <button className="game-button" onClick={() => handleGameClick("음식 확대사진 맞추기 게임")}>matching</button>
+                        <button className="game-button" onClick={() => handleGameClick("음식 피하기 게임")}>avoid</button>
+                        <button className="game-button" onClick={() => handleGameClick("슬롯 게임")}>slot</button>
                     </div>
                 </>
             )}
+
             {selectedTab === '보관함' && (
                 <>
                     <div className="category-btn-container">

@@ -47,6 +47,7 @@
 /*카테고리별 맛집 추천*/
 .food-categories-banner{
     width: 100vh;
+    translate: -10px;
 }
 
 .food-categories-banner .slick-track{

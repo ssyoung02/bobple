@@ -154,26 +154,32 @@ public class PointService {
         pointEntity.setUserIdx(userIdx);
         pointEntity.setPointBalance(currentBalance);
 
-        if (point != 0) {
-            System.out.println("User ID: " + userIdx);
-            System.out.println("Transaction: +" + point);
-            System.out.println("Current Balance: " + currentBalance);
-            System.out.println("New Balance: " + newBalance);
 
-            pointEntity.setPointValue((long) point);
-            pointEntity.setPointState(Point.PointState.P);
-            pointEntity.setPointComment(pointComment);
-            pointEntity.setCreatedAt(new Date());
-            pointEntity.setPointBalance(newBalance);
-            pointRepository.save(pointEntity);
+        System.out.println("User ID: " + userIdx);
+        System.out.println("Transaction: +" + point);
+        System.out.println("Current Balance: " + currentBalance);
+        System.out.println("New Balance: " + newBalance);
 
-            user.setPoint(newBalance);
-            userRepository.save(user);
-        } else {
-            System.out.println("No point change. Skipping point save.");
-        }
+        pointEntity.setPointValue((long) point);
+        pointEntity.setPointState(Point.PointState.P);
+        pointEntity.setPointComment(pointComment);
+        pointEntity.setCreatedAt(new Date());
+        pointEntity.setPointBalance(newBalance);
+        pointRepository.save(pointEntity);
+
+        user.setPoint(newBalance);
+        userRepository.save(user);
 
         return PointDto.fromEntity(pointEntity);
+    }
+
+    // 오늘 특정 사용자가 플레이한 게임 목록 조회
+    public List<Point> getPointsByDateAndUserIdx(Long userIdx, String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        Date startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(localDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        return pointRepository.findByUserIdxAndCreatedAtBetweenOrderByCreatedAtDesc(userIdx, startDate, endDate);
     }
 
 }

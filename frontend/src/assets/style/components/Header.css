@@ -1,6 +1,6 @@
 main {
     min-height: calc(100dvh - 8rem);
-    background-color: white;
+    background: var(--main-background);
 }
 
 .header{
@@ -14,7 +14,8 @@ main {
     align-items: center;
     padding: 0 1.25rem;
     z-index: 100;
-    background: #fff;
+    background: var(--header-background);
+    color: var(--header-color);
 }
 .headerLogo{
     width: 8em;
@@ -22,15 +23,90 @@ main {
 .headerLogo img{
     width: 100%;
 }
-.headerLink{
-
-}
 .headerLink *{
     font-size: 18px;
     padding: 0 10px;
     color: #233B6F;
 }
-main{
-    min-height: calc(100dvh - 8.5rem);
-    background: #ffffff;
+
+.theme-toggle-button {
+    padding: 5px 10px;
+    background-color: transparent;
+    border: 1px solid var(--header-link-color);
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.theme-toggle-button:hover {
+    background-color: var(--header-link-color);
+    color: #ffffff;
+}
+
+/* 라이트모드 */
+.light-mode {
+    --header-background: #ffffff;
+    --header-color: #000000;
+    --header-link-color: #233B6F;
+    --main-background: #ffffff;
+}
+
+/* 다크모드 */
+.dark-mode {
+    --header-background: #000000;
+    --header-color: #ffffff;
+    --header-link-color: #ffffff;
+    --main-background: #000000;
+}
+
+/* 기본 체크박스 숨기기 */
+.theme-checkbox {
+    --toggle-size: 10px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* 커스텀 체크박스 스타일 */
+.theme-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    translate: 0 7px;
+}
+
+.theme-slider {
+    display: inline-block;
+    width: 3em;
+    height: 1.5em;
+    background: linear-gradient(to right, #efefef 50%, #2a2a2a 50%) no-repeat;
+    background-size: 205%;
+    background-position: 0;
+    border-radius: 99em;
+    position: relative;
+    transition: 0.4s;
+    margin-right: 10px; /* 텍스트와 슬라이더 사이의 간격 */
+}
+
+.theme-slider::before {
+    content: "";
+    width: 1em;
+    height: 1em;
+    position: absolute;
+    top: 0.25em;
+    left: 0.25em;
+    background: linear-gradient(to right, #efefef 50%, #2a2a2a 50%) no-repeat;
+    background-size: 205%;
+    background-position: 100%;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+.theme-checkbox:checked + .theme-slider::before {
+    left: calc(100% - 2.25em - 0.438em);
+    background-position: 0;
+}
+
+.theme-checkbox:checked + .theme-slider {
+    background-position: 100%;
 }
