@@ -2,7 +2,7 @@
   services:
     back:
       build:
-        context: ../backend
+        context: ./backend
         dockerfile: Dockerfile
       restart: always
       ports:
@@ -10,7 +10,7 @@
 
     front:
       build:
-        context: ../frontend
+        context: ./frontend
         dockerfile: Dockerfile
       restart: always
       ports:
