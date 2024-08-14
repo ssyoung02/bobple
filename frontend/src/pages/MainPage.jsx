@@ -106,7 +106,6 @@ function MainPage() {
             <div className={"MainRandomMenuButton"}>
                 <button className={"RandomMenuButtonItem"}>
                     <div className={"MenuImage"}>
-
                     </div>
                     <div className={"MenuExplanation"}>
                         <h4>메뉴가 고민되면</h4>

@@ -1,5 +1,6 @@
 .restaurant-info-container img {
     width: 100%;
+    height: 100%;
     border-radius: 8px;
     margin-bottom: 20px;
 }
@@ -86,6 +87,10 @@
 .review-user-info {
     display: flex;
     gap: 15px;
+}
+
+.star-rating {
+    color: red;
 }
 
 .review-contents {

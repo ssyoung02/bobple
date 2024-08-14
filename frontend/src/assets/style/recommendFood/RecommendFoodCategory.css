@@ -127,6 +127,7 @@
 .restaurant-item:active {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    border-radius: 8px;
 }
 
 .restaurant-info{
@@ -193,4 +194,5 @@
     width: 80px; /* 원하는 너비 설정 */
     height: 80px; /* 원하는 높이 설정 */
     object-fit: cover;
+    border-radius: 8px;
 }
