@@ -5,7 +5,7 @@ RUN npm install
 
 COPY . .
 RUN npm run build
-p
+
 FROM nginx:latest
 RUN rm /etc/nginx/conf.d/default.conf
 #RUN rm -rf /etc/nginx/conf.d/*
