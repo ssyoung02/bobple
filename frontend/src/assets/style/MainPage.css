@@ -68,3 +68,10 @@
 .MainRandomMenuButton{
     margin-bottom: 1em;
 }
+
+.body.dark-mode {
+    --main-background: #333333;
+    --header-background: #444444;
+    --header-color: #ffffff;
+    --text-color: #ffffff; /* 다크 모드 폰트 색상 */
+}

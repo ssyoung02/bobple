@@ -103,7 +103,7 @@ main {
 }
 
 .theme-checkbox:checked + .theme-slider::before {
-    left: calc(100% - 2.25em - 0.438em);
+    left: calc(100% - 1.375em);
     background-position: 0;
 }
 
