@@ -141,25 +141,13 @@ public class GoogleController {
         Optional<LoginHistory> loginHistoryOptional = loginHistoryRepository.findByUserIdxAndLoginTime(userIdx, today);
 
         if (!loginHistoryOptional.isPresent()) {
-            // 사용자 정보 가져오기
-            User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException("User not found"));
-
-            // 하루 포인트 설정
-            int currentPoints = user.getPoint(); // 현재 포인트 가져오기
-
-            // 포인트 업데이트
-            int updatedPoints = currentPoints ;
-
-            // 사용자의 포인트 업데이트 및 저장
-            user.setPoint(updatedPoints);
-            user.setUpdatedAt(LocalDateTime.now());
-            userRepository.save(user);
-
             // 오늘 로그인 기록 저장
             LoginHistory loginHistory = new LoginHistory();
             loginHistory.setUserIdx(userIdx);
             loginHistory.setLoginTime(today);
             loginHistoryRepository.save(loginHistory);
+
+            // 트리거가 포인트를 처리하므로, 애플리케이션에서는 포인트를 직접 처리하지 않음
         }
     }
 }
