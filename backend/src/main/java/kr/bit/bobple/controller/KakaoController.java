@@ -1,7 +1,9 @@
 package kr.bit.bobple.controller;
 
 import kr.bit.bobple.config.JwtTokenProvider;
+import kr.bit.bobple.entity.LoginHistory;
 import kr.bit.bobple.entity.User;
+import kr.bit.bobple.repository.LoginHistoryRepository;
 import kr.bit.bobple.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +35,9 @@ public class KakaoController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LoginHistoryRepository loginHistoryRepository;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -112,6 +119,8 @@ public class KakaoController {
         claims.put("reportCount", user.getReportCount());
         claims.put("point", user.getPoint());
 
+        handleDailyPoint(user.getUserIdx());
+
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.createToken(user.getUserIdx(), email, claims);
         System.out.println("Generated JWT Token: " + jwtToken);
@@ -123,5 +132,23 @@ public class KakaoController {
         result.put("token", jwtToken);
 
         return ResponseEntity.ok(result);
+    }
+
+    private void handleDailyPoint(Long userIdx) {
+        // 오늘 날짜 가져오기
+        Date today = java.sql.Date.valueOf(LocalDate.now());
+
+        // 사용자가 오늘 로그인했는지 확인
+        Optional<LoginHistory> loginHistoryOptional = loginHistoryRepository.findByUserIdxAndLoginTime(userIdx, today);
+
+        if (!loginHistoryOptional.isPresent()) {
+            // 오늘 로그인 기록 저장
+            LoginHistory loginHistory = new LoginHistory();
+            loginHistory.setUserIdx(userIdx);
+            loginHistory.setLoginTime(today);
+            loginHistoryRepository.save(loginHistory);
+
+            // 트리거가 포인트를 처리하므로, 애플리케이션에서는 포인트를 직접 처리하지 않음
+        }
     }
 }

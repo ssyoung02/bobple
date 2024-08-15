@@ -106,6 +106,7 @@ public class NaverController {
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
 
+            // 여기서는 nick_name을 설정하지 않아서 트리거가 작동하도록 함
             userRepository.save(user);
         }
 
@@ -121,12 +122,10 @@ public class NaverController {
 
         handleDailyPoint(user.getUserIdx());
 
-
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.createToken(user.getUserIdx(), email, claims);
         System.out.println("Generated JWT Token: " + jwtToken);
         System.out.println(user.getUserIdx());
-
 
         // 사용자 정보 중 필요한 부분만 추출하여 클라이언트로 전송
         Map<String, Object> result = new HashMap<>(claims);
