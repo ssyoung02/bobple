@@ -5,6 +5,12 @@ import '../../assets/style/pointShop/PointMain.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Carousel } from 'react-bootstrap';
 import stamp from '../../assets/images/checkstamp.png';
+import {
+    PointgameAvoid,
+    PointgameFoodMatching,
+    PointGameGacha,
+    PointgameSlot
+} from "../../components/imgcomponents/ImgComponents";
 
 function PointMain() {
     const location = useLocation();
@@ -245,10 +251,18 @@ function PointMain() {
                 <>
                     <h2 className="game-header">"Point Game"</h2>
                     <div className="point-game-btns">
-                        <button className="game-button" onClick={() => handleGameClick("가챠 게임")}>Gacha</button>
-                        <button className="game-button" onClick={() => handleGameClick("음식 확대사진 맞추기 게임")}>matching</button>
-                        <button className="game-button" onClick={() => handleGameClick("음식 피하기 게임")}>avoid</button>
-                        <button className="game-button" onClick={() => handleGameClick("슬롯 게임")}>slot</button>
+                        <button className="game-button gacha" onClick={() => handleGameClick("가챠 게임")}>
+                            <PointGameGacha/>
+                        </button>
+                        <button className="game-button food-matching" onClick={() => handleGameClick("음식 확대사진 맞추기 게임")}>
+                            <PointgameFoodMatching/>
+                        </button>
+                        <button className="game-button avoid-food" onClick={() => handleGameClick("음식 피하기 게임")}>
+                            <PointgameAvoid/>
+                        </button>
+                        <button className="game-button slot-machine" onClick={() => handleGameClick("슬롯 게임")}>
+                            <PointgameSlot/>
+                        </button>
                     </div>
                 </>
             )}

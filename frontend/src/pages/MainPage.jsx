@@ -3,6 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import '../assets/style/MainPage.css'
 import SliderComponent from "../components/SliderComponent";
 import { clearRecipeLocalStorage } from '../utils/localStorageUtils';
+import {AiLunch, CalculatorBanner, Meeting, NextTo, RandomMenu} from "../components/imgcomponents/ImgComponents";
 function MainPage() {
     const navigate = useNavigate();
 
@@ -51,71 +52,60 @@ function MainPage() {
     };
 
     return (
-        <>
-            {user && (
-                <div>
-                    <p>환영합니다, {user.name}님!</p>
-                </div>
-            )}
-            <h2>오늘의 주인공</h2>
-            <div className={"goToGame"}>
-                <div className={"gameLayer"}>
-                    <button className={"mainGameContent"} onClick={moveGame}>
-                        <span className={"mainGameTitle"}>제비뽑기</span>
-                    </button>
-                    <button className={"mainGameContent"} onClick={moveGame}>
-                        <span className={"mainGameTitle"}>초성퀴즈</span>
-                    </button>
-                </div>
-                <div className={"gameLayer"}>
-                    <button className={"mainGameContent"} onClick={moveGame}>
-                        <span className={"mainGameTitle"}>제비뽑기</span>
-                    </button>
-                    <button className={"mainGameContent"} onClick={moveGame}>
-                        <span className={"mainGameTitle"}>초성퀴즈</span>
-                    </button>
-                </div>
-                <div className={"gameLayer"}>
-                    <button className={"mainGameContent"} onClick={moveGame}>
-                        <span className={"mainGameTitle"}>제비뽑기</span>
-                    </button>
-                    <button className={"mainGameContent"} onClick={moveGame}>
-                        <span className={"mainGameTitle"}>초성퀴즈</span>
-                    </button>
-                </div>
-            </div>
+        <div className="mainPage">
+            <SliderComponent/>
             <div className={"shortMenu"}>
                 <button className={"shortMenuItem"} onClick={moveCalculator}>
-                    <div className={"shortMenuIcon"}></div>
+                    <div className={"shortMenuIcon"}><CalculatorBanner/></div>
                     <p className={"shortMenuName"}>1/N</p>
                 </button>
                 <button className={"shortMenuItem"} onClick={moveRecipeAI}>
-                    <div className={"shortMenuIcon"}></div>
+                    <div className={"shortMenuIcon"}><AiLunch/></div>
                     <p className={"shortMenuName"}>AI 도시락</p>
                 </button>
                 <button className={"shortMenuItem"} onClick={moveGroup}>
-                    <div className={"shortMenuIcon"}></div>
+                    <div className={"shortMenuIcon"}><Meeting/></div>
                     <p className={"shortMenuName"}>번개모임</p>
                 </button>
                 <button className={"shortMenuItem"} onClick={moveRecommend}>
-                    <div className={"shortMenuIcon"}></div>
+                    <div className={"shortMenuIcon"}><RandomMenu/></div>
                     <p className={"shortMenuName"}>랜덤메뉴</p>
                 </button>
             </div>
-            <SliderComponent />
-            <div className={"MainRandomMenuButton"}>
-                <button className={"RandomMenuButtonItem"}>
-                    <div className={"MenuImage"}>
+            <div className="summation-box">
+                <div className="summation-top">
+                    <div className="summation-left">
+                        <sapn className="summation-title">
+                            가까운 매장
+                        </sapn>
+                        <h3>
+                            {user && (<>{user.name}님</>)} 근처 맛집
+                        </h3>
+                    </div>
+                    <button className="summation-more">더보기 <NextTo/></button>
+                </div>
+                <div className="summation-content">
 
-                    </div>
-                    <div className={"MenuExplanation"}>
-                        <h4>메뉴가 고민되면</h4>
-                        <p>지금 메뉴를 정하지 못했다면 주변 맛집을 확인해보세요!</p>
-                        <p className={"GoToMenu"}>주변맛집 바로가기 ></p>
-                    </div>
-                </button>
+                </div>
             </div>
-            </>
+            <div className="summation-box">
+                <div className="summation-top">
+                    <div className="summation-left">
+                        <sapn className="summation-title">
+                            BEST 레시피
+                        </sapn>
+                        <h3>
+                            오늘의 도시락
+                        </h3>
+                    </div>
+                    <button className="summation-more">더보기 <NextTo/></button>
+                </div>
+                <div className="summation-content">
+
+                </div>
+            </div>
+
+        </div>
     );
 }
 

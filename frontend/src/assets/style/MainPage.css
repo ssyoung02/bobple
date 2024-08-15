@@ -1,30 +1,16 @@
-.goToGame{
-    margin: 1em 0;
-}
-.gameLayer{
+.mainPage{
     display: flex;
-    flex-direction: row;
-    gap: 1em;
-    width: 100%;
-    margin: 10px 0;
+    flex-direction: column;
+    gap: 1.5em;
 }
-.mainGameContent{
-    width: 100%;
-    height: 6em;
-    border: 1px solid #F7CCD4;
-    border-radius: 15px;
-    padding: 1em;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-}
+
 .shortMenu{
     display: flex;
-    width: 100%;
+    width: 90%;
     justify-content: space-around;
     align-items: center;
-    gap: 1em;
-    margin: 2em 0;
+    gap: 2em;
+    margin: 1em auto;
 }
 .shortMenuItem{
     position: relative;
@@ -37,34 +23,48 @@
     margin-bottom: 5px;
 }
 .shortMenuIcon{
+    position: relative;
     width: 100%;
     border-radius: 10px;
-    border: 1px solid #F7CCD4;
+    overflow: hidden;
 }
+
+.shortMenuIcon img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    top: 0;
+    left: 0;
+}
+
 .RandomMenuButtonItem{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1em;
 }
-.MenuImage{
-    width: 10em;
-    height: 10em;
+
+/*메뉴 요약*/
+.summation-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.summation-title{
+    background: #75b8ff;
+    color: #ffffff;
+    padding: 2px 7px;
     border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #e288bb;
-    grid-column: 1 / 2;
+    font-size: 12px;
+    font-weight: bold;
 }
-.MenuExplanation{
-    position: relative;
-    grid-column: span 2;
-    height: 100%;
-    text-align: left;
+
+.summation-left h3{
+    margin-top: 5px;
+    margin-bottom: 0;
 }
-.GoToMenu{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}
-.MainRandomMenuButton{
-    margin-bottom: 1em;
+
+.summation-more{
+    color: #555555;
+    font-weight: bold;
 }

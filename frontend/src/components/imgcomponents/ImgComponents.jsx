@@ -7,18 +7,49 @@ import { faMagnifyingGlass, faChevronRight, faChevronLeft, faLocationDot,
     faX, faBars, faEye, faXmark, faCamera, faImage, faFire, faCalendar,
     faClock, faEllipsisVertical, faHouse, faPhone, faMap, faStar} from "@fortawesome/free-solid-svg-icons";
 import MainFoodBanner_jeon from "../../assets/images/banner/MainFoodBanner_jeon.jpg";
+import calculator from  "../../assets/images/banner/main-01.calculator.png"
+import aiLunch from  "../../assets/images/banner/main-02.AI-lunchbox.png"
+import meeting from  "../../assets/images/banner/main-03.meeting.png"
+import randomMenu from  "../../assets/images/banner/main-04.random-menu.png"
+
 import trophy from "../../assets/images/gameimg/trophy.png";
 import sendMessage from '../../assets/images/sendMessage.png';
+import pointgameCacha from '../../assets/images/gameimg/point-game-01.gacha.png';
+import pointgameFoodMatching from '../../assets/images/gameimg/point-game-02.foodmatching.png';
+import pointgameAvoid from '../../assets/images/gameimg/point-game-03. avoidfood.png';
+import pointgameSlot from '../../assets/images/gameimg/point-game-04. slotmachine.png';
+
 import receiptSettlementImg from "../../assets/images/gameimg/receipt_ settlement.png";
 import thinking_about from "../../assets/images/gameimg/thinking_about.png";
 import gLogin from "../../assets/images/icon/google.png"
 import nLogin from "../../assets/images/icon/naver.png"
 import kLogin from  "../../assets/images/icon/kakao.png"
 
+
+
+
+
 // 배너 이미지
 export const MainFoodBanner = () => {
     return (<img src={MainFoodBanner_jeon} alt={"전"} />);
 }
+
+export const CalculatorBanner = () => {
+    return (<img src={calculator} alt={"1/n 계산기"} />);
+}
+
+export const AiLunch = () => {
+    return (<img src={aiLunch} alt={"AI 도시락"} />);
+}
+
+export const Meeting = () => {
+    return (<img src={meeting} alt={"번개모임"} />);
+}
+
+export const RandomMenu = () => {
+    return (<img src={randomMenu} alt={"랜덤메뉴"} />);
+}
+
 
 //로그인 이미지
 
@@ -50,6 +81,25 @@ export const ThinkingAbout = () => {
 export const SendMessage = () => {
     return (<img src={sendMessage} alt={""} />);
 }
+
+export const PointGameGacha = () => {
+    return (<img src={pointgameCacha} alt={"Gacha"} />);
+}
+
+export const PointgameFoodMatching = () => {
+    return (<img src={pointgameFoodMatching} alt={"Food Matching"} />);
+}
+
+export const PointgameAvoid = () => {
+    return (<img src={pointgameAvoid} alt={"Avoid Food"} />);
+}
+
+export const PointgameSlot = () => {
+    return (<img src={pointgameSlot} alt={"Slot machine"} />);
+}
+
+
+
 
 // FontAwesomeIcon
 export const SearchIcon = () => {

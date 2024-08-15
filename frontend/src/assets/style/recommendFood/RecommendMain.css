@@ -9,22 +9,7 @@
     margin-bottom: 0.5em;
 }
 
-/*실시간 인기 검색어*/
-.real-time-popularity{
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    gap: 2em;
-    margin-top: 1em;
-}
 
-.real-time-popularity h6{
-    translate: 0 5px;
-}
-
-.real-time-popularity div{
-    width: 200px;
-}
 
 /* 메뉴 추천 스타일 */
 .menu-recommendation {

@@ -4,10 +4,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import '../assets/style/components/SliderComponent.css';
 import axios from '../utils/axios';
-import MainFoodBanner_jeon from "../assets/images/banner/MainFoodBanner_jeon.jpg"
 import {restaurantfetchTopKeywords} from "./Search/RestaurantSearch"
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {Heart, HeartLine, NextTo, PrevTo, View} from "./imgcomponents/ImgComponents";
+import {Down, Heart, HeartLine, NextTo, PrevTo, Up, View} from "./imgcomponents/ImgComponents";
 // import axios from "axios";
 import useRecommendThemes from "../hooks/RecommendFoodHooks"
 import RecipeContext from "../pages/recipe/RecipeContext";
@@ -64,6 +63,7 @@ export default function SliderComponent() {
 
 export const TopSearch = ({ onKeywordClick }) => {
     const [topKeywords, setTopKeywords] = useState([]);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     useEffect(() => {
         restaurantfetchTopKeywords(setTopKeywords);
@@ -75,6 +75,10 @@ export const TopSearch = ({ onKeywordClick }) => {
         }
     };
 
+    const toggleExpand = () => {
+        setIsExpanded(!isExpanded); // 리스트 확장 상태 토글
+    }
+
     const settings = {
         dots: false,
         infinite: true,
@@ -84,25 +88,49 @@ export const TopSearch = ({ onKeywordClick }) => {
         slidesToScroll: 1,
         row: 1,
         autoplay: true,
-        vertical: true
+        vertical: true,
+        arrows: false,
     };
 
     return (
-        <div className={"real-time-popularity"}>
+        <div className="real-time-popularity">
             <h6>실시간 인기</h6>
-            <SlickSlider {...settings}>
-                {topKeywords.map((keyword, index) => (
-                    <span key={index} onClick={() => handleKeywordClick(keyword.keyword)}> {/* keyword.keyword 사용 */}
+            <div style={{ display: isExpanded ? 'none' : 'block' }}>
+                <SlickSlider {...settings}>
+                    {topKeywords.map((keyword, index) => (
+                        <span
+                            className="keyword"
+                            key={index}
+                            onClick={() => handleKeywordClick(keyword.keyword)}>
+                            {index + 1}. {keyword.keyword}
+                        </span>
+                    ))}
+                </SlickSlider>
+            </div>
+            <div
+                className="real-time-popularity-entire"
+                style={{ display: isExpanded ? 'block' : 'none' }}
+            >
+                <div className="real-time-popularity-list">
+                    {topKeywords.map((keyword, index) => (
+                        <span
+                            className="keyword"
+                            key={index}
+                            onClick={() => handleKeywordClick(keyword.keyword)}>
                         {index + 1}. {keyword.keyword}
-          </span>
-                ))}
-            </SlickSlider>
+                    </span>
+                    ))}
+                </div>
+            </div>
+            <button aria-label="인기검색어 전체보기" onClick={toggleExpand}>
+                {isExpanded ? <Up /> : <Down />}
+            </button>
         </div>
     );
-}
+};
 
 export const RecommendedCategories = () => {
-    const { recommendThemes, handleThemeClick } = useRecommendThemes();
+    const {recommendThemes, handleThemeClick } = useRecommendThemes();
 
     const recommendedCategoriesSettings = {
         dots: false,
@@ -110,9 +138,9 @@ export const RecommendedCategories = () => {
         slidesToShow: 3,
         slidesToScroll: 1,
         draggable: true,
-        swipeToSlide: true,
+        swipeToSlide: false,
         centerMode: false,
-        arrows: false
+        arrows: false,
     };
 
     return (
