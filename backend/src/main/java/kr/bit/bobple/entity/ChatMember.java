@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -44,6 +45,10 @@ public class ChatMember {
     public enum Status {
         ACCEPTED, DENIED
     }
+
+    @Column(nullable = false)
+    private String joinedAt;  // LocalDateTime 대신 String 사용
+
 
     @Embeddable
     public static class ChatMemberId implements Serializable {

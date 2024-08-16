@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 2em;
     padding: 1em;
+    color: var(--sub-text-color);
 }
 .user-info{
     display: flex;

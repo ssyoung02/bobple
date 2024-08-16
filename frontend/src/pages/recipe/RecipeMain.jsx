@@ -146,6 +146,10 @@ function RecipeMain() {
         window.scrollTo(0, 0); // 스크롤 맨 위로 이동
     };
 
+    const handleTopClick = () => {
+        window.scrollTo(0, 0); // 스크롤 맨 위로 이동
+    }
+
     const handleSearchInputChange = (e) => {
         setSearchKeyword(e.target.value);
     };
@@ -250,6 +254,7 @@ function RecipeMain() {
 
 
             <div className="create-recipe-button-box">
+                <button onClick={handleTopClick} className="recipe-top-btn">🔝</button>
                 <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
                     +
                 </button>

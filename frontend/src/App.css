@@ -65,3 +65,23 @@ button{
   margin: -1px;
   overflow: hidden;
 }
+
+/* 라이트모드 */
+.light-mode {
+  --header-background: #ffffff;
+  --header-color: #000000;
+  --header-link-color: #233B6F;
+  --main-background: #ffffff;
+  --main-text-color: #000000; /* 메인 텍스트 색상 추가 */
+}
+
+/* 다크모드 */
+.dark-mode {
+  --header-background: #000000;
+  --header-color: #ffffff;
+  --header-link-color: #ffffff;
+  --main-background: #000000;
+  --main-text-color: #ffffff; /* 메인 텍스트 색상 추가 */
+  --sub-text-color: rgba(255, 255, 255, 0.8);
+
+}

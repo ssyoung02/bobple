@@ -10,6 +10,12 @@
     justify-content: center;
 }
 
+
+.tab-button.active,
+.tab-button {
+    color: var(--main-text-color);
+}
+
 .point-tab:hover button {
     font-family: NotoSansKR-Bold, serif;
 }
@@ -46,11 +52,11 @@
     cursor: pointer;
     border-radius: 15px;
     white-space: nowrap;
+    font-weight: bold;
 }
 
 .category-btns .active {
     background-color: #ea4197;
-    color: white;
 }
 
 .sort-select-container {
@@ -86,6 +92,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: border 0.3s;
+    color: var(--sub-text-color);
 }
 
 .product-item:hover {
@@ -105,7 +112,7 @@
 
 .product-item p {
     font-size: 0.9em;
-    color: #333;
+    color: var(--sub-text-color);
 }
 
 /* 반응형 조정 */

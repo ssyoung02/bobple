@@ -17,6 +17,11 @@
 }
 
 /*바로가기*/
+
+.shortMenuName {
+    color: var(--main-text-color);
+    font-weight: bold;
+}
 .shortMenu{
     display: flex;
     width: 90%;

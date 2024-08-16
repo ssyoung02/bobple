@@ -257,8 +257,9 @@ function RestaurantInfo() {
                 </div>
 
                 <ul style={{listStyle: 'none', padding: 0}}>
-                    {reviews.map(review => (
-                        <li key={review.reviewIdx} className="review-box">
+                    {reviews.length > 0 ? (
+                        reviews.map(review => (
+                            <li key={review.reviewIdx} className="review-box">
                             <div className="review-left-content">
                                 <div className="review-user-info">
                                     {review.userProfileImage && ( // 조건부 렌더링 유지
@@ -321,9 +322,11 @@ function RestaurantInfo() {
                                 )}
                             </div>
                         </li>
-                    ))}
+                        ))
+                    ) : (
+                        <li className="no-reviews-message">등록된 리뷰가 없습니다.</li>
+                    )}
                 </ul>
-
             </div>
         </div>
     );

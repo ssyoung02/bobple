@@ -125,6 +125,18 @@
     color: #777;
 }
 
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin: 20px auto;
+}
+
+.loading-spinner.slider {
+    translate: 0 -200px;
+}
+
 
 .recipe-pagination {
     display: flex;
@@ -151,6 +163,7 @@
     flex-direction: column;
     gap: 5px;
     flex-grow: 1;
+    margin-left: 10px;
 }
 
 .recipe-card-content .description {
@@ -166,6 +179,8 @@
 
 .create-recipe-button-box{
     position: sticky;
+    display: flex;
+    justify-content: center;
     bottom: 100px;
 }
 
@@ -182,10 +197,25 @@
     font-weight: bold;
 }
 
+.recipe-top-btn {
+    position: absolute;
+    font-size: 40px;
+    font-weight: bold;
+    bottom: 1px;
+    color: black;
+}
+
 /*최신 레시피*/
 .latest-recipe-card-wrapper{
-    padding-bottom: 10px;
+    padding: 10px 5px;
     border-bottom: 1px solid #999999;
+    border-radius: 8px;
+}
+
+.latest-recipe-card-wrapper:hover,
+.latest-recipe-card-wrapper:active {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
 .latest-recipe-list a{
