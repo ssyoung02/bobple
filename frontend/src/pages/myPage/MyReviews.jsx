@@ -70,7 +70,11 @@ function MyReviews() {
                 {myReviews.map(review => (
                     <li key={review.reviewIdx} className="review-box">
                         <div className="review-left-content">
+                            <div
+                                className="review-left-content-title"
+                                onClick={() => navigate(`/recommend/restaurant/${review.restaurantId}`, {state: {review}})}>
                             <h4>{review.restaurantName}</h4> {/* 음식점 이름 추가 */}
+                            </div>
                             <div className="star-rating">
                                 {[...Array(review.score)].map((_, index) => (
                                     <Star key={index} filled/>

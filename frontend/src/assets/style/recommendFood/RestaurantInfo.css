@@ -143,3 +143,7 @@
     color: #ff970e;
     fill: #ccc;
 }
+
+.review-left-content-title{
+    cursor: pointer;
+}

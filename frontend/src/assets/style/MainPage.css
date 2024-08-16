@@ -83,7 +83,7 @@
 }
 
 .summation-more{
-    color: #555555;
+    color: var(--main-text-color);
     font-weight: bold;
 }
 
@@ -124,6 +124,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0;
+    color: var(--main-text-color);
 }
 
 .main-recipe-card-title p{
@@ -132,5 +133,5 @@
     text-overflow: ellipsis;
     margin: 0;
     font-size: 0.9em;
-    color: #333;
+    color: var(--main-text-color);
 }
