@@ -30,10 +30,11 @@ export default function SliderComponent() {
     var settings = {
         dots: true,
         infinite: true,
-        speed: 500,
+        speed: 100,
         pauseOnHover: true,
         slidesToShow: 1,
         slidesToScroll: 1,
+        autoplay: true,
         afterChange: (current) => setCurrentSlide(current)
     };
 

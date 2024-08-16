@@ -1,9 +1,22 @@
 .mainPage{
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1.5em;
 }
 
+.main-slide{
+    position: absolute;
+    width: calc(100% + 2.5rem);;
+    top: -10px;
+    left: -20px;
+}
+
+.sliderbox{
+    height: 190px;
+}
+
+/*바로가기*/
 .shortMenu{
     display: flex;
     width: 90%;
@@ -67,4 +80,13 @@
 .summation-more{
     color: #555555;
     font-weight: bold;
+}
+
+/*오늘의 도시락*/
+.summation-content .recipe-list-item{
+    margin-top: 1em;
+}
+
+.summation-content .recipe-user-action-more{
+    display: none;
 }
