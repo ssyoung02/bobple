@@ -18,6 +18,7 @@ import NaverImageSearch from "../components/NaverImageSearch";
 import {getUserIdx} from "../utils/auth";
 import RecipeCard from "./recipe/RecipeCard";
 import RecipeContext from "./recipe/RecipeContext";
+import MainRecipeCard from "./recipe/MainRecipeCard";
 
 function MainPage() {
     const navigate = useNavigate();
@@ -405,7 +406,7 @@ function MainPage() {
                     {recipes.length > 0 ? (
                         recipes.map(recipe => (
                             <div key={recipe.recipeIdx} className="recipe-list-item">
-                                <RecipeCard recipe={recipe}/>
+                                <MainRecipeCard recipe={recipe}/>
                             </div>
                         ))
                     ) : (
