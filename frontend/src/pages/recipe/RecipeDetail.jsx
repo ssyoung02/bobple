@@ -196,7 +196,8 @@ function RecipeDetail() {
                             </button>
                             {showActions && (
                                 <div className="recipe-declaration">
-                                    <button onClick={handleReportClick}>신고</button>                                </div>
+                                    <button onClick={handleReportClick}>신고</button>
+                                </div>
                             )}
                         </div>
                         <div className="recipe-detail-title-item">
