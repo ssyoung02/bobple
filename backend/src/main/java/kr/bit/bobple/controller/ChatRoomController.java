@@ -7,6 +7,7 @@ import kr.bit.bobple.dto.ChatRoomDTO;
 import kr.bit.bobple.entity.ChatRoom;
 import kr.bit.bobple.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/chatrooms")
@@ -88,6 +90,23 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRoomDTO);
     }
 
+    @GetMapping("/{chatRoomId}/joinedAt")
+    public ResponseEntity<Map<String, String>> getUserJoinedAt(@PathVariable Long chatRoomId, HttpServletRequest request) {
+        String token = resolveToken(request);
+        Long userIdx = jwtTokenProvider.getUserIdx(token);
+
+        // 사용자가 채팅방에 참여한 시점을 가져옵니다.
+        Optional<String> optionalJoinedAt = chatRoomService.getUserJoinedAt(chatRoomId, userIdx);
+
+        if (optionalJoinedAt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 해당 유저가 채팅방에 참여하지 않았을 때
+        }
+
+        Map<String, String> response = new HashMap<>();
+        response.put("joinedAt", optionalJoinedAt.get());
+        return ResponseEntity.ok(response);
+    }
+
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -115,4 +134,25 @@ public class ChatRoomController {
         response.put("role", role);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{chatRoomId}")
+    public ResponseEntity<Void> deleteChatRoom(@PathVariable Long chatRoomId, HttpServletRequest request) {
+        String token = resolveToken(request);
+        Long userIdx = jwtTokenProvider.getUserIdx(token);
+
+        // 삭제 요청한 유저가 방장인지 확인
+        if (chatRoomService.isUserRoomLeader(chatRoomId, userIdx)) {
+            chatRoomService.deleteChatRoom(chatRoomId);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한 없는 유저가 삭제 시도
+        }
+    }
+
+    @DeleteMapping("/{chatRoomId}/leave")
+    public ResponseEntity<Void> leaveChatRoom(@PathVariable Long chatRoomId, @RequestParam Long userIdx) {
+        chatRoomService.leaveChatRoom(chatRoomId, userIdx);
+        return ResponseEntity.ok().build();
+    }
+
 }

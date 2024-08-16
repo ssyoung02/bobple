@@ -33,14 +33,41 @@ const GroupChatting = () => {
             }
         };
 
-        const fetchMessages = async () => {
+        const fetchJoinedAt = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/chatrooms/${numericChatRoomId}/messages`);
+                const token = localStorage.getItem("token");
+                console.log('Token:', token);  // 이 라인에서 토큰이 제대로 로드되고 있는지 확인
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/${numericChatRoomId}/joinedAt`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log(`User joined at: ${response.data.joinedAt}`); // 가입 시점 콘솔 출력
+                return response.data.joinedAt; // 사용자가 참여한 시점을 반환
+            } catch (error) {
+                console.error('Failed to fetch joinedAt', error);
+                return null;
+            }
+        };
+
+        const fetchMessages = async (joinedAt) => {
+            try {
+                const token = localStorage.getItem("token"); // 토큰 가져오기
+                if (!token) {
+                    throw new Error("No token found. Please log in.");
+                }
+                const response = await axios.get(`http://localhost:8080/api/chatrooms/${numericChatRoomId}/messages`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // 헤더에 토큰 추가
+                    },
+                    params: { joinedAt } // 참여 시점 이후의 메시지 요청
+                });
                 const messagesWithFormattedTime = response.data.map(message => ({
                     ...message,
                     createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
                 }));
                 setMessages(messagesWithFormattedTime);
+                console.log(`Last message time: ${messagesWithFormattedTime[messagesWithFormattedTime.length - 1]?.createdAt}`); // 마지막 메시지 시간 콘솔 출력
 
                 for (let message of response.data) {
                     updateUnreadCounts(message.id);
@@ -49,6 +76,7 @@ const GroupChatting = () => {
                 console.error('Failed to fetch messages', error);
             }
         };
+
 
         const fetchUser = async () => {
             const token = localStorage.getItem("token");
@@ -99,9 +127,16 @@ const GroupChatting = () => {
             }
         };
 
-        fetchChatRoom();
-        fetchMessages();
-        fetchUser();
+        const initChat = async () => {
+            const joinedAt = await fetchJoinedAt(); // 사용자 참여 시점 가져오기
+            fetchChatRoom();
+            if (joinedAt) {
+                fetchMessages(joinedAt); // 참여 시점 이후의 메시지만 가져오기
+            }
+            fetchUser();
+        };
+
+        initChat();
 
         return () => {
             if (socket.current) {
