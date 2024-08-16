@@ -88,11 +88,20 @@ public class RecipeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        System.out.println("Received delete request for recipe with ID: " + id);  // 로그 추가
+
         if (!recipeService.isRecipeAuthor(id, user)) {
+            System.out.println("User is not the author of the recipe. Access forbidden.");  // 권한 문제 로그
             return ResponseEntity.status(403).build(); // 403 Forbidden 에러 반환
         }
-        recipeService.deleteRecipe(id);
-        return ResponseEntity.noContent().build();
+        try {
+            recipeService.deleteRecipe(id);
+            System.out.println("Recipe with ID: " + id + " deleted successfully");  // 성공 로그
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            System.out.println("Error deleting recipe: " + e.getMessage());  // 오류 로그
+            return ResponseEntity.status(500).build();  // 500 Internal Server Error 반환
+        }
     }
 
 
@@ -122,30 +131,43 @@ public class RecipeController {
             return ResponseEntity.status(401).build(); // 인증되지 않은 사용자는 401 응답
         }
         likeRecipeService.toggleLike(currentUser.getUserIdx(), recipeId);
+        System.out.println("Like toggled for recipeId: " + recipeId); // 로그 추가
         return ResponseEntity.ok().build();
     }
 
 
-    // 좋아요한 레시피 목록 조회 엔드포인트 추가
     @GetMapping("/liked")
-    public ResponseEntity<List<RecipeDto>> getLikedRecipes(@AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<Page<RecipeDto>> getLikedRecipes(
+            @AuthenticationPrincipal User currentUser,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
         if (currentUser == null) {
             return ResponseEntity.status(401).build(); // 인증되지 않은 사용자는 401 응답
         }
-        List<RecipeDto> likedRecipes = recipeService.getLikedRecipes(currentUser.getUserIdx());
+        Page<RecipeDto> likedRecipes = recipeService.getLikedRecipes(currentUser.getUserIdx(), pageable);
         return ResponseEntity.ok(likedRecipes);
     }
 
+
     @GetMapping("/user/{userIdx}")
-    public ResponseEntity<List<RecipeDto>> getRecipesByUser(@AuthenticationPrincipal User currentUser) {
-        List<RecipeDto> userRecipes = recipeService.getRecipesByUser(currentUser.getUserIdx());
+    public ResponseEntity<Page<RecipeDto>> getRecipesByUser(
+            @AuthenticationPrincipal User currentUser,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<RecipeDto> userRecipes = recipeService.getRecipesByUser(currentUser.getUserIdx(), pageable);
         return ResponseEntity.ok(userRecipes);
     }
+
 
     @GetMapping("/count")
     public ResponseEntity<Long> getTotalRecipeCount() {
         long count = recipeService.getTotalRecipeCount();
         return ResponseEntity.ok(count);
+    }
+
+    @PostMapping("/{recipeId}/report")
+    public ResponseEntity<Void> reportRecipe(@PathVariable Long recipeId) {
+        recipeService.incrementReportCount(recipeId);
+        return ResponseEntity.ok().build();
     }
 
 }

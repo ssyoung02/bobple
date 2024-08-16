@@ -26,9 +26,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     // user 정보를 함께 가져오도록 수정
     Page<Recipe> findAll(Pageable pageable);
 
-    // 특정 사용자가 작성한 레시피 목록 조회 (N+1 문제 해결을 위한 fetch join)
+    // 특정 사용자가 작성한 레시피 목록을 페이지네이션으로 조회 (N+1 문제 해결을 위한 fetch join)
     @Query("SELECT r FROM Recipe r JOIN FETCH r.user WHERE r.user = :user")
-    List<Recipe> findByUser(@Param("user") User user);
+    Page<Recipe> findByUser(@Param("user") User user, Pageable pageable);
 
 
     //레시피 전체 개수

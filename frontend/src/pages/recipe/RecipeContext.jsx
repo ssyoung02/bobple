@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import axios from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
+import {clearRecipeLocalStorage} from "../../utils/localStorageUtils";
 
 const RecipeContext = createContext({
     recipes: [],
@@ -175,6 +176,7 @@ export const RecipeProvider = ({ children }) => {
             const response = await axios.post('/api/recipes', recipeData);
             setRecipes([response.data, ...recipes]);
             navigate(`/recipe/${response.data.recipeIdx}`); // 등록 후 상세페이지로 이동
+            clearRecipeLocalStorage();
         } catch (error) {
             setError(error.message || '레시피 등록에 실패했습니다.');
             console.error(error);
@@ -196,7 +198,12 @@ export const RecipeProvider = ({ children }) => {
     // 레시피 삭제 함수
     const deleteRecipe = async (id) => {
         try {
-            await axios.delete(`/api/recipes/${id}`);
+            const token = localStorage.getItem('token');
+            await axios.delete(`/api/recipes/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             setRecipes(recipes.filter(recipe => recipe.recipeIdx !== id)); // recipeIdx 사용
             localStorage.removeItem('recommendedRecipes');
             setSelectedRecipe(null); // 상세 페이지를 닫거나 다른 페이지로 이동

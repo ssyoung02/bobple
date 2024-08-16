@@ -29,7 +29,7 @@ public class LikeRecipeService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         Recipe recipe = recipeRepository.findById(recipeIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
-
+        System.out.println("userIdx: " +userIdx + " recipeIdx: " + recipeIdx);
         Optional<LikeRecipe> existingLike = likeRecipeRepository.findByUserAndRecipe(user, recipe);
 
         if (existingLike.isPresent()) {
