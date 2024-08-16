@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatMemberRepository extends JpaRepository<ChatMember, ChatMember.ChatMemberId> {
@@ -27,5 +28,9 @@ public interface ChatMemberRepository extends JpaRepository<ChatMember, ChatMemb
     @Transactional
     @Query("DELETE FROM ChatMember cm WHERE cm.chatRoom.chatRoomIdx = :chatRoomId")
     void deleteByChatRoomId(@Param("chatRoomId") Long chatRoomId);
+
+    // 특정 유저가 특정 채팅방에 참여한 시점을 반환하는 메서드
+    @Query("SELECT cm.joinedAt FROM ChatMember cm WHERE cm.chatRoom.chatRoomIdx = :chatRoomId AND cm.user.userIdx = :userId")
+    Optional<String> findJoinedAtByChatRoomIdAndUserId(@Param("chatRoomId") Long chatRoomId, @Param("userId") Long userId);
 }
 
