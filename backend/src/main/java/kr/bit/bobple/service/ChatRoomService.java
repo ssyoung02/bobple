@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
@@ -236,5 +237,25 @@ public class ChatRoomService {
     public boolean isUserRoomLeader(Long chatRoomId, Long userId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("Chat room not found"));
         return chatRoom.getRoomLeader().getUserIdx().equals(userId);
+    }
+
+    public void leaveChatRoom(Long chatRoomId, Long userIdx) {
+        // ChatMember 엔티티에서 해당 유저를 제거
+        ChatMember.ChatMemberId chatMemberId = new ChatMember.ChatMemberId(chatRoomId, userIdx);
+        chatMemberRepository.deleteById(chatMemberId);
+
+        // ChatRoom에서 currentParticipants 감소
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+        chatRoom.setCurrentParticipants(chatRoom.getCurrentParticipants() - 1);
+        chatRoom.updateStatus();
+        chatRoomRepository.save(chatRoom);
+
+        // 메시지 읽음 정보 삭제
+        messageReadRepository.deleteByUserIdAndChatRoomId(userIdx, chatRoomId);
+    }
+
+    public Optional<String> getUserJoinedAt(Long chatRoomId, Long userIdx) {
+        return chatMemberRepository.findJoinedAtByChatRoomIdAndUserId(chatRoomId, userIdx);
     }
 }
