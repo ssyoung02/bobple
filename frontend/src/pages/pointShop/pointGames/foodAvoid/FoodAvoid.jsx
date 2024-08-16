@@ -5,6 +5,7 @@ import bobpleMascot from '../../../../assets/images/bobple_mascot.png';
 import {getUserIdx} from "../../../../utils/auth"; // 이미지 import
 import axios from 'axios';
 import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
+import {ArrowLeftLong} from "../../../../components/imgcomponents/ImgComponents";
 
 const CANVAS_WIDTH = 800; // 캔버스 너비 설정
 const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
@@ -278,6 +279,7 @@ const FoodAvoid = () => {
 
     return (
         <div className="avoid-body">
+            <button className="arrow-btn avoid" onClick={handleExit}><ArrowLeftLong/></button>
             <h1>AVOID FOOD</h1>
             <div className="avoid-container">
                 <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>

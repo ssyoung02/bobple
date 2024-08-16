@@ -357,7 +357,7 @@ export const UserRecommendedRecipes = () => {
             )}
             </SlickSlider>
             {loading && (
-                <div className="loading-spinner">
+                <div className="loading-spinner slider">
                     <ClipLoader size={50} color={"#123abc"} loading={loading} />
                 </div>
             )}        </>

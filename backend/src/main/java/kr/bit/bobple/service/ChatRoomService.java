@@ -16,11 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class ChatRoomService {
@@ -38,10 +41,15 @@ public class ChatRoomService {
     private MessageReadRepository messageReadRepository;
 
     @Autowired
+    private MessageRepository messageRepository;
+
+    @Autowired
     private AmazonS3 amazonS3;
 
     @Value("${ncloud.object-storage.bucket-name}")
     private String bucketName;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public ChatRoom createChatRoom(String title, String description, String location, int people, Long userIdx, MultipartFile imageFile) throws IOException {
         User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException("User not found"));
@@ -72,6 +80,7 @@ public class ChatRoomService {
         chatMember.setChatRoom(chatRoom);
         chatMember.setUser(user);
         chatMember.setRole(ChatMember.Role.LEADER);
+        chatMember.setJoinedAt(LocalDateTime.now().format(FORMATTER));  // LocalDateTime을 포맷하여 문자열로 저장 // 방장이 방을 만들 때 참여 시간 저장
         chatMemberRepository.save(chatMember);
 
         return chatRoom;
@@ -113,6 +122,7 @@ public class ChatRoomService {
             chatMember.setChatRoom(chatRoom);
             chatMember.setUser(user);
             chatMember.setRole(ChatMember.Role.MEMBER);
+            chatMember.setJoinedAt(LocalDateTime.now().format(FORMATTER));  // LocalDateTime을 포맷하여 문자열로 저장 // 유저가 참여할 때 참여 시간 저장
             chatMemberRepository.save(chatMember);
 
             chatRoom.setCurrentParticipants(chatRoom.getCurrentParticipants() + 1);
@@ -211,5 +221,41 @@ public class ChatRoomService {
         ChatMember member = chatMemberRepository.findById(new ChatMember.ChatMemberId(chatRoomId, userIdx))
                 .orElseThrow(() -> new RuntimeException("User not found in chat room"));
         return member.getRole().name();
+    }
+
+    public void deleteChatRoom(Long chatRoomId) {
+        // 메시지 읽음 정보 삭제
+        messageReadRepository.deleteByChatRoomId(chatRoomId);
+        // 메시지 삭제
+        messageRepository.deleteByChatRoomId(chatRoomId);
+        // 채팅 멤버 삭제
+        chatMemberRepository.deleteByChatRoomId(chatRoomId);
+        // 채팅방 삭제
+        chatRoomRepository.deleteById(chatRoomId);
+    }
+
+    public boolean isUserRoomLeader(Long chatRoomId, Long userId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("Chat room not found"));
+        return chatRoom.getRoomLeader().getUserIdx().equals(userId);
+    }
+
+    public void leaveChatRoom(Long chatRoomId, Long userIdx) {
+        // ChatMember 엔티티에서 해당 유저를 제거
+        ChatMember.ChatMemberId chatMemberId = new ChatMember.ChatMemberId(chatRoomId, userIdx);
+        chatMemberRepository.deleteById(chatMemberId);
+
+        // ChatRoom에서 currentParticipants 감소
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+        chatRoom.setCurrentParticipants(chatRoom.getCurrentParticipants() - 1);
+        chatRoom.updateStatus();
+        chatRoomRepository.save(chatRoom);
+
+        // 메시지 읽음 정보 삭제
+        messageReadRepository.deleteByUserIdAndChatRoomId(userIdx, chatRoomId);
+    }
+
+    public Optional<String> getUserJoinedAt(Long chatRoomId, Long userIdx) {
+        return chatMemberRepository.findJoinedAtByChatRoomIdAndUserId(chatRoomId, userIdx);
     }
 }

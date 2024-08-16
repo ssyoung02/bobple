@@ -46,6 +46,11 @@ public class MessageService {
         return messageRepository.findByChatRoomId(chatRoomId);
     }
 
+    @Transactional(readOnly = true)
+    public List<Message> getMessagesByChatRoomIdAndAfter(Long chatRoomId, LocalDateTime joinedAt) {
+        return messageRepository.findMessagesByChatRoomIdAndAfter(chatRoomId, joinedAt);
+    }
+
     private void pushMessageToNodeServer(Message message) {
         try {
             // Node.js 서버에 메시지 푸시

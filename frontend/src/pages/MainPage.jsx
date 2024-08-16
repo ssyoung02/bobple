@@ -54,7 +54,7 @@ function MainPage() {
         <>
             {user && (
                 <div>
-                    <p>환영합니다, {user.name}님!</p>
+                    <p>환영합니다!, {user.name}님!</p>
                 </div>
             )}
             <h2>오늘의 주인공</h2>
@@ -106,7 +106,6 @@ function MainPage() {
             <div className={"MainRandomMenuButton"}>
                 <button className={"RandomMenuButtonItem"}>
                     <div className={"MenuImage"}>
-
                     </div>
                     <div className={"MenuExplanation"}>
                         <h4>메뉴가 고민되면</h4>

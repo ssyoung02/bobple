@@ -167,29 +167,6 @@ function RecipeDetail() {
     return (
         <div className="recipe-detail-main">
             <PageHeader title="" />
-            <div className="recipe-detail-user-action ">
-                <button className="recipe-detail-like" onClick={handleLikeClick}>
-                    {selectedRecipe.liked ?
-                        <>
-                            <Heart/>
-                            {formatViewsCount(selectedRecipe.likesCount)}
-                        </>
-                        :
-                        <>
-                            <HeartLine/>
-                            {formatViewsCount(selectedRecipe.likesCount)}
-                        </>
-                    }
-                </button>
-                <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
-                    <MoreIcon/>
-                </button>
-                {showActions && (
-                    <div className="recipe-declaration">
-                        <button onClick={handleReportClick}>신고</button>
-                    </div>
-                )}
-            </div>
             {selectedRecipe && (
                 <>
                     <div className="recipe-detail-header">
@@ -200,6 +177,28 @@ function RecipeDetail() {
                              className="recipe-detail-image"/>
                     </div>
                     <div className="recipe-detail-title-box">
+                        <div className="recipe-detail-user-action ">
+                            <button className="recipe-detail-like" onClick={handleLikeClick}>
+                                {selectedRecipe.liked ?
+                                    <>
+                                        <Heart />
+                                        {formatViewsCount(selectedRecipe.likesCount)}
+                                    </>
+                                    :
+                                    <>
+                                        <HeartLine />
+                                        {formatViewsCount(selectedRecipe.likesCount)}
+                                    </>
+                                }
+                            </button>
+                            <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
+                                <MoreIcon/>
+                            </button>
+                            {showActions && (
+                                <div className="recipe-declaration">
+                                    <button onClick={handleReportClick}>신고</button>                                </div>
+                            )}
+                        </div>
                         <div className="recipe-detail-title-item">
                             <h2>{selectedRecipe.title}</h2>
                         </div>
@@ -231,16 +230,16 @@ function RecipeDetail() {
 
                     <div className="recipe-detail-content">
                         <h4>재료</h4>
-                        <ul>
-                            {ingredients.split(',').map((ingredient, index) => (
+                        <ul className="recipe-detail-ul">
+                            {ingredients.split(',,').map((ingredient, index) => (
                                 <li key={index}>{ingredient.trim()}</li>
                             ))}
                         </ul>
                     </div>
                     <div className="recipe-detail-content">
                         <h4>조리 방법</h4>
-                        <ul>
-                            {instructions.split('.').map((instruction, index) => (
+                        <ul className="recipe-detail-ul">
+                            {instructions.split('..').map((instruction, index) => (
                                 <li key={index}>{instruction.trim()}</li>
                             ))}
                         </ul>

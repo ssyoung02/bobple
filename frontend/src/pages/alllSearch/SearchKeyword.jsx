@@ -159,7 +159,13 @@ const SearchKeyword = () => {
                 </button>
             </div>
             <h5>{keyword} 검색 결과</h5>
-            <h4>주변 음식점</h4>
+            <div className="search-result-title">
+                <h4>주변 음식점</h4>
+                {/* 더보기 버튼 */}
+                {restaurants.length > 3 && (
+                    <button className="more-button" onClick={handleMoreClick}>더보기</button>
+                )}
+            </div>
             <ul className="restaurant-list">
                 {sortedRestaurants.slice(0, 3).map((restaurant) => (
                     <li key={restaurant.id} className="restaurant-item">
@@ -180,10 +186,10 @@ const SearchKeyword = () => {
                                 </a>
                             </div>
                             {/* 북마크 버튼 추가 */}
-                            <div className="restaurant-right">
+                            <div className="restaurant-right search-keyword">
                                 <span className="restaurant-distance"><LocationDot />{Math.round(restaurant.distance)}m</span>
                                 <button
-                                    className="restaurant-bookmarks"
+                                    className="restaurant-bookmarks search-keyword"
                                     onClick={() => handleBookmarkToggle(restaurant)}
                                 >
                                     {userBookmarks.includes(restaurant.id) ? (
@@ -198,11 +204,6 @@ const SearchKeyword = () => {
                     </li>
                 ))}
             </ul>
-
-            {/* 더보기 버튼 */}
-            {restaurants.length > 3 && (
-                <button className="more-button" onClick={handleMoreClick}>더보기</button>
-            )}
         </div>
     );
 };

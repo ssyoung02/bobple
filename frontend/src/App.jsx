@@ -4,6 +4,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import AdminRouter from "./router/AdminRouter";
+import ChattingModal from "./components/modal/ChattingModal";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/*" element={
                     <Layout theme={theme} toggleTheme={toggleTheme}>
                         <MainRouter />
+                        <ChattingModal toggleTheme={toggleTheme} />
                     </Layout>
                 } />
             </Routes>
