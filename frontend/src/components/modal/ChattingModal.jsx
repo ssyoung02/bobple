@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import {Calculator} from "../imgcomponents/ImgComponents";
 
-const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople }) => {
+const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople, toggleTheme }) => {
     const [participants, setParticipants] = useState([]);
     const [currentUserRole, setCurrentUserRole] = useState(null);
     const navigate = useNavigate();
@@ -139,25 +140,30 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content chatting">
+                <button onClick={closeModal} className="chatting-modal-close-btn">X</button>
                 <div className="chatRoom-header">
-                    <h5 className="chatRoom-title">{chatRoomTitle}</h5>
-                    <button onClick={closeModal}>X</button>
+                    <h4 className="chatRoom-title">{chatRoomTitle}</h4>
+                    <label className="theme-checkbox-label chatting-modal">
+                        <input type="checkbox" className="theme-checkbox" onClick={toggleTheme}/>
+                        <span className="theme-slider"></span>
+                    </label>
                 </div>
                 <div className="chatRoom-info">
-                    <h6>모임 정보</h6>
-                    <br />
-                    <div>모임장소 :</div>
-                    <div>모임시간 :</div>
+                    <h5>모임 장소 : </h5>
+
                 </div>
                 <h6 className="chatRoom-people">모집 인원 {chatRoomPeople}</h6>
                 <div className="participants-list">
                     {participants.length > 0 ? (
                         participants.map((participant) => (
-                            <div key={participant.userId} className={`participant-item ${participant.role === 'LEADER' ? 'leader' : ''}`}>
-                                <img src={participant.profileImage} alt={`${participant.name}'s profile`} className="participant-image" />
+                            <div key={participant.userId}
+                                 className={`participant-item ${participant.role === 'LEADER' ? 'leader' : ''}`}>
+                                <img src={participant.profileImage} alt={`${participant.name}'s profile`}
+                                     className="participant-image"/>
                                 <span>{participant.name}</span>
                                 {currentUserRole === 'LEADER' && participant.role !== 'LEADER' && (
-                                    <button className="block-button" onClick={() => handleBlockUser(participant.userId, participant.name)}>차단</button>
+                                    <button className="block-button"
+                                            onClick={() => handleBlockUser(participant.userId, participant.name)}>차단</button>
                                 )}
                             </div>
                         ))
@@ -165,17 +171,13 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                         <p>No participants found</p>
                     )}
                 </div>
-                <div className="chatRoom-game">
-                    <h6>오늘의 주인공</h6>
-                    <button>제비뽑기</button>
-                    <button>돌림판</button>
-                </div>
+
                 <div className="chatRoom-footer">
-                    <button onClick={handleLeaveChatRoom}>나가기➡️</button>
-                    <button onClick={moveCal}>정산하기️</button>
+                    <button onClick={moveCal} className="cal-btn"><Calculator/> 정산하기️</button>
                     {currentUserRole === 'LEADER' && (
                         <button className="delete-button" onClick={handleDeleteChatRoom}>삭제</button>
                     )}
+                    <button onClick={handleLeaveChatRoom} className="chatting-close-btn">나가기 <span>⇲</span></button>
                 </div>
             </div>
         </div>

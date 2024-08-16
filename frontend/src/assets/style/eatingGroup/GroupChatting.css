@@ -14,6 +14,37 @@
     margin-bottom: 20px;
 }
 
+.chat-room-info-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-room-info-title button {
+    font-size: 20px;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 80px; /* 필요에 따라 조정 */
+    right: 75px; /* 필요에 따라 조정 */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-dropdown input {
+    width: 390px; /* 필요에 따라 조정 */
+    padding: 5px;
+}
+
+.search-dropdown button {
+    margin-left: 10px;
+    padding: 5px 10px;
+}
+
 .chat-room-info h2 {
     margin: 0 auto;
     font-size: 24px;

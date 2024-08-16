@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 import moment from 'moment-timezone';
 import 'moment/locale/ko'; // 한국어 로케일 추가
 import '../../../assets/style/eatingGroup/GroupChatting.css';
-import { ArrowLeftLong, Menu, SendMessage } from "../../../components/imgcomponents/ImgComponents";
+import {ArrowLeftLong, Menu, SearchIcon, SendMessage} from "../../../components/imgcomponents/ImgComponents";
 import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
 import ChattingModal from '../../../components/modal/ChattingModal';
 
@@ -20,6 +20,8 @@ const GroupChatting = () => {
     const [isChattingModalOpen, setIsChattingModalOpen] = useState(false);
     const socket = useRef(null);
     const messagesEndRef = useRef(null);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         moment.locale('ko');
@@ -209,6 +211,21 @@ const GroupChatting = () => {
         setIsChattingModalOpen(false);
     };
 
+    const toggleSearch = () => {
+        setIsSearchOpen(!isSearchOpen);
+    };
+
+    const handleSearch = () => {
+        if (!searchQuery.trim()) return;
+
+        const filteredMessages = messages.filter(message =>
+            message.content.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        setMessages(filteredMessages);
+        setIsSearchOpen(false);  // 검색 후 드롭다운을 닫기
+    };
+
     useNavigateNone();
 
     return (
@@ -216,8 +233,21 @@ const GroupChatting = () => {
             {chatRoom && (
                 <div className="chat-room-info">
                     <button onClick={handleGoBack}><ArrowLeftLong/></button>
-                    <h2>{chatRoom.chatRoomTitle}</h2>
-                    <h3>{chatRoom.chatRoomPeople}</h3>
+                    <div className="chat-room-info-title">
+                        <h2>{chatRoom.chatRoomTitle}</h2>
+                        <button onClick={toggleSearch}><SearchIcon/></button>
+                        {isSearchOpen && (
+                            <div className="search-dropdown">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="검색어를 입력하세요"
+                                />
+                                <button onClick={handleSearch}><SearchIcon/></button>
+                            </div>
+                        )}
+                    </div>
                     <button onClick={openChattingModal}><Menu/></button>
                 </div>
             )}
