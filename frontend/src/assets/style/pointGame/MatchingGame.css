@@ -7,8 +7,7 @@
 
 .arrow-btn.matching {
     position: absolute;
-
-    left: 38%;
+    translate: -170px;
 }
 
 .point-game-title {
