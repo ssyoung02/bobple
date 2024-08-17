@@ -131,19 +131,24 @@
 
 .chatRoom-footer {
     display: flex;
-    gap: 85px;
+    flex-direction: column;
+    gap: 20px;
     font-size: 18px;
 }
 
 .cal-btn {
+    width: 250%;
     font-weight: bold;
-    padding: 5px 10px;
+    padding: 10px 10px;
     color: white;
     background-color: #233B6F;
     border-radius: 5px;
 }
 
 .chatting-close-btn {
+    margin-top: 20px;
+    margin-right: 25px;
+    font-size: 20px;
     font-weight: bold;
 }
 

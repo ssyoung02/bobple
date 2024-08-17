@@ -143,10 +143,6 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 <button onClick={closeModal} className="chatting-modal-close-btn">X</button>
                 <div className="chatRoom-header">
                     <h4 className="chatRoom-title">{chatRoomTitle}</h4>
-                    <label className="theme-checkbox-label chatting-modal">
-                        <input type="checkbox" className="theme-checkbox" onClick={toggleTheme}/>
-                        <span className="theme-slider"></span>
-                    </label>
                 </div>
                 <div className="chatRoom-info">
                     <h5>모임 장소 : </h5>

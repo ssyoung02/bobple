@@ -26,23 +26,43 @@
 
 .search-dropdown {
     position: absolute;
-    width: 25%;
+    width: 50%;
+    max-width: 400px; /* 최대 너비를 설정 */
     top: 10%; /* 필요에 따라 조정 */
-    right: 37.5%; /* 필요에 따라 조정 */
+    left: 50%;
+    transform: translateX(-50%); /* 가로 방향 중앙 정렬 */
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
     z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
 }
 
 .search-dropdown input {
-    width: 90%; /* 필요에 따라 조정 */
+    flex-grow: 1;
     padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    box-sizing: border-box; /* padding이 포함된 너비 계산 */
 }
 
 .search-dropdown button {
     margin-left: 15px;
+}
+
+@media (max-width: 768px) {
+    .search-dropdown {
+        width: 70%; /* 작은 화면에서 검색창의 너비를 줄임 */
+    }
+}
+
+@media (max-width: 480px) {
+    .search-dropdown {
+        width: 90%;
+    }
 }
 
 .chat-room-info h2 {
@@ -164,40 +184,4 @@
 .message-input button img:hover,
 .message-input button img:active {
     opacity: 0.5;
-}
-.search-dropdown
-.search-dropdown input
-
-/* 반응형 조정 */
-@media (max-width: 1200px) {
-    .search-dropdown {
-        width: 25%;
-        top: 10%; /* 필요에 따라 조정 */
-        right: 37.5%; /* 필요에 따라 조정 */
-    }
-}
-
-
-@media (max-width: 768px) {
-    .search-dropdown {
-        width: 60%;
-        top: 9%; /* 필요에 따라 조정 */
-        right: 20%; /* 필요에 따라 조정 */
-    }
-}
-
-@media (max-width: 480px) {
-    .search-dropdown {
-        width: 100%;
-        top: 10%; /* 필요에 따라 조정 */
-        right: 0.1%; /* 필요에 따라 조정 */
-    }
-}
-
-@media (max-width: 390px) {
-    .search-dropdown {
-        width: 100%;
-        top: 10%; /* 필요에 따라 조정 */
-        right: 0.1%; /* 필요에 따라 조정 */
-    }
 }
