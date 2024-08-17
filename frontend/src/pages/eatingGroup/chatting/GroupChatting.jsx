@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 import moment from 'moment-timezone';
 import 'moment/locale/ko'; // 한국어 로케일 추가
 import '../../../assets/style/eatingGroup/GroupChatting.css';
-import { ArrowLeftLong, Menu, SearchIcon, SendMessage } from "../../../components/imgcomponents/ImgComponents";
+import {ArrowLeftLong, Menu, SearchIcon, SendMessage} from "../../../components/imgcomponents/ImgComponents";
 import { useNavigateNone } from "../../../hooks/NavigateComponentHooks";
 import ChattingModal from '../../../components/modal/ChattingModal';
 
@@ -23,6 +23,8 @@ const GroupChatting = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const highlightedMessageRef = useRef(null); // 검색된 메시지로 스크롤하기 위한 ref
+
 
     useEffect(() => {
         moment.locale('ko');
@@ -39,11 +41,13 @@ const GroupChatting = () => {
         const fetchJoinedAt = async () => {
             try {
                 const token = localStorage.getItem("token");
+                console.log('Token:', token);  // 이 라인에서 토큰이 제대로 로드되고 있는지 확인
                 const response = await axios.get(`http://localhost:8080/api/chatrooms/${numericChatRoomId}/joinedAt`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                console.log(`User joined at: ${response.data.joinedAt}`); // 가입 시점 콘솔 출력
                 return response.data.joinedAt; // 사용자가 참여한 시점을 반환
             } catch (error) {
                 console.error('Failed to fetch joinedAt', error);
@@ -53,13 +57,13 @@ const GroupChatting = () => {
 
         const fetchMessages = async (joinedAt) => {
             try {
-                const token = localStorage.getItem("token");
+                const token = localStorage.getItem("token"); // 토큰 가져오기
                 if (!token) {
                     throw new Error("No token found. Please log in.");
                 }
                 const response = await axios.get(`http://localhost:8080/api/chatrooms/${numericChatRoomId}/messages`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}` // 헤더에 토큰 추가
                     },
                     params: { joinedAt } // 참여 시점 이후의 메시지 요청
                 });
@@ -68,6 +72,11 @@ const GroupChatting = () => {
                     createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
                 }));
                 setMessages(messagesWithFormattedTime);
+                console.log(`Last message time: ${messagesWithFormattedTime[messagesWithFormattedTime.length - 1]?.createdAt}`); // 마지막 메시지 시간 콘솔 출력
+
+                for (let message of response.data) {
+                    updateUnreadCounts(message.id);
+                }
             } catch (error) {
                 console.error('Failed to fetch messages', error);
             }
@@ -106,7 +115,17 @@ const GroupChatting = () => {
                         createdAt: moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss')
                     };
                     setMessages(prevMessages => [...prevMessages, formattedMessage]);
+
+                    updateUnreadCounts(message.id);
                     scrollToBottom();
+                });
+
+                socket.current.on('messageUnreadCount', ({ messageId, unreadCount }) => {
+                    setMessages(prevMessages =>
+                        prevMessages.map(message =>
+                            message.id === messageId ? { ...message, unreadCount } : message
+                        )
+                    );
                 });
             } catch (error) {
                 console.error('Failed to fetch user', error);
@@ -137,17 +156,39 @@ const GroupChatting = () => {
     }, [messages]);
 
     useEffect(() => {
-        if (highlightedIndex !== -1) {
-            const element = document.getElementById(`message-${highlightedIndex}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+        if (highlightedIndex !== -1 && highlightedMessageRef.current) {
+            highlightedMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }, [highlightedIndex]);
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const updateUnreadCounts = async (messageId) => {
+        try {
+            const response = await axios.get(`http://localhost:3001/api/messages/${messageId}/unread-count`);
+            setMessages(prevMessages => prevMessages.map(message =>
+                message.id === messageId ? { ...message, unreadCount: response.data.unreadCount } : message
+            ));
+        } catch (error) {
+            console.error('Failed to fetch unread counts', error);
+        }
+    };
+
+    const handleMessageKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();  // 메시지 보내기
+        }
+    };
+
+    const handleSearchKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSearch();  // 검색 실행
         }
     };
 
@@ -174,12 +215,6 @@ const GroupChatting = () => {
         }
     };
 
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSearch();  // Enter 키로 검색 실행
-        }
-    };
 
     const handleGoBack = () => {
         navigate('/group');
@@ -214,6 +249,7 @@ const GroupChatting = () => {
 
     const highlightSearchTerm = (text) => {
         if (!searchQuery) return text;
+
         const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
         return (
             <>
@@ -244,7 +280,7 @@ const GroupChatting = () => {
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    onKeyPress={handleKeyPress}  // Enter 키로 검색 실행
+                                    onKeyPress={handleSearchKeyPress}  // Enter 키로 검색 실행
                                     placeholder="검색어를 입력하세요"
                                 />
                                 <button onClick={handleSearch}><SearchIcon/></button>
@@ -259,6 +295,7 @@ const GroupChatting = () => {
                     <div
                         key={index}
                         id={`message-${index}`}
+                        ref={index === highlightedIndex ? highlightedMessageRef : null} // 검색된 메시지에 ref 연결
                         className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}
                     >
                         {message.userId !== user?.userIdx && (
@@ -302,7 +339,7 @@ const GroupChatting = () => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onKeyPress={handleMessageKeyPress}  // 메시지 입력란에서는 handleMessageKeyPress 사용
                     placeholder="메시지를 입력하세요"
                 />
                 <button onClick={handleSendMessage}>
