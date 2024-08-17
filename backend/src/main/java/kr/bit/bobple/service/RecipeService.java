@@ -51,7 +51,6 @@ public class RecipeService {
     }
 
 
-
     public RecipeDto getRecipeById(Long recipeId, Long currentUserId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
@@ -75,8 +74,8 @@ public class RecipeService {
         }
         Recipe recipe = recipeDto.toEntity(user);
         if (imageFile != null && !imageFile.isEmpty()) {
-        String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
-        recipe.setPicture(imageUrl);
+            String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
+            recipe.setPicture(imageUrl);
         }
         // 좋아요 수, 조회수, 댓글 수 초기화
         recipe.setLikesCount(0);
@@ -106,16 +105,32 @@ public class RecipeService {
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }
 
-//    @Transactional
-//    public void deleteRecipe(Long recipeId) {
-//        if (!isRecipeAuthor(recipeId, authenticationFacade.getCurrentUser())) {
-//            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
-//        }
-//        recipeRepository.deleteById(recipeId);
-//    }
 
+    public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
+        if (sort.equals("viewsCount,desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount")));
+        }
+        if (sort.equals("likesCount,desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("likesCount")));
+        }
+        if (sort.equals("createdAt,desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+        }
 
+        Page<Recipe> recipePage;
+        if ((keyword == null || keyword.isEmpty()) && (category == null || category.isEmpty())) {
+            recipePage = recipeRepository.findAll(pageable);
+        } else if (keyword != null && !keyword.isEmpty() && (category == null || category.isEmpty())) {
+            recipePage = recipeRepository.findByKeyword(keyword, pageable);
+        } else if ((keyword == null || keyword.isEmpty()) && category != null && !category.isEmpty()) {
+            recipePage = recipeRepository.findByCategory(category, pageable);
+        } else {
+            recipePage = recipeRepository.findByKeywordAndCategory(keyword, category, pageable);
+        }
 
+        return recipePage.map(recipe -> RecipeDto.fromEntity(recipe));
+    }
     public Page<RecipeDto> searchRecipes(String keyword, String category, int page, int size, String sort, Long currentUserId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("viewsCount"), Sort.Order.desc("likesCount")));
         if (sort.equals("viewsCount,desc")) {
@@ -182,13 +197,13 @@ public class RecipeService {
         return recipeDtos;
     }
 
-//    public boolean isRecipeAuthor(Long recipeId, User user) {
+    //    public boolean isRecipeAuthor(Long recipeId, User user) {
 //        return recipeRepository.existsByIdAndUser(recipeId, user);
 //    }
-public boolean isRecipeAuthor(Long recipeId, User user) {
-    Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RuntimeException("Recipe not found"));
-    return recipe.getUser().getUserIdx().equals(user.getUserIdx());
-}
+    public boolean isRecipeAuthor(Long recipeId, User user) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RuntimeException("Recipe not found"));
+        return recipe.getUser().getUserIdx().equals(user.getUserIdx());
+    }
 
     @Transactional
     public void deleteRecipe(Long recipeId) {
@@ -213,7 +228,6 @@ public boolean isRecipeAuthor(Long recipeId, User user) {
         }
         return recipeDto;
     }
-
 
 
     public Page<RecipeDto> getLikedRecipes(Long userIdx, Pageable pageable) {

@@ -114,7 +114,12 @@ public class RecipeController {
             @RequestParam(defaultValue = "viewsCount,desc") String sort,
             @AuthenticationPrincipal User currentUser // 로그인된 유저 정보 추가
     ) {
-        Page<RecipeDto> recipes = recipeService.searchRecipes(keyword, category, page, size, sort, currentUser.getUserIdx());
+        Page<RecipeDto> recipes;
+        if (currentUser != null) {
+            recipes = recipeService.searchRecipes(keyword, category, page, size, sort, currentUser.getUserIdx());
+        } else {
+            recipes = recipeService.searchRecipes(keyword, category, page, size, sort);
+        }
         return ResponseEntity.ok(recipes);
     }
 
