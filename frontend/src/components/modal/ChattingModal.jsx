@@ -3,15 +3,17 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import {Calculator} from "../imgcomponents/ImgComponents";
+import { Calculator } from "../imgcomponents/ImgComponents";
 
 const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople, toggleTheme }) => {
     const [participants, setParticipants] = useState([]);
     const [currentUserRole, setCurrentUserRole] = useState(null);
+    const [location, setLocation] = useState("");  // 채팅방 위치 저장
+    const [currentParticipants, setCurrentParticipants] = useState(0);  // 현재 참여 인원 수 저장
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchParticipantsAndRole = async () => {
+        const fetchChatRoomData = async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
@@ -27,6 +29,16 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 });
 
                 const userIdx = userResponse.data.userIdx;
+
+                // 해당 채팅방 정보 가져오기
+                const chatRoomResponse = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                setLocation(chatRoomResponse.data.location);  // location 정보 설정
+                setCurrentParticipants(chatRoomResponse.data.currentParticipants);  // 현재 참여 인원 설정
 
                 // 해당 채팅방 참여자 정보 가져오기
                 const participantsResponse = await axios.get(`http://localhost:8080/api/chatrooms/${chatRoomId}/participants`, {
@@ -53,11 +65,11 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 setCurrentUserRole(roleResponse.data.role);
 
             } catch (error) {
-                console.error('Failed to fetch participants or user role', error);
+                console.error('Failed to fetch chat room data or user role', error);
             }
         };
 
-        fetchParticipantsAndRole();
+        fetchChatRoomData();
     }, [chatRoomId]);
 
     const closeModal = () => {
@@ -143,16 +155,11 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                 <button onClick={closeModal} className="chatting-modal-close-btn">X</button>
                 <div className="chatRoom-header">
                     <h4 className="chatRoom-title">{chatRoomTitle}</h4>
-                    <label className="theme-checkbox-label chatting-modal">
-                        <input type="checkbox" className="theme-checkbox" onClick={toggleTheme}/>
-                        <span className="theme-slider"></span>
-                    </label>
                 </div>
                 <div className="chatRoom-info">
-                    <h5>모임 장소 : </h5>
-
+                    <h5>모집 장소 : {location}</h5>  {/* 모집 장소 표시 */}
                 </div>
-                <h6 className="chatRoom-people">모집 인원 {chatRoomPeople}</h6>
+                <h5 className="chatRoom-people">인원 {currentParticipants} / {chatRoomPeople}</h5>
                 <div className="participants-list">
                     {participants.length > 0 ? (
                         participants.map((participant) => (
@@ -163,7 +170,7 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                                 <span>{participant.name}</span>
                                 {currentUserRole === 'LEADER' && participant.role !== 'LEADER' && (
                                     <button className="block-button"
-                                            onClick={() => handleBlockUser(participant.userId, participant.name)}>차단</button>
+                                            onClick={() => handleBlockUser(participant.userId, participant.name)}>⚠ 차단</button>
                                 )}
                             </div>
                         ))
@@ -174,10 +181,12 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
 
                 <div className="chatRoom-footer">
                     <button onClick={moveCal} className="cal-btn"><Calculator/> 정산하기️</button>
-                    {currentUserRole === 'LEADER' && (
-                        <button className="delete-button" onClick={handleDeleteChatRoom}>삭제</button>
-                    )}
-                    <button onClick={handleLeaveChatRoom} className="chatting-close-btn">나가기 <span>⇲</span></button>
+                    <div className="chatRoom-out">
+                        <button onClick={handleLeaveChatRoom} className="chatting-close-btn">나가기 <span>⇲</span></button>
+                        {currentUserRole === 'LEADER' && (
+                            <button className="delete-button" onClick={handleDeleteChatRoom}>삭제</button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

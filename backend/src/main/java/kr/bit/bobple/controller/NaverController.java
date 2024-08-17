@@ -106,6 +106,7 @@ public class NaverController {
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
 
+            // 여기서는 nick_name을 설정하지 않아서 트리거가 작동하도록 함
             userRepository.save(user);
         }
 
@@ -121,12 +122,10 @@ public class NaverController {
 
         handleDailyPoint(user.getUserIdx());
 
-
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.createToken(user.getUserIdx(), email, claims);
         System.out.println("Generated JWT Token: " + jwtToken);
         System.out.println(user.getUserIdx());
-
 
         // 사용자 정보 중 필요한 부분만 추출하여 클라이언트로 전송
         Map<String, Object> result = new HashMap<>(claims);
@@ -137,28 +136,20 @@ public class NaverController {
     }
 
     private void handleDailyPoint(Long userIdx) {
-        // Check today's date
+        // 오늘 날짜 가져오기
         Date today = java.sql.Date.valueOf(LocalDate.now());
 
-        // Check if the user has logged in today
+        // 사용자가 오늘 로그인했는지 확인
         Optional<LoginHistory> loginHistoryOptional = loginHistoryRepository.findByUserIdxAndLoginTime(userIdx, today);
 
         if (!loginHistoryOptional.isPresent()) {
-            // Allocate points
-            User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException("User not found"));
-            int currentPoints = user.getPoint() != null ? user.getPoint() : 0;
-            int updatedPoints = currentPoints;
-
-            // Save point record
-            user.setPoint(updatedPoints);
-            user.setUpdatedAt(LocalDateTime.now());
-            userRepository.save(user);
-
-            // Save login history
+            // 오늘 로그인 기록 저장
             LoginHistory loginHistory = new LoginHistory();
             loginHistory.setUserIdx(userIdx);
             loginHistory.setLoginTime(today);
             loginHistoryRepository.save(loginHistory);
+
+            // 트리거가 포인트를 처리하므로, 애플리케이션에서는 포인트를 직접 처리하지 않음
         }
     }
 }

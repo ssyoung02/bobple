@@ -6,7 +6,8 @@ import axios from "../../utils/axios";
 import PageHeader from "../../components/layout/PageHeader";
 import { Clock, FireIcon, ImageIcon } from "../../components/imgcomponents/ImgComponents";
 import { useOnlyHeaderColorChange } from "../../hooks/NavigateComponentHooks";
-import mascot from "../../assets/images/bobple_mascot.png"; // CSS 파일 import
+import mascot from "../../assets/images/bobple_mascot.png";
+import {clearRecipeLocalStorage} from "../../utils/localStorageUtils"; // CSS 파일 import
 
 function RecipeForm() {
     const {
@@ -119,6 +120,7 @@ function RecipeForm() {
                 // 이미지 파일이 업로드되지 않았고 수정 모드라면 기존 이미지 URL을 유지
                 formData.append("picture", imageUrl);
             }
+
             if (isEditing) {
                 await axios.put(`/api/recipes/${recipeIdx}`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
@@ -126,13 +128,28 @@ function RecipeForm() {
                 alert('레시피가 성공적으로 수정되었습니다.');
                 localStorage.removeItem('recommendedRecipes');
                 navigate(`/recipe/${recipeIdx}`);
+                window.location.reload(); // 새로고침
+
             } else {
                 await axios.post("/api/recipes", formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 alert('레시피가 성공적으로 등록되었습니다.');
+
+                // 레시피 등록 시 포인트 지급 요청
+                await axios.post("/api/point/result/update", {
+                    userIdx: Number(localStorage.getItem('userIdx')),
+                    point: 1, // 레시피 등록 시 지급할 포인트
+                    pointComment: "레시피 등록"}, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+
+
                 localStorage.removeItem('recommendedRecipes');
-                navigate('/recipe');
+                navigate(`/recipe`);
+                clearRecipeLocalStorage();
+                window.location.reload(); // 새로고침
+
             }
         } catch (error) {
             console.error('레시피 등록/수정 실패:', error);

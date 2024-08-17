@@ -22,6 +22,9 @@ const GroupChatting = () => {
     const messagesEndRef = useRef(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const highlightedMessageRef = useRef(null); // 검색된 메시지로 스크롤하기 위한 ref
+
 
     useEffect(() => {
         moment.locale('ko');
@@ -152,6 +155,12 @@ const GroupChatting = () => {
         scrollToBottom();
     }, [messages]);
 
+    useEffect(() => {
+        if (highlightedIndex !== -1 && highlightedMessageRef.current) {
+            highlightedMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [highlightedIndex]);
+
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -166,6 +175,20 @@ const GroupChatting = () => {
             ));
         } catch (error) {
             console.error('Failed to fetch unread counts', error);
+        }
+    };
+
+    const handleMessageKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();  // 메시지 보내기
+        }
+    };
+
+    const handleSearchKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSearch();  // 검색 실행
         }
     };
 
@@ -192,12 +215,6 @@ const GroupChatting = () => {
         }
     };
 
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-        }
-    };
 
     const handleGoBack = () => {
         navigate('/group');
@@ -218,12 +235,33 @@ const GroupChatting = () => {
     const handleSearch = () => {
         if (!searchQuery.trim()) return;
 
-        const filteredMessages = messages.filter(message =>
+        // 마지막 메시지부터 검색하여 일치하는 첫 번째 메시지의 인덱스 찾기.
+        const foundIndex = messages.slice().reverse().findIndex(message =>
             message.content.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-        setMessages(filteredMessages);
+        if (foundIndex !== -1) {
+            setHighlightedIndex(messages.length - 1 - foundIndex);
+        }
+
         setIsSearchOpen(false);  // 검색 후 드롭다운을 닫기
+    };
+
+    const highlightSearchTerm = (text) => {
+        if (!searchQuery) return text;
+
+        const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
+        return (
+            <>
+                {parts.map((part, index) =>
+                    part.toLowerCase() === searchQuery.toLowerCase() ? (
+                        <span key={index} className="highlight">{part}</span>
+                    ) : (
+                        part
+                    )
+                )}
+            </>
+        );
     };
 
     useNavigateNone();
@@ -242,6 +280,7 @@ const GroupChatting = () => {
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyPress={handleSearchKeyPress}  // Enter 키로 검색 실행
                                     placeholder="검색어를 입력하세요"
                                 />
                                 <button onClick={handleSearch}><SearchIcon/></button>
@@ -253,17 +292,19 @@ const GroupChatting = () => {
             )}
             <div className="messages">
                 {messages.map((message, index) => (
-                    <div key={index}
-                         className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}>
-
+                    <div
+                        key={index}
+                        id={`message-${index}`}
+                        ref={index === highlightedIndex ? highlightedMessageRef : null} // 검색된 메시지에 ref 연결
+                        className={`message ${message.userId === user?.userIdx ? 'message-right' : 'message-left'}`}
+                    >
                         {message.userId !== user?.userIdx && (
                             <div className="message-row">
-                                <img src={message.profileImage} alt={`${message.name}'s profile`}
-                                     className="chat-profile-image"/>
+                                <img src={message.profileImage} alt={`${message.name}'s profile`} className="chat-profile-image" />
                                 <div className="message-user-info">
                                     <h5 className="message-user"><strong>{message.name}</strong></h5>
                                     <div className="message-bubble">
-                                        <p className="message-content">{message.content}</p>
+                                        <p className="message-content">{highlightSearchTerm(message.content)}</p>
                                     </div>
                                 </div>
                                 <div className="message-time">
@@ -284,7 +325,7 @@ const GroupChatting = () => {
                                     <p>{moment(message.createdAt).format('h:mm')}</p>
                                 </div>
                                 <div className="message-bubble message-right-bubble">
-                                    <p className="message-content">{message.content}</p>
+                                    <p className="message-content">{highlightSearchTerm(message.content)}</p>
                                 </div>
                             </div>
                         )}
@@ -298,7 +339,7 @@ const GroupChatting = () => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onKeyPress={handleMessageKeyPress}  // 메시지 입력란에서는 handleMessageKeyPress 사용
                     placeholder="메시지를 입력하세요"
                 />
                 <button onClick={handleSendMessage}>

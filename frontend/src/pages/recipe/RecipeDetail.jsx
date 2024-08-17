@@ -103,8 +103,18 @@ function RecipeDetail() {
         if (confirmDelete) {
             try {
                 await deleteRecipe(recipeIdx);
+                // 레시피 삭제시 포인트 차감 요청
+                await axios.post("/api/point/result/update", {
+                    userIdx: Number(localStorage.getItem('userIdx')),
+                    point: -1, // 포인트 차감
+                    pointComment: "레시피 삭제"}, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+
                 clearRecipeLocalStorage();
                 navigate('/recipe');
+                window.location.reload(); // 새로고침
+
             } catch (error) {
                 console.error('레시피 삭제 실패:', error);
                 alert('레시피 삭제에 실패했습니다.');
@@ -139,6 +149,19 @@ function RecipeDetail() {
         setShowActions(!showActions); // showActions 상태를 토글
     };
 
+    const handleReportClick = async () => {
+        const confirmReport = window.confirm('정말로 이 레시피를 신고하시겠습니까?');
+        if (confirmReport) {
+            try {
+                // 신고 API 호출
+                await axios.post(`/api/recipes/${recipeIdx}/report`);
+                alert('신고가 접수되었습니다.');
+            } catch (error) {
+                console.error('신고 중 오류가 발생했습니다:', error);
+                alert('신고 처리 중 오류가 발생했습니다.');
+            }
+        }
+    };
 
 
     return (
@@ -173,7 +196,7 @@ function RecipeDetail() {
                             </button>
                             {showActions && (
                                 <div className="recipe-declaration">
-                                    <button>신고</button>
+                                    <button onClick={handleReportClick}>신고</button>
                                 </div>
                             )}
                         </div>
@@ -182,25 +205,25 @@ function RecipeDetail() {
                         </div>
                         <div className="recipe-detail-title-item">
                             <div className="recipe-detail-title-text">
-                                <DefaultUser/>
+                                <DefaultUser />
                                 <p>{selectedRecipe.nickname} </p>
                             </div>
                             <div className="recipe-detail-title-text">
-                                <Calendar/>
+                                <Calendar />
                                 <p> {dayjs(selectedRecipe.createdAt).format('YYYY-MM-DD')} </p>
                             </div>
                             <div className="recipe-detail-title-text">
-                                <View/>
+                                <View />
                                 <p>{formatViewsCount(selectedRecipe.viewsCount)} 회</p>
                             </div>
                         </div>
                         <div className="recipe-detail-title-item">
                             <div className="recipe-detail-title-text recipe-sub-title">
-                                <ClockIcon/>
+                                <ClockIcon />
                                 <p>{selectedRecipe.cookTime} 분 </p>
                             </div>
                             <div className="recipe-detail-title-text recipe-sub-title">
-                                <FireIcon/>
+                                <FireIcon />
                                 <p>{selectedRecipe.calories} kcal</p>
                             </div>
                         </div>

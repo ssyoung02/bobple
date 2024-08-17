@@ -333,7 +333,7 @@ export const UserRecommendedRecipes = () => {
         swipeToSlide: true,
         centerMode: true,
         arrows: false,
-        autoplay: false,
+        autoplay:true,
         afterChange: handleSlideChange // 슬라이드 변경 후 호출
     };
 

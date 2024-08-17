@@ -81,7 +81,7 @@ function RecipeMain() {
 
                 const lastKey = `${uniqueRecipes[uniqueRecipes.length - 1].recipeIdx}-${uniqueRecipes[uniqueRecipes.length - 1].userIdx}`;
                 localStorage.setItem('lastLoadedKey', lastKey);
-
+                console.log("latestRecipes.length + uniqueRecipes.length >= totalRecipes"+ latestRecipes.length+ "+" + uniqueRecipes.length+ " >="+ totalRecipes);
                 if (latestRecipes.length + uniqueRecipes.length >= totalRecipes) {
                     console.log('All recipes have been loaded.');
                     setHasMore(false);
