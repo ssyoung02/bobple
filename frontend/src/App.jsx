@@ -24,7 +24,6 @@ function App() {
                 <Route path="/*" element={
                     <Layout theme={theme} toggleTheme={toggleTheme}>
                         <MainRouter />
-                        {/*<ChattingModal toggleTheme={toggleTheme} />*/}
                     </Layout>
                 } />
             </Routes>
