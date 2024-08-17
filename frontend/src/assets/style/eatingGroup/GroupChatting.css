@@ -138,6 +138,11 @@
     font-weight: bold;
 }
 
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+    color: black;
+}
 
 /*채팅입력*/
 .message-input {
