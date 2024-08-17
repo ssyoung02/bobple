@@ -1,6 +1,7 @@
 main {
     min-height: calc(100dvh - 8rem);
     background: var(--main-background);
+    color: var(--main-text-color); /* 메인 텍스트 색상 추가 */
 }
 
 .header{
@@ -26,7 +27,7 @@ main {
 .headerLink *{
     font-size: 18px;
     padding: 0 10px;
-    color: #233B6F;
+    color: var(--header-link-color); /* 하드코딩된 색상을 변수로 변경 */
 }
 
 .theme-toggle-button {
@@ -49,6 +50,7 @@ main {
     --header-color: #000000;
     --header-link-color: #233B6F;
     --main-background: #ffffff;
+    --main-text-color: #000000; /* 메인 텍스트 색상 추가 */
 }
 
 /* 다크모드 */
@@ -57,7 +59,10 @@ main {
     --header-color: #ffffff;
     --header-link-color: #ffffff;
     --main-background: #000000;
+    --main-text-color: #ffffff; /* 메인 텍스트 색상 추가 */
 }
+
+
 
 /* 기본 체크박스 숨기기 */
 .theme-checkbox {
@@ -103,7 +108,7 @@ main {
 }
 
 .theme-checkbox:checked + .theme-slider::before {
-    left: calc(100% - 2.25em - 0.438em);
+    left: calc(100% - 1.375em);
     background-position: 0;
 }
 

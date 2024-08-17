@@ -63,12 +63,22 @@
 
 .chatRoom-header {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 5px;
     margin: 15px;
 }
 
+.theme-checkbox-label.chatting-modal {
+    translate: 10px 5px;
+}
+
 .chatRoom-title {
+}
+
+.chatting-modal-close-btn {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
     font-size: 20px;
 }
 
@@ -121,5 +131,23 @@
 
 .chatRoom-footer {
     display: flex;
-    gap: 20px;
+    gap: 85px;
+    font-size: 18px;
 }
+
+.cal-btn {
+    font-weight: bold;
+    padding: 5px 10px;
+    color: white;
+    background-color: #233B6F;
+    border-radius: 5px;
+}
+
+.chatting-close-btn {
+    font-weight: bold;
+}
+
+.chatting-close-btn span {
+    font-size: 20px;
+}
+

@@ -173,6 +173,46 @@ public class PointService {
         return PointDto.fromEntity(pointEntity);
     }
 
+    @Transactional
+    public PointDto updatePointByRecipe(Long userIdx, int point, String pointComment) {
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        System.out.println("User ID: " + userIdx);
+
+        int currentBalance = user.getPoint();
+        System.out.println("currentBalance: " + currentBalance);
+        int newBalance = currentBalance + point; // 포인트는 항상 추가되므로 음수 체크 불필요
+        System.out.println("newBalance: " + newBalance);
+
+        // 포인트 엔티티 초기화 (포인트 변동이 없는 경우에도 반환하기 위해)
+        Point pointEntity = new Point();
+        pointEntity.setUserIdx(userIdx);
+        pointEntity.setPointBalance(currentBalance);
+
+
+        System.out.println("User ID: " + userIdx);
+        System.out.println("Transaction: +" + point);
+        System.out.println("Current Balance: " + currentBalance);
+        System.out.println("New Balance: " + newBalance);
+
+        if (point < 0) {
+            pointEntity.setPointState(Point.PointState.M);
+        } else {
+            pointEntity.setPointState(Point.PointState.P);
+        }
+        pointEntity.setPointValue((long) point);
+        pointEntity.setPointComment(pointComment);
+        pointEntity.setCreatedAt(new Date());
+        pointEntity.setPointBalance(newBalance);
+        pointRepository.save(pointEntity);
+
+        user.setPoint(newBalance);
+        userRepository.save(user);
+
+        return PointDto.fromEntity(pointEntity);
+    }
+
+
     // 오늘 특정 사용자가 플레이한 게임 목록 조회
     public List<Point> getPointsByDateAndUserIdx(Long userIdx, String date) {
         LocalDate localDate = LocalDate.parse(date);

@@ -14,6 +14,37 @@
     margin-bottom: 20px;
 }
 
+.chat-room-info-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-room-info-title button {
+    font-size: 20px;
+}
+
+.search-dropdown {
+    position: absolute;
+    width: 25%;
+    top: 10%; /* 필요에 따라 조정 */
+    right: 37.5%; /* 필요에 따라 조정 */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-dropdown input {
+    width: 90%; /* 필요에 따라 조정 */
+    padding: 5px;
+}
+
+.search-dropdown button {
+    margin-left: 15px;
+}
+
 .chat-room-info h2 {
     margin: 0 auto;
     font-size: 24px;
@@ -133,4 +164,40 @@
 .message-input button img:hover,
 .message-input button img:active {
     opacity: 0.5;
+}
+.search-dropdown
+.search-dropdown input
+
+/* 반응형 조정 */
+@media (max-width: 1200px) {
+    .search-dropdown {
+        width: 25%;
+        top: 10%; /* 필요에 따라 조정 */
+        right: 37.5%; /* 필요에 따라 조정 */
+    }
+}
+
+
+@media (max-width: 768px) {
+    .search-dropdown {
+        width: 60%;
+        top: 9%; /* 필요에 따라 조정 */
+        right: 20%; /* 필요에 따라 조정 */
+    }
+}
+
+@media (max-width: 480px) {
+    .search-dropdown {
+        width: 100%;
+        top: 10%; /* 필요에 따라 조정 */
+        right: 0.1%; /* 필요에 따라 조정 */
+    }
+}
+
+@media (max-width: 390px) {
+    .search-dropdown {
+        width: 100%;
+        top: 10%; /* 필요에 따라 조정 */
+        right: 0.1%; /* 필요에 따라 조정 */
+    }
 }

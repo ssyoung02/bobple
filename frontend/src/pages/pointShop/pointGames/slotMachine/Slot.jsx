@@ -33,13 +33,13 @@ const Slot = forwardRef(({ fruits }, ref) => {
         if (rolling) {
             const id = setInterval(() => {
                 setPosition((prev) => {
-                    const newPos = prev - 20; // Increase speed by increasing the value
+                    const newPos = prev - 20; // Increase speed by increasing the value (s:20, f:30)
                     if (newPos <= -fruits.length * 90) {
-                        return 0; // Reset the scroll when it reaches the end
+                        return 0; // Reset the scroll when it reaches the end (s:90, f:80)
                     }
                     return newPos;
                 });
-            }, 100); // Increase speed by decreasing the interval time
+            }, 100); // Increase speed by decreasing the interval time (s:100, f:50)
             setIntervalId(id);
         } else {
             clearInterval(intervalId);
