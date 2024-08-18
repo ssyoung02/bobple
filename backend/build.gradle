@@ -48,6 +48,12 @@ dependencies {
     // JSON 라이브러리
     implementation 'org.json:json:20231013'
 
+    // WebClient를 사용하려면 다음을 추가
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Reactor를 사용한 비동기 처리 및 스트리밍을 위해 필요
+    implementation 'io.projectreactor:reactor-core'
+
 
 //    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 //    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.1000'

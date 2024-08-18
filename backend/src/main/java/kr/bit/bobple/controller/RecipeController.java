@@ -5,21 +5,28 @@ import kr.bit.bobple.auth.AuthenticationFacade;
 import kr.bit.bobple.dto.LikeRecipeDto;
 import kr.bit.bobple.dto.RecipeDto;
 import kr.bit.bobple.entity.Recipe;
+//import kr.bit.bobple.service.AiRecommendationService;
+import kr.bit.bobple.service.HyperCLOVAClient;
 import kr.bit.bobple.service.LikeRecipeService;
 import kr.bit.bobple.service.RecipeImageService;
 import kr.bit.bobple.service.RecipeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import kr.bit.bobple.entity.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -30,15 +37,19 @@ public class RecipeController {
     private final LikeRecipeService likeRecipeService;
     private final AuthenticationFacade authenticationFacade;
     private final RecipeImageService recipeImageService;
-
-
+//    private final AiRecommendationService aiRecommendationService;
+    private final HyperCLOVAClient hyperCLOVAClient;
+    private final RestTemplateBuilder restTemplateBuilder;
     @GetMapping
     public ResponseEntity<Page<RecipeDto>> getAllRecipes(Pageable pageable) {
         // 모든 레시피 목록 조회 (페이징 처리)
         return ResponseEntity.ok(recipeService.getAllRecipes(pageable));
     }
 
-
+    @GetMapping(value = "/recommend-recipes", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Map<String, Object>> recommendRecipes(@RequestParam String ingredients) {
+        return hyperCLOVAClient.generateText(ingredients);
+    }
     @GetMapping("/latest")
     public ResponseEntity<Page<RecipeDto>> getLatestRecipes(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -121,11 +132,6 @@ public class RecipeController {
             recipes = recipeService.searchRecipes(keyword, category, page, size, sort);
         }
         return ResponseEntity.ok(recipes);
-    }
-
-    @PostMapping("/recommend")
-    public ResponseEntity<List<RecipeDto>> recommendRecipes(@RequestBody String ingredients) {
-        return ResponseEntity.ok(recipeService.recommendRecipesByAI(ingredients));
     }
 
     @PostMapping("/{recipeId}/like")
