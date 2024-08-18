@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 const StarSection = styled.div`
     .star {
-        color: #f6f605;
+        color: red;
         font-size: 32px;
         cursor: pointer;
     }
