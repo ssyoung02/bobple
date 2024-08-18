@@ -11,6 +11,7 @@ function RecipeComment({ comment, recipeId }) {
     const [editedContent, setEditedContent] = useState(comment.recipeContent);
     const [currentUserNickname, setCurrentUserNickname] = useState('');
     const [showActions, setShowActions] = useState(false);
+    const [hasReported, setHasReported] = useState(false); // 이미 신고했는지 여부를 확인하는 상태
 
     useEffect(() => {
         // 로그인한 사용자의 닉네임을 Principal에서 가져오기
@@ -62,13 +63,29 @@ function RecipeComment({ comment, recipeId }) {
 
     const handleReportClick = async () => {
         try {
-            await axios.post(`/api/comments/${comment.recipeCommentIdx}/report`, { nickname: comment.nickname });
+            await axios.post('/api/reports/user', {
+                reporterUserNickname: currentUserNickname,
+                reportedUserNickname: comment.nickname
+            });
             alert('신고가 접수되었습니다.');
         } catch (error) {
-            console.error('신고 실패:', error);
-            alert('신고를 처리하는 중 오류가 발생했습니다.');
+            if (error.response && error.response.status === 409) {
+                // 이미 신고된 유저일 경우 메시지를 표시
+                alert('이미 이 유저를 신고하셨습니다.');
+            } else if (error.response) {
+                // 다른 서버 오류에 대한 처리 (필요시 추가적인 오류 처리 가능)
+                console.error('서버 오류:', error.response.data);
+            } else if (error.request) {
+                // 요청이 전송되었지만 응답을 받지 못했을 때
+                console.error('네트워크 오류:', error.request);
+            } else {
+                // 기타 예상치 못한 오류에 대한 처리
+                console.error('신고 처리 중 알 수 없는 오류 발생:', error.message);
+            }
         }
     };
+
+
 
     return (
         <div className="comment">
@@ -85,7 +102,7 @@ function RecipeComment({ comment, recipeId }) {
                 </button>
                 {showActions && (
                     <div className="comment-actions">
-                        <button onClick={handleReportClick}>신고</button>
+                        {!hasReported && <button onClick={handleReportClick}>신고</button>}
                         {currentUserNickname === comment.nickname && (
                             <>
                                 {!isEditing && (
