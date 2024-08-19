@@ -2,6 +2,11 @@
     position: relative;
     margin-bottom: 20px;
 }
+
+.SearchBox h4{
+    margin: 10px 0;
+}
+
 .AllSaerchBox {
     width: 100%;
     height: 3em;
@@ -71,15 +76,28 @@
     color: #eb517e;
 }
 
-.restaurant-right.search-keyword {
+.restaurant-info a{
     display: flex;
-    gap: 30px;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.restaurant-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 
 .restaurant-bookmarks.search-keyword {
     display: flex;
     align-items: center;
-    font-size: 0.9em;
     gap: 5px;
+}
+
+.search-keyword .restaurant-distance{
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }

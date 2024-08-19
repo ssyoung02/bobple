@@ -6,7 +6,7 @@ import SliderComponent from "../components/SliderComponent";
 import { clearRecipeLocalStorage } from '../utils/localStorageUtils';
 import {
     AiLunch, Bookmark,
-    CalculatorBanner, FillBookmark,
+    CalculatorBanner, CaretRight, FillBookmark,
     LocationDot,
     Meeting,
     NextTo,
@@ -348,15 +348,17 @@ function MainPage() {
                                         />
 
                                     </div>
-                                    <div className="pub-info-container">
-                                        <div
-                                            onClick={() => navigate(`/recommend/restaurant/${pub.id}`, {state: {restaurant: pub}})}
-                                            style={{cursor: 'pointer'}} // 스타일로 마우스 포인터를 추가
-                                        >
+                                    <div className="pub-info-container"
+                                         onClick={() => navigate(`/recommend/restaurant/${pub.id}`, {state: {restaurant: pub}})}
+                                         style={{cursor: 'pointer'}}
+                                    >
+                                        <div>
                                             <h6 className="pub-name">{pub.place_name}</h6>
                                         </div>
+                                        <span
+                                            className="restaurant-category"><CaretRight/> {pub.category_name.replace('음식점 > ', '')}</span>
+
                                         <p className="pub-address">{pub.address_name}</p>
-                                        <span className="pub-distance">{Math.round(pub.distance)}m</span>
                                     </div>
                                     <div className="pub-bookmark-state">
                                         <button
@@ -370,6 +372,7 @@ function MainPage() {
                                             )}
                                             {pub.bookmarks_count || 0}
                                         </button>
+                                        <span className="pub-distance"><LocationDot/> {Math.round(pub.distance)}m</span>
                                     </div>
 
                                 </li>

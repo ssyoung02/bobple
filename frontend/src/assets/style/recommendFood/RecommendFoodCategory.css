@@ -55,14 +55,14 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-
+    overflow: hidden;
 }
 
 .top-restaurant-location {
     display: flex;
     align-items: center;
-    gap: 20px;
-    font-size: 18px;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .restaurant-distance{
@@ -91,21 +91,27 @@
     gap: 20px;
 }
 
+
 .restaurant-name{
     display: inline-block;
     color: #092543;
-    width: 100%;
+    width: 13em;
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0;
-    white-space: normal; /* 줄바꿈을 허용 */
     word-break: break-word; /* 단어가 너무 길 경우 줄바꿈 */
+    white-space: nowrap;
+}
+
+.top-restaurant-info-title .restaurant-name{
+    width: 5em;
+    text-align: center;
 }
 
 .restaurant-left {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
 }
 
 .restaurant-left-title {
@@ -137,11 +143,11 @@
     flex: 4;
     display: flex;
     justify-content: space-between;
+    height: 70px;
 }
 
 .restaurant-right {
     display: flex;
-    font-size: 23px;
     margin-right: 5px;
 }
 

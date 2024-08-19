@@ -35,6 +35,7 @@ export default function SliderComponent() {
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
+        arrows: false,
         afterChange: (current) => setCurrentSlide(current)
     };
 

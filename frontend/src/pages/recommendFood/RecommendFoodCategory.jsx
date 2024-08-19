@@ -365,7 +365,6 @@ function RecommendFoodCategory() {
                 <ul className="restaurant-list top-list">
                     {bestRestaurants.map((restaurant) => (
                         <li key={restaurant.id} className="top-item">
-
                             <div className="restaurant-image-wrapper">
                                 {/* NaverImageSearch 컴포넌트 사용 */}
                                 <NaverImageSearch
@@ -376,6 +375,7 @@ function RecommendFoodCategory() {
 
                             <div className="top-restaurant-info">
                                 <div
+                                    className="top-restaurant-info-title"
                                     onClick={() => navigate(`/recommend/restaurant/${restaurant.id}`, {state: {restaurant}})}>
                                     <h6 className="restaurant-name">{restaurant.place_name}</h6>
                                 </div>
@@ -412,17 +412,13 @@ function RecommendFoodCategory() {
                                     />
                                 </div>
                             <div className="restaurant-info">
-                                <div className="restaurant-left">
-                                    <div className="restaurant-left-title"
-                                        onClick={() => navigate(`/recommend/restaurant/${restaurant.id}`, {state: {restaurant}})}>
+                                <div className="restaurant-left"
+                                     onClick={() => navigate(`/recommend/restaurant/${restaurant.id}`, {state: {restaurant}})}
+                                >
                                         <h6 className="restaurant-name">{restaurant.place_name}</h6>
                                         <span
                                             className="restaurant-category"><CaretRight/>{restaurant.category_name.replace('음식점 > ', '')}</span>
-                                    </div>
                                     <p className="restaurant-address">{restaurant.address_name}</p>
-                                    <span className="restaurant-distance">
-                                        <LocationDot/>{Math.round(restaurant.distance)}m
-                                    </span>
                                 </div>
                                 <div className="restaurant-right">
                                     <button
@@ -436,6 +432,9 @@ function RecommendFoodCategory() {
                                         )}
                                         {restaurant.bookmarks_count || 0}
                                     </button>
+                                    <span className="restaurant-distance">
+                                        <LocationDot/>{Math.round(restaurant.distance)}m
+                                    </span>
                                 </div>
                             </div>
                         </li>

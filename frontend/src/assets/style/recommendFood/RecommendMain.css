@@ -235,11 +235,14 @@
 
 .pub-bookmark-state {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .pub-bookmarks{
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 5px;
 }
 .pub-bookmarks svg{
@@ -250,4 +253,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.restaurant-category{
+    font-size: 14px;
 }

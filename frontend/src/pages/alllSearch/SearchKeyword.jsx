@@ -13,6 +13,7 @@ import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import {getUserIdx} from "../../utils/auth";
 import axios from "axios";
 import RecipeCard from "../recipe/RecipeCard";
+import MainRecipeCard from "../recipe/MainRecipeCard";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -211,7 +212,8 @@ const SearchKeyword = () => {
                     <SearchIcon/>
                 </button>
             </div>
-            <h5>{keyword} 검색 결과</h5>
+            <h4><span style={{ color: "#ff9800" }}>{keyword}</span> 검색 결과</h4>
+            <hr/>
             <div className="search-result-title">
                 <h4>주변 음식점</h4>
                 {/* 더보기 버튼 */}
@@ -234,15 +236,13 @@ const SearchKeyword = () => {
                             <div className="restaurant-left">
                                 <a href={restaurant.place_url} target="_blank" rel="noreferrer">
                                     <h6 className="restaurant-name">{restaurant.place_name}</h6>
-                                    <p className="restaurant-address">{restaurant.address_name}</p>
                                     <span
                                         className="restaurant-category"><CaretRight/>{restaurant.category_name.replace('음식점 > ', '')}</span>
+                                    <p className="restaurant-address">{restaurant.address_name}</p>
                                 </a>
                             </div>
                             {/* 북마크 버튼 추가 */}
                             <div className="restaurant-right search-keyword">
-                                <span
-                                    className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                                 <button
                                     className="restaurant-bookmarks search-keyword"
                                     onClick={() => handleBookmarkToggle(restaurant)}
@@ -254,31 +254,34 @@ const SearchKeyword = () => {
                                     )}
                                     {restaurant.bookmarks_count || 0}
                                 </button>
+                                <span
+                                    className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                             </div>
                         </div>
                     </li>
                 ))}
             </ul>
-
+            <hr/>
             <div className="search-result-title">
                 <h4>관련 레시피</h4>
                 {recipes.length > 0 &&
                     <button className="more-button" onClick={handleRecipeMoreClick}>더보기</button>
                 }
             </div>
-            {recipes.length > 0 ? (
-                <div className="recipe-list">
-                    {recipes.map(recipe => (
-                        <div key={recipe.recipeIdx} className="recipe-list-item">
-                            <RecipeCard recipe={recipe}
-                                        onDelete={handleRecipeDelete}
-                                        onLike={handleRecipeLike}/>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <p>레시피가 없습니다.</p>
-            )}
+            {
+                recipes.length > 0 ? (
+                    <ul className="restaurant-list">
+                        {recipes.map(recipe => (
+                            <li key={recipe.recipeIdx} className="restaurant-item">
+                                <MainRecipeCard recipe={recipe}
+                                            onDelete={handleRecipeDelete}
+                                            onLike={handleRecipeLike}/>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>레시피가 없습니다.</p>
+                )}
             <div className="pagination">
                 {[...Array(totalPages)].map((_, i) => (
                     <button
