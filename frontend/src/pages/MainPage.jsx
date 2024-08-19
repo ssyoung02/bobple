@@ -20,7 +20,7 @@ import RecipeCard from "./recipe/RecipeCard";
 import RecipeContext from "./recipe/RecipeContext";
 import MainRecipeCard from "./recipe/MainRecipeCard";
 
-function MainPage() {
+function MainPage({theme}) {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
 
@@ -298,22 +298,30 @@ function MainPage() {
         <div className="mainPage">
             <SliderComponent/>
             <div className="sliderbox"></div>
-            <div className={"shortMenu"}>
-                <button className={"shortMenuItem"} onClick={moveCalculator}>
-                    <div className={"shortMenuIcon"}><CalculatorBanner/></div>
-                    <p className={"shortMenuName"}>1/N</p>
+            <div className="shortMenu">
+                <button className="shortMenuItem" onClick={moveCalculator}>
+                    <div className="shortMenuIcon">
+                        <CalculatorBanner theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">1/N</p>
                 </button>
-                <button className={"shortMenuItem"} onClick={moveRecipeAI}>
-                    <div className={"shortMenuIcon"}><AiLunch/></div>
-                    <p className={"shortMenuName"}>AI 도시락</p>
+                <button className="shortMenuItem" onClick={moveRecipeAI}>
+                    <div className="shortMenuIcon">
+                        <AiLunch theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">AI 도시락</p>
                 </button>
-                <button className={"shortMenuItem"} onClick={moveGroup}>
-                    <div className={"shortMenuIcon"}><Meeting/></div>
-                    <p className={"shortMenuName"}>번개모임</p>
+                <button className="shortMenuItem" onClick={moveGroup}>
+                    <div className="shortMenuIcon">
+                        <Meeting theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">번개모임</p>
                 </button>
-                <button className={"shortMenuItem"} onClick={moveRecommend}>
-                    <div className={"shortMenuIcon"}><RandomMenu/></div>
-                    <p className={"shortMenuName"}>랜덤메뉴</p>
+                <button className="shortMenuItem" onClick={moveRecommend}>
+                    <div className="shortMenuIcon">
+                        <RandomMenu theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">랜덤메뉴</p>
                 </button>
             </div>
             <div className="summation-box">

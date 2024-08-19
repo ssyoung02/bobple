@@ -11,6 +11,11 @@ import calculator from  "../../assets/images/banner/main-01.calculator.png"
 import aiLunch from  "../../assets/images/banner/main-02.AI-lunchbox.png"
 import meeting from  "../../assets/images/banner/main-03.meeting.png"
 import randomMenu from  "../../assets/images/banner/main-04.random-menu.png"
+import calculatorDark from "../../assets/images/banner/main-01.calculator-dark.png";
+import aiLunchDark from "../../assets/images/banner/main-02.AI-lunchbox-dark.png";
+import meetingDark from "../../assets/images/banner/main-03.meeting-dark.png";
+import randomMenuDark from "../../assets/images/banner/main-04.random-menu-dark.png";
+
 
 import trophy from "../../assets/images/gameimg/trophy.png";
 import sendMessage from '../../assets/images/sendMessage.png';
@@ -34,21 +39,26 @@ export const MainFoodBanner = () => {
     return (<img src={MainFoodBanner_jeon} alt={"전"} />);
 }
 
-export const CalculatorBanner = () => {
-    return (<img src={calculator} alt={"1/n 계산기"} />);
+export const CalculatorBanner = ({ theme }) => {
+    const calculatorImage = theme === 'dark' ? calculatorDark : calculator;
+    return (<img src={calculatorImage} alt={"1/n 계산기"} />);
 }
 
-export const AiLunch = () => {
-    return (<img src={aiLunch} alt={"AI 도시락"} />);
+export const AiLunch = ({ theme }) => {
+    const aiLunchImage = theme === 'dark' ? aiLunchDark : aiLunch;
+    return (<img src={aiLunchImage} alt={"AI 도시락"} />);
 }
 
-export const Meeting = () => {
-    return (<img src={meeting} alt={"번개모임"} />);
+export const Meeting = ({ theme }) => {
+    const meetingImage = theme === 'dark' ? meetingDark : meeting;
+    return (<img src={meetingImage} alt={"번개모임"} />);
 }
 
-export const RandomMenu = () => {
-    return (<img src={randomMenu} alt={"랜덤메뉴"} />);
+export const RandomMenu = ({ theme }) => {
+    const randomMenuImage = theme === 'dark' ? randomMenuDark : randomMenu;
+    return (<img src={randomMenuImage} alt={"랜덤메뉴"} />);
 }
+
 
 
 //로그인 이미지

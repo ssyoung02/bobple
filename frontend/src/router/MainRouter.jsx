@@ -11,10 +11,10 @@ import RecommendFoodRouter from "./RecommendFoodRouter"
 import NotFound from "../pages/NotFound";
 import AllSearchRouter from "./AllSearchRouter";
 
-function MainRouter(){
+function MainRouter({theme}){
     return(
         <Routes>
-            <Route path="/"  element={<MainPage/>}/>
+            <Route path="/"  element={<MainPage theme={theme}/>}/>
             <Route path="/around/*" element={<AroundFoodRouter/>}/>
             <Route path="/group/*" element={<EatingGroupRouter/>}/>
             <Route path="/mainGame/*" element={<MainGameRouter/>}/>
