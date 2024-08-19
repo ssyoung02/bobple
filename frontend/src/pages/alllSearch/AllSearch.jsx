@@ -17,16 +17,19 @@ const AllSearch = () => {
         setKeyword(e.target.value);
     }; //키워드 변경 함수
 
-    const handleTopKeywordClick = (keyword) => {
-        navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`);
+
+    const handleSearch = async (searchKeyword) => { // 검색 함수
+        const keywordToSearch = searchKeyword || keyword; // 탑 키워드 클릭 시 사용
+
+        if (keywordToSearch.trim() !== '') {
+            await handleSearchClick(keywordToSearch, setTopKeywords); // 서버에 검색어 저장
+            navigate(`/search/SearchKeyword/${encodeURIComponent(keywordToSearch)}`); // 화면 전환
+            setKeyword(''); // 검색 후 입력창 초기화
+        }
     };
 
-    const handleSearch = async () => { //검색 함수
-        if (keyword.trim() !== '') {
-            await handleSearchClick(keyword, setTopKeywords); //서버에 검색어 저장
-            navigate(`/search/SearchKeyword/${encodeURIComponent(keyword)}`); //화면 전환
-            setKeyword(''); //검색 후 입력창 초기화
-        }
+    const handleTopKeywordClick = (keyword) => {
+        handleSearch(keyword); // 탑 키워드 클릭 시 검색 함수 호출
     };
 
     return (

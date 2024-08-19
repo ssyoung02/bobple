@@ -239,8 +239,8 @@ function RecipeDetail() {
                     </div>
                     <div className="recipe-detail-content">
                         <h4>조리 방법</h4>
-                        <ul className="recipe-detail-ul">
-                            {instructions.split('..').map((instruction, index) => (
+                        <ul>
+                            {instructions.split(/(?=\d+\.)/).map((instruction, index) => (
                                 <li key={index}>{instruction.trim()}</li>
                             ))}
                         </ul>

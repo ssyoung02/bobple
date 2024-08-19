@@ -162,14 +162,36 @@
     height: 250px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #F7CCD4;
     font-size: 20px;
     font-weight: bold;
+    overflow: hidden;
+}
+
+.game-button img{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.gacha{
+    background: #E8FBFF;
+}
+
+.food-matching{
+    background: #FFFEE2;
+}
+
+.avoid-food{
+    background: #FF9292;
+}
+
+.slot-machine{
+    background: #BCE098;
 }
 
 .game-button:hover {
-    border: none;
-    background-color: #EB517E;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+    filter: brightness(.9);
 }
 
 .item-header {

@@ -5,6 +5,10 @@
     gap: 1.5em;
 }
 
+.user-FAQ-main ul{
+    list-style: none;
+}
+
 /*내용*/
 .faq-title{
     width: 100%;

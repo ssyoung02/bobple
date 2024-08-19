@@ -33,15 +33,18 @@
 /*좋아요, 신고*/
 .recipe-detail-user-action{
     position: absolute;
-
+    top: -15px;
     right: 0;
     display: flex;
     z-index: 1;
-    width: 100px;
     justify-content: flex-end;
+    padding: 2px 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    gap: 5px;
 }
 
-.recipe-detail-like {
+.recipe-detail-like{
     display: flex;
     align-items: center;
     gap: 5px;

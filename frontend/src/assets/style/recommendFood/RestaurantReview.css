@@ -24,6 +24,11 @@
     font-weight: bold;
 }
 
+.sc-braxZu{
+    display: flex;
+    color: #555555;
+}
+
 .review-form-content {
     width: 100%;
     height: 150px;

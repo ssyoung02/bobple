@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getUserIdx } from "../../utils/auth";
 import {Link, useNavigate} from 'react-router-dom';
 import '../../assets/style/myPage/MyReviews.css';
-import {ArrowLeftLong} from "../../components/imgcomponents/ImgComponents";
+import {ArrowLeftLong, StarFill, StarLine} from "../../components/imgcomponents/ImgComponents";
 
 // Star 컴포넌트 직접 구현
 function Star({ filled }) {

@@ -3,7 +3,7 @@ import '../../assets/style/eatingGroup/GroupMain.css';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
-import { SearchIcon } from "../../components/imgcomponents/ImgComponents";
+import {LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
 import io from 'socket.io-client';
 
 const GroupMain = () => {
@@ -195,15 +195,18 @@ const GroupMain = () => {
                                 <div className="meeting-info">
                                     <div className="meeting-header">
                                         <div className="meeting-header-left">
+                                            <div className="meating-header-top">
+                                                <span><LocationDot/> {chatRoom.location}</span>
+                                                <span>{new Intl.DateTimeFormat('ko-KR', {
+                                                    year: '2-digit',
+                                                    month: 'numeric',
+                                                    day: 'numeric'
+                                                }).format(new Date(chatRoom.createdAt))}</span>
+                                            </div>
                                             <h3>{chatRoom.chatRoomTitle}</h3>
-                                            <span>({chatRoom.location})</span>
                                         </div>
                                         <div>
-                                            <span>{new Intl.DateTimeFormat('ko-KR', {
-                                                year: '2-digit',
-                                                month: 'numeric',
-                                                day: 'numeric'
-                                            }).format(new Date(chatRoom.createdAt))}</span>
+
                                         </div>
                                     </div>
                                     <div className="meeting-text">

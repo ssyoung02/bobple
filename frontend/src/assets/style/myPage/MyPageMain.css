@@ -10,6 +10,10 @@
     justify-content: space-between;
 }
 
+.my-page-main h5{
+    margin-bottom: 20px;
+}
+
 /*프로필사진*/
 .mypage-profile{
     width: 50px;

@@ -82,13 +82,13 @@ const Calculator = () => {
         let foundAmount = false;
         let extractedAmount = '';
 
-        console.log("OCR 인식된 모든 텍스트:");
+        //console.log("OCR 인식된 모든 텍스트:");
 
         fields.forEach((field, i) => {
             let text = removeSpaces(field.inferText.trim());
 
             // 로그로 출력
-            console.log(`Field ${i}: ${text}`);
+            //console.log(`Field ${i}: ${text}`);
 
             // '합계'와 같은 단어를 올바르게 처리하기 위한 조정
             if (text.includes('합') && i + 1 < fields.length) {

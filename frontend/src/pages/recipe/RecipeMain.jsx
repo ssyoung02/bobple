@@ -9,7 +9,6 @@ import {UserRecommendedRecipes} from "../../components/SliderComponent";
 import {ClipLoader} from "react-spinners";
 
 
-
 function RecipeMain() {
     const {
         getRecipeById, setError, latestRecipes, setLatestRecipes, totalRecipes,

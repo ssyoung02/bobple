@@ -152,20 +152,19 @@
 
 .meeting-item:hover,
 .meeting-item:active {
-    border: none;
+    border: 1px solid #233B6F;
 }
 
 .meeting-contents {
     display: flex;
     align-items: center;
-
+    gap: 20px;
 }
 
 .meeting-contents img {
     width: 70px;
     height: 70px;
     border-radius: 20%;
-    margin-right: 15px;
 }
 
 .meeting-info {
@@ -173,24 +172,31 @@
     flex-direction: column;
     flex: 1;
     gap: 5px;
-    margin-left: 10px;
+    overflow: hidden;
 }
 
 .meeting-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: 5px;
 }
 
 .meeting-header-left {
     display: flex;
-    gap: 20px;
+    gap: 5px;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
 }
 
 .meeting-header h3 {
     margin: 0;
     font-size: 16px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
 }
 
 .meeting-header span {
@@ -202,7 +208,15 @@
     display: flex;
 }
 
+.meeting-text p{
+    text-align: left;
+}
 
+.meating-header-top{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
 
 .fab-box {
     display: flex;
