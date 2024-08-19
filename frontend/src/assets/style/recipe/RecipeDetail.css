@@ -33,7 +33,6 @@
 /*좋아요, 신고*/
 .recipe-detail-user-action{
     position: absolute;
-    top: -15px;
     right: 0;
     display: flex;
     z-index: 1;

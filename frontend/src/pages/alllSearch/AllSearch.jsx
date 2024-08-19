@@ -51,15 +51,7 @@ const AllSearch = () => {
                     <SearchIcon />
                 </button>
             </div>
-
-            <div className="search-tagList">
-                <div className="search-tag">#점메추</div>
-                <div className="search-tag">#스트레스</div>
-                <div className="search-tag">#비오는날</div>
-                <div className="search-tag">#해장</div>
-                <div className="search-tag">#야식</div>
-            </div>
-
+            <br/>
             <div className="star-search">
                 <h2 className="all-search-title">인기검색어</h2>
                 <ul className="search-ul">

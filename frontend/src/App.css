@@ -73,6 +73,8 @@ button{
   --header-link-color: #233B6F;
   --main-background: #ffffff;
   --main-text-color: #000000; /* 메인 텍스트 색상 추가 */
+  --sub-text-color: #ffffff;
+  --sub-link-color: #ddd;
 }
 
 /* 다크모드 */
@@ -82,6 +84,6 @@ button{
   --header-link-color: #ffffff;
   --main-background: #000000;
   --main-text-color: #ffffff; /* 메인 텍스트 색상 추가 */
-  --sub-text-color: rgba(255, 255, 255, 0.8);
-
+  --sub-text-color: #ddd;
+  --sub-link-color: #ffffff;
 }

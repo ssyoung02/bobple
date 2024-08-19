@@ -67,6 +67,7 @@
 }
 
 .menu-recommendation-title {
+    color: var(--main-text-color);
     font-family: NotoSansKR-Bold, serif;
     font-size: 1.3em;
 }
@@ -244,6 +245,11 @@
     align-items: center;
     justify-content: flex-end;
     gap: 5px;
+    fill: var(--header-color);
+}
+
+.pub-bookmarks span {
+    color: var(--header-color);
 }
 .pub-bookmarks svg{
     height: 16px;

@@ -47,7 +47,7 @@
 
 .mypage-nickname, .goto-MyPointUsage{
     font-family: NotoSansKR-Bold, serif;
-    color: #233B6F;
+    color: var(--header-link-color);
     font-size: 1.2em;
 }
 
@@ -77,17 +77,27 @@
     font-size: 2.5em;
 }
 
+.my-activities h5,
+.service-center h5 {
+    color: var(--header-color);
+}
+
+
 /*내 활동*/
 .mypage-link{
     display: flex;
     gap: 20px;
-    color: #233B6F;
+    color: var(--header-link-color);
     margin-top: 1em;
 }
 .activites-icon{
     width: 25px;
     height: 25px;
     overflow: hidden;
+}
+.activites-icon.bookmark svg {
+    translate: -2px;
+    fill: var(--header-color);
 }
 .activites-icon svg{
     width: 100%;
@@ -110,5 +120,15 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    color: var(--header-color);
 }
 /*포인트 구매내역*/
+
+.logout-btn {
+    color: var(--header-color);
+}
+
+.logout-btn:hover,
+.logout-btn:active {
+    text-decoration: underline;
+}
