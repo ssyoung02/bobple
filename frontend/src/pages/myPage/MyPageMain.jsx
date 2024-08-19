@@ -150,7 +150,7 @@ function MyPageMain() {
                         <h6>좋아요 레시피</h6>
                     </button>
                     <button className="mypage-link" onClick={moveBookMark}>
-                        <span className="activites-icon">
+                        <span className="activites-icon bookmark">
                             <Bookmark/>
                         </span>
                         <h6>북마크 음식점</h6>

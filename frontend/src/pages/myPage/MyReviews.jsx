@@ -64,10 +64,14 @@ function MyReviews() {
         }
     };
 
+    const moveBack = () => {
+        navigate('/myPage');
+    }
+
     return (
         <div>
             <div className="myReview-header">
-                <ArrowLeftLong/>
+                <button onClick={moveBack}><ArrowLeftLong/></button>
                 <h2>작성한 리뷰</h2>
             </div>
             <ul style={{listStyle: 'none', padding: 0}}>
