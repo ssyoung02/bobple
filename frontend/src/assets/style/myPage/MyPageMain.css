@@ -47,7 +47,7 @@
 
 .mypage-nickname, .goto-MyPointUsage{
     font-family: NotoSansKR-Bold, serif;
-    color: #233B6F;
+    color: var(--header-link-color);
     font-size: 1.2em;
 }
 
@@ -82,7 +82,7 @@
 .mypage-link{
     display: flex;
     gap: 20px;
-    color: #233B6F;
+    color: var(--header-link-color);
     margin-top: 1em;
 }
 .activites-icon{
@@ -90,8 +90,9 @@
     height: 25px;
     overflow: hidden;
 }
-.activites-icon.bookmark {
+.activites-icon.bookmark svg {
     translate: -2px;
+    fill: var(--header-color);
 }
 .activites-icon svg{
     width: 100%;

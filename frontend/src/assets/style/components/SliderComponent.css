@@ -107,6 +107,7 @@
 .recommend-category-button{
     height: 5em;
     font-size: 0.8em;
+    color: var(--header-color);
 }
 
 .category-icon{

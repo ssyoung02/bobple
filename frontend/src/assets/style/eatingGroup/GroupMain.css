@@ -115,6 +115,8 @@
 
 .joinChatRoom-title {
     font-size: 15px;
+    font-weight: bold;
+    color: var(--header-color);
     display: block;
     white-space: normal; /* 줄바꿈을 허용 */
     word-wrap: break-word; /* 단어가 길면 줄바꿈 */
@@ -197,6 +199,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
+    color: var(--header-color);
 }
 
 .meeting-header span {
@@ -206,6 +209,7 @@
 
 .meeting-text {
     display: flex;
+    color: var(--header-color);
 }
 
 .meeting-text p{

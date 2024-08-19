@@ -32,10 +32,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #233B6F;
+    border: 1px solid var(--header-link-color);
     border-radius: 15px;
     padding: 0.7em 1.5em;
-    color: #233B6F;
+    color: var(--header-link-color);
 }
 
 .AIRecipe:hover{
@@ -164,6 +164,10 @@
     gap: 5px;
     flex-grow: 1;
     margin-left: 10px;
+    color: var(--main-text-color);
+}
+
+.recipe-card-content p {
 }
 
 .recipe-card-content .description {
