@@ -1,18 +1,36 @@
 /*global kakao*/
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import '../../assets/style/allSearch/AllSearch.css';
 import NaverImageSearch from "../../components/NaverImageSearch";
-import {Bookmark,  FillBookmark, CaretRight, LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
-import { useParams, useNavigate } from 'react-router-dom';
-import { getUserIdx } from "../../utils/auth";
+import {
+    Bookmark,
+    FillBookmark,
+    CaretRight,
+    LocationDot,
+    SearchIcon
+} from "../../components/imgcomponents/ImgComponents";
+import {useParams, useNavigate, useLocation} from 'react-router-dom';
+import {getUserIdx} from "../../utils/auth";
 import axios from "axios";
+import RecipeCard from "../recipe/RecipeCard";
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 const SearchKeyword = () => {
-    const { keyword: initialKeyword } = useParams();  // URL에서 초기 키워드 가져오기
+    const query = useQuery();
+    const searchKeyword = query.get('keyword') || '';
+    const category = query.get('category') || '';
+    const sort = query.get('sort') || 'likesCount,desc';
+    const {keyword: initialKeyword} = useParams();  // URL에서 초기 키워드 가져오기
     const [keyword, setKeyword] = useState(initialKeyword); // 검색창 입력 값 관리
     const navigate = useNavigate();
     const [restaurants, setRestaurants] = useState([]);
+    const [recipes, setRecipes] = useState([]); // 레시피 상태 추가
     const [userBookmarks, setUserBookmarks] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
 
     // 주변 음식점 정렬 (거리순)
     const sortedRestaurants = restaurants.slice().sort((a, b) => a.distance - b.distance);
@@ -40,14 +58,14 @@ const SearchKeyword = () => {
                 const isBookmarked = userBookmarks.includes(restaurant.id);
                 if (isBookmarked) {
                     const deleteResponse = await axios.delete(`http://localhost:8080/api/bookmarks/restaurants/${restaurant.id}`, {
-                        data: { userIdx }
+                        data: {userIdx}
                     });
 
                     if (deleteResponse.status === 204) { // 삭제 성공 시
                         setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== restaurant.id));
                         // 북마크 개수 업데이트 (필요에 따라)
                         setRestaurants(prevRestaurants => prevRestaurants.map(r => // r로 변수명 변경
-                            r.id === restaurant.id ? { ...r, bookmarks_count: (r.bookmarks_count || 0) - 1 } : r
+                            r.id === restaurant.id ? {...r, bookmarks_count: (r.bookmarks_count || 0) - 1} : r
                         ));
                     } else {
                         console.error('북마크 삭제 실패:', deleteResponse);
@@ -67,7 +85,7 @@ const SearchKeyword = () => {
                         setUserBookmarks(prevBookmarks => [...prevBookmarks, restaurant.id]);
                         // 북마크 개수 업데이트 (필요에 따라)
                         setRestaurants(prevRestaurants => prevRestaurants.map(r =>  // r로 변수명 변경
-                            r.id === restaurant.id ? { ...r, bookmarks_count: (r.bookmarks_count || 0) + 1 } : r
+                            r.id === restaurant.id ? {...r, bookmarks_count: (r.bookmarks_count || 0) + 1} : r
                         ));
                     } else {
                         console.error('북마크 추가 실패:', addResponse);
@@ -80,15 +98,48 @@ const SearchKeyword = () => {
         }
     };
 
+    // 음식점과 레시피를 동시에 검색하는 useEffect
     useEffect(() => {
         const ps = new kakao.maps.services.Places();
+
+        const fetchSearchResults = async (latitude, longitude) => {
+            try {
+                // 음식점 검색
+                const searchOptions = {
+                    location: new kakao.maps.LatLng(latitude, longitude),
+                    radius: 2000,
+                };
+
+                ps.keywordSearch(keyword, (data, status) => {
+                    if (status === kakao.maps.services.Status.OK) {
+                        const filteredData = data.filter(restaurant => restaurant.category_name.includes("음식점"));
+                        setRestaurants(filteredData);
+                    } else {
+                        console.error("음식점 검색 실패:", status);
+                    }
+                }, searchOptions);
+
+                const token = localStorage.getItem('token');
+
+                // 레시피 검색
+                const recipeResponse = await axios.get(`http://localhost:8080/api/recipes/search`, {
+                    params: {keyword: keyword, category, page: currentPage, size: 3, sort},
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setRecipes(recipeResponse.data.content);
+
+            } catch (error) {
+                console.error("검색 실패:", error);
+            }
+        };
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const
-                        { latitude, longitude } = position.coords;
-                    searchRestaurantsByKeyword(latitude, longitude, keyword);
+                    const {latitude, longitude} = position.coords;
+                    fetchSearchResults(latitude, longitude);
                 },
                 (err) => {
                     console.error("geolocation을 사용할 수 없어요:", err.message);
@@ -97,28 +148,15 @@ const SearchKeyword = () => {
         } else {
             console.error("geolocation을 사용할 수 없어요.");
         }
-
-        function searchRestaurantsByKeyword(latitude, longitude, keyword) {
-            const searchOptions = {
-                location: new kakao.maps.LatLng(latitude, longitude),
-                radius: 2000,
-            };
-
-            ps.keywordSearch(keyword, (data, status) => {
-                if (status === kakao.maps.services.Status.OK) {
-                    const filteredData = data.filter(restaurant => restaurant.category_name.includes("음식점"));
-                    setRestaurants(filteredData);
-                } else {
-                    console.error("음식점 검색 실패:", status);
-                }
-            }, searchOptions);
-        }
-    }, [keyword]);
-
+    }, [category, keyword, sort, currentPage]);
 
     const handleMoreClick = () => {
         navigate(`/recommend/RecommendFoodCategory?keyword=${encodeURIComponent(keyword)}`); // 키워드 전달
     };
+
+    const handleRecipeMoreClick = () => {
+        navigate(`/recipe/search`);
+    }
 
     const handleImageLoaded = (imageUrl) => {
         if (imageUrl) {
@@ -130,7 +168,7 @@ const SearchKeyword = () => {
 
     const handleSearchClick = () => {
         if (keyword.trim() !== '') {
-            navigate(`/search/SearchKeyword/${encodeURIComponent(keyword)}`); // AllSearchRouter 참고
+            navigate(`/search/SearchKeyword/${encodeURIComponent(keyword)}`);
             setKeyword('');
         }
     };
@@ -139,6 +177,21 @@ const SearchKeyword = () => {
         if (event.key === 'Enter') {
             handleSearchClick();
         }
+    };
+
+    const handleRecipeDelete = (deletedRecipeIdx) => {
+        setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.recipeIdx !== deletedRecipeIdx));
+    };
+
+    const handleRecipeLike = (updatedRecipe) => {
+        setRecipes(prevRecipes =>
+            prevRecipes.map(recipe =>
+                recipe.recipeIdx === updatedRecipe.recipeIdx ? updatedRecipe : recipe
+            )
+        );
+    };
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
     return (
@@ -159,7 +212,13 @@ const SearchKeyword = () => {
                 </button>
             </div>
             <h5>{keyword} 검색 결과</h5>
-            <h4>주변 음식점</h4>
+            <div className="search-result-title">
+                <h4>주변 음식점</h4>
+                {/* 더보기 버튼 */}
+                {restaurants.length > 3 && (
+                    <button className="more-button" onClick={handleMoreClick}>더보기</button>
+                )}
+            </div>
             <ul className="restaurant-list">
                 {sortedRestaurants.slice(0, 3).map((restaurant) => (
                     <li key={restaurant.id} className="restaurant-item">
@@ -176,20 +235,22 @@ const SearchKeyword = () => {
                                 <a href={restaurant.place_url} target="_blank" rel="noreferrer">
                                     <h6 className="restaurant-name">{restaurant.place_name}</h6>
                                     <p className="restaurant-address">{restaurant.address_name}</p>
-                                    <span className="restaurant-category"><CaretRight />{restaurant.category_name.replace('음식점 > ', '')}</span>
+                                    <span
+                                        className="restaurant-category"><CaretRight/>{restaurant.category_name.replace('음식점 > ', '')}</span>
                                 </a>
                             </div>
                             {/* 북마크 버튼 추가 */}
-                            <div className="restaurant-right">
-                                <span className="restaurant-distance"><LocationDot />{Math.round(restaurant.distance)}m</span>
+                            <div className="restaurant-right search-keyword">
+                                <span
+                                    className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                                 <button
-                                    className="restaurant-bookmarks"
+                                    className="restaurant-bookmarks search-keyword"
                                     onClick={() => handleBookmarkToggle(restaurant)}
                                 >
                                     {userBookmarks.includes(restaurant.id) ? (
-                                        <FillBookmark />
+                                        <FillBookmark/>
                                     ) : (
-                                        <Bookmark />
+                                        <Bookmark/>
                                     )}
                                     {restaurant.bookmarks_count || 0}
                                 </button>
@@ -199,10 +260,37 @@ const SearchKeyword = () => {
                 ))}
             </ul>
 
-            {/* 더보기 버튼 */}
-            {restaurants.length > 3 && (
-                <button className="more-button" onClick={handleMoreClick}>더보기</button>
+            <div className="search-result-title">
+                <h4>관련 레시피</h4>
+                {recipes.length > 0 &&
+                    <button className="more-button" onClick={handleRecipeMoreClick}>더보기</button>
+                }
+            </div>
+            {recipes.length > 0 ? (
+                <div className="recipe-list">
+                    {recipes.map(recipe => (
+                        <div key={recipe.recipeIdx} className="recipe-list-item">
+                            <RecipeCard recipe={recipe}
+                                        onDelete={handleRecipeDelete}
+                                        onLike={handleRecipeLike}/>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p>레시피가 없습니다.</p>
             )}
+            <div className="pagination">
+                {[...Array(totalPages)].map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => handlePageChange(i)}
+                        className={i === currentPage ? 'active' : ''}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+            </div>
+
         </div>
     );
 };

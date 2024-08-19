@@ -103,8 +103,18 @@ function RecipeDetail() {
         if (confirmDelete) {
             try {
                 await deleteRecipe(recipeIdx);
+                // 레시피 삭제시 포인트 차감 요청
+                await axios.post("/api/point/result/update", {
+                    userIdx: Number(localStorage.getItem('userIdx')),
+                    point: -1, // 포인트 차감
+                    pointComment: "레시피 삭제"}, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+
                 clearRecipeLocalStorage();
                 navigate('/recipe');
+                window.location.reload(); // 새로고침
+
             } catch (error) {
                 console.error('레시피 삭제 실패:', error);
                 alert('레시피 삭제에 실패했습니다.');
@@ -139,34 +149,24 @@ function RecipeDetail() {
         setShowActions(!showActions); // showActions 상태를 토글
     };
 
+    const handleReportClick = async () => {
+        const confirmReport = window.confirm('정말로 이 레시피를 신고하시겠습니까?');
+        if (confirmReport) {
+            try {
+                // 신고 API 호출
+                await axios.post(`/api/recipes/${recipeIdx}/report`);
+                alert('신고가 접수되었습니다.');
+            } catch (error) {
+                console.error('신고 중 오류가 발생했습니다:', error);
+                alert('신고 처리 중 오류가 발생했습니다.');
+            }
+        }
+    };
 
 
     return (
         <div className="recipe-detail-main">
             <PageHeader title="" />
-            <div className="recipe-detail-user-action ">
-                <button className="recipe-detail-like" onClick={handleLikeClick}>
-                    {selectedRecipe.liked ?
-                        <>
-                            <Heart/>
-                            {formatViewsCount(selectedRecipe.likesCount)}
-                        </>
-                        :
-                        <>
-                            <HeartLine/>
-                            {formatViewsCount(selectedRecipe.likesCount)}
-                        </>
-                    }
-                </button>
-                <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
-                    <MoreIcon/>
-                </button>
-                {showActions && (
-                    <div className="recipe-declaration">
-                        <button>신고</button>
-                    </div>
-                )}
-            </div>
             {selectedRecipe && (
                 <>
                     <div className="recipe-detail-header">
@@ -177,6 +177,29 @@ function RecipeDetail() {
                              className="recipe-detail-image"/>
                     </div>
                     <div className="recipe-detail-title-box">
+                        <div className="recipe-detail-user-action ">
+                            <button className="recipe-detail-like" onClick={handleLikeClick}>
+                                {selectedRecipe.liked ?
+                                    <>
+                                        <Heart />
+                                        {formatViewsCount(selectedRecipe.likesCount)}
+                                    </>
+                                    :
+                                    <>
+                                        <HeartLine />
+                                        {formatViewsCount(selectedRecipe.likesCount)}
+                                    </>
+                                }
+                            </button>
+                            <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
+                                <MoreIcon/>
+                            </button>
+                            {showActions && (
+                                <div className="recipe-declaration">
+                                    <button onClick={handleReportClick}>신고</button>
+                                </div>
+                            )}
+                        </div>
                         <div className="recipe-detail-title-item">
                             <h2>{selectedRecipe.title}</h2>
                         </div>
@@ -208,16 +231,16 @@ function RecipeDetail() {
 
                     <div className="recipe-detail-content">
                         <h4>재료</h4>
-                        <ul>
-                            {ingredients.split(',').map((ingredient, index) => (
+                        <ul className="recipe-detail-ul">
+                            {ingredients.split(',,').map((ingredient, index) => (
                                 <li key={index}>{ingredient.trim()}</li>
                             ))}
                         </ul>
                     </div>
                     <div className="recipe-detail-content">
                         <h4>조리 방법</h4>
-                        <ul>
-                            {instructions.split('.').map((instruction, index) => (
+                        <ul className="recipe-detail-ul">
+                            {instructions.split('..').map((instruction, index) => (
                                 <li key={index}>{instruction.trim()}</li>
                             ))}
                         </ul>

@@ -24,5 +24,11 @@ public interface MessageReadRepository extends JpaRepository<MessageRead, Long> 
     @Transactional
     @Query("DELETE FROM MessageRead mr WHERE mr.user.userIdx = :userId AND mr.message.chatRoomId = :chatRoomId")
     void deleteByUserIdAndChatRoomId(@Param("userId") Long userId, @Param("chatRoomId") Long chatRoomId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM MessageRead mr WHERE mr.message.chatRoomId = :chatRoomId")
+    void deleteByChatRoomId(@Param("chatRoomId") Long chatRoomId);
 }
+
 

@@ -369,7 +369,7 @@ function AroundMain() {
                             <div className="info">
                                 <div className="title">
                                     <div>
-                                        <div
+                                        <div className="map-title"
                                             onClick={() => navigate(`/recommend/restaurant/${selectedMarker.id}`, { state: { restaurant: selectedMarker }})}>
                                             {selectedMarker.place_name}
                                         </div>
@@ -386,11 +386,7 @@ function AroundMain() {
                                 </div>
                                 <div className="body">
                                     <div className="desc">
-                                        <div
-                                            className="ellipsis">{selectedMarker.road_address_name || selectedMarker.address_name}</div>
-                                        {selectedMarker.road_address_name && (
-                                            <div className="jibun ellipsis">(지번: {selectedMarker.address_name})</div>
-                                        )}
+                                        <div className="ellipsis">{selectedMarker.road_address_name || selectedMarker.address_name}</div>
                                         <div className="tel">{selectedMarker.phone}</div>
                                         <span className="distance">
                                             <LocationDot/>{Math.round(selectedMarker.distance)}m

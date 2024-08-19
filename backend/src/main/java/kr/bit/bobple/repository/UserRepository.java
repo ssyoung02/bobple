@@ -21,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"recipes"})
     @Query("SELECT u FROM User u WHERE u.userIdx = :userId")
     Optional<User> findUserWithRecipes(@Param("userId") Long userId);
+
+    Optional<User> findByNickName(String nickName);
+
 }

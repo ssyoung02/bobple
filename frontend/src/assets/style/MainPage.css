@@ -18,6 +18,11 @@
     justify-content: flex-end;
     align-items: flex-end;
 }
+
+.mainGameTitle {
+    color: var(--main-text-color);
+    font-weight: bold;
+}
 .shortMenu{
     display: flex;
     width: 100%;
@@ -41,6 +46,11 @@
     border-radius: 10px;
     border: 1px solid #F7CCD4;
 }
+
+.shortMenuName {
+    color: var(--main-text-color);
+    font-weight: bold;
+}
 .RandomMenuButtonItem{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -55,6 +65,7 @@
     grid-column: 1 / 2;
 }
 .MenuExplanation{
+    color: var(--main-text-color);
     position: relative;
     grid-column: span 2;
     height: 100%;

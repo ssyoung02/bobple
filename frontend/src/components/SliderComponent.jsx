@@ -304,7 +304,7 @@ export const UserRecommendedRecipes = () => {
         swipeToSlide: true,
         centerMode: true,
         arrows: false,
-        autoplay: false,
+        autoplay:true,
         afterChange: handleSlideChange // 슬라이드 변경 후 호출
     };
 
@@ -357,7 +357,7 @@ export const UserRecommendedRecipes = () => {
             )}
             </SlickSlider>
             {loading && (
-                <div className="loading-spinner">
+                <div className="loading-spinner slider">
                     <ClipLoader size={50} color={"#123abc"} loading={loading} />
                 </div>
             )}        </>

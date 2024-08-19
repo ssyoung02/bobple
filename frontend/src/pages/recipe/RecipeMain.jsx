@@ -82,7 +82,7 @@ function RecipeMain() {
 
                 const lastKey = `${uniqueRecipes[uniqueRecipes.length - 1].recipeIdx}-${uniqueRecipes[uniqueRecipes.length - 1].userIdx}`;
                 localStorage.setItem('lastLoadedKey', lastKey);
-
+                console.log("latestRecipes.length + uniqueRecipes.length >= totalRecipes"+ latestRecipes.length+ "+" + uniqueRecipes.length+ " >="+ totalRecipes);
                 if (latestRecipes.length + uniqueRecipes.length >= totalRecipes) {
                     console.log('All recipes have been loaded.');
                     setHasMore(false);
@@ -146,6 +146,10 @@ function RecipeMain() {
         getRecipeById(recipeId); // 레시피 상세 정보 가져오기
         window.scrollTo(0, 0); // 스크롤 맨 위로 이동
     };
+
+    const handleTopClick = () => {
+        window.scrollTo(0, 0); // 스크롤 맨 위로 이동
+    }
 
     const handleSearchInputChange = (e) => {
         setSearchKeyword(e.target.value);
@@ -251,6 +255,7 @@ function RecipeMain() {
 
 
             <div className="create-recipe-button-box">
+                <button onClick={handleTopClick} className="recipe-top-btn">🔝</button>
                 <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
                     +
                 </button>

@@ -4,16 +4,18 @@ import "../../../../assets/style/pointGame/slot/SlotMachine.css";
 import {getUserIdx} from "../../../../utils/auth";
 import axios from "axios";
 import {useHeaderColorChange, useNavigateNone} from "../../../../hooks/NavigateComponentHooks";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {ArrowLeftLong} from "../../../../components/imgcomponents/ImgComponents";
 
 const SlotMachine = () => {
     const [rolling, setRolling] = useState(false);
     const [stoppedSlots, setStoppedSlots] = useState(0);
     const [resultMessage, setResultMessage] = useState("");
     const slotRefs = [useRef(null), useRef(null), useRef(null)];
-    const fruits = ["🍒", "🍉", "🍊", "🍓", "🍇", "🥝", "🍍", "🍎", "🍋", "💎"];
+    const fruits = ["🍒", "🍉", "🍊", "🍓", "🍇", "🥝", "🍍", "🍎", "🍋"];
     const userIdx=getUserIdx();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const roll = () => {
         if (!rolling) {
@@ -48,22 +50,16 @@ const SlotMachine = () => {
 
     const checkResult = () => {
         const slotItems = slotRefs.map(ref => ref.current.getResult());
-        const isWin = slotItems.every((item, _, arr) => item === arr[0]);
+        const isWin = slotItems[0] === slotItems[1] && slotItems[1] === slotItems[2];
 
         let earnedPoint = 0;
         let message = ""; // 메시지를 저장할 변수 추가
 
 
         if (isWin) {
-            if (slotItems[0] || slotItems[1] || slotItems[2]=== "💎") {
-                console.log(slotItems[0]);
-                earnedPoint = 50;
-                message = `${earnedPoint} 포인트 획득! (💎 당첨!)`; // 보석 당첨 메시지
-            } else {
-                console.log(slotItems[0]);
-                earnedPoint = 10;
-                message = `${earnedPoint} 포인트 획득!`; // 일반 당첨 메시지
-            }
+            console.log(slotItems[0]);
+            earnedPoint = 10;
+            message = `당첨! ${earnedPoint} 포인트 획득!`; // 일반 당첨 메시지
         } else {
             message = "다음 기회에...";
         }
@@ -116,15 +112,20 @@ const SlotMachine = () => {
         });
     };
 
+    const moveGameHome = () => {
+        navigate('/point')
+    }
+
     useHeaderColorChange(location.pathname, '#CCE1AB');
     useNavigateNone();
 
 
     return (
         <div className="slot-game-container">
+            <button className="arrow-btn slot" onClick={moveGameHome}><ArrowLeftLong/></button>
             <h1 className="slot-title">SLOT MACHINE</h1>
             <div className="slot-game">
-                <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits} />
+                <Dashboard rolling={rolling} slotRefs={slotRefs} fruits={fruits}/>
                 <div className="machine-controls">
                     <div className="machine-roll" onClick={roll}>
                         {rolling ? `STOP ${3 - stoppedSlots}` : "ROLL"}

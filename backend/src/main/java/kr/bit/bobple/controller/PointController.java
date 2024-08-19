@@ -101,6 +101,20 @@ public class PointController {
         return ResponseEntity.ok(savedPoint);
     }
 
+    @PostMapping("/point/result/update")
+    public ResponseEntity<PointDto> updatePoint(@RequestBody Map<String, Object> requestData) {
+        Long userIdx = ((Number) requestData.get("userIdx")).longValue();
+        int point = ((Number) requestData.get("point")).intValue();
+        String pointComment = (String) requestData.get("pointComment");
+
+        System.out.println("Received userIdx: " + userIdx);
+        System.out.println("Received point: " + point);
+        System.out.println("Received pointComment: " + pointComment);
+
+        PointDto savedPoint = pointService.updatePointByRecipe(userIdx, point, pointComment);
+        return ResponseEntity.ok(savedPoint);
+    }
+
     // 오늘 특정 사용자가 플레이한 게임 목록 조회
     @GetMapping("/points/{userIdx}/today")
     public ResponseEntity<List<PointDto>> getPlayedGamesToday(

@@ -2,6 +2,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 30px;
+}
+
+.arrow-btn.matching {
+    position: absolute;
+    translate: -170px;
 }
 
 .point-game-title {

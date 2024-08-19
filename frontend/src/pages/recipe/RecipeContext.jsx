@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import axios from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
+import {clearRecipeLocalStorage} from "../../utils/localStorageUtils";
 
 const RecipeContext = createContext({
     recipes: [],
@@ -19,6 +20,7 @@ const RecipeContext = createContext({
     totalPages: 0,
     page: 0,
     size: 10,
+    recommendRecipes:()=>{},
     changePage: () => { },
     createComment: () => { },
     updateComment: () => { },
@@ -54,6 +56,18 @@ export const RecipeProvider = ({ children }) => {
     const [searchedRecipes, setSearchedRecipes] = useState([]);
     const [totalRecipes, setTotalRecipes] = useState(0); // 전체 레시피 개수
     const navigate = useNavigate();
+
+    const recommendRecipes = async (ingredients) => {
+        try {
+            const response = await axios.post('/api/recipes/ai-recommendation', { ingredients });
+            // 응답 데이터 처리 로직을 추가합니다.
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('AI 레시피 추천 오류:', error);
+            throw error;
+        }
+    };
 
     const loadTotalRecipesCount = useCallback(async () => {
         try {
@@ -175,6 +189,7 @@ export const RecipeProvider = ({ children }) => {
             const response = await axios.post('/api/recipes', recipeData);
             setRecipes([response.data, ...recipes]);
             navigate(`/recipe/${response.data.recipeIdx}`); // 등록 후 상세페이지로 이동
+            clearRecipeLocalStorage();
         } catch (error) {
             setError(error.message || '레시피 등록에 실패했습니다.');
             console.error(error);
@@ -196,7 +211,12 @@ export const RecipeProvider = ({ children }) => {
     // 레시피 삭제 함수
     const deleteRecipe = async (id) => {
         try {
-            await axios.delete(`/api/recipes/${id}`);
+            const token = localStorage.getItem('token');
+            await axios.delete(`/api/recipes/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             setRecipes(recipes.filter(recipe => recipe.recipeIdx !== id)); // recipeIdx 사용
             localStorage.removeItem('recommendedRecipes');
             setSelectedRecipe(null); // 상세 페이지를 닫거나 다른 페이지로 이동
@@ -306,7 +326,7 @@ export const RecipeProvider = ({ children }) => {
             totalRecipes, // 전체 레시피 개수
             setTotalRecipes, // 전체 레시피 개수 설정 함수
             recipeCategory,
-            formatViewsCount,
+            formatViewsCount,recommendRecipes
         }}>
             {children}
         </RecipeContext.Provider>

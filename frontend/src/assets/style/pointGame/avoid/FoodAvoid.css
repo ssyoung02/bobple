@@ -4,7 +4,13 @@
     justify-content: center;
     align-items: center;
     background-color: #C8EEFF;
-    height: 80vh;
+    height: 75vh;
+}
+
+.arrow-btn.avoid {
+    position: relative;
+    right: 40%;
+    top: 5%;
 }
 
 .avoid-body h1 {

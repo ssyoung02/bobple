@@ -33,7 +33,7 @@
 /*좋아요, 신고*/
 .recipe-detail-user-action{
     position: absolute;
-    top: -10px;
+
     right: 0;
     display: flex;
     z-index: 1;
@@ -41,15 +41,18 @@
     justify-content: flex-end;
 }
 
-.recipe-detail-like{
+.recipe-detail-like {
     display: flex;
     align-items: center;
     gap: 5px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .recipe-detail-like svg{
-    width: 20px;
-    height: 18px;
+    width: 30px;
+    height: 23px;
+    color: #EB517E;
 }
 
 .user-action-more{
@@ -94,6 +97,10 @@
     gap: 5px;
     color: #666666;
     font-size: 14px;
+}
+
+.recipe-detail-ul {
+    font-weight: bold;
 }
 
 .recipe-sub-title{

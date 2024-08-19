@@ -119,4 +119,8 @@ public class    UserService {
             throw new RuntimeException("User not found");
         }
     }
+
+    public User findByNickName(String nickName) {
+        return userRepository.findByNickName(nickName).orElse(null);
+    }
 }
