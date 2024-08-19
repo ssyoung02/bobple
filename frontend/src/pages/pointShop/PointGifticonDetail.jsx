@@ -27,7 +27,7 @@ function PointGifticonDetail() {
             return;
         }
 
-        console.log(`Fetching product details for productIdx: ${productIdx}`);
+        //console.log(`Fetching product details for productIdx: ${productIdx}`);
 
         axios.get(`http://localhost:8080/api/PointGifticonDetail/${productIdx}`, {
             headers: {
@@ -36,12 +36,12 @@ function PointGifticonDetail() {
             withCredentials: true
         })
             .then(response => {
-                console.log('API Response:', response.data);
+                //console.log('API Response:', response.data);
                 setProduct(response.data);
                 setLoading(false);
             })
             .catch(error => {
-                console.error('Error fetching product details:', error);
+                //console.error('Error fetching product details:', error);
                 setError('상품 정보를 가져오는 중 오류가 발생했습니다.');
                 setLoading(false);
             });
@@ -65,7 +65,7 @@ function PointGifticonDetail() {
                 withCredentials: true
             })
                 .then(response => {
-                    console.log('Purchase response:', response.data);
+                    //console.log('Purchase response:', response.data);
                     if (response.data) {
                         alert('구매가 완료되었습니다.');
                         navigate('/point', { state: { selectedTab: '보관함' } });
@@ -74,7 +74,7 @@ function PointGifticonDetail() {
                     }
                 })
                 .catch(error => {
-                    console.error('Error during purchase:', error);
+                    //console.error('Error during purchase:', error);
                     alert('구매 중 오류가 발생했습니다.');
                 });
         }

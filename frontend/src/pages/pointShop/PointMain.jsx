@@ -48,11 +48,11 @@ function PointMain() {
                 withCredentials: true
             })
                 .then(response => {
-                    console.log('Fetched Products:', response.data); // 데이터 구조 확인
+                    //console.log('Fetched Products:', response.data); // 데이터 구조 확인
                     setProducts(response.data);
                 })
                 .catch(error => {
-                    console.error('There was an error fetching the products!', error);
+                    //console.error('There was an error fetching the products!', error);
                     alert('상품 정보를 가져오는 데 실패했습니다.');
                 });
         }
@@ -66,11 +66,11 @@ function PointMain() {
                 withCredentials: true
             })
                 .then(response => {
-                    console.log('Fetched Purchased Products:', response.data); // 데이터 구조 확인
+                    //console.log('Fetched Purchased Products:', response.data); // 데이터 구조 확인
                     setPurchasedProducts(response.data);
                 })
                 .catch(error => {
-                    console.error('There was an error fetching the purchased products!', error);
+                    //console.error('There was an error fetching the purchased products!', error);
                     alert('구매한 상품 정보를 가져오는 데 실패했습니다.');
                 });
         }
@@ -90,7 +90,7 @@ function PointMain() {
                 setUnusedGiftCount(response.data.length);
             })
             .catch(error => {
-                console.error('There was an error fetching the unused gift count!', error);
+                //console.error('There was an error fetching the unused gift count!', error);
             });
     }, [userIdx, token]);
 
@@ -114,7 +114,7 @@ function PointMain() {
                 const playedGameComments = response.data.map(point => point.pointComment);
                 setPlayedGamesToday(playedGameComments);
             } catch (error) {
-                console.error('오늘 플레이한 게임 정보 가져오기 실패:', error);
+                //console.error('오늘 플레이한 게임 정보 가져오기 실패:', error);
                 // 추가적인 에러 처리 로직 (예: 사용자에게 에러 메시지 표시)
             }
         };
@@ -152,7 +152,7 @@ function PointMain() {
                     navigate('/point/pointGame/SlotGame');
                     break;
                 default:
-                    console.error("알 수 없는 게임:", gameComment);
+                    //console.error("알 수 없는 게임:", gameComment);
             }
         }
     };
