@@ -239,7 +239,7 @@ function RestaurantInfo() {
                 </div>
             </div>
 
-            <br/>
+            <hr className="thick-divider"/>
 
             {/* 리뷰 영역 */}
             <div className="review-section">
@@ -278,36 +278,18 @@ function RestaurantInfo() {
                                                 {[...Array(5 - review.score)].map((_, index) => (
                                                     <Star key={index + review.score}/>
                                                 ))}
+                                                &nbsp;&nbsp;
+                                                {/*연도 앞자리 두개, 시간 제거*/}
+                                                <span>{new Intl.DateTimeFormat('ko-KR', {
+                                                    year: '2-digit',
+                                                    month: 'numeric',
+                                                    day: 'numeric'
+                                                }).format(new Date(review.createdAt)).replace(/\.$/, '')}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="review-contents">
-                                        <p>{review.review}</p>
-                                        <div className="review-bottom-content">
-                                            {/*연도 앞자리 두개, 시간 제거*/}
-                                            <span>{new Intl.DateTimeFormat('ko-KR', {
-                                                year: '2-digit',
-                                                month: 'numeric',
-                                                day: 'numeric'
-                                            }).format(new Date(review.createdAt)).replace(/\.$/, '')}</span>
-                                            {/* 사용자가 작성한 리뷰인 경우에만 수정/삭제 버튼 표시 */}
-                                            {review.userIdx.toString() === userIdx && (
-                                                <div className="review-utils">
-                                                    <Link
-                                                        to={`/recommend/restaurant/${restaurant.id}/review`} // 수정 페이지 경로
-                                                        state={{
-                                                            restaurantId: restaurant.id,
-                                                            review: review,
-                                                            isEditing: true,
-                                                            restaurantName: restaurant.place_name
-                                                        }} // 수정 데이터 전달
-                                                    >
-                                                        수정
-                                                    </Link>
-                                                    <button onClick={() => handleDelete(review.reviewIdx)}>삭제</button>
-                                                </div>
-                                            )}
-                                        </div>
+                                        {review.review}
                                     </div>
                                 </div>
                                 <div className="review-right-content">
@@ -316,8 +298,27 @@ function RestaurantInfo() {
                                         <img
                                             src={review.photoUrl}
                                             alt="리뷰 사진"
-                                            style={{width: '150px', height: '150px', objectFit: 'cover'}}
+                                            style={{width: '100px', height: '100px', objectFit: 'cover'}}
                                         />
+                                    )}
+                                </div>
+                                <div className="review-bottom-content">
+                                    {/* 사용자가 작성한 리뷰인 경우에만 수정/삭제 버튼 표시 */}
+                                    {review.userIdx.toString() === userIdx && (
+                                        <>
+                                            <Link
+                                                to={`/recommend/restaurant/${restaurant.id}/review`} // 수정 페이지 경로
+                                                state={{
+                                                    restaurantId: restaurant.id,
+                                                    review: review,
+                                                    isEditing: true,
+                                                    restaurantName: restaurant.place_name
+                                                }} // 수정 데이터 전달
+                                            >
+                                                수정
+                                            </Link>
+                                            <button onClick={() => handleDelete(review.reviewIdx)}>삭제</button>
+                                        </>
                                     )}
                                 </div>
                             </li>
