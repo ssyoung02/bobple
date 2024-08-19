@@ -68,7 +68,6 @@ public class RecipeDto {
         recipeDto.setReportCount(recipe.getReportCount());
         recipeDto.setCreatedAt(recipe.getCreatedAt());
         recipeDto.setUpdatedAt(recipe.getUpdatedAt());
-//        recipeDto.setLiked; // 현재 사용자가 좋아요를 눌렀는지 여부 설정 필요
         // 현재 사용자가 좋아요를 눌렀는지 여부 설정
         if (currentUserId != null) {
             boolean isLiked = likeRecipeRepository.existsByUser_UserIdxAndRecipe_Id(currentUserId, recipe.getRecipeIdx());
@@ -83,6 +82,8 @@ public class RecipeDto {
 
         return recipeDto;
     }
+
+
 
     /**
      * RecipeDto를 Recipe 엔티티로 변환하는 메서드

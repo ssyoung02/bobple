@@ -74,7 +74,7 @@
 
 .category-list {
     display: flex;
-    gap: 50px;
+    gap: 20px;
 }
 
 .marker-label {
@@ -97,14 +97,14 @@
 /* 커스텀 오버레이 스타일 */
 .wrap {
     position: relative; /* absolute에서 relative로 변경 */
-    top: 20px;
+    top: 10px;
     left: 0;
     width: 288px;
     height: 132px;
     margin-left: -144px;
     overflow: hidden;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
     background-color: white;
     padding: 10px;
@@ -121,6 +121,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
+}
+
+.map-title {
+    font-size: 18px;
 }
 .info-link{
     font-size: 18px;
@@ -141,21 +145,21 @@
     display: flex;
     justify-content: space-between;
 }
-
-.info .title {
-    font-size: 20px;
-}
 .info .img {
     position: relative;
     width: 73px;
     height: 71px;
     overflow: hidden;
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-left: 10px;
 }
 
 .desc .ellipsis {
-    overflow: hidden;
+    overflow-wrap: break-word;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;
 }
 .desc .jibun {
     font-size: 11px;

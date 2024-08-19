@@ -56,7 +56,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/recipes/**").authenticated()
                                 .requestMatchers(HttpMethod.PUT, "/api/recipes/**").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").authenticated()
-//                                .requestMatchers(HttpMethod.POST, "/api/recipes/{recipeId}/like").authenticated() // 좋아요는 인증 필요
+                                .requestMatchers("http://localhost:8080/api/recipes/ai-recommendation").permitAll()
+                                .requestMatchers("http://localhost:8080/api/recommend-recipes").permitAll()
+                                .requestMatchers("/api/recipes/search").permitAll()
                                 .requestMatchers("/api/recipes/{recipeId}/comments").permitAll() // 댓글 조회도 인증 없이 허용
                                 .requestMatchers("/api/recipes/{recipeId}/comments/{commentId}").authenticated() // 레시피 생성, 댓글 작성 등은 인증 필요
                                 .requestMatchers("/api/**", "/myPage/**", "/login/**", "/login/oauth2/callback/**", "/", "form/**", "/api/recipes/**", "/pointShop/**", "form/**", "/api/users/update", "/api/users/**", "/api/admin/*", "api/questions/**").permitAll()
