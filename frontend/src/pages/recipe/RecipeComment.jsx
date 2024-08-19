@@ -71,7 +71,6 @@ function RecipeComment({ comment, recipeId }) {
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 // 이미 신고된 유저일 경우 메시지를 표시
-                alert('이미 이 유저를 신고하셨습니다.');
             } else if (error.response) {
                 // 다른 서버 오류에 대한 처리 (필요시 추가적인 오류 처리 가능)
                 console.error('서버 오류:', error.response.data);
