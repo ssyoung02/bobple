@@ -242,6 +242,11 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    fill: var(--header-color);
+}
+
+.pub-bookmarks span {
+    color: var(--header-color);
 }
 .pub-bookmarks svg{
     height: 16px;

@@ -77,6 +77,11 @@
     font-size: 2.5em;
 }
 
+.my-activities h5,
+.service-center h5 {
+    color: var(--header-color);
+}
+
 
 /*내 활동*/
 .mypage-link{
@@ -115,5 +120,15 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    color: var(--header-color);
 }
 /*포인트 구매내역*/
+
+.logout-btn {
+    color: var(--header-color);
+}
+
+.logout-btn:hover,
+.logout-btn:active {
+    text-decoration: underline;
+}

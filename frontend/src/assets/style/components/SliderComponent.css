@@ -147,6 +147,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--header-color);
+    fill: var(--header-color);
 }
 .user-recipe-card-user-left{
     display: flex;
@@ -225,7 +227,7 @@
 
 /*추천 레시피 하단*/
 .user-recommended-recipe-card-content{
-    color: black;
+    color: var(--header-color);
     height: 40px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -238,6 +240,7 @@
 .recipe-slide-banner{
     height: 250px;
     width: 100%;
+
 }
 
 .recipe-slide-banner .slick-track{

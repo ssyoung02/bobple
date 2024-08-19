@@ -388,7 +388,7 @@ function RecommendMain() {
                                             ) : (
                                                 <Bookmark/>
                                             )}
-                                            {pub.bookmarks_count || 0}
+                                            <span>{pub.bookmarks_count || 0}</span>
                                         </button>
                                     </div>
                                 </li>
