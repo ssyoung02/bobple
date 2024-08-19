@@ -84,7 +84,7 @@ function RecipeForm() {
         const reader = new FileReader();
         reader.onloadend = () => {
             setImageUrl(reader.result); // 이미지 미리보기 설정
-            document.querySelector('.recipe-header-img').style.background="#fff";
+            document.querySelector('.recipe-header-img').style.background = "#fff";
         };
         if (file) {
             reader.readAsDataURL(file);
@@ -104,7 +104,6 @@ function RecipeForm() {
             return;
         }
 
-        try {
             const formData = new FormData();
             formData.append("title", title);
             formData.append("cookTime", cookTime);
@@ -114,21 +113,26 @@ function RecipeForm() {
             formData.append("tag", tags);
             formData.append("category", category);
 
-            if (imageFile) {
-                formData.append("image", imageFile);
-            } else if (isEditing && imageUrl) {
-                // 이미지 파일이 업로드되지 않았고 수정 모드라면 기존 이미지 URL을 유지
-                formData.append("picture", imageUrl);
-            }
+        if (imageFile) {
+            formData.append("image", imageFile); // 새 이미지를 전송
+        } else if (isEditing && imageUrl) {
+            formData.append("imageUrl", imageUrl); // 기존 이미지 유지
+        }
 
+        // formData 내용 출력
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+        try {
             if (isEditing) {
                 await axios.put(`/api/recipes/${recipeIdx}`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
+                    headers: { 'Content-Type': 'multipart/form-data' },
                 });
                 alert('레시피가 성공적으로 수정되었습니다.');
-                localStorage.removeItem('recommendedRecipes');
                 navigate(`/recipe/${recipeIdx}`);
-                window.location.reload(); // 새로고침
+                localStorage.removeItem('recommendedRecipes');
+                console.log("imageUpdateMode : "+ formData.image);
+
 
             } else {
                 await axios.post("/api/recipes", formData, {

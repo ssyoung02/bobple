@@ -72,7 +72,7 @@
 
 .ai-recipe-result {
     overflow-y: auto; /* 스크롤 가능하게 설정 */
-    max-height: 500px; /* 최대 높이 설정 */
+    max-height: 600px; /* 최대 높이 설정 */
     position: relative;
     width: 100%;
     display: flex;
@@ -93,5 +93,5 @@
     resize: none;
     overflow: hidden;
     overflow-y: auto; /* 스크롤 가능하게 설정 */
-    max-height: 500px; /* 최대 높이 설정 */
+    max-height: 600px; /* 최대 높이 설정 */
 }
