@@ -189,47 +189,36 @@ function MainPage() {
             console.error("geolocation을 사용할 수 없어요.");
         }
 
-        function searchPubsByCategory(latitude, longitude, category) {
+        function searchPubsByCategory(latitude, longitude) {
             const searchOptions = {
                 location: new kakao.maps.LatLng(latitude, longitude),
                 radius: 2000,
                 size: 15, // Load more pubs initially
             };
 
-            // 검색 키워드 설정 (전체 또는 선택된 카테고리, 이자카야는 일본식주점으로 검색)
-            const searchKeyword = category === '전체' ? '술집' :
-                category === '이자카야' ? '일본식주점' : category;
+            const searchKeyword = '음식점';
 
             ps.keywordSearch(searchKeyword, (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
-                    let filteredData = data;
-                    if (category !== '전체') {
-                        // '전체'가 아닌 경우, 카테고리 이름 또는 '일본식주점'을 포함하는 술집만 필터링
-                        filteredData = data.filter(pub =>
-                            pub.category_name.includes(category) ||
-                            (category === '이자카야' && pub.category_name.includes('일본식주점'))
-                        );
-                    }
-
-                    // 각 술집의 북마크 개수를 가져오는 요청
-                    fetchBookmarkCounts(filteredData.map(pub => pub.id)) // 술집 ID 배열 전달
+                    // 각 음식점의 북마크 개수를 가져오는 요청
+                    fetchBookmarkCounts(data.map(restaurant => restaurant.id)) // 음식점 ID 배열 전달
                         .then(bookmarkCounts => {
                             // 사용자 북마크 정보와 북마크 개수를 이용하여 isBookmarked, bookmarks_count 필드 추가
-                            const updatedData = filteredData.map(pub => ({
-                                ...pub,
-                                isBookmarked: userBookmarks.includes(pub.id),
-                                bookmarks_count: bookmarkCounts[pub.id] || 0 // 북마크 개수 설정
+                            const updatedData = data.map(restaurant => ({
+                                ...restaurant,
+                                isBookmarked: userBookmarks.includes(restaurant.id),
+                                bookmarks_count: bookmarkCounts[restaurant.id] || 0 // 북마크 개수 설정
                             }));
 
                             setAllNearbyPub(updatedData);
                             setNearbyPub(updatedData.slice(0, 15));
                         });
                 } else {
-                    console.error("술집 검색 실패:", status);
+                    console.error("음식점 검색 실패:", status);
                 }
             }, searchOptions);
         }
-    }, [selectedCategory, userBookmarks]);
+    }, [userBookmarks]);
 
     useEffect(() => {
         // 서버에서 추천 음식 정보 가져오기
@@ -360,7 +349,12 @@ function MainPage() {
 
                                     </div>
                                     <div className="pub-info-container">
-                                        <h6 className="pub-name">{pub.place_name}</h6>
+                                        <div
+                                            onClick={() => navigate(`/recommend/restaurant/${pub.id}`, {state: {restaurant: pub}})}
+                                            style={{cursor: 'pointer'}} // 스타일로 마우스 포인터를 추가
+                                        >
+                                            <h6 className="pub-name">{pub.place_name}</h6>
+                                        </div>
                                         <p className="pub-address">{pub.address_name}</p>
                                         <span className="pub-distance">{Math.round(pub.distance)}m</span>
                                     </div>
