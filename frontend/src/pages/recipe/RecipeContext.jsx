@@ -20,6 +20,7 @@ const RecipeContext = createContext({
     totalPages: 0,
     page: 0,
     size: 10,
+    recommendRecipes:()=>{},
     changePage: () => { },
     createComment: () => { },
     updateComment: () => { },
@@ -55,6 +56,18 @@ export const RecipeProvider = ({ children }) => {
     const [searchedRecipes, setSearchedRecipes] = useState([]);
     const [totalRecipes, setTotalRecipes] = useState(0); // 전체 레시피 개수
     const navigate = useNavigate();
+
+    const recommendRecipes = async (ingredients) => {
+        try {
+            const response = await axios.post('/api/recipes/ai-recommendation', { ingredients });
+            // 응답 데이터 처리 로직을 추가합니다.
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('AI 레시피 추천 오류:', error);
+            throw error;
+        }
+    };
 
     const loadTotalRecipesCount = useCallback(async () => {
         try {
@@ -311,7 +324,7 @@ export const RecipeProvider = ({ children }) => {
             totalRecipes, // 전체 레시피 개수
             setTotalRecipes, // 전체 레시피 개수 설정 함수
             recipeCategory,
-            formatViewsCount,
+            formatViewsCount,recommendRecipes
         }}>
             {children}
         </RecipeContext.Provider>

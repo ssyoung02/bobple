@@ -369,7 +369,7 @@ function AroundMain() {
                             <div className="info">
                                 <div className="title">
                                     <div>
-                                        <div
+                                        <div className="map-title"
                                             onClick={() => navigate(`/recommend/restaurant/${selectedMarker.id}`, { state: { restaurant: selectedMarker }})}>
                                             {selectedMarker.place_name}
                                         </div>

@@ -26,3 +26,7 @@
     padding: 15px 10px;
     word-break: keep-all;
 }
+
+.faq-box ul {
+    list-style: none;
+}

@@ -5,6 +5,10 @@
     gap: 1.5em;
 }
 
+.notice-main ul {
+    list-style: none;
+}
+
 /*상세*/
 .notice-content{
     padding: 0 10px;

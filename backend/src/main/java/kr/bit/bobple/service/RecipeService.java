@@ -34,7 +34,6 @@ public class RecipeService {
 
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
-    private final HyperCLOVAClient hyperCLOVAClient;
     private final LikeRecipeRepository likeRecipeRepository;
     private final AuthenticationFacade authenticationFacade;
     private final RecipeCommentRepository recipeCommentRepository; // 추가: 댓글 레포지토리 의존성 주입
@@ -175,31 +174,6 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-
-    @Transactional(readOnly = true)
-    public List<RecipeDto> recommendRecipesByAI(String ingredients) {
-        String prompt = "다음 재료들을 활용한 레시피를 추천해줘: " + ingredients;
-        String response = hyperCLOVAClient.generateText(prompt);
-
-        // 정규 표현식을 사용하여 레시피 정보 추출
-        Pattern pattern = Pattern.compile("## (.*?)\n재료: (.*?)\n만드는 법:\n(.*?)(?=\n##|$)", Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(response);
-
-        List<RecipeDto> recipeDtos = new ArrayList<>();
-        while (matcher.find()) {
-            RecipeDto recipeDto = new RecipeDto();
-            recipeDto.setTitle(matcher.group(1));
-            recipeDto.setIngredients(matcher.group(2));
-            recipeDto.setInstructions(matcher.group(3));
-            recipeDtos.add(recipeDto);
-        }
-
-        return recipeDtos;
-    }
-
-    //    public boolean isRecipeAuthor(Long recipeId, User user) {
-//        return recipeRepository.existsByIdAndUser(recipeId, user);
-//    }
     public boolean isRecipeAuthor(Long recipeId, User user) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RuntimeException("Recipe not found"));
         return recipe.getUser().getUserIdx().equals(user.getUserIdx());

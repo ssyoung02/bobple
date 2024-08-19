@@ -66,6 +66,7 @@ const getErrorMessage = (errorResponse) => {
             case 400: return '잘못된 요청입니다.';
             case 403: return '권한이 없습니다.';
             case 404: return '페이지를 찾을 수 없습니다.';
+            case 409: return '이미 신고된 유저입니다.'
             case 500: return '서버 오류가 발생했습니다.';
             default: return '알 수 없는 오류가 발생했습니다.';
         }
