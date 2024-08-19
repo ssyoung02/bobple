@@ -89,12 +89,12 @@ public class RecipeController {
     }
 
 
-    @PutMapping("/{recipeId}")
+    @PutMapping("/{recipeIdx}")
     public ResponseEntity<RecipeDto> updateRecipe(
-            @PathVariable Long recipeId,
+            @PathVariable Long recipeIdx,
             @ModelAttribute RecipeDto recipeDto,
             @RequestParam(value = "image", required = false) MultipartFile imageFile) {
-        return ResponseEntity.ok(recipeService.updateRecipe(recipeId, recipeDto, imageFile));
+        return ResponseEntity.ok(recipeService.updateRecipe(recipeIdx, recipeDto, imageFile));
     }
 
     @DeleteMapping("/{id}")

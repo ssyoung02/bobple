@@ -92,14 +92,29 @@ public class RecipeService {
         if (!isRecipeAuthor(recipeId, authenticationFacade.getCurrentUser())) {
             throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         }
+
+        // 로그 추가: 이미지 파일과 기존 이미지 출력
+        System.out.println("Received imageFile: " + (imageFile != null ? imageFile.getOriginalFilename() : "No new image"));
+        System.out.println("Existing picture: " + recipe.getPicture());
+
+        // 이미지 파일이 있는 경우, 새로운 이미지로 덮어씌우기
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = recipeImageService.uploadRecipeImage(imageFile);
-            recipe.setPicture(imageUrl);
-        } else {
-            // 이미지가 업로드되지 않은 경우, 기존 이미지 경로를 유지합니다.
-            recipeDto.setPicture(recipe.getPicture());
+            recipe.setPicture(imageUrl); // 이미지 경로 업데이트
+            System.out.println("Updated imageUrl: " + imageUrl);
         }
+
+        // 기존 이미지 유지: 이미지가 없을 경우 기존 경로 유지
+        if (imageFile == null || imageFile.isEmpty()) {
+            recipeDto.setPicture(recipe.getPicture()); // 기존 이미지를 유지
+            System.out.println("No new image, keeping existing picture: " + recipe.getPicture());
+        }
+
+        // 레시피 업데이트
         recipe.updateRecipe(recipeDto);
+
+        // 로그 추가: 최종적으로 저장되는 이미지 경로 확인
+        System.out.println("Final picture to save: " + recipe.getPicture());
 
         return RecipeDto.fromEntity(recipeRepository.save(recipe));
     }

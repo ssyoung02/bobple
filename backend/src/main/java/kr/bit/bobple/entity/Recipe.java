@@ -63,7 +63,13 @@ public class Recipe {
         this.title = recipeDto.getTitle();
         this.content = recipeDto.getContent();
         this.category = recipeDto.getCategory();
-        this.picture = recipeDto.getPicture();
+//        this.picture = recipeDto.getPicture(); // 이미지 경로 업데이트 확인
+        // 로그 추가
+        System.out.println("Updating recipe picture: " + recipeDto.getPicture());
+
+        if (recipeDto.getPicture() != null) {
+            this.picture = recipeDto.getPicture(); // 이미지 경로 업데이트
+        }
         this.tag = recipeDto.getTag();
         this.cookTime = recipeDto.getCookTime(); // 추가
         this.calories = recipeDto.getCalories(); // 추가

@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/recipes/**").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/api/recipes/**").authenticated()
+                                .requestMatchers(HttpMethod.PUT, "/api/recipes/{recipeId}").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").authenticated()
                                 .requestMatchers("http://localhost:8080/api/recipes/ai-recommendation").permitAll()
                                 .requestMatchers("http://localhost:8080/api/recommend-recipes").permitAll()
