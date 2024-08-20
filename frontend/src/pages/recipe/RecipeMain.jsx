@@ -4,7 +4,14 @@ import RecipeContext from '../../pages/recipe/RecipeContext';  // 레시피 관�
 import LatestRecipeCard from './LatestRecipeCard';  // 최신 레시피를 보여주는 카드 컴포넌트
 import axios from "../../utils/axios";   // 커스텀 axios 인스턴스
 import "../../assets/style/recipe/RecipeMain.css";  // 스타일 파일
-import {ArrowRightLong, MoreIcon, NextTo, PrevTo, SearchIcon} from "../../components/imgcomponents/ImgComponents"; // 아이콘 컴포넌트
+import {
+    ArrowRightLong,
+    MoreIcon,
+    NextTo,
+    PrevTo,
+    SearchIcon,
+    TopArrow
+} from "../../components/imgcomponents/ImgComponents";
 import {UserRecommendedRecipes} from "../../components/SliderComponent"; // 유저 추천 레시피 슬라이더 컴포넌트
 import {ClipLoader} from "react-spinners";  // 로딩 스피너 컴포넌트
 
@@ -43,6 +50,7 @@ function RecipeMain() {
     const [initialLoad, setInitialLoad] = useState(true);   // 처음 로딩 여부
     const currentRequestPage = useRef(null);  // 현재 요청 중인 페이지를 추적하는 ref
     const observer = useRef();  // 무한 스크롤을 위한 observer
+    const [showTopButton, setShowTopButton] = useState(false); // 추가: TOP 버튼 표시 상태
 
     // 초기 로드 시 로컬 스토리지에 저장된 레시피를 불러옴
     useEffect(() => {
@@ -157,6 +165,23 @@ function RecipeMain() {
     useEffect(() => {
         localStorage.setItem('recipePage', page);
     }, [page]);
+
+    useEffect(() => {
+        const topbtn = document.querySelector('.recipe-top-btn');
+
+        const handleScroll = () => {
+            if (window.scrollY > 300) { // 예: 300px 이상 스크롤하면 버튼이 나타나게 설정
+                topbtn.style.opacity = 1;
+            } else {
+                topbtn.style.opacity = 0;
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     // 레시피 카드 클릭 시 상세 정보를 불러오고 페이지 상단으로 이동
     const handleRecipeClick = (recipeId) => {
@@ -287,13 +312,16 @@ function RecipeMain() {
                 )}
             </div>
 
-            {/* 레시피 생성 및 페이지 상단 이동 버튼 */}
-            <div className="create-recipe-button-box">
-                <button onClick={handleTopClick} className="recipe-top-btn">🔝</button>
-                <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
-                    +
-                </button>
-            </div>
+
+
+                <div className={`create-recipe-button-box`}>
+                    <button onClick={handleTopClick} className={`recipe-top-btn`} aria-label="맨위로">
+                        <TopArrow/>
+                    </button>
+                    <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
+                        +
+                    </button>
+                </div>
         </div>
     );
 }

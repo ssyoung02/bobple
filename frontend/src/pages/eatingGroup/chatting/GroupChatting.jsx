@@ -273,7 +273,6 @@ const GroupChatting = () => {
                     <button onClick={handleGoBack}><ArrowLeftLong/></button>
                     <div className="chat-room-info-title">
                         <h2>{chatRoom.chatRoomTitle}</h2>
-                        <button onClick={toggleSearch}><SearchIcon/></button>
                         {isSearchOpen && (
                             <div className="search-dropdown">
                                 <input
@@ -287,7 +286,10 @@ const GroupChatting = () => {
                             </div>
                         )}
                     </div>
-                    <button onClick={openChattingModal}><Menu/></button>
+                    <div className="chat-btn">
+                        <button onClick={toggleSearch}><SearchIcon/></button>
+                        <button onClick={openChattingModal}><Menu/></button>
+                    </div>
                 </div>
             )}
             <div className="messages">

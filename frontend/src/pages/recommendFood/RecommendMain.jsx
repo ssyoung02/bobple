@@ -11,7 +11,7 @@ import {
     FillBookmark,
     LocationDot,
     MainFoodBanner,
-    SearchIcon,
+    SearchIcon, TopArrow,
     Trophy
 } from "../../components/imgcomponents/ImgComponents";
 import {FoodCategories, RecommendedCategories, TeamDinnerPick, TopSearch} from "../../components/SliderComponent";
@@ -273,6 +273,27 @@ function RecommendMain() {
         }
     };
 
+    useEffect(() => {
+        const topbtn = document.querySelector('.recipe-top-btn');
+
+        const handleScroll = () => {
+            if (window.scrollY > 300) { // 예: 300px 이상 스크롤하면 버튼이 나타나게 설정
+                topbtn.style.opacity = 1;
+            } else {
+                topbtn.style.opacity = 0;
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const handleTopClick = () => {
+        window.scrollTo(0, 0); // 스크롤 맨 위로 이동
+    }
+
     const handleTopKeywordClick = (keyword) => {
         navigate(`/recommend/recommendFoodCategory?keyword=${keyword}`); // 검색어 정보 전달
     };
@@ -297,7 +318,7 @@ function RecommendMain() {
                     <button className="AllSearchButton" onClick={handleSearch} aria-label={"검색"}>
                         <SearchIcon/>
                     </button>
-                    <TopSearch onKeywordClick={handleTopKeywordClick} />
+                    <TopSearch onKeywordClick={handleTopKeywordClick}/>
                 </div>
             </div>
 
@@ -398,6 +419,11 @@ function RecommendMain() {
                         <p>주변 술집이 없습니다.</p>
                     )}
                 </div>
+            </div>
+            <div className={`create-recipe-button-box`}>
+                <button onClick={handleTopClick} className={`recipe-top-btn`} aria-label="맨위로">
+                    <TopArrow/>
+                </button>
             </div>
         </div>
     );

@@ -148,7 +148,7 @@
     width: 100%;
     margin-bottom: 10px;
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 10px 5px;
     border-radius: 10px;
 }
 
@@ -160,7 +160,7 @@
 .meeting-contents {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
 }
 
 .meeting-contents img {
@@ -207,13 +207,27 @@
     color: #999;
 }
 
-.meeting-text {
-    display: flex;
-    color: var(--header-color);
+@keyframes textLoop {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
-.meeting-text p{
+.meeting-text {
+    color: var(--header-color);
+    overflow: hidden;
+    white-space: nowrap;
     text-align: left;
+    position: relative;
+    /*text-overflow: ellipsis;*/
+}
+
+/* 글자 길이가 컨테이너를 넘을 때만 애니메이션 적용 */
+.scrollable {
+    animation: 10s textLoop infinite linear;
 }
 
 .meating-header-top{

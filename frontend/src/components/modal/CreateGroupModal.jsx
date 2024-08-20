@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import axios from "axios";
-import { useModal } from "./ModalContext"; // useModal import
+import { useModal } from "./ModalContext";
+import {ImageIcon} from "../imgcomponents/ImgComponents"; // useModal import
 
 const CreateGroupModal = ({ modalState, hideModal }) => {
     const navigate = useNavigate();
@@ -14,6 +15,11 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
     const [roomPeople, setRoomPeople] = useState(1);
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+
+    // 각 글자 수 상태 추가
+    const [titleCharCount, setTitleCharCount] = useState(0);
+    const [descriptionCharCount, setDescriptionCharCount] = useState(0);
+    const [locationCharCount, setLocationCharCount] = useState(0);
 
     const moveChat = (chatRoomId) => {
         console.log(`Navigating to /group/chatting/${chatRoomId}`);
@@ -100,6 +106,22 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
         document.getElementById('file-input').click();
     };
 
+    // 입력 처리 함수들
+    const handleTitleChange = (e) => {
+        setTitle(e.target.value);
+        setTitleCharCount(e.target.value.length);
+    };
+
+    const handleDescriptionChange = (e) => {
+        setDescription(e.target.value);
+        setDescriptionCharCount(e.target.value.length);
+    };
+
+    const handleLocationChange = (e) => {
+        setLocation(e.target.value);
+        setLocationCharCount(e.target.value.length);
+    };
+
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content">
@@ -114,7 +136,7 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
                             {imagePreview ? (
                                 <img src={imagePreview} alt="이미지 미리보기" className="preview-image"/>
                             ) : (
-                                <div className="placeholder"></div>
+                                <ImageIcon/>
                             )}
                         </div>
                         <button className="plus-button" onClick={triggerFileInput}>+</button>
@@ -134,8 +156,9 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
                             placeholder="모임을 표현할 제목을 입력해주세요."
                             maxLength="20"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={handleTitleChange}
                         />
+                        <span className="char-count">{titleCharCount}/20</span> {/* 글자 수 표시 */}
                     </div>
                     <div className="form-group">
                         <label>모임설명</label>
@@ -143,8 +166,9 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
                             placeholder="모임 설명을 입력해주세요."
                             maxLength="30"
                             value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            onChange={handleDescriptionChange}
                         ></textarea>
+                        <span className="char-count">{descriptionCharCount}/30</span> {/* 글자 수 표시 */}
                     </div>
                     <div className="form-group">
                         <label>모임장소</label>
@@ -153,17 +177,25 @@ const CreateGroupModal = ({ modalState, hideModal }) => {
                             placeholder="장소를 입력해주세요(미작성 시 미정)"
                             maxLength="20"
                             value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            onChange={handleLocationChange}
                         />
+                        <span className="char-count">{locationCharCount}/20</span> {/* 글자 수 표시 */}
                     </div>
                     <div className="form-group">
                         <label>수용 인원</label>
                         <input
                             type="number"
-                            placeholder="수용 인원을 입력해주세요"
+                            placeholder="수용 인원을 입력해주세요(숫자만 입력)"
                             value={roomPeople}
                             onChange={(e) => setRoomPeople(parseInt(e.target.value))}
                         />
+                        <span className="group-people">/10</span>
+                    </div>
+                    <div className="form-group">
+                        <p className="group-caution">
+                            불법적인 모임 또는 비도덕적인 행위로 인한 신고가 발생하는 경우
+                            <br/>모임 활동 및 모임 참여 유저에 대한 이용제한이 있을 수 있습니다.
+                        </p>
                     </div>
                 </div>
             </div>

@@ -188,6 +188,7 @@
     bottom: 100px;
 }
 
+
 .create-recipe-button{
     position: absolute;
     bottom: 0;
@@ -203,10 +204,12 @@
 
 .recipe-top-btn {
     position: absolute;
-    font-size: 40px;
-    font-weight: bold;
+    width: 30px;
+    height: 30px;
     bottom: 1px;
-    color: black;
+    fill: var(--header-link-color);
+    opacity: 0; /* 초기값으로 보이지 않도록 설정 */
+    transition: opacity 1s ease-in-out; /* 서서히 나타나도록 트랜지션 설정 */
 }
 
 /*최신 레시피*/

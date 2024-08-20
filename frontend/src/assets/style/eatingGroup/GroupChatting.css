@@ -67,7 +67,7 @@
 
 .chat-room-info h2 {
     margin: 0 auto;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -189,4 +189,10 @@
 .message-input button img:hover,
 .message-input button img:active {
     opacity: 0.5;
+}
+
+.chat-btn{
+    display: flex;
+    gap: 10px;
+    font-size: 1.1em;
 }
