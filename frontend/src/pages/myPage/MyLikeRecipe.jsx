@@ -5,64 +5,83 @@ import '../../assets/style/myPage/MyLikeRecipe.css';
 import RecipeCard from '../../pages/recipe/RecipeCard';
 import {ClipLoader} from "react-spinners";
 
+/**
+ * MyLikeRecipe 컴포넌트
+ * - 사용자가 좋아요한 레시피 목록을 보여주는 컴포넌트입니다.
+ * - 페이지네이션을 적용하여 사용자가 좋아요한 레시피를 페이지별로 불러옵니다.
+ */
 function MyLikeRecipe() {
-    const [likedRecipes, setLikedRecipes] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
+    const [likedRecipes, setLikedRecipes] = useState([]);  // 사용자가 좋아요한 레시피 목록 상태
+    const [loading, setLoading] = useState(true);  // 로딩 상태
+    const [error, setError] = useState(null); // 오류 상태
+    const [currentPage, setCurrentPage] = useState(0);  // 현재 페이지 상태
+    const [totalPages, setTotalPages] = useState(0);  // 전체 페이지 수 상태
 
 
 
-    // 페이지가 변경될 때마다 좋아요한 레시피를 불러오는 함수
+    /**
+     * useEffect 훅
+     * - currentPage가 변경될 때마다 실행됩니다.
+     * - 좋아요한 레시피 목록을 현재 페이지에 맞게 API로부터 불러옵니다.
+     */
     useEffect(() => {
         const fetchLikedRecipes = async () => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token'); // 인증 토큰을 로컬 스토리지에서 가져옴
 
             try {
                 const response = await axios.get(`/api/recipes/liked`, {
-                    params: { page: currentPage, size: 10 }, // 페이지네이션 적용
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    params: { page: currentPage, size: 10 }, // 페이지네이션 요청 매개변수
+                    headers: { 'Authorization': `Bearer ${token}` } // 인증 헤더 설정
                 });
 
-                // 좋아요한 레시피 목록을 설정
+                // API 응답 데이터를 상태에 저장
                 setLikedRecipes(response.data.content); // 페이지네이션된 레시피 목록 설정
                 setTotalPages(response.data.totalPages); // 전체 페이지 수 설정
             } catch (error) {
+                // 오류 발생 시 오류 메시지를 설정
                 setError(error.message || '좋아요한 레시피를 불러오는 중 오류가 발생했습니다.');
             } finally {
+                // 로딩 상태를 비활성화
                 setLoading(false);
             }
         };
 
-        fetchLikedRecipes();
-    }, [currentPage]); // currentPage가 변경될 때마다 호출
+        fetchLikedRecipes(); // 좋아요한 레시피 불러오기
+    }, [currentPage]); // currentPage가 변경될 때마다 재실행
 
+    /**
+     * handlePageChange 함수
+     * - 페이지 번호를 클릭했을 때 해당 페이지로 이동합니다.
+     * @param {number} page - 이동할 페이지 번호
+     */
     const handlePageChange = (page) => {
-        setCurrentPage(page); // 페이지 변경
-        window.scrollTo(0,0);
+        setCurrentPage(page);  // 페이지 상태 업데이트
+        window.scrollTo(0,0); // 페이지 상단으로 스크롤 이동
     };
 
-
-
+    // 로딩 중이면 로딩 스피너를 표시
     if (loading) return <div className="loading-spinner">
         <ClipLoader size={50} color={"#123abc"}/>
     </div>;
+    // 오류가 발생하면 오류 메시지를 표시
     if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="myLikeRecipe-main">
+            {/* 상단 페이지 헤더 */}
             <PageHeader title="좋아요 레시피" />
+
+            {/* 좋아요한 레시피 목록 */}
             <div className="recipe-list">
                 {likedRecipes && likedRecipes.length > 0 ? (
                     likedRecipes.map(recipe => (
                         <div key={recipe.recipeIdx} className="recipe-list-item">
-                            <RecipeCard recipe={recipe}/>
+                            <RecipeCard recipe={recipe}/> {/* 각 레시피를 RecipeCard 컴포넌트로 렌더링 */}
                         </div>
                     ))
                 ) : (
                     <div className="no-recipes-message">좋아요 한 레시피가 없습니다.</div>
-                )}
+                )}  {/* 좋아요한 레시피가 없을 때 표시 */}
             </div>     {/* 페이지네이션 버튼 */}
             <div className="pagination">
                 {/* 첫 페이지로 이동 버튼 */}
