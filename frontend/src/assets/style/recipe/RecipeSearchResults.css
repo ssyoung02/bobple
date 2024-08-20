@@ -26,3 +26,15 @@
     align-content: center;
     margin: 20px auto;
 }
+
+.pagination.recipeSearchResult .active {
+    font-size: 20px;
+}
+
+.pagination.recipeSearchResult button {
+    padding: -10px 10px;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 3px;
+    border-radius: 5px;
+}

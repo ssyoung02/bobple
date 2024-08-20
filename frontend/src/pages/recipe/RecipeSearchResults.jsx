@@ -90,13 +90,13 @@ function RecipeSearchResults() {
             )}
 
             {/* 페이지네이션 버튼 */}
-            <div className="pagination">
+            <div className="pagination recipeSearchResult">
                 {/* 첫 페이지로 이동 버튼 */}
                 <button
                     onClick={() => handlePageChange(0)} // 첫 페이지로 이동
                     disabled={currentPage === 0} // 첫 페이지에서는 비활성화
                 >
-                    &laquo; 첫 페이지
+                    &laquo;
                 </button>
 
                 {/* 이전 페이지로 이동 버튼 */}
@@ -104,7 +104,7 @@ function RecipeSearchResults() {
                     onClick={() => handlePageChange(currentPage - 1)} // 이전 페이지로 이동
                     disabled={currentPage === 0} // 첫 페이지에서는 비활성화
                 >
-                    &lsaquo; 이전
+                    &lsaquo;
                 </button>
 
                 {/* 현재 페이지 주변의 다섯 개의 페이지 번호만 표시 */}
@@ -129,7 +129,7 @@ function RecipeSearchResults() {
                     onClick={() => handlePageChange(currentPage + 1)} // 다음 페이지로 이동
                     disabled={currentPage === totalPages - 1} // 마지막 페이지에서는 비활성화
                 >
-                    다음 &rsaquo;
+                    &rsaquo;
                 </button>
 
                 {/* 마지막 페이지로 이동 버튼 */}
@@ -137,7 +137,7 @@ function RecipeSearchResults() {
                     onClick={() => handlePageChange(totalPages - 1)} // 마지막 페이지로 이동
                     disabled={currentPage === totalPages - 1} // 마지막 페이지에서는 비활성화
                 >
-                    마지막 페이지 &raquo;
+                    &raquo;
                 </button>
             </div>
         </div>
