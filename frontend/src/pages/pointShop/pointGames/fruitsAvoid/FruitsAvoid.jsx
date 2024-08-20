@@ -23,20 +23,24 @@ const DIRECTIONS = {
 };
 
 const FruitsAvoid = () => {
-    const [fruitBalls, setFruitBalls] = useState([]);
-    const [position, setPosition] = useState({ x: CANVAS_WIDTH / 2 - 15, y: CANVAS_HEIGHT - CHAR_SIZE });
-    const [direction, setDirection] = useState(DIRECTIONS.STOP);
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const [score, setScore] = useState(0);
+    const [fruitBalls, setFruitBalls] = useState([]); // 현재 화면에 떨어지고 있는 과일들의 배열 (과일의 위치와 속도 추적)
+    const [position, setPosition] = useState({ x: CANVAS_WIDTH / 2 - 15, y: CANVAS_HEIGHT - CHAR_SIZE }); // 캐릭터의 현재 위치 저장
+    const [direction, setDirection] = useState(DIRECTIONS.STOP); // 캐릭터가 움직이는 방향 저장
+    const [imageLoaded, setImageLoaded] = useState(false); // 캐릭터 이미지 로드 여부 저장
+    const [score, setScore] = useState(0); // 게임 점수 저장
+
+    // 게임 상태 제어
     const [scoreOn, setScoreOn] = useState(false);
     const [gameStart, setGameStart] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+
+    const [earnedPoint, setEarnedPoint] = useState(0); // 게임 종료 후 계산된 포인트 저장
+
     const canvasRef = useRef(null);
     const charRef = useRef(new Image());
     const navigate = useNavigate();
     const moveRef = useRef();
     const userIdx = getUserIdx();
-    const [earnedPoint, setEarnedPoint] = useState(0);
     const location = useLocation();
 
     useEffect(() => {
@@ -97,7 +101,7 @@ const FruitsAvoid = () => {
         }
     }, [fruitBalls, position, imageLoaded]);
 
-
+    // 키보드 입력에 따라 캐릭터의 이동 방향 설정
     const handleKeyDown = (e) => {
         if (gameStart) {
             switch (e.key) {
@@ -114,7 +118,6 @@ const FruitsAvoid = () => {
             }
         }
     };
-
     const handleKeyUp = (e) => {
         if (gameStart) {
             switch (e.key) {
@@ -172,24 +175,26 @@ const FruitsAvoid = () => {
         char.src = USER;
     }, []);
 
-    const resetGame = () => {
-        setScore(0);
-        setGameStart(false);
-        setScoreOn(false);
-        setOpenDialog(false);
-        setPosition({
-            x: CANVAS_WIDTH / 2 - 15,
-            y: CANVAS_HEIGHT - CHAR_SIZE,
-        });
-        setFruitBalls([]);
-    };
+    // const resetGame = () => {
+    //     setScore(0);
+    //     setGameStart(false);
+    //     setScoreOn(false);
+    //     setOpenDialog(false);
+    //     setPosition({
+    //         x: CANVAS_WIDTH / 2 - 15,
+    //         y: CANVAS_HEIGHT - CHAR_SIZE,
+    //     });
+    //     setFruitBalls([]);
+    // };
 
+    // 캐릭터와 과일 간의 거리 계산 (충돌 감지)
     const calculateDistance = (ballX, ballY, charX, charY) => {
         const dx = ballX - charX;
         const dy = ballY - charY;
         return Math.sqrt(dx * dx + dy * dy);
     };
 
+    // 충돌 여부 확인, 충돌 시 게임 종료
     const checkCollisionWithChar = () => {
         const charCenterX = position.x + CHAR_SIZE / 2;
         const charCenterY = position.y + CHAR_SIZE / 2;
@@ -214,15 +219,18 @@ const FruitsAvoid = () => {
         }
     }, [scoreOn]);
 
+
+    // 게임 시작과 동시에 점수 증가
     const handleGameStart = () => {
         setGameStart(true);
         setScoreOn(true);
     };
-
+    // 게임 종료 후, 경로 이동
     const handleExit = () => {
         navigate('/point', { state: {selectedTab: '게임'}}); // 이전 페이지로 이동
     };
 
+    // 캐릭터 이동
     const moveCharRight = () => {
         if (gameStart) {
             let newX = position.x;
@@ -230,7 +238,6 @@ const FruitsAvoid = () => {
             setPosition({ x: newX, y: position.y });
         }
     };
-
     const moveCharLeft = () => {
         if (gameStart) {
             let newX = position.x;

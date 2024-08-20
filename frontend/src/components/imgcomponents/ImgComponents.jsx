@@ -21,7 +21,7 @@ import trophy from "../../assets/images/gameimg/trophy.png";
 import sendMessage from '../../assets/images/sendMessage.png';
 import pointgameCacha from '../../assets/images/gameimg/point-game-01.gacha.png';
 import pointgameFoodMatching from '../../assets/images/gameimg/point-game-02.foodmatching.png';
-import pointgameAvoid from '../../assets/images/gameimg/point-game-03. avoidfood.png';
+import pointgameAvoid from '../../assets/images/gameimg/point-game-03. avoidfruits.png';
 import pointgameSlot from '../../assets/images/gameimg/point-game-04. slotmachine.png';
 
 import receiptSettlementImg from "../../assets/images/gameimg/receipt_ settlement.png";
