@@ -279,18 +279,57 @@ const SearchKeyword = () => {
             ) : (
                 <p>레시피가 없습니다.</p>
             )}
+            {/* 페이지네이션 버튼 */}
             <div className="pagination">
-                {[...Array(totalPages)].map((_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => handlePageChange(i)}
-                        className={i === currentPage ? 'active' : ''}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-            </div>
+                {/* 첫 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(0)} // 첫 페이지로 이동
+                    disabled={currentPage === 0} // 첫 페이지에서는 비활성화
+                >
+                    &laquo; 첫 페이지
+                </button>
 
+                {/* 이전 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(currentPage - 1)} // 이전 페이지로 이동
+                    disabled={currentPage === 0} // 첫 페이지에서는 비활성화
+                >
+                    &lsaquo; 이전
+                </button>
+
+                {/* 현재 페이지 주변의 다섯 개의 페이지 번호만 표시 */}
+                {[...Array(totalPages)].slice(
+                    Math.max(0, currentPage - 2),
+                    Math.min(totalPages, currentPage + 3)
+                ).map((_, i) => {
+                    const pageNumber = Math.max(0, currentPage - 2) + i;
+                    return (
+                        <button
+                            key={pageNumber}
+                            onClick={() => handlePageChange(pageNumber)} // 페이지 변경 핸들러 호출
+                            className={pageNumber === currentPage ? 'active' : ''}  // 현재 페이지는 활성화된 스타일 적용
+                        >
+                            {pageNumber + 1} {/* 페이지 번호 표시 */}
+                        </button>
+                    );
+                })}
+
+                {/* 다음 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(currentPage + 1)} // 다음 페이지로 이동
+                    disabled={currentPage === totalPages - 1} // 마지막 페이지에서는 비활성화
+                >
+                    다음 &rsaquo;
+                </button>
+
+                {/* 마지막 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(totalPages - 1)} // 마지막 페이지로 이동
+                    disabled={currentPage === totalPages - 1} // 마지막 페이지에서는 비활성화
+                >
+                    마지막 페이지 &raquo;
+                </button>
+            </div>
         </div>
     );
 };

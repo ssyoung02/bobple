@@ -10,83 +10,98 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * UserDto 클래스
+ * 사용자 정보를 전송하기 위한 DTO (Data Transfer Object)
+ */
 @Getter
 @Setter
 public class UserDto {
-    private Long userIdx; // Long 타입으로 변경
-    private String username;
-    private String email;
-    private String name;
-    private LocalDate birthdate; // LocalDate 타입으로 변경
-    private String nickName;
-    private String profileImage;
-    private Boolean enabled;  // boolean -> Boolean 타입으로 변경
-    private String provider;
-    private Long companyId;  // Long 타입으로 변경
-    private Integer reportCount; // int -> Integer 타입으로 변경
-    private Integer point; // int -> Integer 타입으로 변경
-    private LocalDateTime createdAt; // LocalDateTime 타입으로 변경
-    private LocalDateTime updatedAt; // LocalDateTime 타입으로 변경
-    private List<RecipeDto> recipes; // 레시피 리스트 추가
+    private Long userIdx; // 사용자 고유 ID
+    private String username;  // 사용자명
+    private String email; // 사용자 이메일
+    private String name; // 사용자 실명
+    private LocalDate birthdate; // 사용자 생년월일
+    private String nickName;  // 사용자 닉네임
+    private String profileImage; // 사용자 프로필 이미지 URL
+    private Boolean enabled;  // 계정 활성화 여부
+    private String provider; // 계정 제공자 (예: Google, Facebook 등)
+    private Long companyId;  // 회사 ID (사용자가 소속된 회사)
+    private Integer reportCount; // 사용자 신고 횟수
+    private Integer point; // 사용자 포인트
+    private LocalDateTime createdAt; // 사용자 생성 시간
+    private LocalDateTime updatedAt; // 사용자 마지막 수정 시간
+    private List<RecipeDto> recipes; // 사용자가 작성한 레시피 목록
 
 
-    // User 엔티티를 UserDto로 변환하는 메서드 (타입 변경에 맞춰 수정)
+    /**
+     * User 엔티티를 UserDto로 변환하는 메서드
+     *
+     * @param user 변환할 User 엔티티 객체
+     * @return 변환된 UserDto 객체
+     */
     public static UserDto fromEntity(User user) {
         UserDto userDto = new UserDto();
-        userDto.setUserIdx(user.getUserIdx());
-        userDto.setUsername(user.getUsername());
-        userDto.setEmail(user.getEmail());
-        userDto.setName(user.getName());
-        userDto.setBirthdate(user.getBirthdate());
-        userDto.setNickName(user.getNickName());
-        userDto.setProfileImage(user.getProfileImage());
-        userDto.setEnabled(user.getEnabled());
-        userDto.setProvider(user.getProvider());
-        userDto.setCompanyId(user.getCompanyId());
-        userDto.setReportCount(user.getReportCount());
-        userDto.setPoint(user.getPoint());
-        userDto.setCreatedAt(user.getCreatedAt());
-        userDto.setUpdatedAt(user.getUpdatedAt());
+        userDto.setUserIdx(user.getUserIdx()); // 사용자 ID 설정
+        userDto.setUsername(user.getUsername()); // 사용자명 설정
+        userDto.setEmail(user.getEmail()); // 사용자 이메일 설정
+        userDto.setName(user.getName());  // 사용자 실명 설정
+        userDto.setBirthdate(user.getBirthdate());  // 생년월일 설정
+        userDto.setNickName(user.getNickName());  // 닉네임 설정
+        userDto.setProfileImage(user.getProfileImage());  // 프로필 이미지 설정
+        userDto.setEnabled(user.getEnabled());  // 계정 활성화 여부 설정
+        userDto.setProvider(user.getProvider()); // 제공자 설정
+        userDto.setCompanyId(user.getCompanyId());  // 회사 ID 설정
+        userDto.setReportCount(user.getReportCount());  // 신고 횟수 설정
+        userDto.setPoint(user.getPoint()); // 포인트 설정
+        userDto.setCreatedAt(user.getCreatedAt()); // 계정 생성 시간 설정
+        userDto.setUpdatedAt(user.getUpdatedAt()); // 계정 수정 시간 설정
 
-//        if (user.getRecipes() != null) {
-//            userDto.setRecipes(user.getRecipes().stream()
-//                    .map(RecipeDto::fromEntity)
-//                    .collect(Collectors.toList()));
-//        }
 
-        // Recipes와 같은 관련 엔티티를 DTO에 포함하지 않음으로써 순환 참조 방지
-        return userDto;
+        return userDto; // 변환된 UserDto 반환
     }
 
+    /**
+     * UserDto 객체를 User 엔티티로 변환하는 메서드
+     *
+     * @param userDto 변환할 UserDto 객체
+     * @return 변환된 User 엔티티 객체
+     */
     public static User toEntity(UserDto userDto) {
         User user = new User();
-        user.setUserIdx(userDto.getUserIdx());
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setName(userDto.getName());
-        user.setBirthdate(userDto.getBirthdate());
-        user.setNickName(userDto.getNickName());
-        user.setProfileImage(userDto.getProfileImage());
-        user.setEnabled(userDto.getEnabled());
-        user.setProvider(userDto.getProvider());
-        user.setCompanyId(userDto.getCompanyId());
-        user.setReportCount(userDto.getReportCount());
-        user.setPoint(userDto.getPoint());
-        user.setCreatedAt(userDto.getCreatedAt());
-        user.setUpdatedAt(userDto.getUpdatedAt());
+        user.setUserIdx(userDto.getUserIdx()); // 사용자 ID 설정
+        user.setUsername(userDto.getUsername()); // 사용자명 설정
+        user.setEmail(userDto.getEmail());  // 사용자 이메일 설정
+        user.setName(userDto.getName()); // 사용자 실명 설정
+        user.setBirthdate(userDto.getBirthdate()); // 생년월일 설정
+        user.setNickName(userDto.getNickName());  // 닉네임 설정
+        user.setProfileImage(userDto.getProfileImage());  // 프로필 이미지 설정
+        user.setEnabled(userDto.getEnabled());  // 계정 활성화 여부 설정
+        user.setProvider(userDto.getProvider());  // 제공자 설정
+        user.setCompanyId(userDto.getCompanyId()); // 회사 ID 설정
+        user.setReportCount(userDto.getReportCount()); // 신고 횟수 설정
+        user.setPoint(userDto.getPoint()); // 포인트 설정
+        user.setCreatedAt(userDto.getCreatedAt()); // 계정 생성 시간 설정
+        user.setUpdatedAt(userDto.getUpdatedAt());  // 계정 수정 시간 설정
 
-        return user;
+        return user; // 변환된 User 엔티티 반환
     }
 
-    // 레시피를 포함한 변환 메서드
+    /**
+     * User 엔티티를 레시피 정보를 포함하여 UserDto로 변환하는 메서드
+     *
+     * @param user 변환할 User 엔티티 객체
+     * @return 변환된 UserDto 객체
+     */
     public static UserDto fromEntityWithRecipes(User user) {
-        UserDto userDto = fromEntity(user);
+        UserDto userDto = fromEntity(user); // 기본 사용자 정보 변환
         if (user.getRecipes() != null) {
+            // 사용자가 작성한 레시피 목록을 DTO로 변환
             userDto.setRecipes(user.getRecipes().stream()
                     .map(RecipeDto::fromEntity)
                     .collect(Collectors.toList()));
         }
-        return userDto;
+        return userDto; // 변환된 UserDto 반환
     }
 
 

@@ -4,9 +4,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.net.URI;
-import java.io.IOException;
 
 /*
  * Spring Boot 애플리케이션 실행 시 브라우저를 자동으로 여는 컴포넌트

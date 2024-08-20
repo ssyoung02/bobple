@@ -9,17 +9,22 @@ import { useOnlyHeaderColorChange } from "../../hooks/NavigateComponentHooks";
 import mascot from "../../assets/images/bobple_mascot.png";
 import {clearRecipeLocalStorage} from "../../utils/localStorageUtils"; // CSS 파일 import
 
+/**
+ * RecipeForm 컴포넌트
+ * 레시피를 등록하거나 수정할 수 있는 폼 컴포넌트로, 입력된 정보에 따라 레시피를 서버로 전송한다.
+ * 레시피 등록 시 이미지 업로드, 기본 정보 입력, 재료, 조리 방법, 태그, 카테고리 선택 등의 기능을 제공.
+ */
 function RecipeForm() {
     const {
-        createRecipe,
-        updateRecipe,
-        selectedRecipe,
         setSelectedRecipe,
         recipeCategory,
-    } = useContext(RecipeContext);
-    const { recipeIdx } = useParams();
-    const navigate = useNavigate();
+    } = useContext(RecipeContext); // 컨텍스트에서 레시피 상태와 카테고리 목록 가져오기
+    const { recipeIdx } = useParams();  // URL 파라미터에서 recipeIdx를 가져와, 레시피가 수정 모드인지 등록 모드인지 확인
+    const navigate = useNavigate(); // 페이지 이동을 위한 훅
+    const location = useLocation();  // 현재 경로 정보를 제공하는 훅
+    useOnlyHeaderColorChange(location.pathname, 'transparent');
 
+    // 각 필드의 상태 정의 (제목, 시간, 칼로리, 재료, 방법, 태그, 이미지, 카테고리)
     const [title, setTitle] = useState('');
     const [cookTime, setCookTime] = useState('');
     const [calories, setCalories] = useState('');
@@ -29,21 +34,26 @@ function RecipeForm() {
     const [imageFile, setImageFile] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
     const [category, setCategory] = useState('');
-    const [isEditing, setIsEditing] = useState(false);
-    const [error, setError] = useState(null);
+    const [isEditing, setIsEditing] = useState(false); // 수정 모드 여부
+    const [error, setError] = useState(null);  // 에러 메시지 상태
 
-    const location = useLocation();
-    useOnlyHeaderColorChange(location.pathname, 'transparent');
-
+    /**
+     * 컴포넌트가 처음 로드될 때 레시피를 수정할지 새로 등록할지를 결정.
+     * 수정 모드일 경우 기존 레시피 정보를 서버에서 가져와 폼에 채움.
+     */
     useEffect(() => {
-        if (recipeIdx) {
+        if (recipeIdx) { // 레시피 ID가 존재하면 수정 모드로 전환
             setIsEditing(true);
             getRecipeById(recipeIdx);
         } else {
-            resetForm();
+            resetForm(); // 레시피 ID가 없으면 폼 초기화
         }
     }, [recipeIdx]);
 
+    /**
+     * 폼을 초기 상태로 리셋하는 함수
+     * 레시피 등록 시 사용되며, 모든 필드를 빈 상태로 초기화.
+     */
     const resetForm = () => {
         setTitle('');
         setCookTime('');
@@ -58,11 +68,17 @@ function RecipeForm() {
         setError(null);
     };
 
+    /**
+     * 서버로부터 레시피 데이터를 가져오는 함수
+     * 레시피 ID를 받아 해당 레시피의 상세 정보를 서버에서 가져오고 폼에 채움.
+     * @param {number} id - 레시피 ID
+     */
     const getRecipeById = async (id) => {
         try {
             const response = await axios.get(`/api/recipes/${id}`);
             setSelectedRecipe(response.data);
 
+            // 응답 데이터를 폼 필드에 채움
             setTitle(response.data.title);
             setCookTime(response.data.cookTime);
             setCalories(response.data.calories);
@@ -76,6 +92,10 @@ function RecipeForm() {
         }
     };
 
+    /**
+     * 이미지 파일 선택 시 파일을 읽고 미리보기 URL을 생성
+     * @param {Event} event - 파일 선택 이벤트
+     */
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         setImageFile(file);
@@ -91,20 +111,28 @@ function RecipeForm() {
         }
     };
 
+    /**
+     * 폼 제출 핸들러
+     * 레시피 등록 또는 수정을 처리하며, 서버에 데이터를 전송.
+     * 레시피 등록 후 포인트 지급 처리도 포함.
+     * @param {Event} event - 폼 제출 이벤트
+     */
     const handleSubmit = async (event) => {
-        event.preventDefault();
+        event.preventDefault(); // 기본 폼 제출 동작 방지
 
+        // 필수 필드가 모두 채워졌는지 확인
         if (!title || !cookTime || !calories || !ingredients || !instructions || !tags || !category) {
             alert('모든 필드를 입력해주세요.');
             return;
         }
 
-        if (!isEditing && !imageFile) {
+        if (!isEditing && !imageFile) {  // 등록 시 이미지 파일이 없는 경우
             alert('레시피 이미지를 업로드해주세요.');
             return;
         }
 
-            const formData = new FormData();
+        // 폼 데이터를 FormData 객체로 구성 (이미지와 텍스트 데이터 포함)
+        const formData = new FormData();
             formData.append("title", title);
             formData.append("cookTime", cookTime);
             formData.append("calories", calories);
@@ -119,7 +147,7 @@ function RecipeForm() {
             formData.append("imageUrl", imageUrl); // 기존 이미지 유지
         }
 
-        // formData 내용 출력
+        // 서버로 전송할 formData 내용 출력 (디버깅용)
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
@@ -129,8 +157,8 @@ function RecipeForm() {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
                 alert('레시피가 성공적으로 수정되었습니다.');
-                navigate(`/recipe/${recipeIdx}`);
-                localStorage.removeItem('recommendedRecipes');
+                navigate(`/recipe/${recipeIdx}`);  // 수정 후 레시피 상세 페이지로 이동
+                localStorage.removeItem('recommendedRecipes');  // 캐시된 추천 레시피 제거
                 console.log("imageUpdateMode : "+ formData.image);
 
 
@@ -149,9 +177,9 @@ function RecipeForm() {
                 });
 
 
-                localStorage.removeItem('recommendedRecipes');
-                navigate(`/recipe`);
-                clearRecipeLocalStorage();
+                localStorage.removeItem('recommendedRecipes');  // 캐시된 추천 레시피 제거
+                navigate(`/recipe`); // 등록 후 레시피 목록 페이지로 이동
+                clearRecipeLocalStorage(); // 로컬 스토리지 초기화
                 window.location.reload(); // 새로고침
 
             }
@@ -163,11 +191,11 @@ function RecipeForm() {
 
     return (
         <div className="recipe-form-container">
-            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'} />
+            <PageHeader title={isEditing ? '레시피 수정' : '레시피 등록'} /> {/* 페이지 헤더 */}
             {error && <div className="error-message">{error}</div>}
-            <form onSubmit={handleSubmit} id="recipe-form">
+            <form onSubmit={handleSubmit} id="recipe-form">  {/* 레시피 폼 */}
                 <div className="form-field">
-                    <div className="recipe-header-img">
+                    <div className="recipe-header-img"> {/* 이미지 업로드 필드 */}
                         <label htmlFor="imageUpload" className="recipe-img-label">
                             <p className="blind">이미지 업로드</p>
                             <ImageIcon/>
