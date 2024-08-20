@@ -9,14 +9,12 @@ import {ThinkingAbout} from "../../components/imgcomponents/ImgComponents";
 import {ClipLoader} from "react-spinners";
 
 function AIRecommendation() {
-    const { recommendRecipes } = useContext(RecipeContext);
     const [ingredients, setIngredients] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const location = useLocation();
     const [recipeText, setRecipeText] = useState(''); // 추가: AI 추천 레시피 텍스트
 
-    const navigate = useNavigate();
     useHeaderColorChange(location.pathname, '#AEE2FF');
 
     const handleRecommend = async (e) => {

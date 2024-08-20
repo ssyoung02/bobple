@@ -31,12 +31,19 @@ public class PurchasedGiftDto {
 
     // Entity to DTO 변환 메서드
     public static PurchasedGiftDto fromEntity(PurchasedGift purchasedGift) {
+        if (purchasedGift.getPurchaseDate() == null) {
+            System.out.println("purchaseDate is null in the entity");
+        } else {
+            System.out.println("purchaseDate: " + purchasedGift.getPurchaseDate().toString());
+        }
+
         return new PurchasedGiftDto(
                 purchasedGift.getPurchaseIdx(),
                 UserDto.fromEntity(purchasedGift.getUser()),
                 PointShopDto.fromEntity(purchasedGift.getPointShop()),
-                purchasedGift.getPurchaseDate(),
+                purchasedGift.getPurchaseDate(),  // 이 부분이 null이 아닌지 확인
                 purchasedGift.isUsed()
         );
     }
+
 }

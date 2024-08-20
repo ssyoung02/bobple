@@ -18,9 +18,15 @@ import {
 import PageHeader from "../../components/layout/PageHeader";
 import {useOnlyHeaderColorChange} from "../../hooks/NavigateComponentHooks";
 import {clearRecipeLocalStorage} from "../../utils/localStorageUtils";
+import {ClipLoader} from "react-spinners";
 
+/**
+ * RecipeDetail 컴포넌트
+ * 특정 레시피의 상세 정보를 보여주는 컴포넌트로, 레시피 정보, 재료, 조리법, 좋아요, 댓글 기능이 포함됨
+ * @returns {JSX.Element} 레시피 상세 정보 화면 렌더링
+ */
 function RecipeDetail() {
-    const { recipeIdx } = useParams();
+    const { recipeIdx } = useParams(); // URL에서 recipeIdx 추출
     const {
         getRecipeById,
         selectedRecipe,
@@ -31,61 +37,76 @@ function RecipeDetail() {
         setError,
         createComment,
         formatViewsCount
-    } = useContext(RecipeContext);
-    const [newComment, setNewComment] = useState('');
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [showActions, setShowActions] = useState(false); // 상태 추가
+    } = useContext(RecipeContext); // RecipeContext에서 필요한 상태 및 함수들 불러오기
+    const [newComment, setNewComment] = useState(''); // 새로운 댓글 입력 상태 관리
+    const navigate = useNavigate(); // 페이지 이동 훅
+    const location = useLocation();  // 현재 경로 정보 추출
+    const [showActions, setShowActions] = useState(false); // 더보기 액션 메뉴 표시 여부
 
-    useOnlyHeaderColorChange(location.pathname, 'transparent');
+    useOnlyHeaderColorChange(location.pathname, 'transparent'); // 헤더 색상 변경을 위한 커스텀 훅 사용
 
+    /**
+     * 레시피 및 댓글 데이터를 서버에서 가져오는 함수
+     * 레시피 정보와 댓글 목록을 불러오고, 조회수를 증가시킴
+     */
     const fetchRecipeAndComments = useCallback(async () => {
         try {
-            await getRecipeById(recipeIdx);
-            const response = await axios.get(`/api/recipes/${recipeIdx}/comments`);
+            await getRecipeById(recipeIdx);  // 레시피 정보 불러오기
+            const response = await axios.get(`/api/recipes/${recipeIdx}/comments`);  // 댓글 정보 불러오기
             setSelectedRecipe(prevRecipe => ({
                 ...prevRecipe,
-                comments: response.data
+                comments: response.data // 불러온 댓글을 레시피 상태에 저장
             }));
-            // Increment views count
+            // 조회수 증가 API 호출
             await axios.post(`/api/recipes/${recipeIdx}/increment-views`);
         } catch (error) {
             setError(error.message || '데이터를 불러오는 중 오류가 발생했습니다.');
         }
     }, [recipeIdx, getRecipeById, setError, setSelectedRecipe]);
 
+    // 컴포넌트가 마운트될 때 레시피 및 댓글 데이터를 불러옴
     useEffect(() => {
         fetchRecipeAndComments();
     }, [fetchRecipeAndComments]);
 
+    /**
+     * 새로운 댓글을 작성하는 함수
+     * 댓글 작성 후 새롭게 댓글 목록을 불러옴
+     */
     const handleCommentSubmit = async () => {
         try {
-            await createComment(recipeIdx, newComment);
-            setNewComment('');
-            const response = await axios.get(`/api/recipes/${recipeIdx}/comments`);
+            await createComment(recipeIdx, newComment); // 새로운 댓글 생성
+            setNewComment(''); // 입력 필드 초기화
+            const response = await axios.get(`/api/recipes/${recipeIdx}/comments`); // 댓글 목록 다시 불러오기
             setSelectedRecipe(prevRecipe => ({
                 ...prevRecipe,
-                comments: response.data
+                comments: response.data  // 새 댓글 목록으로 업데이트
             }));
         } catch (error) {
             setError(error.message || '댓글 작성 중 오류가 발생했습니다.');
         }
     };
-
-    if (loading) return <div>Loading...</div>;
+    // 로딩 중일 때 로딩 메시지를 표시하고, 에러 발생 시 에러 메시지를 표시함
+    if (loading) return <div className="loading-spinner">
+        <ClipLoader size={50} color={"#123abc"} loading={loading}/>
+    </div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!selectedRecipe) return (
         <div className="recipe-detail-container">
-            <h2>레시피 상세</h2>
+        <h2>레시피 상세</h2>
             <div className="recipe-not-found">
                 레시피를 찾을 수 없습니다.
             </div>
         </div>
     );
 
+    /**
+     * 좋아요 버튼 클릭 시 호출되는 함수
+     * 레시피에 대한 좋아요 상태를 토글하고, 좋아요 수를 업데이트함
+     */
     const handleLikeClick = async () => {
         try {
-            await axios.post(`/api/recipes/${recipeIdx}/like`); // 사용자 ID를 요청에 포함하지 않음
+            await axios.post(`/api/recipes/${recipeIdx}/like`);  // 좋아요 API 호출
 
             // 좋아요 상태와 좋아요 수 업데이트
             setSelectedRecipe(prevRecipe => ({
@@ -98,11 +119,15 @@ function RecipeDetail() {
         }
     };
 
+    /**
+     * 레시피 삭제 버튼 클릭 시 호출되는 함수
+     * 사용자가 삭제를 확인하면 레시피를 삭제하고 포인트를 차감한 후 목록 페이지로 이동
+     */
     const handleDeleteClick = async () => {
         const confirmDelete = window.confirm('정말로 레시피를 삭제하시겠습니까?');
         if (confirmDelete) {
             try {
-                await deleteRecipe(recipeIdx);
+                await deleteRecipe(recipeIdx); // 레시피 삭제
                 // 레시피 삭제시 포인트 차감 요청
                 await axios.post("/api/point/result/update", {
                     userIdx: Number(localStorage.getItem('userIdx')),
@@ -111,8 +136,8 @@ function RecipeDetail() {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
 
-                clearRecipeLocalStorage();
-                navigate('/recipe');
+                clearRecipeLocalStorage();  // 로컬 스토리지에서 레시피 관련 데이터 삭제
+                navigate('/recipe');  // 레시피 목록 페이지로 이동
                 window.location.reload(); // 새로고침
 
             } catch (error) {
@@ -122,17 +147,21 @@ function RecipeDetail() {
         }
     };
 
+    /**
+     * 레시피 수정 버튼 클릭 시 호출되는 함수
+     * 수정 페이지로 이동함
+     */
     const handleEditClick = () => {
-        navigate(`/recipe/modify/${recipeIdx}`);
+        navigate(`/recipe/modify/${recipeIdx}`); // 레시피 수정 페이지로 이동
     };
 
-    // 재료와 조리 방법 분리 로직
+    // 레시피 내용을 재료와 조리 방법으로 분리하는 로직
     let ingredients = '';
     let instructions = '';
 
     if (selectedRecipe.content) {
         // "만드는 법:"을 기준으로 분리
-        const instructionsStart = selectedRecipe.content.indexOf('만드는 법:');
+        const instructionsStart = selectedRecipe.content.indexOf('만드는 법:'); // "만드는 법:"을 기준으로 분리
 
         if (instructionsStart !== -1) {
             // "만드는 법:" 앞부분은 재료
@@ -146,9 +175,13 @@ function RecipeDetail() {
     }
 
     const toggleActions = () => {
-        setShowActions(!showActions); // showActions 상태를 토글
+        setShowActions(!showActions);     // 더보기 액션 메뉴를 토글하는 함수
     };
 
+    /**
+     * 레시피 신고 버튼 클릭 시 호출되는 함수
+     * 사용자에게 신고를 확인하고, 신고를 처리
+     */
     const handleReportClick = async () => {
         const confirmReport = window.confirm('정말로 이 레시피를 신고하시겠습니까?');
         if (confirmReport) {
@@ -274,7 +307,11 @@ function RecipeDetail() {
                 </>
             )}
 
-            {!selectedRecipe && loading && <div>Loading...</div>}
+            {!selectedRecipe && loading && (
+                <div className="loading-spinner slider">
+                    <ClipLoader size={50} color={"#123abc"} loading={loading} />
+                </div>
+            )}
             {!selectedRecipe && !loading && <div>Recipe not found.</div>}
         </div>
     );

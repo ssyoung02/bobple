@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {useLocation, useNavigate} from 'react-router-dom'; // React Router useNavigate import
-import '../../../../assets/style/pointGame/avoid/FoodAvoid.css';
+import '../../../../assets/style/pointGame/avoid/FruitsAvoid.css';
 import bobpleMascot from '../../../../assets/images/bobple_mascot.png';
 import {getUserIdx} from "../../../../utils/auth"; // 이미지 import
 import axios from 'axios';
@@ -12,46 +12,51 @@ const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
 const CHAR_SIZE = 60; // 캐릭터 크기
 const BALL_RADIUS = 10; // 공의 반지름
 const CHAR_SPEED = 10; // 캐릭터 이동 속도(ms)
-const CREATE_BALL_INTERVAL = 200; // 공 생성 주기(ms)
+const CREATE_BALL_INTERVAL = 300; // 공 생성 주기(ms)
 const MOBILE_CHAR_MOVE = 15; // 모바일 캐릭터 이동 거리
 const USER = bobpleMascot; // 캐릭터 이미지의 경로
+const fruits = ["🍎", "🍌", "🍒", "🍇", "🍉", "🍓", "🍊", "🥝", "🍍"]; // 과일 이모티콘 배열
 
 const DIRECTIONS = {
     LEFT: "LEFT",
     RIGHT: "RIGHT",
-    STOP: "STOP",
 };
 
-const FoodAvoid = () => {
-    const [balls, setBalls] = useState([]);
-    const [position, setPosition] = useState({ x: CANVAS_WIDTH / 2 - 15, y: CANVAS_HEIGHT - CHAR_SIZE });
-    const [direction, setDirection] = useState(DIRECTIONS.STOP);
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const [score, setScore] = useState(0);
+const FruitsAvoid = () => {
+    const [fruitBalls, setFruitBalls] = useState([]); // 현재 화면에 떨어지고 있는 과일들의 배열 (과일의 위치와 속도 추적)
+    const [position, setPosition] = useState({ x: CANVAS_WIDTH / 2 - 15, y: CANVAS_HEIGHT - CHAR_SIZE }); // 캐릭터의 현재 위치 저장
+    const [direction, setDirection] = useState(DIRECTIONS.STOP); // 캐릭터가 움직이는 방향 저장
+    const [imageLoaded, setImageLoaded] = useState(false); // 캐릭터 이미지 로드 여부 저장
+    const [score, setScore] = useState(0); // 게임 점수 저장
+
+    // 게임 상태 제어
     const [scoreOn, setScoreOn] = useState(false);
     const [gameStart, setGameStart] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+
+    const [earnedPoint, setEarnedPoint] = useState(0); // 게임 종료 후 계산된 포인트 저장
+
     const canvasRef = useRef(null);
     const charRef = useRef(new Image());
-    const navigate = useNavigate(); // useNavigate 훅 사용
-    const moveRef = useRef(); // moveChar 함수 참조를 위해 useRef 사용
-    const userIdx=getUserIdx();
-    const [earnedPoint, setEarnedPoint] = useState(0);
+    const navigate = useNavigate();
+    const moveRef = useRef();
+    const userIdx = getUserIdx();
     const location = useLocation();
 
     useEffect(() => {
         if (gameStart) {
-            const createBall = () => {
-                const newBalls = Array.from({ length: 3 }, () => ({
+            const createFruit = () => {
+                const newFruits = Array.from({ length: 3 }, () => ({
                     id: Date.now() + Math.random(),
+                    fruit: fruits[Math.floor(Math.random() * fruits.length)], // 랜덤 과일 선택
                     x: Math.random() * CANVAS_WIDTH,
                     y: -BALL_RADIUS,
-                    speed: (Math.floor(Math.random() * 5) + 1) * 2 // 공의 속도 (마지막 숫자만 변경)
+                    speed: (Math.floor(Math.random() * 5) + 1) * 2 // 과일의 속도
                 }));
-                setBalls((prevBalls) => [...prevBalls, ...newBalls]);
+                setFruitBalls((prevFruits) => [...prevFruits, ...newFruits]);
             };
 
-            const intervalId = setInterval(createBall, CREATE_BALL_INTERVAL);
+            const intervalId = setInterval(createFruit, CREATE_BALL_INTERVAL);
 
             return () => clearInterval(intervalId);
         }
@@ -59,21 +64,21 @@ const FoodAvoid = () => {
 
     useEffect(() => {
         if (gameStart) {
-            const moveBalls = () => {
-                setBalls((prevBalls) =>
-                    prevBalls.map((ball) => ({
-                        ...ball,
-                        y: ball.y + ball.speed
-                    })).filter(ball => ball.y < CANVAS_HEIGHT)
+            const moveFruits = () => {
+                setFruitBalls((prevFruits) =>
+                    prevFruits.map((fruitBall) => ({
+                        ...fruitBall,
+                        y: fruitBall.y + fruitBall.speed
+                    })).filter(fruitBall => fruitBall.y < CANVAS_HEIGHT)
                 );
                 checkCollisionWithChar();
             };
 
-            const animationId = requestAnimationFrame(moveBalls);
+            const animationId = requestAnimationFrame(moveFruits);
 
             return () => cancelAnimationFrame(animationId);
         }
-    }, [balls, gameStart]);
+    }, [fruitBalls, gameStart]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -82,12 +87,11 @@ const FoodAvoid = () => {
             ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            balls.forEach((ball) => {
-                ctx.beginPath();
-                ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI * 2);
-                ctx.fillStyle = "#FFE650";
-                ctx.fill();
-                ctx.closePath();
+
+            ctx.font = `${BALL_RADIUS * 2}px Arial`; // 이모티콘 크기 설정
+
+            fruitBalls.forEach((fruitBall) => {
+                ctx.fillText(fruitBall.fruit, fruitBall.x - BALL_RADIUS, fruitBall.y + BALL_RADIUS); // 과일 그리기
             });
 
             if (imageLoaded) {
@@ -95,8 +99,9 @@ const FoodAvoid = () => {
                 ctx.drawImage(char, position.x, position.y, CHAR_SIZE, CHAR_SIZE);
             }
         }
-    }, [balls, position, imageLoaded]);
+    }, [fruitBalls, position, imageLoaded]);
 
+    // 키보드 입력에 따라 캐릭터의 이동 방향 설정
     const handleKeyDown = (e) => {
         if (gameStart) {
             switch (e.key) {
@@ -113,7 +118,6 @@ const FoodAvoid = () => {
             }
         }
     };
-
     const handleKeyUp = (e) => {
         if (gameStart) {
             switch (e.key) {
@@ -171,30 +175,32 @@ const FoodAvoid = () => {
         char.src = USER;
     }, []);
 
-    const resetGame = () => {
-        setScore(0);
-        setGameStart(false);
-        setScoreOn(false);
-        setOpenDialog(false);
-        setPosition({
-            x: CANVAS_WIDTH / 2 - 15,
-            y: CANVAS_HEIGHT - CHAR_SIZE,
-        });
-        setBalls([]);
-    };
+    // const resetGame = () => {
+    //     setScore(0);
+    //     setGameStart(false);
+    //     setScoreOn(false);
+    //     setOpenDialog(false);
+    //     setPosition({
+    //         x: CANVAS_WIDTH / 2 - 15,
+    //         y: CANVAS_HEIGHT - CHAR_SIZE,
+    //     });
+    //     setFruitBalls([]);
+    // };
 
+    // 캐릭터와 과일 간의 거리 계산 (충돌 감지)
     const calculateDistance = (ballX, ballY, charX, charY) => {
         const dx = ballX - charX;
         const dy = ballY - charY;
         return Math.sqrt(dx * dx + dy * dy);
     };
 
+    // 충돌 여부 확인, 충돌 시 게임 종료
     const checkCollisionWithChar = () => {
         const charCenterX = position.x + CHAR_SIZE / 2;
         const charCenterY = position.y + CHAR_SIZE / 2;
 
-        for (let ball of balls) {
-            const distance = calculateDistance(ball.x, ball.y, charCenterX, charCenterY);
+        for (let fruitBall of fruitBalls) {
+            const distance = calculateDistance(fruitBall.x, fruitBall.y, charCenterX, charCenterY);
             if (distance < BALL_RADIUS + CHAR_SIZE / 2 - 1) {
                 setOpenDialog(true);
                 setGameStart(false);
@@ -213,15 +219,18 @@ const FoodAvoid = () => {
         }
     }, [scoreOn]);
 
+
+    // 게임 시작과 동시에 점수 증가
     const handleGameStart = () => {
         setGameStart(true);
         setScoreOn(true);
     };
-
+    // 게임 종료 후, 경로 이동
     const handleExit = () => {
-        navigate('/point'); // 이전 페이지로 이동
+        navigate('/point', { state: {selectedTab: '게임'}}); // 이전 페이지로 이동
     };
 
+    // 캐릭터 이동
     const moveCharRight = () => {
         if (gameStart) {
             let newX = position.x;
@@ -229,7 +238,6 @@ const FoodAvoid = () => {
             setPosition({ x: newX, y: position.y });
         }
     };
-
     const moveCharLeft = () => {
         if (gameStart) {
             let newX = position.x;
@@ -248,7 +256,7 @@ const FoodAvoid = () => {
             axios.post('http://localhost:8080/api/point/result', {
                 userIdx: parseInt(userIdx, 10),
                 point: finalPoint,
-                pointComment: finalPoint > 0 ? "음식 피하기 게임" : "음식 피하기 게임 실패" // point에 따라 comment 변경
+                pointComment: finalPoint > 0 ? "과일 피하기 게임" : "과일 피하기 게임 실패" // point에 따라 comment 변경
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -280,7 +288,7 @@ const FoodAvoid = () => {
     return (
         <div className="avoid-body">
             <button className="arrow-btn avoid" onClick={handleExit}><ArrowLeftLong/></button>
-            <h1>AVOID FOOD</h1>
+            <h1>FRUITS AVOID</h1>
             <div className="avoid-container">
                 <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>
                 <div className="point-game-1st-btn">
@@ -317,4 +325,4 @@ const FoodAvoid = () => {
     );
 };
 
-export default FoodAvoid;
+export default FruitsAvoid;

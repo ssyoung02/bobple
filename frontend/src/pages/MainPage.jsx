@@ -327,9 +327,9 @@ function MainPage({theme}) {
             <div className="summation-box">
                 <div className="summation-top">
                     <div className="summation-left">
-                        <sapn className="summation-title">
+                        <span className="summation-title">
                             가까운 매장
-                        </sapn>
+                        </span>
                         <h3>
                             {user && (<>{user.name}님</>)} 근처 맛집
                         </h3>
@@ -339,7 +339,6 @@ function MainPage({theme}) {
                     </button>
                 </div>
                 <div className="summation-content">
-
                     {firstThreePubs.length > 0 ? (
                         <ul className="restaurant-info-list">
                             {firstThreePubs.map((pub, index) => (
@@ -387,7 +386,7 @@ function MainPage({theme}) {
                             ))}
                         </ul>
                     ) : (
-                        <p>주변 술집이 없습니다.</p>
+                        <p>주변 맛집이 없습니다.</p>
                     )}
 
                 </div>
@@ -395,9 +394,9 @@ function MainPage({theme}) {
             <div className="summation-box">
                 <div className="summation-top">
                     <div className="summation-left">
-                        <sapn className="summation-title">
+                        <span className="summation-title">
                             BEST 레시피
-                        </sapn>
+                        </span>
                         <h3>
                             오늘의 도시락
                         </h3>

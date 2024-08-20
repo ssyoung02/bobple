@@ -48,11 +48,11 @@ function PointMain() {
                 withCredentials: true
             })
                 .then(response => {
-                    console.log('Fetched Products:', response.data); // 데이터 구조 확인
+                    //console.log('Fetched Products:', response.data); // 데이터 구조 확인
                     setProducts(response.data);
                 })
                 .catch(error => {
-                    console.error('There was an error fetching the products!', error);
+                    //console.error('There was an error fetching the products!', error);
                     alert('상품 정보를 가져오는 데 실패했습니다.');
                 });
         }
@@ -66,11 +66,11 @@ function PointMain() {
                 withCredentials: true
             })
                 .then(response => {
-                    console.log('Fetched Purchased Products:', response.data); // 데이터 구조 확인
+                    //console.log('Fetched Purchased Products:', response.data); // 데이터 구조 확인
                     setPurchasedProducts(response.data);
                 })
                 .catch(error => {
-                    console.error('There was an error fetching the purchased products!', error);
+                    //console.error('There was an error fetching the purchased products!', error);
                     alert('구매한 상품 정보를 가져오는 데 실패했습니다.');
                 });
         }
@@ -90,7 +90,7 @@ function PointMain() {
                 setUnusedGiftCount(response.data.length);
             })
             .catch(error => {
-                console.error('There was an error fetching the unused gift count!', error);
+                //console.error('There was an error fetching the unused gift count!', error);
             });
     }, [userIdx, token]);
 
@@ -114,7 +114,7 @@ function PointMain() {
                 const playedGameComments = response.data.map(point => point.pointComment);
                 setPlayedGamesToday(playedGameComments);
             } catch (error) {
-                console.error('오늘 플레이한 게임 정보 가져오기 실패:', error);
+                //console.error('오늘 플레이한 게임 정보 가져오기 실패:', error);
                 // 추가적인 에러 처리 로직 (예: 사용자에게 에러 메시지 표시)
             }
         };
@@ -145,14 +145,14 @@ function PointMain() {
                 case "음식 확대사진 맞추기 게임":
                     navigate('/point/pointGame/MatchingGame');
                     break;
-                case "음식 피하기 게임":
-                    navigate('/point/pointGame/FoodAvoid');
+                case "과일 피하기 게임":
+                    navigate('/point/pointGame/FruitsAvoid');
                     break;
                 case "슬롯 게임":
                     navigate('/point/pointGame/SlotGame');
                     break;
                 default:
-                    console.error("알 수 없는 게임:", gameComment);
+                    //console.error("알 수 없는 게임:", gameComment);
             }
         }
     };
@@ -162,8 +162,8 @@ function PointMain() {
         navigate('/point/pointGifticonDetail', { state: { productIdx } });
     };
 
-    const moveGifticonBarcode = (productIdx) => {
-        navigate('/point/GifticonBarcode', { state: { productIdx } });
+    const moveGifticonBarcode = (purchaseIdx) => {
+        navigate('/point/GifticonBarcode', { state: { purchaseIdx } });
     };
 
     const handleCategoryClick = (category) => {
@@ -257,7 +257,7 @@ function PointMain() {
                         <button className="game-button food-matching" onClick={() => handleGameClick("음식 확대사진 맞추기 게임")}>
                             <PointgameFoodMatching/>
                         </button>
-                        <button className="game-button avoid-food" onClick={() => handleGameClick("음식 피하기 게임")}>
+                        <button className="game-button avoid-fruits" onClick={() => handleGameClick("과일 피하기 게임")}>
                             <PointgameAvoid/>
                         </button>
                         <button className="game-button slot-machine" onClick={() => handleGameClick("슬롯 게임")}>
@@ -305,7 +305,7 @@ function PointMain() {
                                 <div className="product-list">
                                     {filteredPurchasedProducts.map(product => (
                                         <button key={product.purchaseIdx} className="product-item"
-                                                onClick={() => moveGifticonBarcode(product.pointShop?.giftIdx)}>
+                                                onClick={() => moveGifticonBarcode(product.purchaseIdx)}>
                                             <img src={product.pointShop?.giftImageUrl || 'default_image_url'}
                                                  alt={product.pointShop?.giftDescription || 'No description'}/>
                                             <h3>{product.pointShop?.giftBrand}</h3>

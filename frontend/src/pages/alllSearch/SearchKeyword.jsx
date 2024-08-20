@@ -1,5 +1,5 @@
 /*global kakao*/
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import '../../assets/style/allSearch/AllSearch.css';
 import NaverImageSearch from "../../components/NaverImageSearch";
 import {
@@ -36,6 +36,18 @@ const SearchKeyword = () => {
     // 주변 음식점 정렬 (거리순)
     const sortedRestaurants = restaurants.slice().sort((a, b) => a.distance - b.distance);
 
+    const fetchBookmarkCounts = useCallback(async (restaurantIds) => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/bookmarks/restaurants/count', {
+                params: { restaurantIds: restaurantIds.join(',') }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('북마크 개수 가져오기 실패:', error);
+            return {};
+        }
+    }, []);
+
     useEffect(() => {
         const fetchUserBookmarks = async () => {
             const userIdx = getUserIdx();
@@ -64,13 +76,15 @@ const SearchKeyword = () => {
 
                     if (deleteResponse.status === 204) { // 삭제 성공 시
                         setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== restaurant.id));
-                        // 북마크 개수 업데이트 (필요에 따라)
-                        setRestaurants(prevRestaurants => prevRestaurants.map(r => // r로 변수명 변경
-                            r.id === restaurant.id ? {...r, bookmarks_count: (r.bookmarks_count || 0) - 1} : r
-                        ));
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(restaurants.map(r => r.id))
+                            .then(bookmarkCounts => {
+                                setRestaurants(prevRestaurants => prevRestaurants.map(r =>
+                                    r.id === restaurant.id ? { ...r, bookmarks_count: bookmarkCounts[r.id] || 0 } : r
+                                ));
+                            });
                     } else {
                         console.error('북마크 삭제 실패:', deleteResponse);
-                        // 에러 처리 로직 추가 (필요에 따라)
                     }
                 } else {
                     // 북마크 추가 요청
@@ -84,13 +98,15 @@ const SearchKeyword = () => {
 
                     if (addResponse.status === 200) { // 추가 성공 시
                         setUserBookmarks(prevBookmarks => [...prevBookmarks, restaurant.id]);
-                        // 북마크 개수 업데이트 (필요에 따라)
-                        setRestaurants(prevRestaurants => prevRestaurants.map(r =>  // r로 변수명 변경
-                            r.id === restaurant.id ? {...r, bookmarks_count: (r.bookmarks_count || 0) + 1} : r
-                        ));
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(restaurants.map(r => r.id))
+                            .then(bookmarkCounts => {
+                                setRestaurants(prevRestaurants => prevRestaurants.map(r =>
+                                    r.id === restaurant.id ? { ...r, bookmarks_count: bookmarkCounts[r.id] || 0 } : r
+                                ));
+                            });
                     } else {
                         console.error('북마크 추가 실패:', addResponse);
-                        // 에러 처리 로직 추가 (필요에 따라)
                     }
                 }
             } catch (error) {
@@ -98,6 +114,7 @@ const SearchKeyword = () => {
             }
         }
     };
+
 
     // 음식점과 레시피를 동시에 검색하는 useEffect
     useEffect(() => {
@@ -113,8 +130,17 @@ const SearchKeyword = () => {
 
                 ps.keywordSearch(keyword, (data, status) => {
                     if (status === kakao.maps.services.Status.OK) {
-                        const filteredData = data.filter(restaurant => restaurant.category_name.includes("음식점"));
-                        setRestaurants(filteredData);
+                        fetchBookmarkCounts(data.map(restaurant => restaurant.id))
+                            .then(bookmarkCounts => {
+                                // 사용자 북마크 정보와 북마크 개수를 이용하여 isBookmarked, bookmarks_count 필드 추가
+                                const updatedData = data.map(restaurant => ({
+                                    ...restaurant,
+                                    isBookmarked: userBookmarks.includes(restaurant.id),
+                                    bookmarks_count: bookmarkCounts[restaurant.id] || 0
+                                }));
+
+                                setRestaurants(updatedData);
+                            });
                     } else {
                         console.error("음식점 검색 실패:", status);
                     }
@@ -283,17 +309,55 @@ const SearchKeyword = () => {
                     <p>레시피가 없습니다.</p>
                 )}
             <div className="pagination">
-                {[...Array(totalPages)].map((_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => handlePageChange(i)}
-                        className={i === currentPage ? 'active' : ''}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-            </div>
+                {/* 첫 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(0)} // 첫 페이지로 이동
+                    disabled={currentPage === 0} // 첫 페이지에서는 비활성화
+                >
+                    &laquo; 첫 페이지
+                </button>
 
+                {/* 이전 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(currentPage - 1)} // 이전 페이지로 이동
+                    disabled={currentPage === 0} // 첫 페이지에서는 비활성화
+                >
+                    &lsaquo; 이전
+                </button>
+
+                {/* 현재 페이지 주변의 다섯 개의 페이지 번호만 표시 */}
+                {[...Array(totalPages)].slice(
+                    Math.max(0, currentPage - 2),
+                    Math.min(totalPages, currentPage + 3)
+                ).map((_, i) => {
+                    const pageNumber = Math.max(0, currentPage - 2) + i;
+                    return (
+                        <button
+                            key={pageNumber}
+                            onClick={() => handlePageChange(pageNumber)} // 페이지 변경 핸들러 호출
+                            className={pageNumber === currentPage ? 'active' : ''}  // 현재 페이지는 활성화된 스타일 적용
+                        >
+                            {pageNumber + 1} {/* 페이지 번호 표시 */}
+                        </button>
+                    );
+                })}
+
+                {/* 다음 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(currentPage + 1)} // 다음 페이지로 이동
+                    disabled={currentPage === totalPages - 1} // 마지막 페이지에서는 비활성화
+                >
+                    다음 &rsaquo;
+                </button>
+
+                {/* 마지막 페이지로 이동 버튼 */}
+                <button
+                    onClick={() => handlePageChange(totalPages - 1)} // 마지막 페이지로 이동
+                    disabled={currentPage === totalPages - 1} // 마지막 페이지에서는 비활성화
+                >
+                    마지막 페이지 &raquo;
+                </button>
+            </div>
         </div>
     );
 };

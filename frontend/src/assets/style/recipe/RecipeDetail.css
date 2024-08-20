@@ -8,6 +8,14 @@
     gap: 1.5em;
 }
 
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin: 20px auto;
+}
+
 .recipe-detail-main .page-top{
      position: absolute;
      z-index: 2;

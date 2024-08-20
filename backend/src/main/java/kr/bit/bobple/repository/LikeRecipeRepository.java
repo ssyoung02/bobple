@@ -10,12 +10,37 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+/**
+ * LikeRecipeRepository 인터페이스
+ * 좋아요(LikeRecipe) 엔티티와 관련된 데이터베이스 작업을 처리하는 JPA 레포지토리입니다.
+ */
 public interface LikeRecipeRepository extends JpaRepository<LikeRecipe, Long> {
-    // 특정 사용자와 레시피의 좋아요 여부 확인
+
+    /**
+     * 특정 사용자가 특정 레시피에 좋아요를 눌렀는지 여부를 확인하는 메서드
+     *
+     * @param userIdx 사용자 ID
+     * @param recipeId 레시피 ID
+     * @return 좋아요가 눌렸는지 여부 (true/false)
+     */
     boolean existsByUser_UserIdxAndRecipe_Id(Long userIdx, Long recipeId);
-    // 특정 사용자가 좋아요한 레시피 목록을 페이지네이션으로 조회
+
+    /**
+     * 특정 사용자가 좋아요한 레시피 목록을 페이지네이션 방식으로 조회하는 메서드
+     *
+     * @param userIdx 사용자 ID
+     * @param pageable 페이지네이션 정보
+     * @return 사용자가 좋아요한 레시피 목록 (페이징 처리된 Page 객체)
+     */
     Page<LikeRecipe> findByUser_UserIdx(Long userIdx, Pageable pageable);
-    // 특정 사용자와 레시피의 좋아요 정보 조회
+
+    /**
+     * 특정 사용자와 특정 레시피의 좋아요 정보를 조회하는 메서드
+     *
+     * @param user 사용자 정보
+     * @param recipe 레시피 정보
+     * @return 사용자와 레시피에 대한 좋아요 정보가 담긴 Optional 객체
+     */
     Optional<LikeRecipe> findByUserAndRecipe(User user, Recipe recipe);
 
 }
