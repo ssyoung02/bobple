@@ -22,7 +22,7 @@ import MainRecipeCard from "./recipe/MainRecipeCard";
 
 function MainPage({theme}) {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);ㅋㅋ
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const userData = {
