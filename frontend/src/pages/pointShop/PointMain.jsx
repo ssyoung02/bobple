@@ -145,8 +145,8 @@ function PointMain() {
                 case "음식 확대사진 맞추기 게임":
                     navigate('/point/pointGame/MatchingGame');
                     break;
-                case "음식 피하기 게임":
-                    navigate('/point/pointGame/FoodAvoid');
+                case "과일 피하기 게임":
+                    navigate('/point/pointGame/FruitsAvoid');
                     break;
                 case "슬롯 게임":
                     navigate('/point/pointGame/SlotGame');
@@ -257,7 +257,7 @@ function PointMain() {
                         <button className="game-button food-matching" onClick={() => handleGameClick("음식 확대사진 맞추기 게임")}>
                             <PointgameFoodMatching/>
                         </button>
-                        <button className="game-button avoid-food" onClick={() => handleGameClick("음식 피하기 게임")}>
+                        <button className="game-button avoid-fruits" onClick={() => handleGameClick("과일 피하기 게임")}>
                             <PointgameAvoid/>
                         </button>
                         <button className="game-button slot-machine" onClick={() => handleGameClick("슬롯 게임")}>

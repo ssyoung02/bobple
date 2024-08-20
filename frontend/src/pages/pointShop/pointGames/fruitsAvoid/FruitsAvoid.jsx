@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {useLocation, useNavigate} from 'react-router-dom'; // React Router useNavigate import
-import '../../../../assets/style/pointGame/avoid/FoodAvoid.css';
+import '../../../../assets/style/pointGame/avoid/FruitsAvoid.css';
 import bobpleMascot from '../../../../assets/images/bobple_mascot.png';
 import {getUserIdx} from "../../../../utils/auth"; // 이미지 import
 import axios from 'axios';
@@ -12,7 +12,7 @@ const CANVAS_HEIGHT = 600; // 캔버스 높이 설정
 const CHAR_SIZE = 60; // 캐릭터 크기
 const BALL_RADIUS = 10; // 공의 반지름
 const CHAR_SPEED = 10; // 캐릭터 이동 속도(ms)
-const CREATE_BALL_INTERVAL = 250; // 공 생성 주기(ms)
+const CREATE_BALL_INTERVAL = 300; // 공 생성 주기(ms)
 const MOBILE_CHAR_MOVE = 15; // 모바일 캐릭터 이동 거리
 const USER = bobpleMascot; // 캐릭터 이미지의 경로
 const fruits = ["🍎", "🍌", "🍒", "🍇", "🍉", "🍓", "🍊", "🥝", "🍍"]; // 과일 이모티콘 배열
@@ -20,10 +20,9 @@ const fruits = ["🍎", "🍌", "🍒", "🍇", "🍉", "🍓", "🍊", "🥝", 
 const DIRECTIONS = {
     LEFT: "LEFT",
     RIGHT: "RIGHT",
-    STOP: "STOP",
 };
 
-const FoodAvoid = () => {
+const FruitsAvoid = () => {
     const [fruitBalls, setFruitBalls] = useState([]);
     const [position, setPosition] = useState({ x: CANVAS_WIDTH / 2 - 15, y: CANVAS_HEIGHT - CHAR_SIZE });
     const [direction, setDirection] = useState(DIRECTIONS.STOP);
@@ -250,7 +249,7 @@ const FoodAvoid = () => {
             axios.post('http://localhost:8080/api/point/result', {
                 userIdx: parseInt(userIdx, 10),
                 point: finalPoint,
-                pointComment: finalPoint > 0 ? "음식 피하기 게임" : "음식 피하기 게임 실패" // point에 따라 comment 변경
+                pointComment: finalPoint > 0 ? "과일 피하기 게임" : "과일 피하기 게임 실패" // point에 따라 comment 변경
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -282,7 +281,7 @@ const FoodAvoid = () => {
     return (
         <div className="avoid-body">
             <button className="arrow-btn avoid" onClick={handleExit}><ArrowLeftLong/></button>
-            <h1>AVOID FOOD</h1>
+            <h1>FRUITS AVOID</h1>
             <div className="avoid-container">
                 <canvas className="avoid-canvas" ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>
                 <div className="point-game-1st-btn">
@@ -319,4 +318,4 @@ const FoodAvoid = () => {
     );
 };
 
-export default FoodAvoid;
+export default FruitsAvoid;
