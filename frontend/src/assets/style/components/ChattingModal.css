@@ -140,10 +140,11 @@
     flex-direction: column;
     gap: 20px;
     font-size: 18px;
+    width: 90%;
 }
 
 .cal-btn {
-    width: 200%;
+    width: 100%;
     font-weight: bold;
     padding: 10px 10px;
     color: white;

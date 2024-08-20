@@ -50,6 +50,7 @@
 
 .group-modal-header button {
     font-weight: bold;
+    font-size: 0.8em;
 }
 
 .group-modal-title {
@@ -59,7 +60,8 @@
 }
 
 .form-group {
-    margin-bottom: 20px;
+    position: relative;
+    margin-bottom: 5px;
     width: 90%;
 }
 
@@ -69,17 +71,24 @@
 }
 
 .form-group textarea {
-    background-color: #dddddd;
-    border: none;
-}
-
-.form-group input,
-.form-group textarea {
     width: 100%;
     padding: 8px;
-    box-sizing: border-box;
+    background-color: #eee;
+    border: none;
     border-radius: 5px;
+    box-sizing: border-box;
     resize: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid #233B6F;
+    outline: none;
+    font-size: 14px;
 }
 
 .group-image-container {
@@ -134,6 +143,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    padding: 5px !important;
 }
 
 /* fadeIn 애니메이션 */
@@ -199,13 +209,13 @@
     font-size: 25px;
 }
 
-.group-text-container h5 {
-    font-size: 15px;
+.group-text-container h6 {
+    font-size: 14px;
 }
 
 .group-text-container p {
     padding: 30px;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .group-modal-create-btn.join-btn {
@@ -215,4 +225,39 @@
     font-weight: bold;
     padding: 10px;
     border-radius: 8px;
+}
+
+/*모달 추가 스타일*/
+.group-caution{
+    font-size: 10px;
+    color: #898989;
+    margin: 10px 0 !important;
+}
+
+.char-count{
+    display: inline-block;
+    color: #898989;
+    font-size: 12px;
+    width: 100%;
+    text-align: right;
+}
+
+.group-people{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    color: #898989;
+    font-size: 14px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
 }

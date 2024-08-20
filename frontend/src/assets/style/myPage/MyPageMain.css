@@ -97,7 +97,7 @@
 }
 .activites-icon.bookmark svg {
     translate: -2px;
-    fill: var(--header-color);
+    fill: var(--header-link-color);
 }
 .activites-icon svg{
     width: 100%;

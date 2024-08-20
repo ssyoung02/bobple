@@ -94,8 +94,8 @@ const JoinGroupModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chat
                         <img src={image} alt="이미지 미리보기" className="preview-image"/>
                     </div>
                     <div className="group-text-container">
-                        <h3>{chatRoomTitle}</h3>
-                        <h5>{currentParticipants}명 참여 중 ({chatRoomPeople}명 모집)</h5>
+                        <h4>{chatRoomTitle}</h4>
+                        <span>{currentParticipants}명 참여 중 ({chatRoomPeople}명 모집)</span>
                         <p>{chatRoomDescription}</p>
                     </div>
                 </div>

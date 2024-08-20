@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../../assets/style/eatingGroup/GroupMain.css';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/modal/ModalContext';
 import axios from 'axios';
-import {LocationDot, SearchIcon} from "../../components/imgcomponents/ImgComponents";
+import { LocationDot, SearchIcon } from "../../components/imgcomponents/ImgComponents";
 import io from 'socket.io-client';
 
 const GroupMain = () => {
@@ -15,6 +15,9 @@ const GroupMain = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredChatRooms, setFilteredChatRooms] = useState([]);
     const [unreadMessagesCount, setUnreadMessagesCount] = useState({});
+
+    const meetingTextRef = useRef(null);
+    const [isScrollable, setIsScrollable] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -44,7 +47,6 @@ const GroupMain = () => {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                // DENIED 상태의 채팅방을 제외
                 const availableChatRooms = response.data.filter(room => room.status !== 'DENIED');
                 setMyChatRooms(availableChatRooms);
 
@@ -122,6 +124,13 @@ const GroupMain = () => {
             }
         });
         setFilteredChatRooms(filtered);
+    };
+
+    const handleDescriptionScroll = (description) => {
+        const element = meetingTextRef.current;
+        if (element.scrollWidth > element.clientWidth) {
+            setIsScrollable(true);
+        }
     };
 
     return (
@@ -209,8 +218,11 @@ const GroupMain = () => {
 
                                         </div>
                                     </div>
-                                    <div className="meeting-text">
-                                        <p>{chatRoom.description}</p>
+                                    <div
+                                        className={`meeting-text ${isScrollable ? 'scrollable' : ''}`}
+                                        ref={meetingTextRef}
+                                    >
+                                        {chatRoom.description}
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +235,7 @@ const GroupMain = () => {
 
             <div className="fab-box">
                 <button className="fab" onClick={showCreateModal}>
-                    +
+                +
                 </button>
             </div>
         </div>

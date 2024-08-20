@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import { Calculator } from "../imgcomponents/ImgComponents";
+import {Calculator, CloseIcon} from "../imgcomponents/ImgComponents";
 
 const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatRoomPeople, toggleTheme }) => {
     const [participants, setParticipants] = useState([]);
@@ -152,7 +152,9 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
     return (
         <div className={`modal ${modalState}`}>
             <div className="modal-content chatting">
-                <button onClick={closeModal} className="chatting-modal-close-btn">X</button>
+                <button onClick={closeModal} className="chatting-modal-close-btn">
+                    <CloseIcon/>
+                </button>
                 <div className="chatRoom-header">
                     <h4 className="chatRoom-title">{chatRoomTitle}</h4>
                 </div>
