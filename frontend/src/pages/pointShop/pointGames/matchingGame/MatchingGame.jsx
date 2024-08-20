@@ -8,15 +8,16 @@ import Matching from '../../../../assets/images/MatchingGame.png';
 import {ArrowLeftLong} from "../../../../components/imgcomponents/ImgComponents";
 
 function MatchingGame() {
-    const [userInput, setUserInput] = useState('');
-    const [score, setScore] = useState(0);
-    const [currentGameIndex, setCurrentGameIndex] = useState(0);
-    const [showAnswer, setShowAnswer] = useState(false);
-    const [answerResult, setAnswerResult] = useState('');
-    const [randomGames, setRandomGames] = useState([]);
-    const [showResult, setShowResult] = useState(false);
+    const [userInput, setUserInput] = useState(''); // 사용자가 입력한 음식 이름 저장
+    const [score, setScore] = useState(0); // 사용자가 맞힌 문제 수 저장
+    const [currentGameIndex, setCurrentGameIndex] = useState(0); // 진행 중인 게임의 인덱스 관리
+    const [showAnswer, setShowAnswer] = useState(false); // 사용자가 제출한 답에 대한 결과 공개 여부 관리
+    const [answerResult, setAnswerResult] = useState(''); // 정답 또는 오답에 대한 피드백 메시지 저장
+    const [randomGames, setRandomGames] = useState([]); // 서버에서 가져온 음식 사진을 랜덤으로 섞어 저장
+    const [showResult, setShowResult] = useState(false); // 게임 종료 여부 관리
+    const [earnedPoint, setEarnedPoint] = useState(0); // 종료 후 계산된 포인트 저장
+
     const location = useLocation();
-    const [earnedPoint, setEarnedPoint] = useState(0);
     const userIdx = getUserIdx();
     const navigate = useNavigate();
 
@@ -33,10 +34,11 @@ function MatchingGame() {
             });
     }, []);
 
+    // 사용자의 입력 값을 'userInput' 상태에 반영
     const handleInputChange = (event) => {
         setUserInput(event.target.value);
     };
-
+    // 사용자가 입력한 음식 이름을 제출할 때 호출 (정답과 비교 후 결과 표시 및 점수 업데이트)
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -59,6 +61,7 @@ function MatchingGame() {
         setUserInput('');
     };
 
+    // 다음 게임으로 이동 (마지막 문제일 경우 결과 확인)
     const handleNext = () => {
         if (currentGameIndex === randomGames.length - 1 && showAnswer) {
             setShowResult(true);
@@ -112,6 +115,7 @@ function MatchingGame() {
         }
     }
 
+    // 게임 탭 이동
     const moveGameHome = () => {
         navigate('/point', { state: {selectedTab: '게임'}});
     }
