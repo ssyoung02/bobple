@@ -2,7 +2,9 @@ package kr.bit.bobple.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Data
@@ -30,7 +32,7 @@ public class PurchasedGift {
 
     // 기본 생성자
     public PurchasedGift() {
-        this.purchaseDate = LocalDateTime.now();
+        this.purchaseDate = LocalDateTime.now(ZoneId.of("Asia/Seoul"));  // 타임존 설정
         this.isUsed = false;
     }
 
@@ -38,10 +40,12 @@ public class PurchasedGift {
     public PurchasedGift(User user, PointShop pointShop) {
         this.user = user;
         this.pointShop = pointShop;
-        this.purchaseDate = LocalDateTime.now();
+        this.purchaseDate = LocalDateTime.now(ZoneId.of("Asia/Seoul"));  // 타임존 설정
         this.isUsed = false;
     }
 
+
+    // 만료 여부 확인 메서드
     public boolean isExpired() {
         return purchaseDate.plusYears(1).isBefore(LocalDateTime.now());
     }

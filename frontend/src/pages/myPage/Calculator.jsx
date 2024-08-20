@@ -48,7 +48,7 @@ const Calculator = () => {
                     alert('OCR 처리에 실패했습니다.');
                 }
             } catch (error) {
-                console.error('Error uploading file:', error);
+                //console.error('Error uploading file:', error);
                 alert('파일 업로드 중 오류가 발생했습니다.');
             }
         }
