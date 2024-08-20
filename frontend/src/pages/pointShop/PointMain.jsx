@@ -162,8 +162,8 @@ function PointMain() {
         navigate('/point/pointGifticonDetail', { state: { productIdx } });
     };
 
-    const moveGifticonBarcode = (productIdx) => {
-        navigate('/point/GifticonBarcode', { state: { productIdx } });
+    const moveGifticonBarcode = (purchaseIdx) => {
+        navigate('/point/GifticonBarcode', { state: { purchaseIdx } });
     };
 
     const handleCategoryClick = (category) => {
@@ -305,7 +305,7 @@ function PointMain() {
                                 <div className="product-list">
                                     {filteredPurchasedProducts.map(product => (
                                         <button key={product.purchaseIdx} className="product-item"
-                                                onClick={() => moveGifticonBarcode(product.pointShop?.giftIdx)}>
+                                                onClick={() => moveGifticonBarcode(product.purchaseIdx)}>
                                             <img src={product.pointShop?.giftImageUrl || 'default_image_url'}
                                                  alt={product.pointShop?.giftDescription || 'No description'}/>
                                             <h3>{product.pointShop?.giftBrand}</h3>

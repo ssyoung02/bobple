@@ -6,7 +6,8 @@ import '../../assets/style/pointShop/PointGifticonDetail.css';
 function PointGifticonDetail() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { productIdx } = location.state || {};
+    //const { productIdx } = location.state || {};
+    const { purchaseIdx } = location.state || {};
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,15 +22,13 @@ function PointGifticonDetail() {
             return;
         }
 
-        if (!productIdx) {
+        if (!purchaseIdx) { // 여기서 productIdx 대신 purchaseIdx를 사용합니다.
             setError('상품 정보가 제공되지 않았습니다.');
             setLoading(false);
             return;
         }
 
-        //console.log(`Fetching product details for productIdx: ${productIdx}`);
-
-        axios.get(`http://localhost:8080/api/GifticonBarcode/${productIdx}`, {
+        axios.get(`http://localhost:8080/api/GifticonBarcode/${purchaseIdx}`, { // URL에서 productIdx 대신 purchaseIdx를 사용합니다.
             params: { userIdx },
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -37,17 +36,15 @@ function PointGifticonDetail() {
             withCredentials: true
         })
             .then(response => {
-                //console.log('API Response:', response.data);
-                //console.log('Purchase Date:', response.data.purchaseDate); // 추가된 부분
                 setProduct(response.data);
                 setLoading(false);
             })
             .catch(error => {
-                //console.error('Error fetching product details:', error);
                 setError('상품 정보를 가져오는 중 오류가 발생했습니다.');
                 setLoading(false);
             });
-    }, [productIdx, userIdx, token, navigate]);
+    }, [purchaseIdx, userIdx, token, navigate]);
+
 
     const handleUse = () => {
         if (!product) {
