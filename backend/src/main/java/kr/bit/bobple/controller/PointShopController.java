@@ -60,11 +60,12 @@ public class PointShopController {
         return ResponseEntity.ok(purchasedGifts);
     }
 
-    @GetMapping("/GifticonBarcode/{productIdx}")
-    public ResponseEntity<PurchasedGiftDto> getBarcodeByProductIdx(@PathVariable Long productIdx, @RequestParam Long userIdx) {
-        PurchasedGiftDto purchasedGiftDto = PurchasedGiftDto.fromEntity(pointShopService.getPurchasedGiftByProductIdxAndUserIdx(productIdx, userIdx));
+    @GetMapping("/GifticonBarcode/{purchaseIdx}")
+    public ResponseEntity<PurchasedGiftDto> getBarcodeByPurchaseIdx(@PathVariable Long purchaseIdx, @RequestParam Long userIdx) {
+        PurchasedGiftDto purchasedGiftDto = PurchasedGiftDto.fromEntity(pointShopService.getPurchasedGiftByPurchaseIdxAndUserIdx(purchaseIdx, userIdx));
         return ResponseEntity.ok(purchasedGiftDto);
     }
+
 
     @PostMapping("/GiftUse")
     public ResponseEntity<Boolean> useGift(@RequestParam Long userIdx, @RequestParam Long productIdx) {

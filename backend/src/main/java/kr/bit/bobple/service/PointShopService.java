@@ -127,14 +127,15 @@ public class PointShopService {
     }
 
     // 특정 사용자와 상품에 대한 구매된 기프티콘 조회
-    public PurchasedGift getPurchasedGiftByProductIdxAndUserIdx(Long productIdx, Long userIdx) {
-        List<PurchasedGift> purchasedGifts = purchasedGiftRepository.findByUserUserIdxAndPointShopGiftIdx(userIdx, productIdx);
+    public PurchasedGift getPurchasedGiftByPurchaseIdxAndUserIdx(Long purchaseIdx, Long userIdx) {
+        Optional<PurchasedGift> purchasedGift = purchasedGiftRepository.findByPurchaseIdxAndUserUserIdx(purchaseIdx, userIdx);
 
-        if (purchasedGifts.isEmpty()) {
+        if (purchasedGift.isPresent()) {
+            return purchasedGift.get();
+        } else {
             throw new NotFoundException("구매된 선물을 찾을 수 없습니다.");
         }
-
-        // 여러 결과가 반환되는 경우 첫 번째 결과를 반환하거나 원하는 로직으로 처리
-        return purchasedGifts.get(0);
     }
+
+
 }
