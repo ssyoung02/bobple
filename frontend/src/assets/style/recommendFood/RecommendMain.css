@@ -67,6 +67,7 @@
 }
 
 .menu-recommendation-title {
+    color: var(--main-text-color);
     font-family: NotoSansKR-Bold, serif;
     font-size: 1.3em;
 }
@@ -235,12 +236,20 @@
 
 .pub-bookmark-state {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .pub-bookmarks{
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 5px;
+    fill: var(--header-color);
+}
+
+.pub-bookmarks span {
+    color: var(--header-color);
 }
 .pub-bookmarks svg{
     height: 16px;
@@ -250,4 +259,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.restaurant-category{
+    font-size: 14px;
 }

@@ -4,6 +4,7 @@ import { getUserIdx } from "../../utils/auth";
 import {Link, useNavigate} from 'react-router-dom';
 import '../../assets/style/myPage/MyReviews.css';
 import {ArrowLeftLong, StarFill, StarLine} from "../../components/imgcomponents/ImgComponents";
+import PageHeader from "../../components/layout/PageHeader";
 
 // Star 컴포넌트 직접 구현
 function Star({ filled }) {
@@ -66,10 +67,7 @@ function MyReviews() {
 
     return (
         <div>
-            <div className="myReview-header">
-                <ArrowLeftLong/>
-                <h2>작성한 리뷰</h2>
-            </div>
+            <PageHeader title="작성한 리뷰" />
             <ul style={{listStyle: 'none', padding: 0}}>
                 {myReviews.map(review => (
                     <li key={review.reviewIdx} className="myReview-box">

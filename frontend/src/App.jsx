@@ -23,7 +23,7 @@ function App() {
                 <Route path="/admin/*" element={<AdminRouter />} />
                 <Route path="/*" element={
                     <Layout theme={theme} toggleTheme={toggleTheme}>
-                        <MainRouter />
+                        <MainRouter theme={theme} />
                     </Layout>
                 } />
             </Routes>

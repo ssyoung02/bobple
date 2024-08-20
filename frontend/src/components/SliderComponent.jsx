@@ -44,6 +44,7 @@ export default function SliderComponent() {
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
+        arrows: false,
         afterChange: (current) => setCurrentSlide(current) // 슬라이드 변경 후 현재 슬라이드 번호를 업데이트
     };
 

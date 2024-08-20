@@ -107,6 +107,7 @@
 .recommend-category-button{
     height: 5em;
     font-size: 0.8em;
+    color: var(--header-color);
 }
 
 .category-icon{
@@ -146,6 +147,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--header-color);
+    fill: var(--header-color);
 }
 .user-recipe-card-user-left{
     display: flex;
@@ -179,7 +182,6 @@
     position: relative;
     width: 20px;
     height: 20px;
-    z-index: 1;
 }
 
 .recipe-like-button svg{
@@ -224,7 +226,7 @@
 
 /*추천 레시피 하단*/
 .user-recommended-recipe-card-content{
-    color: black;
+    color: var(--header-color);
     height: 40px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -237,6 +239,7 @@
 .recipe-slide-banner{
     height: 250px;
     width: 100%;
+
 }
 
 .recipe-slide-banner .slick-track{

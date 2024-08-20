@@ -92,7 +92,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: border 0.3s;
-    color: var(--sub-text-color);
+    color: var(--main-text-color);
 }
 
 .product-item:hover {
@@ -112,7 +112,6 @@
 
 .product-item p {
     font-size: 0.9em;
-    color: var(--sub-text-color);
 }
 
 /* 반응형 조정 */
@@ -181,7 +180,7 @@
     background: #FFFEE2;
 }
 
-.avoid-food{
+.avoid-fruits{
     background: #FF9292;
 }
 

@@ -1,5 +1,5 @@
 /*global kakao*/
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import '../../assets/style/allSearch/AllSearch.css';
 import NaverImageSearch from "../../components/NaverImageSearch";
 import {
@@ -13,6 +13,7 @@ import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import {getUserIdx} from "../../utils/auth";
 import axios from "axios";
 import RecipeCard from "../recipe/RecipeCard";
+import MainRecipeCard from "../recipe/MainRecipeCard";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -34,6 +35,18 @@ const SearchKeyword = () => {
 
     // 주변 음식점 정렬 (거리순)
     const sortedRestaurants = restaurants.slice().sort((a, b) => a.distance - b.distance);
+
+    const fetchBookmarkCounts = useCallback(async (restaurantIds) => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/bookmarks/restaurants/count', {
+                params: { restaurantIds: restaurantIds.join(',') }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('북마크 개수 가져오기 실패:', error);
+            return {};
+        }
+    }, []);
 
     useEffect(() => {
         const fetchUserBookmarks = async () => {
@@ -63,13 +76,15 @@ const SearchKeyword = () => {
 
                     if (deleteResponse.status === 204) { // 삭제 성공 시
                         setUserBookmarks(prevBookmarks => prevBookmarks.filter(id => id !== restaurant.id));
-                        // 북마크 개수 업데이트 (필요에 따라)
-                        setRestaurants(prevRestaurants => prevRestaurants.map(r => // r로 변수명 변경
-                            r.id === restaurant.id ? {...r, bookmarks_count: (r.bookmarks_count || 0) - 1} : r
-                        ));
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(restaurants.map(r => r.id))
+                            .then(bookmarkCounts => {
+                                setRestaurants(prevRestaurants => prevRestaurants.map(r =>
+                                    r.id === restaurant.id ? { ...r, bookmarks_count: bookmarkCounts[r.id] || 0 } : r
+                                ));
+                            });
                     } else {
                         console.error('북마크 삭제 실패:', deleteResponse);
-                        // 에러 처리 로직 추가 (필요에 따라)
                     }
                 } else {
                     // 북마크 추가 요청
@@ -83,13 +98,15 @@ const SearchKeyword = () => {
 
                     if (addResponse.status === 200) { // 추가 성공 시
                         setUserBookmarks(prevBookmarks => [...prevBookmarks, restaurant.id]);
-                        // 북마크 개수 업데이트 (필요에 따라)
-                        setRestaurants(prevRestaurants => prevRestaurants.map(r =>  // r로 변수명 변경
-                            r.id === restaurant.id ? {...r, bookmarks_count: (r.bookmarks_count || 0) + 1} : r
-                        ));
+                        // 북마크 개수 업데이트
+                        fetchBookmarkCounts(restaurants.map(r => r.id))
+                            .then(bookmarkCounts => {
+                                setRestaurants(prevRestaurants => prevRestaurants.map(r =>
+                                    r.id === restaurant.id ? { ...r, bookmarks_count: bookmarkCounts[r.id] || 0 } : r
+                                ));
+                            });
                     } else {
                         console.error('북마크 추가 실패:', addResponse);
-                        // 에러 처리 로직 추가 (필요에 따라)
                     }
                 }
             } catch (error) {
@@ -97,6 +114,7 @@ const SearchKeyword = () => {
             }
         }
     };
+
 
     // 음식점과 레시피를 동시에 검색하는 useEffect
     useEffect(() => {
@@ -112,8 +130,17 @@ const SearchKeyword = () => {
 
                 ps.keywordSearch(keyword, (data, status) => {
                     if (status === kakao.maps.services.Status.OK) {
-                        const filteredData = data.filter(restaurant => restaurant.category_name.includes("음식점"));
-                        setRestaurants(filteredData);
+                        fetchBookmarkCounts(data.map(restaurant => restaurant.id))
+                            .then(bookmarkCounts => {
+                                // 사용자 북마크 정보와 북마크 개수를 이용하여 isBookmarked, bookmarks_count 필드 추가
+                                const updatedData = data.map(restaurant => ({
+                                    ...restaurant,
+                                    isBookmarked: userBookmarks.includes(restaurant.id),
+                                    bookmarks_count: bookmarkCounts[restaurant.id] || 0
+                                }));
+
+                                setRestaurants(updatedData);
+                            });
                     } else {
                         console.error("음식점 검색 실패:", status);
                     }
@@ -211,7 +238,8 @@ const SearchKeyword = () => {
                     <SearchIcon/>
                 </button>
             </div>
-            <h5>{keyword} 검색 결과</h5>
+            <h4><span style={{ color: "#ff9800" }}>{keyword}</span> 검색 결과</h4>
+            <hr/>
             <div className="search-result-title">
                 <h4>주변 음식점</h4>
                 {/* 더보기 버튼 */}
@@ -234,15 +262,13 @@ const SearchKeyword = () => {
                             <div className="restaurant-left">
                                 <a href={restaurant.place_url} target="_blank" rel="noreferrer">
                                     <h6 className="restaurant-name">{restaurant.place_name}</h6>
-                                    <p className="restaurant-address">{restaurant.address_name}</p>
                                     <span
                                         className="restaurant-category"><CaretRight/>{restaurant.category_name.replace('음식점 > ', '')}</span>
+                                    <p className="restaurant-address">{restaurant.address_name}</p>
                                 </a>
                             </div>
                             {/* 북마크 버튼 추가 */}
                             <div className="restaurant-right search-keyword">
-                                <span
-                                    className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                                 <button
                                     className="restaurant-bookmarks search-keyword"
                                     onClick={() => handleBookmarkToggle(restaurant)}
@@ -254,32 +280,34 @@ const SearchKeyword = () => {
                                     )}
                                     {restaurant.bookmarks_count || 0}
                                 </button>
+                                <span
+                                    className="restaurant-distance"><LocationDot/>{Math.round(restaurant.distance)}m</span>
                             </div>
                         </div>
                     </li>
                 ))}
             </ul>
-
+            <hr/>
             <div className="search-result-title">
                 <h4>관련 레시피</h4>
                 {recipes.length > 0 &&
                     <button className="more-button" onClick={handleRecipeMoreClick}>더보기</button>
                 }
             </div>
-            {recipes.length > 0 ? (
-                <div className="recipe-list">
-                    {recipes.map(recipe => (
-                        <div key={recipe.recipeIdx} className="recipe-list-item">
-                            <RecipeCard recipe={recipe}
-                                        onDelete={handleRecipeDelete}
-                                        onLike={handleRecipeLike}/>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <p>레시피가 없습니다.</p>
-            )}
-            {/* 페이지네이션 버튼 */}
+            {
+                recipes.length > 0 ? (
+                    <ul className="restaurant-list">
+                        {recipes.map(recipe => (
+                            <li key={recipe.recipeIdx} className="restaurant-item">
+                                <MainRecipeCard recipe={recipe}
+                                            onDelete={handleRecipeDelete}
+                                            onLike={handleRecipeLike}/>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>레시피가 없습니다.</p>
+                )}
             <div className="pagination">
                 {/* 첫 페이지로 이동 버튼 */}
                 <button

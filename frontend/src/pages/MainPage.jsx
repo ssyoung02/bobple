@@ -6,7 +6,7 @@ import SliderComponent from "../components/SliderComponent";
 import { clearRecipeLocalStorage } from '../utils/localStorageUtils';
 import {
     AiLunch, Bookmark,
-    CalculatorBanner, FillBookmark,
+    CalculatorBanner, CaretRight, FillBookmark,
     LocationDot,
     Meeting,
     NextTo,
@@ -20,7 +20,7 @@ import RecipeCard from "./recipe/RecipeCard";
 import RecipeContext from "./recipe/RecipeContext";
 import MainRecipeCard from "./recipe/MainRecipeCard";
 
-function MainPage() {
+function MainPage({theme}) {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
 
@@ -298,30 +298,38 @@ function MainPage() {
         <div className="mainPage">
             <SliderComponent/>
             <div className="sliderbox"></div>
-            <div className={"shortMenu"}>
-                <button className={"shortMenuItem"} onClick={moveCalculator}>
-                    <div className={"shortMenuIcon"}><CalculatorBanner/></div>
-                    <p className={"shortMenuName"}>1/N</p>
+            <div className="shortMenu">
+                <button className="shortMenuItem" onClick={moveCalculator}>
+                    <div className="shortMenuIcon">
+                        <CalculatorBanner theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">1/N</p>
                 </button>
-                <button className={"shortMenuItem"} onClick={moveRecipeAI}>
-                    <div className={"shortMenuIcon"}><AiLunch/></div>
-                    <p className={"shortMenuName"}>AI 도시락</p>
+                <button className="shortMenuItem" onClick={moveRecipeAI}>
+                    <div className="shortMenuIcon">
+                        <AiLunch theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">AI 도시락</p>
                 </button>
-                <button className={"shortMenuItem"} onClick={moveGroup}>
-                    <div className={"shortMenuIcon"}><Meeting/></div>
-                    <p className={"shortMenuName"}>번개모임</p>
+                <button className="shortMenuItem" onClick={moveGroup}>
+                    <div className="shortMenuIcon">
+                        <Meeting theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">번개모임</p>
                 </button>
-                <button className={"shortMenuItem"} onClick={moveRecommend}>
-                    <div className={"shortMenuIcon"}><RandomMenu/></div>
-                    <p className={"shortMenuName"}>랜덤메뉴</p>
+                <button className="shortMenuItem" onClick={moveRecommend}>
+                    <div className="shortMenuIcon">
+                        <RandomMenu theme={theme}/> {/* theme 전달 */}
+                    </div>
+                    <p className="shortMenuName">랜덤메뉴</p>
                 </button>
             </div>
             <div className="summation-box">
                 <div className="summation-top">
                     <div className="summation-left">
-                        <sapn className="summation-title">
+                        <span className="summation-title">
                             가까운 매장
-                        </sapn>
+                        </span>
                         <h3>
                             {user && (<>{user.name}님</>)} 근처 맛집
                         </h3>
@@ -331,7 +339,6 @@ function MainPage() {
                     </button>
                 </div>
                 <div className="summation-content">
-
                     {firstThreePubs.length > 0 ? (
                         <ul className="restaurant-info-list">
                             {firstThreePubs.map((pub, index) => (
@@ -348,15 +355,17 @@ function MainPage() {
                                         />
 
                                     </div>
-                                    <div className="pub-info-container">
-                                        <div
-                                            onClick={() => navigate(`/recommend/restaurant/${pub.id}`, {state: {restaurant: pub}})}
-                                            style={{cursor: 'pointer'}} // 스타일로 마우스 포인터를 추가
-                                        >
+                                    <div className="pub-info-container"
+                                         onClick={() => navigate(`/recommend/restaurant/${pub.id}`, {state: {restaurant: pub}})}
+                                         style={{cursor: 'pointer'}}
+                                    >
+                                        <div>
                                             <h6 className="pub-name">{pub.place_name}</h6>
                                         </div>
+                                        <span
+                                            className="restaurant-category"><CaretRight/> {pub.category_name.replace('음식점 > ', '')}</span>
+
                                         <p className="pub-address">{pub.address_name}</p>
-                                        <span className="pub-distance">{Math.round(pub.distance)}m</span>
                                     </div>
                                     <div className="pub-bookmark-state">
                                         <button
@@ -370,13 +379,14 @@ function MainPage() {
                                             )}
                                             {pub.bookmarks_count || 0}
                                         </button>
+                                        <span className="pub-distance"><LocationDot/> {Math.round(pub.distance)}m</span>
                                     </div>
 
                                 </li>
                             ))}
                         </ul>
                     ) : (
-                        <p>주변 술집이 없습니다.</p>
+                        <p>주변 맛집이 없습니다.</p>
                     )}
 
                 </div>
@@ -384,9 +394,9 @@ function MainPage() {
             <div className="summation-box">
                 <div className="summation-top">
                     <div className="summation-left">
-                        <sapn className="summation-title">
+                        <span className="summation-title">
                             BEST 레시피
-                        </sapn>
+                        </span>
                         <h3>
                             오늘의 도시락
                         </h3>

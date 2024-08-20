@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import RecipeContext from '../../pages/recipe/RecipeContext';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../../assets/style/recipe/RecipeForm.css';
@@ -7,7 +7,7 @@ import PageHeader from "../../components/layout/PageHeader";
 import { Clock, FireIcon, ImageIcon } from "../../components/imgcomponents/ImgComponents";
 import { useOnlyHeaderColorChange } from "../../hooks/NavigateComponentHooks";
 import mascot from "../../assets/images/bobple_mascot.png";
-import {clearRecipeLocalStorage} from "../../utils/localStorageUtils"; // CSS 파일 import
+import { clearRecipeLocalStorage } from "../../utils/localStorageUtils"; // CSS 파일 import
 
 /**
  * RecipeForm 컴포넌트
@@ -41,6 +41,11 @@ function RecipeForm() {
      * 컴포넌트가 처음 로드될 때 레시피를 수정할지 새로 등록할지를 결정.
      * 수정 모드일 경우 기존 레시피 정보를 서버에서 가져와 폼에 채움.
      */
+    // 텍스트 영역의 높이를 제어할 ref
+    const ingredientsRef = useRef(null);
+    const instructionsRef = useRef(null);
+    const tagsRef = useRef(null);
+
     useEffect(() => {
         if (recipeIdx) { // 레시피 ID가 존재하면 수정 모드로 전환
             setIsEditing(true);
@@ -49,6 +54,13 @@ function RecipeForm() {
             resetForm(); // 레시피 ID가 없으면 폼 초기화
         }
     }, [recipeIdx]);
+
+    // 컴포넌트가 마운트되거나 상태가 변경될 때 textarea의 높이를 조절
+    useEffect(() => {
+        adjustTextareaHeight(ingredientsRef.current);
+        adjustTextareaHeight(instructionsRef.current);
+        adjustTextareaHeight(tagsRef.current);
+    }, [ingredients, instructions, tags]);
 
     /**
      * 폼을 초기 상태로 리셋하는 함수
@@ -109,6 +121,18 @@ function RecipeForm() {
         if (file) {
             reader.readAsDataURL(file);
         }
+    };
+
+    const adjustTextareaHeight = (textarea) => {
+        if (textarea) {
+            textarea.style.height = 'auto'; // 높이를 자동으로 설정
+            textarea.style.height = `${textarea.scrollHeight}px`; // 내용에 맞게 높이 조절
+        }
+    };
+
+    const handleTextareaChange = (e) => {
+        const textarea = e.target;
+        adjustTextareaHeight(textarea); // 높이 조절 함수 호출
     };
 
     /**
@@ -242,10 +266,8 @@ function RecipeForm() {
                             분
                         </div>
                         <div className="recipe-title-item-detail">
-                            <label htmlFor="calories" className="blind">
-                                <span className="blind">
-                                    칼로리 (kcal)
-                                </span>
+                            <label htmlFor="calories">
+                                <span className="blind">칼로리 (kcal)</span>
                                 <FireIcon />
                             </label>
                             <input
@@ -255,7 +277,7 @@ function RecipeForm() {
                                 onChange={(e) => setCalories(e.target.value)}
                                 placeholder="칼로리"
                             />
-                            Kcal
+                            kcal
                         </div>
                     </div>
                 </div>
@@ -264,15 +286,27 @@ function RecipeForm() {
                     <textarea
                         id="ingredients"
                         value={ingredients}
-                        onChange={(e) => setIngredients(e.target.value)}
+                        ref={ingredientsRef}
+                        onChange={(e) => {
+                            setIngredients(e.target.value);
+                            handleTextareaChange(e); // 높이 조절 함수 호출
+                        }}
                         placeholder="재료를 입력해주세요.(쉼표로 구분)"
+                        style={{ height: 'auto' }} // 초기 높이 설정
                     />
                 </div>
                 <div className="recipe-form-item">
                     <label htmlFor="instructions">조리 방법</label>
                     <textarea
-                        id="instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)}
+                        id="instructions"
+                        value={instructions}
+                        ref={instructionsRef}
+                        onChange={(e) => {
+                            setInstructions(e.target.value);
+                            handleTextareaChange(e); // 높이 조절 함수 호출
+                        }}
                         placeholder="조리 방법을 입력해주세요"
+                        style={{ height: 'auto' }} // 초기 높이 설정
                     />
                 </div>
                 <div className="recipe-form-item">
@@ -281,16 +315,19 @@ function RecipeForm() {
                         type="text"
                         id="tags"
                         value={tags}
-                        onChange={(e) => setTags(e.target.value)}
+                        ref={tagsRef}
+                        onChange={(e) => {
+                            setTags(e.target.value);
+                            handleTextareaChange(e); // 높이 조절 함수 호출
+                        }}
                         placeholder="태그를 입력해주세요.(쉼표로 구분)"
+                        style={{ height: 'auto' }} // 초기 높이 설정
                     />
                 </div>
-
 
                 <div className="recipe-form-item">
                     <label>카테고리</label>
                     <ul className="recipe-category-list">
-
                         {recipeCategory.map(categoryList => (
                             <li key={categoryList.name}>
                                 <input type="radio" id={categoryList.id} value={categoryList.name} checked={category === categoryList.name}

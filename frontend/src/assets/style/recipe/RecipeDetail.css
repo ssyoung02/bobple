@@ -41,7 +41,6 @@
 /*좋아요, 신고*/
 .recipe-detail-user-action{
     position: absolute;
-    top: -15px;
     right: 0;
     display: flex;
     z-index: 1;
@@ -110,9 +109,6 @@
     font-size: 14px;
 }
 
-.recipe-detail-ul {
-    font-weight: bold;
-}
 
 .recipe-sub-title{
     font-size: 18px;

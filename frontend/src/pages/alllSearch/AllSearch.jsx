@@ -21,9 +21,11 @@ const AllSearch = () => {
     const handleSearch = async (searchKeyword) => { // 검색 함수
         const keywordToSearch = searchKeyword || keyword; // 탑 키워드 클릭 시 사용
 
-        if (keywordToSearch.trim() !== '') {
-            await handleSearchClick(keywordToSearch, setTopKeywords); // 서버에 검색어 저장
-            navigate(`/search/SearchKeyword/${encodeURIComponent(keywordToSearch)}`); // 화면 전환
+        const searchQuery = String(keywordToSearch).trim();
+
+        if (searchQuery !== '') {
+            await handleSearchClick(searchQuery, setTopKeywords); // 서버에 검색어 저장
+            navigate(`/search/SearchKeyword/${encodeURIComponent(searchQuery)}`); // 화면 전환
             setKeyword(''); // 검색 후 입력창 초기화
         }
     };
@@ -46,20 +48,12 @@ const AllSearch = () => {
 
                 <button
                     className="AllSearchButton"
-                    onClick={handleSearch} // 검색 버튼 클릭 시 검색 실행
+                    onClick={() => handleSearch(keyword)} // 검색 버튼 클릭 시 검색 실행
                 >
-                    <SearchIcon />
+                    <SearchIcon/>
                 </button>
             </div>
-
-            <div className="search-tagList">
-                <div className="search-tag">#점메추</div>
-                <div className="search-tag">#스트레스</div>
-                <div className="search-tag">#비오는날</div>
-                <div className="search-tag">#해장</div>
-                <div className="search-tag">#야식</div>
-            </div>
-
+            <br/>
             <div className="star-search">
                 <h2 className="all-search-title">인기검색어</h2>
                 <ul className="search-ul">

@@ -203,60 +203,61 @@ function RecipeDetail() {
             {selectedRecipe && (
                 <>
                     <div className="recipe-detail-header">
-                        <img src={selectedRecipe.picture || '/bobple_mascot.png'} alt={selectedRecipe.title}onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = mascot;
-                        }}
+                        <img src={selectedRecipe.picture || '/bobple_mascot.png'} alt={selectedRecipe.title}
+                             onError={(e) => {
+                                 e.target.onerror = null;
+                                 e.target.src = mascot;
+                             }}
                              className="recipe-detail-image"/>
                     </div>
+                    <div className="recipe-detail-user-action ">
+                        <button className="recipe-detail-like" onClick={handleLikeClick}>
+                            {selectedRecipe.liked ?
+                                <>
+                                    <Heart/>
+                                    {formatViewsCount(selectedRecipe.likesCount)}
+                                </>
+                                :
+                                <>
+                                    <HeartLine/>
+                                    {formatViewsCount(selectedRecipe.likesCount)}
+                                </>
+                            }
+                        </button>
+                        <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
+                            <MoreIcon/>
+                        </button>
+                        {showActions && (
+                            <div className="recipe-declaration">
+                                <button onClick={handleReportClick}>신고</button>
+                            </div>
+                        )}
+                    </div>
                     <div className="recipe-detail-title-box">
-                        <div className="recipe-detail-user-action ">
-                            <button className="recipe-detail-like" onClick={handleLikeClick}>
-                                {selectedRecipe.liked ?
-                                    <>
-                                        <Heart />
-                                        {formatViewsCount(selectedRecipe.likesCount)}
-                                    </>
-                                    :
-                                    <>
-                                        <HeartLine />
-                                        {formatViewsCount(selectedRecipe.likesCount)}
-                                    </>
-                                }
-                            </button>
-                            <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
-                                <MoreIcon/>
-                            </button>
-                            {showActions && (
-                                <div className="recipe-declaration">
-                                    <button onClick={handleReportClick}>신고</button>
-                                </div>
-                            )}
-                        </div>
                         <div className="recipe-detail-title-item">
                             <h2>{selectedRecipe.title}</h2>
                         </div>
                         <div className="recipe-detail-title-item">
                             <div className="recipe-detail-title-text">
-                                <DefaultUser />
+                                <DefaultUser/>
                                 <p>{selectedRecipe.nickname} </p>
                             </div>
                             <div className="recipe-detail-title-text">
-                                <Calendar />
+                                <Calendar/>
                                 <p> {dayjs(selectedRecipe.createdAt).format('YYYY-MM-DD')} </p>
                             </div>
                             <div className="recipe-detail-title-text">
-                                <View />
+                                <View/>
                                 <p>{formatViewsCount(selectedRecipe.viewsCount)} 회</p>
                             </div>
                         </div>
                         <div className="recipe-detail-title-item">
                             <div className="recipe-detail-title-text recipe-sub-title">
-                                <ClockIcon />
+                                <ClockIcon/>
                                 <p>{selectedRecipe.cookTime} 분 </p>
                             </div>
                             <div className="recipe-detail-title-text recipe-sub-title">
-                                <FireIcon />
+                                <FireIcon/>
                                 <p>{selectedRecipe.calories} kcal</p>
                             </div>
                         </div>
@@ -295,11 +296,11 @@ function RecipeDetail() {
                                 onChange={(e) => setNewComment(e.target.value)}
                                 placeholder="댓글을 입력하세요"
                             />
-                            <button onClick={handleCommentSubmit} className="comment-send-button"><SendMessage />
+                            <button onClick={handleCommentSubmit} className="comment-send-button"><SendMessage/>
                             </button>
                         </div>
                         {selectedRecipe.comments && selectedRecipe.comments.map(comment => (
-                            <RecipeComment key={comment.recipeCommentIdx} comment={comment} recipeId={recipeIdx} />
+                            <RecipeComment key={comment.recipeCommentIdx} comment={comment} recipeId={recipeIdx}/>
                         ))}
                     </div>
 

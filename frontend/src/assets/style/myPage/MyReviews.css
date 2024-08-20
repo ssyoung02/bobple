@@ -4,6 +4,10 @@
     margin-bottom: 30px;
 }
 
+.myReview-header button {
+    cursor: pointer;
+}
+
 .myReview-header svg {
     font-size: 20px;
 }

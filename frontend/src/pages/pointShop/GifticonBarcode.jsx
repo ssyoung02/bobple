@@ -6,7 +6,8 @@ import '../../assets/style/pointShop/PointGifticonDetail.css';
 function PointGifticonDetail() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { productIdx } = location.state || {};
+    //const { productIdx } = location.state || {};
+    const { purchaseIdx } = location.state || {};
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,15 +22,13 @@ function PointGifticonDetail() {
             return;
         }
 
-        if (!productIdx) {
+        if (!purchaseIdx) { // 여기서 productIdx 대신 purchaseIdx를 사용합니다.
             setError('상품 정보가 제공되지 않았습니다.');
             setLoading(false);
             return;
         }
 
-        console.log(`Fetching product details for productIdx: ${productIdx}`);
-
-        axios.get(`http://localhost:8080/api/GifticonBarcode/${productIdx}`, {
+        axios.get(`http://localhost:8080/api/GifticonBarcode/${purchaseIdx}`, { // URL에서 productIdx 대신 purchaseIdx를 사용합니다.
             params: { userIdx },
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -37,16 +36,15 @@ function PointGifticonDetail() {
             withCredentials: true
         })
             .then(response => {
-                console.log('API Response:', response.data);
                 setProduct(response.data);
                 setLoading(false);
             })
             .catch(error => {
-                console.error('Error fetching product details:', error);
                 setError('상품 정보를 가져오는 중 오류가 발생했습니다.');
                 setLoading(false);
             });
-    }, [productIdx, userIdx, token, navigate]);
+    }, [purchaseIdx, userIdx, token, navigate]);
+
 
     const handleUse = () => {
         if (!product) {
@@ -66,7 +64,7 @@ function PointGifticonDetail() {
                 withCredentials: true
             })
                 .then(response => {
-                    console.log('Use response:', response.data);
+                    //console.log('Use response:', response.data);
                     if (response.data) {
                         alert('기프티콘 사용이 완료되었습니다.');
                         navigate('/point', { state: { selectedTab: '보관함' } });
@@ -75,7 +73,7 @@ function PointGifticonDetail() {
                     }
                 })
                 .catch(error => {
-                    console.error('Error during use:', error);
+                    //console.error('Error during use:', error);
                     alert('사용 중 오류가 발생했습니다.');
                 });
         }
@@ -85,28 +83,27 @@ function PointGifticonDetail() {
     const calculateExpirationDate = (purchaseDate) => {
         if (!purchaseDate) return "알 수 없음";
 
-        const purchase = new Date(purchaseDate);
+        const purchase = new Date(purchaseDate);  // 날짜를 파싱합니다.
+
         if (isNaN(purchase.getTime())) {
-            console.error("Invalid date format:", purchaseDate);
+            //console.error("Invalid date format:", purchaseDate);
             return "유효하지 않은 날짜 형식";
         }
 
-        // 만료 날짜 계산 (1년 후)
         const expiration = new Date(purchase);
-        expiration.setFullYear(expiration.getFullYear() + 1);
+        expiration.setFullYear(expiration.getFullYear() + 1);  // 1년 후의 날짜를 계산합니다.
 
-        // 현재 날짜와 남은 일 수 계산
         const today = new Date();
         const timeDiff = expiration.getTime() - today.getTime();
         const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-        // 만료 날짜 포맷팅
         const year = expiration.getFullYear();
-        const month = expiration.getMonth() + 1; // 월 (0부터 시작하므로 +1)
-        const day = expiration.getDate(); // 일
+        const month = expiration.getMonth() + 1;  // 월은 0부터 시작하므로 +1
+        const day = expiration.getDate();
 
         return `${year}년 ${month}월 ${day}일까지 D-${daysLeft}일 남았습니다`;
     };
+
 
     if (loading) {
         return <div>로딩 중...</div>;
