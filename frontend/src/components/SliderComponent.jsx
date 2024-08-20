@@ -261,125 +261,130 @@ export const FoodCategories = () => {
  * 유저 추천 레시피 컴포넌트
  * 유저들이 좋아하는 레시피를 슬라이더 형식으로 보여주며, 사용자는 레시피를 클릭해 자세한 내용을 볼 수 있다.
  * 좋아요 기능도 구현되어 있으며, 유저가 좋아요를 누를 수 있다.
+ * 페이지네이션을 이용하여 서버에서 데이터를 순차적으로 받아오고, 일정 간격으로 데이터가 갱신된다.
  * @returns {JSX.Element} 유저 추천 레시피 UI 렌더링
  */
 export const UserRecommendedRecipes = () => {
-    const {formatViewsCount} = useContext(RecipeContext);  // 조회수 포맷팅 함수
+    const { formatViewsCount, setError } = useContext(RecipeContext);  // 조회수 포맷팅 함수 및 에러 처리 함수 가져오기
     const [page, setPage] = useState(0); // 현재 페이지 상태
     const [loading, setLoading] = useState(false); // 로딩 상태
-    const [recipes, setRecipes] = useState([]); // 로드된 레시피 상태
+    const [recipes, setRecipes] = useState([]); // 불러온 레시피 상태
     const [hasMore, setHasMore] = useState(true); // 추가 데이터를 로드할 수 있는지 여부
-    const {setError} = useContext(RecipeContext); // 에러 처리 함수
     const sliderRef = useRef(null); // 슬라이더 참조
 
     /**
-     * 추천 레시피 데이터를 서버에서 불러오는 함수
+     * 서버에서 추천 레시피 데이터를 불러오는 함수
+     * 페이지네이션을 사용하여 데이터를 요청하며, 첫 페이지는 캐시된 데이터를 우선 사용한다.
      * @param {number} currentPage - 요청할 페이지 번호
-     * @param {boolean} refresh - true일 경우 데이터를 새로 불러옴
+     * @param {boolean} refresh - true이면 데이터를 새로 불러오고 캐시를 갱신
      */
     const fetchRecipes = useCallback(async (currentPage, refresh = false) => {
-        setLoading(true); // 로딩 상태 활성화
+        setLoading(true);  // 로딩 상태 시작
         try {
             let updatedRecipes = [];
-            if (currentPage === 0 && !refresh) { // 첫 페이지이고 새로고침이 아닌 경우, 캐시된 데이터를 확인
+
+            // 첫 페이지 요청 시, 새로고침이 아니라면 캐시된 데이터 사용
+            if (currentPage === 0 && !refresh) {
                 const cachedRecipes = localStorage.getItem('recommendedRecipes');
                 if (cachedRecipes) {
-                    setRecipes(JSON.parse(cachedRecipes));  // 캐시된 데이터를 사용
+                    setRecipes(JSON.parse(cachedRecipes));  // 캐시된 데이터를 불러옴
                     setLoading(false);
                     return;
                 }
             }
 
+            // 서버에 추천 레시피 데이터 요청
             const response = await axios.get('/api/recipes/recommended', {
-                params: { page: currentPage, size: 10 }
+                params: { page: currentPage, size: 20 }  // 페이지와 레시피 수 지정
             });
 
-            if (response.data.length > 0) {
-                updatedRecipes = refresh ? response.data : [...recipes, ...response.data]; // 새로고침이면 덮어쓰기, 아니면 추가
+            // 서버에서 받아온 데이터가 있을 경우 상태에 추가
+            if (response.data.content.length > 0) {
+                updatedRecipes = refresh ? response.data.content : [...recipes, ...response.data.content];  // 새로고침 시 덮어쓰기, 아니면 기존 데이터에 추가
                 setRecipes(updatedRecipes);
 
-                if (currentPage === 0) { // 첫 페이지에서 캐시 저장
+                // 첫 페이지 데이터를 캐시에 저장
+                if (currentPage === 0) {
                     localStorage.setItem('recommendedRecipes', JSON.stringify(updatedRecipes));
                 }
 
-                // 새 데이터가 추가된 경우 슬라이드 인덱스를 조정하여 자연스럽게 이어지도록 처리
+                // 슬라이더가 존재하고, 새로 추가된 슬라이드를 자연스럽게 이어지도록 설정
                 if (!refresh && sliderRef.current) {
-                    const nextSlideIndex = recipes.length; // 새로 추가된 첫 슬라이드로 이동
-                    setTimeout(() => sliderRef.current.slickGoTo(nextSlideIndex), 0); // 슬라이드 이동
+                    const nextSlideIndex = recipes.length;  // 새로 추가된 슬라이드의 첫 인덱스
+                    setTimeout(() => sliderRef.current.slickGoTo(nextSlideIndex), 0);  // 슬라이드 이동
                 }
             } else {
-                setHasMore(false); // 더 이상 로드할 데이터가 없으면 hasMore 비활성화
+                setHasMore(false);  // 더 이상 불러올 데이터가 없는 경우
             }
         } catch (error) {
-            console.error('추천 레시피를 불러오는 중 오류가 발생했습니다:', error);
             setError('추천 레시피를 불러오는 중 오류가 발생했습니다.');
         } finally {
-            setLoading(false); // 로딩 상태 비활성화
+            setLoading(false);  // 로딩 상태 종료
         }
     }, [recipes, setError]);
 
-
-    // 페이지 변경될 때마다 데이터를 불러옴
+    /**
+     * 페이지가 변경되면 해당 페이지 데이터를 불러옴
+     * 또한 5분 간격으로 첫 페이지 데이터를 새로 갱신하여 캐시를 업데이트한다.
+     */
     useEffect(() => {
-        fetchRecipes(page);
+        fetchRecipes(page);  // 페이지 변경 시 데이터 불러오기
 
-        // 5분마다 데이터 갱신 (5분 = 300000ms)
+        // 5분마다 첫 페이지 데이터를 새로 불러와 캐시를 갱신
         const intervalId = setInterval(() => {
-            fetchRecipes(0, true);  // 첫 페이지의 데이터를 새로 가져와 캐시 갱신
-        }, 300000);
+            fetchRecipes(0, true);  // 첫 페이지 갱신
+        }, 300000);  // 300,000ms = 5분
 
         return () => clearInterval(intervalId);  // 컴포넌트 언마운트 시 인터벌 제거
     }, [page]);
 
     /**
      * 좋아요 클릭 핸들러
-     * 좋아요 상태를 토글하고, 좋아요 수를 업데이트한다.
-     * @param {number} recipeIdx - 좋아요가 눌린 레시피의 고유 ID
+     * 특정 레시피에 대해 좋아요를 토글하고, 로컬 캐시를 제거하여 변경사항 반영
+     * @param {number} recipeIdx - 좋아요를 클릭한 레시피의 고유 ID
      */
     const handleLikeClick = useCallback(async (recipeIdx) => {
         try {
-            await axios.post(`/api/recipes/${recipeIdx}/like`);  // 좋아요 요청
+            // 좋아요 토글 요청
+            await axios.post(`/api/recipes/${recipeIdx}/like`);
             localStorage.removeItem('recommendedRecipes');  // 캐시 제거
 
-            // 좋아요 상태와 좋아요 수 업데이트
-            setRecipes(prevRecipes =>
-                prevRecipes.map(recipe =>
+            // 좋아요 상태 및 좋아요 수 업데이트
+            setRecipes((prevRecipes) =>
+                prevRecipes.map((recipe) =>
                     recipe.recipeIdx === recipeIdx
                         ? { ...recipe, liked: !recipe.liked, likesCount: recipe.liked ? recipe.likesCount - 1 : recipe.likesCount + 1 }
                         : recipe
                 )
             );
         } catch (error) {
-            setError(error.message || '좋아요 처리 중 오류가 발생했습니다.');
-            console.error('좋아요 처리 중 오류가 발생했습니다:', error);
-
+            setError('좋아요 처리 중 오류가 발생했습니다.');
         }
     }, [setError]);
 
-
     /**
-     * 슬라이드 변경 시 호출
-     * 마지막 슬라이드에 도달하면 새로운 페이지 데이터를 로드
-     * @param {number} currentSlide - 현재 슬라이드 번호
+     * 슬라이드 변경 시 호출되는 핸들러
+     * 마지막 슬라이드에 도달하면 다음 페이지의 데이터를 불러온다.
+     * @param {number} currentSlide - 현재 슬라이드의 인덱스
      */
     const handleSlideChange = (currentSlide) => {
         if (currentSlide === recipes.length - 1 && hasMore && !loading) {
-            setPage(prevPage => prevPage + 1); // 다음 페이지로 이동
+            setPage((prevPage) => prevPage + 1);  // 다음 페이지로 이동
         }
     };
 
-    // 레시피 슬라이더 설정
+    // 슬라이더 설정
     const RecipeSettings = {
         dots: false,
-        infinite: true, // 슬라이드가 끝에 도달하면 처음으로 돌아가는 설정
-        slidesToShow: 2,
+        infinite: true,  // 슬라이더가 끝에 도달하면 처음으로 돌아감
+        slidesToShow: 1,
         slidesToScroll: 1,
         draggable: true,
         swipeToSlide: true,
         centerMode: true,
         arrows: false,
-        autoplay:true,
-        afterChange: handleSlideChange // 슬라이드 변경 후 호출
+        autoplay: true,
+        afterChange: handleSlideChange,  // 슬라이드 변경 후 호출
     };
 
     return (
@@ -387,35 +392,35 @@ export const UserRecommendedRecipes = () => {
             <SlickSlider ref={sliderRef} {...RecipeSettings}>
                 {/* 로드된 레시피를 슬라이드로 렌더링 */}
                 {recipes.length > 0 ? (
-                    recipes.map(recipe => (
-                    <div key={recipe.recipeIdx} className="recipe-card-item">
+                    recipes.map((recipe) => (
+                        <div key={recipe.recipeIdx} className="recipe-card-item">
                             <div className="user-recommended-recipe-card">
                                 <div className="user-recipe-card-user">
                                     <div className="user-recipe-card-user-left">
                                         <div className="recipe-user-profile">
-                                            <img src={recipe.profileImage || mascot}
-                                                 alt={recipe.author}/>
+                                            <img src={recipe.profileImage || mascot} alt={recipe.author} />
                                         </div>
                                         <p className="author">{recipe.nickname}</p>
                                     </div>
-                                    <div className="recipe-like" >
-                                        <button className="recipe-like-button"
-                                                onClick={() => handleLikeClick(recipe.recipeIdx)}>
-                                            {recipe.liked ? <Heart/> : <HeartLine/>}
+                                    <div className="recipe-like">
+                                        <button className="recipe-like-button" onClick={() => handleLikeClick(recipe.recipeIdx)}>
+                                            {recipe.liked ? <Heart /> : <HeartLine />}
                                         </button>
                                         {formatViewsCount(recipe.likesCount)}
                                     </div>
-
                                 </div>
                                 <Link className="user-recommended-recipe-link" to={`/recipe/${recipe.recipeIdx}`}>
-                                <div className="user-recommended-recipe-card-image">
-                                    <img src={recipe.picture || '/images/default_recipe_image.jpg'} alt={recipe.title}
-                                             onError={(e) => {
-                                                 e.target.onerror = null;
-                                                 e.target.src = mascot;
-                                             }}/>
+                                    <div className="user-recommended-recipe-card-image">
+                                        <img
+                                            src={recipe.picture || '/images/default_recipe_image.jpg'}
+                                            alt={recipe.title}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = mascot;
+                                            }}
+                                        />
                                         <span className="recipe-view">
-                                            <View/>
+                                            <View />
                                             {formatViewsCount(recipe.viewsCount)}
                                         </span>
                                     </div>
@@ -425,16 +430,18 @@ export const UserRecommendedRecipes = () => {
                                     </div>
                                 </Link>
                             </div>
-                    </div>
-                ))
-            ) : (
-                <div className="no-recipes-message"></div>
-            )}
+                        </div>
+                    ))
+                ) : (
+                    <div className="no-recipes-message"></div>
+                )}
             </SlickSlider>
+            {/* 로딩 중 애니메이션 */}
             {loading && (
                 <div className="loading-spinner slider">
                     <ClipLoader size={50} color={"#123abc"} loading={loading} />
                 </div>
-            )}        </>
+            )}
+        </>
     );
 };

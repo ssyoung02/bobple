@@ -11,22 +11,21 @@ import kr.bit.bobple.repository.RecipeCommentRepository;
 import kr.bit.bobple.repository.RecipeRepository;
 import kr.bit.bobple.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * RecipeService 클래스
  * 레시피 관련 비즈니스 로직을 처리하는 서비스 레이어
+ * 이 클래스는 사용자의 좋아요 기록을 기반으로 레시피를 추천하는 로직을 포함합니다.
+ * 사용자가 좋아요한 레시피의 카테고리 비율을 기반으로 레시피를 추출하며, 부족한 레시피는 무작위로 추출합니다.
+ * 또한 페이징 처리된 결과를 반환하여 클라이언트가 특정 페이지와 크기로 레시피 목록을 요청할 수 있도록 지원합니다.
  */
 @Service
 @RequiredArgsConstructor
@@ -109,6 +108,7 @@ public class RecipeService {
             String imageUrl = recipeImageService.uploadRecipeImage(imageFile); // 이미지 업로드
             recipe.setPicture(imageUrl); // 이미지 URL 설정
         }
+
         // 레시피의 초기 값 설정
         recipe.setLikesCount(0);
         recipe.setViewsCount(0);
@@ -234,23 +234,99 @@ public class RecipeService {
         return recipeRepository.findAll(pageable);
     }
 
-    /**
-     * 추천 레시피 목록 조회 (추천 로직 구현 예정)
-     *
-     * @param user 사용자 정보
-     * @return 추천된 레시피 목록이 담긴 List<RecipeDto>
-     */
-    @Transactional(readOnly = true)
-    public List<RecipeDto> getRecommendedRecipes(User user) {
-        // TODO: 사용자 정보(user)를 기반으로 추천 레시피 목록 가져오기
-        // 예시: 사용자의 좋아요, 조회수 등을 기반으로 추천 알고리즘 구현
 
-        // 현재는 모든 레시피를 가져오는 예시 코드입니다.
-        List<Recipe> recommendedRecipes = recipeRepository.findAll();
-        return recommendedRecipes.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    /**
+     * 사용자의 좋아요 기록을 기반으로 추천 레시피 목록을 반환하는 메서드
+     *
+     * @param user - 현재 로그인한 사용자 객체
+     * @param page - 요청한 페이지 번호 (0부터 시작)
+     * @param size - 요청한 페이지 크기 (한 번에 반환할 레시피 수)
+     * @return Page<RecipeDto> - 추천된 레시피 목록을 담은 페이지 객체
+     *
+     * 이 메서드는 다음과 같은 과정을 통해 추천 레시피를 반환합니다:
+     * 1. 사용자가 좋아요한 레시피 목록을 가져옵니다.
+     * 2. 각 카테고리별로 사용자가 좋아요한 레시피의 비율을 계산합니다.
+     * 3. 계산된 비율에 따라 각 카테고리에서 무작위로 레시피를 추출하여 추천 목록을 구성합니다.
+     * 4. 만약 비율에 따라 추천된 레시피가 20개 미만일 경우, 남은 수만큼 전체 레시피에서 무작위로 추출합니다.
+     * 5. 최종적으로 20개의 추천 레시피가 포함된 페이지 객체를 반환합니다.
+     */
+    public Page<RecipeDto> getRecommendedRecipes(User user, int page, int size) {
+        // Pageable 객체 생성 - 요청받은 페이지와 페이지 크기를 기준으로 설정
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 1. 사용자가 좋아요한 레시피 목록 가져오기
+        // 사용자가 좋아요한 레시피를 가져와서 리스트에 저장
+        List<Recipe> likedRecipes = likeRecipeRepository.findLikedRecipesByUser(user);
+
+        // 좋아요한 레시피가 없을 경우 랜덤으로 추천 레시피를 반환
+        if (likedRecipes.isEmpty()) {
+            System.out.println("User has not liked any recipes.");
+            // 좋아요한 레시피가 없으면 랜덤으로 추천된 레시피를 반환 (size만큼 페이지 형태로 반환)
+            return recipeRepository.findRandomRecipes(PageRequest.of(page, size)).map(this::convertToDto);
+        }
+
+        // 2. 카테고리 비율 계산
+        // 사용자가 좋아요한 레시피 중 각 카테고리별로 몇 개의 레시피가 있는지 카운트
+        Map<String, Integer> categoryCountMap = new HashMap<>();
+        int totalLikes = likedRecipes.size(); // 사용자가 좋아요한 레시피의 총 개수
+
+        for (Recipe recipe : likedRecipes) {
+            // 각 레시피의 카테고리를 가져와서 카운트
+            String category = recipe.getCategory();
+            categoryCountMap.put(category, categoryCountMap.getOrDefault(category, 0) + 1);
+        }
+
+        // 카테고리별 레시피 수를 로그로 출력
+        System.out.println("Category Count Map: " + categoryCountMap);
+
+        // 3. 카테고리 비율 계산
+        // 각 카테고리별로 사용자가 좋아요한 레시피의 비율을 계산하여 저장
+        Map<String, Double> categoryRatioMap = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : categoryCountMap.entrySet()) {
+            String category = entry.getKey();
+            double ratio = (double) entry.getValue() / totalLikes; // 카테고리별 비율 계산
+            categoryRatioMap.put(category, ratio); // 비율 저장
+        }
+
+        // 카테고리 비율을 로그로 출력
+        System.out.println("Category Ratio Map: " + categoryRatioMap);
+
+        // 4. 각 카테고리 비율에 따라 전체 레시피 중에서 추천 레시피를 추출
+        List<RecipeDto> recommendedRecipes = new ArrayList<>(); // 추천 레시피 목록 초기화
+        int remainingRecipes = size; // 남은 추천 레시피 수
+
+        // 카테고리 비율에 따라 레시피를 추천하는 루프
+        for (Map.Entry<String, Double> entry : categoryRatioMap.entrySet()) {
+            String category = entry.getKey();
+            double ratio = entry.getValue();
+            int numberOfRecipesToRecommend = (int) Math.round(size * ratio); // 비율에 따른 추천 레시피 개수 계산
+
+            // 각 카테고리에서 비율에 맞춰 레시피를 추출하여 추가
+            Page<Recipe> recipesByCategory = recipeRepository.findByCategory1(category, PageRequest.of(0, numberOfRecipesToRecommend));
+            recommendedRecipes.addAll(recipesByCategory.map(this::convertToDto).getContent());
+
+            // 남은 추천 레시피 개수에서 현재 카테고리에서 추천한 레시피 개수만큼 차감
+            remainingRecipes -= numberOfRecipesToRecommend;
+
+            // 남은 추천 레시피 수가 0 이하이면 종료
+            if (remainingRecipes <= 0) break;
+        }
+
+        // 5. 남은 레시피가 있을 경우 임의로 채우기
+        // 카테고리 비율에 따라 추천했지만, 여전히 남은 레시피 수가 있으면 임의로 채움
+        if (remainingRecipes > 0) {
+            // 남은 레시피를 임의로 추출하여 추천 목록에 추가
+            Page<Recipe> randomRecipes = recipeRepository.findRandomRecipes(PageRequest.of(0, remainingRecipes));
+            recommendedRecipes.addAll(randomRecipes.map(this::convertToDto).getContent());
+        }
+
+        // 최종 추천 레시피 수를 로그로 출력
+        System.out.println("Final recommended recipes count: " + recommendedRecipes.size());
+
+        // 최종 추천된 레시피 목록을 페이지 객체로 반환
+        return new PageImpl<>(recommendedRecipes, pageable, recommendedRecipes.size());
     }
+
 
     /**
      * 레시피 작성자인지 확인하는 메서드

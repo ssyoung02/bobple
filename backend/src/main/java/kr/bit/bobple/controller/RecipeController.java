@@ -4,10 +4,8 @@ import kr.bit.bobple.auth.AuthenticationFacade;
 import kr.bit.bobple.dto.RecipeDto;
 import kr.bit.bobple.service.HyperCLOVAClient;
 import kr.bit.bobple.service.LikeRecipeService;
-import kr.bit.bobple.service.RecipeImageService;
 import kr.bit.bobple.service.RecipeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,7 +16,8 @@ import kr.bit.bobple.entity.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
-
+import org.springframework.hateoas.PagedModel;
+import org.springframework.data.web.PagedResourcesAssembler;
 import java.util.*;
 
 @RestController
@@ -68,15 +67,31 @@ public class RecipeController {
 
     /**
      * 사용자에게 추천 레시피를 제공하는 엔드포인트
-     * (현재는 더미 로직, 실제 추천 로직은 별도 구현 필요)
-     * @param user - 현재 로그인한 사용자
-     * @return List<RecipeDto> - 추천된 레시피 리스트
+     *
+     * 이 엔드포인트는 현재 로그인한 사용자의 좋아요 기록을 기반으로 추천 레시피 목록을 제공하는 역할을 합니다.
+     * 추천된 레시피는 페이지 형태로 제공되며, 페이지 번호와 크기를 조정할 수 있습니다.
+     *
+     * @param user - 현재 로그인한 사용자 객체 (AuthenticationPrincipal을 통해 제공)
+     * @param page - 요청할 페이지 번호 (기본값: 0, 첫 번째 페이지)
+     * @param size - 요청할 페이지 크기 (기본값: 20, 한 번에 제공할 레시피 수)
+     * @return ResponseEntity<Page<RecipeDto>> - 추천된 레시피 리스트를 담은 페이지 객체를 ResponseEntity로 반환
+     *
+     * 이 메서드는 RecipeService의 getRecommendedRecipes 메서드를 호출하여
+     * 사용자 기반의 추천 레시피 목록을 받아옵니다.
      */
-    @GetMapping("/recommended")
-    public ResponseEntity<List<RecipeDto>> getRecommendedRecipes(@AuthenticationPrincipal User user) {
-        List<RecipeDto> recommendedRecipes = recipeService.getRecommendedRecipes(user);
+    @GetMapping("recommended")
+    public ResponseEntity<Page<RecipeDto>> getRecommendedRecipes(
+            @AuthenticationPrincipal User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        // RecipeService에서 추천된 레시피 목록을 가져옴
+        Page<RecipeDto> recommendedRecipes = recipeService.getRecommendedRecipes(user, page, size);
+
+        // ResponseEntity를 통해 결과 반환
         return ResponseEntity.ok(recommendedRecipes);
     }
+
 
     /**
      * 특정 레시피를 ID로 가져오는 엔드포인트

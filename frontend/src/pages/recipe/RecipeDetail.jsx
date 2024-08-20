@@ -88,7 +88,7 @@ function RecipeDetail() {
     };
     // 로딩 중일 때 로딩 메시지를 표시하고, 에러 발생 시 에러 메시지를 표시함
     if (loading) return <div className="loading-spinner">
-        <ClipLoader size={50} color={"#123abc"} loading={loading}/>
+        <ClipLoader size={50} color={"#123abc"} />
     </div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!selectedRecipe) return (
@@ -173,6 +173,10 @@ function RecipeDetail() {
             ingredients = selectedRecipe.content.trim();
         }
     }
+
+    // 재료와 조리 방법을 split 할 때, 해당 변수가 null 또는 빈 문자열이 아닌지 확인
+    const ingredientList = ingredients ? ingredients.split(',,').map(ingredient => ingredient.trim()) : [];
+    const instructionList = instructions ? instructions.split('..').map(instruction => instruction.trim()) : [];
 
     const toggleActions = () => {
         setShowActions(!showActions);     // 더보기 액션 메뉴를 토글하는 함수
@@ -266,16 +270,16 @@ function RecipeDetail() {
                     <div className="recipe-detail-content">
                         <h4>재료</h4>
                         <ul className="recipe-detail-ul">
-                            {ingredients.split(',,').map((ingredient, index) => (
-                                <li key={index}>{ingredient.trim()}</li>
+                            {ingredientList.map((ingredient, index) => (
+                                <li key={index}>{ingredient}</li>
                             ))}
                         </ul>
                     </div>
                     <div className="recipe-detail-content">
                         <h4>조리 방법</h4>
                         <ul>
-                            {instructions.split(/(?=\d+\.)/).map((instruction, index) => (
-                                <li key={index}>{instruction.trim()}</li>
+                            {instructionList.map((instruction, index) => (
+                                <li key={index}>{instruction}</li>
                             ))}
                         </ul>
                     </div>

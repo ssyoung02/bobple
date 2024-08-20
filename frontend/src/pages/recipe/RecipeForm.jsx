@@ -16,6 +16,8 @@ import { clearRecipeLocalStorage } from "../../utils/localStorageUtils"; // CSS 
  */
 function RecipeForm() {
     const {
+        createRecipe,
+        updateRecipe,
         setSelectedRecipe,
         recipeCategory,
     } = useContext(RecipeContext); // 컨텍스트에서 레시피 상태와 카테고리 목록 가져오기
@@ -91,11 +93,15 @@ function RecipeForm() {
             setSelectedRecipe(response.data);
 
             // 응답 데이터를 폼 필드에 채움
-            setTitle(response.data.title);
-            setCookTime(response.data.cookTime);
-            setCalories(response.data.calories);
-            setIngredients(response.data.content.split('\n\n만드는 법:\n')[0].replace('재료:', '').trim());
-            setInstructions(response.data.content.split('\n\n만드는 법:\n')[1]);
+            const content = response.data.content || ''; // content가 null일 경우 빈 문자열로 처리
+            const parts = content.split('\n\n만드는 법:\n');
+
+            setIngredients(parts[0] ? parts[0].replace('재료:', '').trim() : '');  // 첫 부분이 존재하면 처리
+            setInstructions(parts[1] || '');  // 두 번째 부분이 존재하면 처리
+
+            setTitle(response.data.title || '');
+            setCookTime(response.data.cookTime || '');
+            setCalories(response.data.calories || '');
             setTags(response.data.tag || '');
             setImageUrl(response.data.picture || '');
             setCategory(response.data.category || '');
@@ -155,14 +161,16 @@ function RecipeForm() {
             return;
         }
 
+// ingredients와 instructions를 content로 결합
+        const combinedContent = `${ingredients.trim()}\n\n만드는 법:\n${instructions.trim()}`;
+
         // 폼 데이터를 FormData 객체로 구성 (이미지와 텍스트 데이터 포함)
         const formData = new FormData();
             formData.append("title", title);
             formData.append("cookTime", cookTime);
             formData.append("calories", calories);
-            formData.append("ingredients", ingredients);
-            formData.append("instructions", instructions);
-            formData.append("tag", tags);
+        formData.append("content", combinedContent); // 결합된 content 저장
+        formData.append("tag", tags);
             formData.append("category", category);
 
         if (imageFile) {
@@ -178,7 +186,7 @@ function RecipeForm() {
         try {
             if (isEditing) {
                 await axios.put(`/api/recipes/${recipeIdx}`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 alert('레시피가 성공적으로 수정되었습니다.');
                 navigate(`/recipe/${recipeIdx}`);  // 수정 후 레시피 상세 페이지로 이동

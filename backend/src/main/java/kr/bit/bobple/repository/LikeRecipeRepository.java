@@ -7,7 +7,10 @@ import kr.bit.bobple.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,4 +46,11 @@ public interface LikeRecipeRepository extends JpaRepository<LikeRecipe, Long> {
      */
     Optional<LikeRecipe> findByUserAndRecipe(User user, Recipe recipe);
 
+    /**
+     * 특정 사용자가 좋아요한 레시피 리스트를 가져오는 메서드
+     * @param user - 사용자
+     * @return List<Recipe> - 사용자가 좋아요한 레시피 리스트
+     */
+    @Query("SELECT l.recipe FROM LikeRecipe l WHERE l.user = :user")
+    List<Recipe> findLikedRecipesByUser(@Param("user") User user);
 }
