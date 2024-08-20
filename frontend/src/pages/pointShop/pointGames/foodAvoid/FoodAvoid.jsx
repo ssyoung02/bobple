@@ -219,7 +219,7 @@ const FoodAvoid = () => {
     };
 
     const handleExit = () => {
-        navigate('/point'); // 이전 페이지로 이동
+        navigate('/point', { state: {selectedTab: '게임'}}); // 이전 페이지로 이동
     };
 
     const moveCharRight = () => {

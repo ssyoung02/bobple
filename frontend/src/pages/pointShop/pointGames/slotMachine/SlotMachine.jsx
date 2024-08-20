@@ -113,7 +113,7 @@ const SlotMachine = () => {
     };
 
     const moveGameHome = () => {
-        navigate('/point')
+        navigate('/point', { state: {selectedTab: '게임'}})
     }
 
     useHeaderColorChange(location.pathname, '#CCE1AB');

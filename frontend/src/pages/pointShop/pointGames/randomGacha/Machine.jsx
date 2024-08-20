@@ -9,7 +9,7 @@ const Machine = () => {
     const navigate = useNavigate();
 
     const moveBack = () => {
-        navigate('/point')
+        navigate('/point', { state: {selectedTab: '게임'}})
     }
 
     return (
