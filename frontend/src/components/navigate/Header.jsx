@@ -23,6 +23,7 @@ function Header({ theme, toggleTheme }) {
     const handleLinkClick = (path) => {
         clearRecipeLocalStorage();
         navigate(path);
+        window.location.reload(); // 페이지 새로고침
     };
 
     const fetchNotifications = async () => {
