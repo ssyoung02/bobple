@@ -179,6 +179,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    word-break: break-all;
 }
 
 .create-recipe-button-box{
@@ -216,13 +217,14 @@
 .latest-recipe-card-wrapper{
     padding: 10px 5px;
     border-bottom: 1px solid #999999;
-    border-radius: 8px;
+    /*border-radius: 8px;*/
 }
 
 .latest-recipe-card-wrapper:hover,
 .latest-recipe-card-wrapper:active {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    border-radius: 10px;
 }
 
 .latest-recipe-list a{
