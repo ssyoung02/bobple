@@ -51,6 +51,7 @@ function RecipeMain() {
     const currentRequestPage = useRef(null);  // 현재 요청 중인 페이지를 추적하는 ref
     const observer = useRef();  // 무한 스크롤을 위한 observer
     const [showTopButton, setShowTopButton] = useState(false); // 추가: TOP 버튼 표시 상태
+    const userName = localStorage.getItem("name");
 
     // 초기 로드 시 로컬 스토리지에 저장된 레시피를 불러옴
     useEffect(() => {
@@ -257,7 +258,7 @@ function RecipeMain() {
             {/* 유저 추천 레시피 섹션 */}
             <div className="user-recommended-recipes">
                 <div className="user-recommended-recipes-title">
-                    <h4>유저 추천 레시피</h4>
+                    <h4>{userName} 맞춤 레시피</h4>
                     <Link to="/recipe/search?category=&sort=viewsCount,desc,likesCount,desc" className="more-button">
                         더보기
                         <NextTo/>

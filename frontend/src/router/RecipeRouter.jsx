@@ -34,7 +34,7 @@ function RecipeRouter() {
                 <Route path="/create" element={<RecipeForm />} /> {/* /create 경로에서 레시피 생성 폼을 렌더링 */}
 
                 {/* 레시피 수정 페이지 */}
-                <Route path="/modify/:recipeIdx" element={<RecipeModify />} /> {/* /modify/:recipeIdx 경로에서 레시피 수정 폼을 렌더링 */}
+                <Route path="/modify/:recipeIdx" element={<RecipeForm />} /> {/* /modify/:recipeIdx 경로에서 레시피 수정 폼을 렌더링 */}
 
                 {/* AI 추천 레시피 페이지 */}
                 <Route path="/ai-recommendation" element={<AIRecommendation />} /> {/* /ai-recommendation 경로에서 AI 추천 레시피 컴포넌트를 렌더링 */}
