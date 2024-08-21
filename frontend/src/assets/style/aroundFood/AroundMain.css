@@ -111,6 +111,7 @@
     border: 1px solid #898989;
     z-index: 2 !important; /* z-index 값을 1보다 크게 설정 */
 }
+
 .wrap * {
     padding: 0;
     margin: 0;
@@ -199,6 +200,7 @@
     width: 20px; /* SVG 크기 설정 */
     height: 20px;
     border-radius: 50%;
+    z-index: 1;
 }
 
 /*스크롤바*/

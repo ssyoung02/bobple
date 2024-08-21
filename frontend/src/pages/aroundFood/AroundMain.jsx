@@ -366,7 +366,7 @@ function AroundMain() {
                         yAnchor={1.2} // 오버레이가 마커 위에 위치하도록 설정
                     >
                         <div className="wrap">
-                            <div className="info">
+                            <div className="info around">
                                 <div className="title">
                                     <div>
                                         <div className="map-title"
@@ -420,7 +420,7 @@ function AroundMain() {
                     <CustomOverlayMap
                         position={currentLocation}
                         yAnchor={1}
-                        zIndex={10}
+                        zIndex={0}
                     >
                         <div className="current-location-marker">
                             <svg className="current-location-svg">

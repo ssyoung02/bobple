@@ -159,8 +159,8 @@
     font-weight: bold;
 }
 
-.delete-button:hover,
-.delete-button:active {
+.delete-btn:hover,
+.delete-btn:active {
     text-decoration: underline;
 }
 

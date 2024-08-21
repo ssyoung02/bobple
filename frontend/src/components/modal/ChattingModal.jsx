@@ -186,7 +186,7 @@ const ChattingModal = ({ modalState, hideModal, chatRoomId, chatRoomTitle, chatR
                     <div className="chatRoom-out">
                         <button onClick={handleLeaveChatRoom} className="chatting-close-btn">나가기 <span>⇲</span></button>
                         {currentUserRole === 'LEADER' && (
-                            <button className="delete-button" onClick={handleDeleteChatRoom}>삭제</button>
+                            <button className="delete-btn" onClick={handleDeleteChatRoom}>삭제</button>
                         )}
                     </div>
                 </div>

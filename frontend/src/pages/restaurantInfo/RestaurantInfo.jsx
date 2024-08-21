@@ -239,7 +239,7 @@ function RestaurantInfo() {
                 </div>
             </div>
 
-            <hr className="thick-divider"/>
+            <br/>
 
             {/* 리뷰 영역 */}
             <div className="review-section">
