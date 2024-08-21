@@ -98,6 +98,7 @@ public class RecipeCommentService {
     private final RecipeCommentRepository recipeCommentRepository; // 댓글 데이터 접근을 위한 레포지토리
     private final RecipeRepository recipeRepository; // 레시피 데이터 접근을 위한 레포지토리
     private final AuthenticationFacade authenticationFacade; // 현재 사용자 정보를 제공하는 인증 패사드
+    private final NotificationService notificationService;
 
     /**
      * 특정 레시피의 모든 댓글을 조회하는 메서드
@@ -126,8 +127,8 @@ public class RecipeCommentService {
     @Transactional
     public RecipeCommentDto createComment(Long recipeIdx, String content) {
         // 현재 로그인된 사용자 정보 가져오기
-        User user = authenticationFacade.getCurrentUser();
-        if (user == null) {
+        User senderUser = authenticationFacade.getCurrentUser();
+        if (senderUser == null) {
             throw new IllegalArgumentException("로그인이 필요합니다.");
         }
 
@@ -137,7 +138,7 @@ public class RecipeCommentService {
 
         // 새로운 댓글 엔티티 생성 및 저장
         RecipeComment comment = RecipeComment.builder()
-                .user(user)
+                .user(senderUser)
                 .recipe(recipe)
                 .recipeContent(content)
                 .createdAt(LocalDateTime.now()) // 댓글 생성 시간 설정
@@ -149,6 +150,11 @@ public class RecipeCommentService {
         // 레시피의 댓글 수 증가
         recipe.setCommentsCount(recipe.getCommentsCount() + 1);
 
+        // 알림 생성: 댓글 작성자가 레시피 작성자가 아닌 경우 알림 전송
+        if (!senderUser.equals(recipe.getUser())) {
+            String message = recipe.getTitle() + " 레시피에 댓글이 달렸습니다.";
+            notificationService.createNotification(senderUser, recipe.getUser(), message, recipe);
+        }
         return RecipeCommentDto.fromEntity(comment); // 생성된 댓글을 DTO로 변환 후 반환
     }
 

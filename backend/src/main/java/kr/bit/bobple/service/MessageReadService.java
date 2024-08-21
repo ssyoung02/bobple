@@ -29,4 +29,9 @@ public class MessageReadService {
     public int countUnreadMessages(Message message) {
         return messageReadRepository.findByMessageAndReadAtIsNull(message).size();
     }
+
+    // 특정 유저의 모든 채팅방에서 읽지 않은 메시지 개수를 반환하는 메서드
+    public int countUnreadMessagesForUser(Long userId) {
+        return messageReadRepository.countByUserAndReadAtIsNull(userId);
+    }
 }

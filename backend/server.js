@@ -62,23 +62,45 @@ app.post('/send-message', (req, res) => {
                 return res.status(500).send('Failed to fetch users');
             }
 
-            const insertReadsQuery = 'INSERT INTO message_reads (message_id, user_id) VALUES ?';
-            const values = users.map(user => [messageId, user.user_idx]);
-            db.query(insertReadsQuery, [values], (err) => {
+            // 메시지 보낸 사람의 읽음 정보를 바로 추가
+            const insertReadsQuery = `
+                INSERT INTO message_reads (message_id, user_id, read_at) VALUES (?, ?, ?)
+            `;
+            db.query(insertReadsQuery, [messageId, userId, createdAt], (err) => {
                 if (err) {
-                    return res.status(500).send('Failed to insert message reads');
+                    return res.status(500).send('Failed to insert message reads for sender');
                 }
 
-                // Socket.io를 통해 메시지 전송
-                const message = { id: messageId, chatRoomId, content, createdAt, userId, name, profileImage };
-                console.log('Sending newMessage event:', message); // 서버 로그 추가
-                // 모든 관련 클라이언트에 newMessage 이벤트 전송
-                io.emit('newMessage', message);  // 모든 클라이언트에 브로드캐스트;
+                // 나머지 사용자들에 대한 읽음 정보 추가 (read_at은 NULL)
+                if (users.length > 0) {
+                    const insertReadsForOthersQuery = `
+                        INSERT INTO message_reads (message_id, user_id) VALUES ?
+                    `;
+                    const values = users.map(user => [messageId, user.user_idx]);
+                    db.query(insertReadsForOthersQuery, [values], (err) => {
+                        if (err) {
+                            return res.status(500).send('Failed to insert message reads for others');
+                        }
 
-                // 메시지를 보낸 후 읽지 않은 메시지 수를 계산하고 전송
-                updateUnreadCounts(chatRoomId);
+                        // Socket.io를 통해 메시지 전송
+                        const message = { id: messageId, chatRoomId, content, createdAt, userId, name, profileImage };
+                        console.log('Sending newMessage event:', message);
+                        io.emit('newMessage', message);
 
-                res.status(200).send(message);
+                        // 읽지 않은 메시지 수를 계산하고 전송
+                        updateUnreadCounts(chatRoomId);
+                        res.status(200).send(message);
+                    });
+                } else {
+                    // Socket.io를 통해 메시지 전송
+                    const message = { id: messageId, chatRoomId, content, createdAt, userId, name, profileImage };
+                    console.log('Sending newMessage event:', message);
+                    io.emit('newMessage', message);
+
+                    // 읽지 않은 메시지 수를 계산하고 전송
+                    updateUnreadCounts(chatRoomId);
+                    res.status(200).send(message);
+                }
             });
         });
     });

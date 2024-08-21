@@ -26,6 +26,8 @@ public class LikeRecipeService {
     private final LikeRecipeRepository likeRecipeRepository; // 좋아요 데이터베이스 접근 레포지토리
     private final UserRepository userRepository; // 사용자 데이터베이스 접근 레포지토리
     private final RecipeRepository recipeRepository;  // 레시피 데이터베이스 접근 레포지토리
+    private final NotificationService notificationService; // NotificationService 추가
+
 
     /**
      * 사용자가 특정 레시피에 대해 좋아요를 토글(추가/삭제)하는 메서드
@@ -64,6 +66,13 @@ public class LikeRecipeService {
                     .build();
             likeRecipeRepository.save(likeRecipe); // 좋아요 저장
             recipe.setLikesCount(recipe.getLikesCount() + 1);  // 좋아요 수 증가
+
+            // 좋아요 알림 생성
+            if (!user.equals(recipe.getUser())) {
+                String message = user.getName() + "님이 '" + recipe.getTitle() + "' 레시피를 좋아합니다.";
+                notificationService.createNotification(user, recipe.getUser(), message, recipe);
+            }
+
             return LikeRecipeDto.fromEntity(likeRecipe, true); // 좋아요 상태 true로 반환
         }
     }

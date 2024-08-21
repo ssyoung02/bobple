@@ -46,4 +46,11 @@ public class MessageReadController {
         MessageRead messageRead = messageReadRepository.findByUserAndMessage(user, message).get(0);
         return ResponseEntity.ok(MessageReadDTO.fromEntity(messageRead));
     }
+
+    // 새로운 엔드포인트 추가: 특정 사용자의 모든 채팅방에서 읽지 않은 메시지의 총 개수 반환
+    @GetMapping("/unread-count")
+    public ResponseEntity<Integer> countUnreadMessagesForUser(@RequestParam Long userId) {
+        int totalUnreadCount = messageReadService.countUnreadMessagesForUser(userId);
+        return ResponseEntity.ok(totalUnreadCount);
+    }
 }
