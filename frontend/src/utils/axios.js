@@ -18,7 +18,6 @@ const instance = axios.create({
 instance.interceptors.request.use(config => {
     const token = localStorage.getItem('token'); // 로컬스토리지에서 토큰 가져오기
     if (token) {
-        console.log('Token:', token);  // 콘솔에 토큰 출력 (디버깅 용도)
         config.headers.Authorization = `Bearer ${token}`; // Authorization 헤더에 토큰 추가
     }
     return config; // 요청 설정 완료 후 반환
