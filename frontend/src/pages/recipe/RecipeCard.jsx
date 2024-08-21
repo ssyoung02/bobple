@@ -5,7 +5,7 @@ import '../../assets/style/recipe/RecipeCard.css';
 import {Comment, Heart, HeartLine, MoreIcon} from "../../components/imgcomponents/ImgComponents"; // CSS 파일 import
 import mascot from "../../assets/images/bobple_mascot.png";
 import axios from "../../utils/axios"; // CSS 파일 import
-import { formatViewsCount } from '../../utils/NumberFormatUtil'; // 조회수 포맷팅 함수 import
+import {formatViewsCount} from '../../utils/NumberFormatUtil'; // 조회수 포맷팅 함수 import
 
 /**
  * RecipeCard 컴포넌트
@@ -16,7 +16,7 @@ import { formatViewsCount } from '../../utils/NumberFormatUtil'; // 조회수 �
  * @param {Function} props.onDelete - 레시피 삭제 후 호출되는 콜백 함수
  * @returns {JSX.Element} 레시피 카드 UI 렌더링
  */
-function RecipeCard({ recipe, onLike, onDelete  }) {
+function RecipeCard({recipe, onLike, onDelete}) {
     const navigate = useNavigate(); // 페이지 이동을 위한 navigate 함수
     const [isLiked, setIsLiked] = useState(recipe.liked);  // 좋아요 상태 관리
     const [likesCount, setLikesCount] = useState(recipe.likesCount);   // 좋아요 수 상태 관리
@@ -34,7 +34,9 @@ function RecipeCard({ recipe, onLike, onDelete  }) {
             // 좋아요 상태와 좋아요 수 업데이트
             setIsLiked(!isLiked); // 좋아요 상태를 반전시킴
             setLikesCount(prevCount => isLiked ? prevCount - 1 : prevCount + 1); // 좋아요 수 업데이트
-            onLike({ ...recipe, liked: !isLiked, likesCount: isLiked ? likesCount - 1 : likesCount + 1 }); // 부모 컴포넌트로 상태 업데이트 전달
+            if (onLike) {
+                onLike({...recipe, liked: !isLiked, likesCount: isLiked ? likesCount - 1 : likesCount + 1}); // 부모 컴포넌트로 상태 업데이트 전달
+            }
         } catch (error) {
             console.error('좋아요 처리 중 오류가 발생했습니다.', error);
         }
@@ -62,8 +64,9 @@ function RecipeCard({ recipe, onLike, onDelete  }) {
                 await axios.post("/api/point/result/update", {
                     userIdx: Number(localStorage.getItem('userIdx')),
                     point: -1, // 포인트 차감
-                    pointComment: "레시피 삭제"}, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    pointComment: "레시피 삭제"
+                }, {
+                    headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
                 });
 
                 console.log('Recipe deleted successfully');  // 성공 로그
@@ -78,7 +81,7 @@ function RecipeCard({ recipe, onLike, onDelete  }) {
                 console.error('레시피 삭제 실패:', error);
                 alert('레시피 삭제에 실패했습니다.');
             }
-        }else {
+        } else {
             console.log("Recipe deletion was canceled by the user.");  // 취소된 경우 로그
         }
     };
@@ -121,7 +124,7 @@ function RecipeCard({ recipe, onLike, onDelete  }) {
         <div className="recipe-card">
             <Link to={`/recipe/${recipe.recipeIdx}`}>
                 <div className="recipe-card-image">
-                    <img src={recipe.picture }
+                    <img src={recipe.picture}
                          alt={recipe.title}
                          onError={(e) => {
                              e.target.onerror = null;
@@ -131,7 +134,7 @@ function RecipeCard({ recipe, onLike, onDelete  }) {
                 </div>
                 <div className="recipe-card-title">
                     <h4>{recipe.title}</h4>
-                    <p className="author">작성자: {recipe.nickname} | 조회수:  {formatViewsCount(recipe.viewsCount)}</p>
+                    <p className="author">작성자: {recipe.nickname} | 조회수: {formatViewsCount(recipe.viewsCount)}</p>
                 </div>
             </Link>
 
@@ -155,7 +158,7 @@ function RecipeCard({ recipe, onLike, onDelete  }) {
                         {/* 신고 버튼 */}
                         <button onClick={handleReportClick}>신고</button>
                     </div>
-                    )}
+                )}
             </div>
             <Link to={`/recipe/${recipe.recipeIdx}`}>
                 <div className="recipe-card-content">
@@ -171,7 +174,8 @@ function RecipeCard({ recipe, onLike, onDelete  }) {
                     <button className="recipe-like-button" onClick={handleLikeClick}>
                         {isLiked ? <Heart/> : <HeartLine/>} {/* 좋아요 상태에 따라 다른 아이콘 표시 */}
                     </button>
-                    {likesCount} {/* 좋아요 수 */}
+                    {formatViewsCount(likesCount)}
+                    {/* 좋아요 수 */}
                 </div>
                 <div className="recipe-card-bottom-button">
                     <Comment/>
