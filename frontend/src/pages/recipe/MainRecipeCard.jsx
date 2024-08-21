@@ -1,10 +1,10 @@
 import React, {useContext, useState} from 'react';
 import {Link} from 'react-router-dom';
-import RecipeContext from '../../pages/recipe/RecipeContext';
 import '../../assets/style/recipe/RecipeCard.css'; // 레시피 카드에 대한 스타일링을 적용한 CSS 파일
-import { Heart, HeartLine} from "../../components/imgcomponents/ImgComponents"; // 좋아요 아이콘 컴포넌트 import
+import {Heart, HeartLine} from "../../components/imgcomponents/ImgComponents"; // 좋아요 아이콘 컴포넌트 import
 import mascot from "../../assets/images/bobple_mascot.png"; // 기본 이미지 import (이미지 로드 실패 시 사용)
-import { formatViewsCount } from "../../utils/NumberFormatUtil.js";  // 조회수 포맷팅 유틸리티 함수 import
+import {formatViewsCount} from "../../utils/NumberFormatUtil.js";
+import axios from "../../utils/axios";  // 조회수 포맷팅 유틸리티 함수 import
 
 /**
  * RecipeCard 컴포넌트
@@ -13,8 +13,7 @@ import { formatViewsCount } from "../../utils/NumberFormatUtil.js";  // 조회�
  * @param {Object} props.recipe - 레시피 데이터 객체 (레시피 제목, 작성자, 조회수, 좋아요 정보 등)
  * @returns {JSX.Element} 레시피 카드 UI 렌더링
  */
-function RecipeCard({ recipe }) {
-    const { likeRecipe } = useContext(RecipeContext); // RecipeContext를 통해 좋아요 기능을 불러옴
+function RecipeCard({recipe, onLike}) {
     const [isLiked, setIsLiked] = useState(recipe.liked); // 좋아요 상태 관리 (초기값은 레시피 객체에서 가져옴)
     const [likesCount, setLikesCount] = useState(recipe.likesCount); // 좋아요 수 상태 관리
 
@@ -24,11 +23,14 @@ function RecipeCard({ recipe }) {
      */
     const handleLikeClick = async () => {
         try {
-            await likeRecipe(recipe.recipeIdx); // 좋아요 요청을 서버로 전송
+            // 서버에 좋아요 요청
+            await axios.post(`/api/recipes/${recipe.recipeIdx}/like`);
             // 좋아요 상태 및 좋아요 수 업데이트
             setIsLiked(!isLiked);  // 현재 좋아요 상태를 반전시킴
             setLikesCount(prevCount => isLiked ? prevCount - 1 : prevCount + 1);  // 좋아요 수 업데이트
-
+            if (onLike) {
+                onLike({...recipe, liked: !isLiked, likesCount: isLiked ? likesCount - 1 : likesCount + 1}); // 부모 컴포넌트로 상태 업데이트 전달
+            }
         } catch (error) {
             console.error('좋아요 처리 중 오류가 발생했습니다.', error); // 오류 발생 시 콘솔에 출력
         }
@@ -74,7 +76,7 @@ function RecipeCard({ recipe }) {
                     </button>
 
                     {/* 좋아요 수를 표시 */}
-                    {likesCount}
+                    {formatViewsCount(likesCount)}
                 </div>
             </div>
 
