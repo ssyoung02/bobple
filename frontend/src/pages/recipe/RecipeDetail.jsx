@@ -168,6 +168,7 @@ function RecipeDetail() {
             ingredients = selectedRecipe.content.substring(0, instructionsStart).trim();
             // "만드는 법:" 뒷부분은 조리 방법
             instructions = selectedRecipe.content.substring(instructionsStart + 6).trim();
+
         } else {
             // "만드는 법:"이 없는 경우 전체 내용을 재료로 간주
             ingredients = selectedRecipe.content.trim();
@@ -278,8 +279,8 @@ function RecipeDetail() {
                     <div className="recipe-detail-content">
                         <h4>조리 방법</h4>
                         <ul>
-                            {instructionList.map((instruction, index) => (
-                                <li key={index}>{instruction}</li>
+                            {instructions.split(/(?=\d+\.)/).map((instruction, index) => (
+                                <li key={index}>{instruction.trim()}</li>
                             ))}
                         </ul>
                     </div>
