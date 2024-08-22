@@ -61,6 +61,13 @@ const UserInfo = () => {
     const handleDeleteSelected = async () => {
         if (selectedUsers.length === 0) return;
 
+        // 사용자에게 삭제 확인을 요청합니다.
+        const isConfirmed = window.confirm('정말 삭제하시겠습니까?');
+
+        if (!isConfirmed) {
+            return; // 사용자가 취소를 눌렀을 경우 함수 실행을 중단합니다.
+        }
+
         try {
             const token = localStorage.getItem('token'); // 저장된 토큰을 가져옵니다.
             if (!token) {

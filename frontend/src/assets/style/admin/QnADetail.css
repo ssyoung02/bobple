@@ -11,6 +11,22 @@
     justify-content: space-between;
 }
 
+.qna-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 20px;
+}
+
+.qna-detail-header h4 {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.qna-detail-header-info {
+    display: flex;
+    gap: 50px;
+}
 
 .qna-message-input {
     display: flex;
@@ -44,4 +60,17 @@
 .qna-detail p {
     margin: 10px 0;
     font-size: 1.1em;
+}
+
+.qna-detail-n {
+    margin: 20px;
+    text-align: left;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.qna-detail-a {
+    margin: 20px;
+    text-align: left;
+    font-size: 15px;
 }

@@ -197,7 +197,7 @@ const QnAList = () => {
                                     <td>{qna.status ? '완료' : '진행 중'}</td>
                                 </tr>
                                 {detailQnA?.queIdx === qna.queIdx && (
-                                    <tr>
+                                    <tr className="tr-detail-content">
                                         <td colSpan="6">
                                             <QnADetail qna={qna}/>
                                         </td>

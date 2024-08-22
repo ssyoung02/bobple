@@ -162,8 +162,17 @@ const RecipeBoard = () => {
                             <th>작성자 이름</th>
                             <th>제목</th>
                             <th>카테고리</th>
-                            <th onClick={() => handleSort('likesCount')}>좋아요 수 {sortField === 'likesCount' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-                            <th onClick={() => handleSort('reportCount')}>신고 수 {sortField === 'reportCount' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
+                            <th onClick={() => handleSort('likesCount')} className="sortable-column">
+                                좋아요 수
+                                <span className="sort-arrow">
+                                {sortField === 'likesCount' && (sortOrder === 'asc' ? '▲' : '▼')}</span>
+                            </th>
+                            <th onClick={() => handleSort('reportCount')} className="sortable-column">
+                                신고 수
+                                <span className="sort-arrow">
+                                {sortField === 'reportCount' && (sortOrder === 'asc' ? '▲' : '▼')}</span>
+                            </th>
+
                             <th>생성일</th>
                         </tr>
                         </thead>

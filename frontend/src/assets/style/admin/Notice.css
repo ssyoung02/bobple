@@ -174,4 +174,19 @@
     background-color: #ea4197 !important;
 }
 
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tr-detail-content {
+    animation: slide-down 0.3s ease-out;
+}
+
 

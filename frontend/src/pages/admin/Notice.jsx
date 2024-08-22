@@ -202,7 +202,7 @@ const Notice = () => {
                                     <td>{new Date(notice.createdAt).toLocaleDateString()}</td>
                                 </tr>
                                 {detailNotice?.noticeIdx === notice.noticeIdx && (
-                                    <tr>
+                                    <tr className="tr-detail-content">
                                         <td colSpan="4">
                                             <NoticeModify notice={notice} />
                                         </td>

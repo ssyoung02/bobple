@@ -6,12 +6,13 @@ function NoticeModify({notice}) {
 
     return (
         <div className="user-detail-container-n">
-            <h3>공지사항</h3>
+            <div className="user-detail-header">
+                <h4><span>No.{notice.noticeIdx}</span> {notice.noticeTitle}</h4>
+                <p>{new Date(notice.createdAt).toLocaleDateString()}</p>
+            </div>
             <hr className="hr-style"/>
             <div className="user-detail-n">
-                <p><strong>제목:</strong> {notice.noticeTitle}</p>
-                <p><strong>작성날짜:</strong> {new Date(notice.createdAt).toLocaleDateString()}</p>
-                <p><strong>본문내용:</strong> {notice.noticeDescription}</p>
+                <p>{notice.noticeDescription}</p>
             </div>
         </div>
     );

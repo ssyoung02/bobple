@@ -77,16 +77,21 @@ const QnADetail = ({ qna }) => {
 
     return (
         <div className="qna-detail">
-            <h3>문의 상세 정보</h3>
-            <p><strong>번호:</strong> {currentQna.queIdx}</p>
-            <p><strong>작성자:</strong> {currentQna.userName}</p>
-            <p><strong>제목:</strong> {currentQna.queTitle}</p>
-            <p><strong>작성일자:</strong> {new Date(currentQna.createdAt).toLocaleDateString()}</p>
-            <p><strong>진행상황:</strong> {currentQna.status ? '완료' : '진행 중'}</p>
-            <p><strong>내용:</strong> {currentQna.queDescription}</p>
-
-            <p><strong>답변:</strong> {currentQna.answer}</p>
-
+            <div className="qna-detail-header">
+                <h4>{currentQna.queTitle}</h4>
+                <div className="qna-detail-header-info">
+                    <p><strong>작성자:</strong> {currentQna.userName}</p>
+                    <p>{new Date(currentQna.createdAt).toLocaleDateString()}</p>
+                </div>
+            </div>
+            <hr/>
+            <div className="qna-detail-n">
+                <p>{currentQna.queDescription}</p>
+            </div>
+            <hr/>
+            <div className="qna-detail-a">
+                <p><strong>답변:</strong> {currentQna.answer}</p>
+            </div>
             <div className="qna-message-input">
                 <input
                     type="text"

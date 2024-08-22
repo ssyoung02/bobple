@@ -93,6 +93,22 @@
     color: white;
 }
 
+.sortable-column {
+    position: relative;
+    cursor: pointer;
+    padding-right: 20px; /* 텍스트와 삼각형 사이의 여백 */
+}
+
+.sort-arrow {
+    position: absolute;
+    right: 30px; /* 삼각형을 th의 오른쪽에 고정 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px; /* 적당한 너비로 설정하여 삼각형이 잘리지 않도록 */
+}
+
+
+
 .tr-detail:hover {
     cursor: pointer;
     background-color: white;
