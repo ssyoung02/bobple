@@ -4,6 +4,7 @@ import { faCartShopping, faMagnifyingGlass, faBell } from "@fortawesome/free-sol
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../../assets/images/bobple_logo.png";
+import mascot from '../../assets/images/bobple_mascot.png';
 import { clearRecipeLocalStorage } from '../../utils/localStorageUtils';
 import axios from 'axios';
 
@@ -158,30 +159,28 @@ function Header({ theme, toggleTheme }) {
             <Link to="/" className="headerLogo" onClick={() => handleLinkClick('/')}>
                 <img src={logoImg} alt="bobple로고" />
             </Link>
-            <div className="headerButton">
+            <div className="header-Buttons">
                 <label className="theme-checkbox-label">
-                    <input type="checkbox" className="theme-checkbox" onClick={toggleTheme} />
+                    <input type="checkbox" className="theme-checkbox" onClick={toggleTheme}/>
                     <span className="theme-slider"></span>
                 </label>
-                <Link to="/point" className="headerLink" onClick={() => handleLinkClick('/point')}>
-                    <FontAwesomeIcon icon={faCartShopping} />
-                </Link>
-                <button type={"button"} className={"headerLink"} onClick={moveSearch}>
-                    <FontAwesomeIcon icon={faMagnifyingGlass}/>
-                </button>
+                {/*<Link to="/point" className="headerLink" onClick={() => handleLinkClick('/point')}>*/}
+                {/*    <FontAwesomeIcon icon={faCartShopping} />*/}
+                {/*</Link>*/}
                 <div className="notification-wrapper" ref={notificationRef}>
                     <button type={"button"} className={"headerLink"} onClick={toggleNotifications}>
-                        <FontAwesomeIcon icon={faBell} />
+                        <FontAwesomeIcon icon={faBell}/>
                         {(unreadCount > 0 || unreadMessagesCount > 0) && (
-                            <span className="notification-badge">{unreadCount + (unreadMessagesCount > 0 ? 1 : 0)}</span>
+                            <span
+                                className="notification-badge">{unreadCount + (unreadMessagesCount > 0 ? 1 : 0)}</span>
                         )}
                     </button>
                     {showNotifications && (
                         <div className="notification-dropdown">
                             <div className="notification-header">
-                                <h4>알림</h4>
+                                <h5>알림</h5>
                                 <button className="mark-all-read" onClick={markAllAsRead}>
-                                    알림 모두 읽음 처리
+                                    모두 읽음 처리
                                 </button>
                             </div>
                             <div className="notification-list">
@@ -193,7 +192,8 @@ function Header({ theme, toggleTheme }) {
                                                 className={`notification-item ${notification.read ? 'read' : 'unread'}`}
                                                 onClick={() => handleNotificationClick(notification.id, notification.recipeId)}
                                             >
-                                                {notification.message}
+                                                {/*<img src={mascot} alt="밥풀이"/>*/}
+                                                <div className="notification-message">{notification.message}</div>
                                             </div>
                                         ))}
                                         {unreadMessagesCount > 0 && (
@@ -201,7 +201,8 @@ function Header({ theme, toggleTheme }) {
                                                 className="notification-item unread"
                                                 onClick={() => handleNotificationClick('unread-messages')}
                                             >
-                                                안읽은 메시지가 {unreadMessagesCount}개 있습니다.
+                                                {/*<img src={mascot} alt="밥풀이"/>*/}
+                                                <div className="notification-message">안읽은 메시지가 {unreadMessagesCount}개 있습니다.</div>
                                             </div>
                                         )}
                                     </>
@@ -212,6 +213,9 @@ function Header({ theme, toggleTheme }) {
                         </div>
                     )}
                 </div>
+                <button type={"button"} className={"headerLink"} onClick={moveSearch}>
+                    <FontAwesomeIcon icon={faMagnifyingGlass}/>
+                </button>
             </div>
         </div>
     );

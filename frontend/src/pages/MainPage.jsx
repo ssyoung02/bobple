@@ -6,10 +6,10 @@ import SliderComponent from "../components/SliderComponent";
 import { clearRecipeLocalStorage } from '../utils/localStorageUtils';
 import {
     AiLunch, Bookmark,
-    CalculatorBanner, CaretRight, FillBookmark,
+    CalculatorBanner, CaretRight, FillBookmark, FoodWorldCup,
     LocationDot,
     Meeting,
-    NextTo,
+    NextTo, PointShop,
     RandomMenu
 } from "../components/imgcomponents/ImgComponents";
 import axios from "axios";
@@ -70,6 +70,13 @@ function MainPage({theme}) {
         navigate('/recipe');
     };
 
+    const moveWorldCup = () => {
+        navigate('/recommend/foodWorldCup/foodWorldCup');
+    }
+
+    const movePointShop = () => {
+        navigate('/point');
+    }
 
 
     //주변 맛집
@@ -311,17 +318,17 @@ function MainPage({theme}) {
                     </div>
                     <p className="shortMenuName">AI 도시락</p>
                 </button>
-                <button className="shortMenuItem" onClick={moveGroup}>
+                <button className="shortMenuItem" onClick={moveWorldCup}>
                     <div className="shortMenuIcon">
-                        <Meeting theme={theme}/> {/* theme 전달 */}
+                        <FoodWorldCup theme={theme}/> {/* theme 전달 */}
                     </div>
-                    <p className="shortMenuName">번개모임</p>
+                    <p className="shortMenuName">푸드 월드컵</p>
                 </button>
-                <button className="shortMenuItem" onClick={moveRecommend}>
+                <button className="shortMenuItem" onClick={movePointShop}>
                     <div className="shortMenuIcon">
-                        <RandomMenu theme={theme}/> {/* theme 전달 */}
+                        <PointShop theme={theme}/> {/* theme 전달 */}
                     </div>
-                    <p className="shortMenuName">랜덤메뉴</p>
+                    <p className="shortMenuName">포인트샵</p>
                 </button>
             </div>
             <div className="summation-box">

@@ -11,10 +11,15 @@ import calculator from  "../../assets/images/banner/main-01.calculator.png"
 import aiLunch from  "../../assets/images/banner/main-02.AI-lunchbox.png"
 import meeting from  "../../assets/images/banner/main-03.meeting.png"
 import randomMenu from  "../../assets/images/banner/main-04.random-menu.png"
+import foodWorldCup from "../../assets/images/banner/main-05.food-worldCup.png";
+import pointShop from "../../assets/images/banner/main-06.pointShop.png";
+
 import calculatorDark from "../../assets/images/banner/main-01.calculator-dark.png";
 import aiLunchDark from "../../assets/images/banner/main-02.AI-lunchbox-dark.png";
 import meetingDark from "../../assets/images/banner/main-03.meeting-dark.png";
 import randomMenuDark from "../../assets/images/banner/main-04.random-menu-dark.png";
+import foodWorldCupDark from "../../assets/images/banner/main-05.food-worldCup-dark.png";
+import pointShopDark from "../../assets/images/banner/main-06.pointShop-dark.png";
 
 
 import trophy from "../../assets/images/gameimg/trophy.png";
@@ -58,6 +63,17 @@ export const RandomMenu = ({ theme }) => {
     const randomMenuImage = theme === 'dark' ? randomMenuDark : randomMenu;
     return (<img src={randomMenuImage} alt={"랜덤메뉴"} />);
 }
+
+export const FoodWorldCup = ({ theme }) => {
+    const foodWorldCupImage = theme === 'dark' ? foodWorldCupDark : foodWorldCup;
+    return (<img src={foodWorldCupImage} alt={"음식 월드컵"} />);
+}
+
+export const PointShop = ({ theme }) => {
+    const pointShopImage = theme === 'dark' ? pointShopDark : pointShop;
+    return (<img src={pointShopImage} alt={"음식 월드컵"} />);
+}
+
 
 
 

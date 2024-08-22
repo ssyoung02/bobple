@@ -24,7 +24,7 @@
 }
 .shortMenu{
     display: flex;
-    width: 90%;
+    width: 95%;
     justify-content: space-around;
     align-items: center;
     gap: 2em;
