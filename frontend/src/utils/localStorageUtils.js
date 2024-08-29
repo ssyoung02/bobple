@@ -9,4 +9,5 @@ export const clearRecipeLocalStorage = () => {
     localStorage.removeItem('recipePage'); // 레시피 페이지 데이터를 로컬 스토리지에서 제거
     localStorage.removeItem('latestRecipes');  // 최신 레시피 데이터를 로컬 스토리지에서 제거
     localStorage.removeItem('lastLoadedKey');  // 마지막으로 로드된 키 데이터를 로컬 스토리지에서 제거
+    localStorage.removeItem('recommendedRecipes');  // 마지막으로 로드된 키 데이터를 로컬 스토리지에서 제거
 };
