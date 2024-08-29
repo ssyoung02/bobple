@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 function SearchFilter() {
     const [keyword, setKeyword] = useState(''); // 검색어 상태
     const [category, setCategory] = useState(''); // 선택된 카테고리 상태
-    const [sortBy, setSortBy] = useState('viewsCount,desc');   // 선택된 정렬 기준 상태
+    const [sortBy, setSortBy] = useState('createdAt,desc');   // 선택된 정렬 기준 상태
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
     const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false);  // 카테고리 선택 드롭다운 상태
     const [isLatestSelectOpen, setIsLatestSelectOpen] = useState(false);   // 정렬 기준 선택 드롭다운 상태

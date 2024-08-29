@@ -156,7 +156,9 @@ function RecipeCard({recipe, onLike, onDelete}) {
                         )}
 
                         {/* 신고 버튼 */}
+                        {localStorage.getItem('userIdx') != recipe.userIdx && (
                         <button onClick={handleReportClick}>신고</button>
+                        )}
                     </div>
                 )}
             </div>

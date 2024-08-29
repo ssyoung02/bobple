@@ -258,12 +258,12 @@ export const FoodCategories = () => {
 }
 
 /**
- * 유저 추천 레시피 컴포넌트
- * 유저들이 좋아하는 레시피를 슬라이더 형식으로 보여주며, 사용자는 레시피를 클릭해 자세한 내용을 볼 수 있다.
- * 좋아요 기능도 구현되어 있으며, 유저가 좋아요를 누를 수 있다.
- * 페이지네이션을 이용하여 서버에서 데이터를 순차적으로 받아오고, 일정 간격으로 데이터가 갱신된다.
- * @returns {JSX.Element} 유저 추천 레시피 UI 렌더링
- */
+* 유저 추천 레시피 컴포넌트
+* 유저들이 좋아하는 레시피를 슬라이더 형식으로 보여주며, 사용자는 레시피를 클릭해 자세한 내용을 볼 수 있다.
+* 좋아요 기능도 구현되어 있으며, 유저가 좋아요를 누를 수 있다.
+* 페이지네이션을 이용하여 서버에서 데이터를 순차적으로 받아오고, 일정 간격으로 데이터가 갱신된다.
+* @returns {JSX.Element} 유저 추천 레시피 UI 렌더링
+*/
 export const UserRecommendedRecipes = () => {
     const { formatViewsCount, setError } = useContext(RecipeContext);  // 조회수 포맷팅 함수 및 에러 처리 함수 가져오기
     const [page, setPage] = useState(0); // 현재 페이지 상태
@@ -328,7 +328,7 @@ export const UserRecommendedRecipes = () => {
      * 또한 5분 간격으로 첫 페이지 데이터를 새로 갱신하여 캐시를 업데이트한다.
      */
     useEffect(() => {
-        fetchRecipes(page);  // 페이지 변경 시 데이터 불러오기
+        fetchRecipes(page, true);  // 페이지 변경 시 데이터 불러오기
 
         // 5분마다 첫 페이지 데이터를 새로 불러와 캐시를 갱신
         const intervalId = setInterval(() => {
@@ -384,7 +384,7 @@ export const UserRecommendedRecipes = () => {
         centerMode: true,
         arrows: false,
         autoplay: true,
-        afterChange: handleSlideChange,  // 슬라이드 변경 후 호출
+        afterChange: handleSlideChange // 슬라이드 변경 후 호출(currentSlide) => setCurrentSlide(currentSlide)
     };
 
     return (

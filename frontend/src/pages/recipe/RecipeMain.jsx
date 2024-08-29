@@ -13,7 +13,8 @@ import {
     TopArrow
 } from "../../components/imgcomponents/ImgComponents";
 import {UserRecommendedRecipes} from "../../components/SliderComponent"; // 유저 추천 레시피 슬라이더 컴포넌트
-import {ClipLoader} from "react-spinners";  // 로딩 스피너 컴포넌트
+import {ClipLoader} from "react-spinners";
+import {clearRecipeLocalStorage} from "../../utils/localStorageUtils";  // 로딩 스피너 컴포넌트
 
 /**
  * RecipeMain 컴포넌트
@@ -108,8 +109,9 @@ function RecipeMain() {
                 // 새로운 레시피가 없으면 더 이상 불러올 것이 없다고 판단
                 if (uniqueRecipes.length === 0) {
                     console.log('Duplicate recipes found, skipping this load.');
-                    setHasMore(false);
-                    setLoading(false);
+                    loadLatestRecipes(currentPage + 1); // 다음 페이지 재귀적으로 요청
+                    // setHasMore(false);
+                    // setLoading(false);
                     return;
                 }
 
@@ -207,13 +209,19 @@ function RecipeMain() {
 
     // 카테고리 버튼 클릭 시 해당 카테고리의 레시피 검색 결과로 이동
     const handleCategoryClick = (category) => {
-        navigate(`/recipe/search?category=${category}&sort=viewsCount,desc`);
+        navigate(`/recipe/search?category=${category}&sort=createdAt,desc`);
     };
 
     // AI 레시피 추천 페이지로 이동
     const moveAIRecommendation = () => {
         navigate('/recipe/ai-recommendation');
     }
+
+    // 레시피 작성 버튼 클릭 시
+    const handleCreateRecipeClick = () => {
+        clearRecipeLocalStorage(); // 로컬 스토리지 초기화
+        navigate('/recipe/create');
+    };
 
     return (
         <div className="recipe-main-container">
@@ -319,7 +327,7 @@ function RecipeMain() {
                     <button onClick={handleTopClick} className={`recipe-top-btn`} aria-label="맨위로">
                         <TopArrow/>
                     </button>
-                    <button className="create-recipe-button" onClick={() => navigate('/recipe/create')}>
+                    <button className="create-recipe-button" onClick={handleCreateRecipeClick}>
                         +
                     </button>
                 </div>

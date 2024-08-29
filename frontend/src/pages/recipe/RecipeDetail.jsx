@@ -229,9 +229,12 @@ function RecipeDetail() {
                                 </>
                             }
                         </button>
+                        {localStorage.getItem('userIdx') != selectedRecipe.userIdx && (
                         <button className="user-action-more" aria-label="더보기" onClick={toggleActions}>
                             <MoreIcon/>
                         </button>
+                        )}
+
                         {showActions && (
                             <div className="recipe-declaration">
                                 <button onClick={handleReportClick}>신고</button>

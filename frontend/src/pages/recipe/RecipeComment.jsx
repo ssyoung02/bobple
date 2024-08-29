@@ -133,7 +133,11 @@ function RecipeComment({ comment, recipeId }) {
                 </button>
                 {showActions && (
                     <div className="comment-actions">
+                        {currentUserNickname !== comment.nickname && (
+                            <>
                         {!hasReported && <button onClick={handleReportClick}>신고</button>}
+                            </>
+                        )}
                         {currentUserNickname === comment.nickname && (
                             <>
                                 {!isEditing && (
